@@ -1,4 +1,4 @@
-QUESTÃO ATUAL:
+CURRENT QUESTION:
 Given a string s and a dictionary of strings wordDict, add spaces in s to construct a sentence where each word is a valid dictionary word. Return all such possible sentences in any order.
 
 Note that the same word in the dictionary may be reused multiple times in the segmentation.
@@ -29,11 +29,11 @@ s and wordDict[i] consist of only lowercase English letters.
 All the strings of wordDict are unique.
 Input is generated in a way that the length of the answer doesn't exceed 105.
 
-QUESTÕES SIMILARES:
-Questão Similar 1:
-Título: Longest Common Prefix
-Categorias: String Trie
-Descrição: Write a function to find the longest common prefix string amongst an array of strings.
+SIMILAR QUESTIONS:
+Similar question 1:
+Title: Longest Common Prefix
+Categorys: String Trie
+Question text: Write a function to find the longest common prefix string amongst an array of strings.
 
 If there is no common prefix, return an empty string "".
 
@@ -55,7 +55,7 @@ Constraints:
 1 <= strs.length <= 200
 0 <= strs[i].length <= 200
 strs[i] consists of only lowercase English letters if it is non-empty.
-Solução: class Solution {
+Solution: class Solution {
 public:
     string longestCommonPrefix(vector<string>& strs) {
         if (strs.empty()) return "";
@@ -82,7 +82,7 @@ private:
         return left.substr(0, min);
     }
 };
-Explicação: Divide and conquer
+Explanation: Divide and conquer
 Intuition
 The idea of the algorithm comes from the associative property of LCP operation. We notice that :
 LCP(S 1 …S n )=LCP(LCP(S 1 …S k ),LCP(S k+1 …S n )), where LCP(​ …S n ) is the longest common prefix in set of strings [S 1 …S n ] ,1<k<n
@@ -138,10 +138,10 @@ Space complexity : O(m⋅logn)
 
 There is a memory overhead since we store recursive calls in the execution stack. There are logn recursive calls, each store need m space to store the result, so space complexity is O(m⋅logn)
 
-Questão Similar 2:
-Título: Regular Expression Matching
-Categorias: String Dynamic Programming Recursion
-Descrição: Given an input string s and a pattern p, implement regular expression matching with support for '.' and '*' where:
+Similar question 2:
+Title: Regular Expression Matching
+Categorys: String Dynamic Programming Recursion
+Question text: Given an input string s and a pattern p, implement regular expression matching with support for '.' and '*' where:
 
 '.' Matches any single character.​​​​
 '*' Matches zero or more of the preceding element.
@@ -173,7 +173,7 @@ Constraints:
 s contains only lowercase English letters.
 p contains only lowercase English letters, '.', and '*'.
 It is guaranteed for each appearance of the character '*', there will be a previous valid character to match.
-Solução: class Solution(object):
+Solution: class Solution(object):
     def isMatch(self, text: str, pattern: str) -> bool:
         memo = {}
 
@@ -192,7 +192,7 @@ Solução: class Solution(object):
             return memo[i, j]
 
         return dp(0, 0)
-Explicação: Intuition
+Explanation: Intuition
 
 As the problem has an optimal substructure, it is natural to cache intermediate results. We ask the question dp(i, j): does text[i:] and pattern[j:] match? We can describe our answer in terms of answers to questions involving smaller strings.
 
@@ -200,10 +200,10 @@ Algorithm
 
 We proceed with the same recursion as in Approach 1, except because calls will only ever be made to match(text[i:], pattern[j:]), we use dp(i, j) to handle those calls instead, saving us expensive string-building operations and allowing us to cache the intermediate results.
 
-Questão Similar 3:
-Título: Reverse Vowels of a String
-Categorias: Two Pointers String
-Descrição: Given a string s, reverse only all the vowels in the string and return it.
+Similar question 3:
+Title: Reverse Vowels of a String
+Categorys: Two Pointers String
+Question text: Given a string s, reverse only all the vowels in the string and return it.
 
 The vowels are 'a', 'e', 'i', 'o', and 'u', and they can appear in both lower and upper cases, more than once.
 
@@ -231,7 +231,7 @@ Constraints:
 
 1 <= s.length <= 3 * 105
 s consist of printable ASCII characters.
-Solução: class Solution {
+Solution: class Solution {
 public:
     string reverseVowels(string s) {
         // Convert the input string to a character array.
@@ -264,7 +264,7 @@ public:
         return word;
     }
 };
-Explicação: Intuition
+Explanation: Intuition
 The goal of the problem is to reverse the order of vowels in a given string while keeping the non-vowel characters in their original positions. To achieve this, we can use two pointers technique: one pointer starting from the beginning of the string and another starting from the end. We will move these pointers towards each other, swapping the vowels they point to until they meet in the middle of the string.
 
 Approach
@@ -296,13 +296,13 @@ Space complexity:
 The space complexity of this solution is O(n) because we create a character array word to store the characters of the input string. The space used is proportional to the length of the input string. Other than that, we use a constant amount of extra space for the vowels string and a few integer variables, which doesn't depend on the input size.
 
 
-        INSTRUÇÕES:
-        Com base nas questões similares acima, resolva a questão atual.
-        Forneça:
-        1. Uma solução de código completa e eficiente
-        2. Uma explicação detalhada da solução, incluindo:
-           - A intuição por trás da abordagem
-           - A complexidade de tempo e espaço
-           - Considerações importantes sobre o algoritmo
-        3. Possíveis otimizações ou abordagens alternativas
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach
+           - Time and space complexity
+           - Important considerations about the algorithm
+        3. Possible optimizations or alternative approaches
         

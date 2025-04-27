@@ -1,4 +1,4 @@
-QUESTÃO ATUAL:
+CURRENT QUESTION:
 Given a string s and a dictionary of strings wordDict, add spaces in s to construct a sentence where each word is a valid dictionary word. Return all such possible sentences in any order.
 
 Note that the same word in the dictionary may be reused multiple times in the segmentation.
@@ -30,13 +30,13 @@ All the strings of wordDict are unique.
 Input is generated in a way that the length of the answer doesn't exceed 105.
 
 
-        INSTRUÇÕES:
-        Resolva a questão atual.
-        Forneça:
-        1. Uma solução de código completa e eficiente
-        2. Uma explicação detalhada da solução, incluindo:
-           - A intuição por trás da abordagem
-           - A complexidade de tempo e espaço
-           - Considerações importantes sobre o algoritmo
-        3. Possíveis otimizações ou abordagens alternativas
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach
+           - Time and space complexity
+           - Important considerations about the algorithm
+        3. Possible optimizations or alternative approaches
         

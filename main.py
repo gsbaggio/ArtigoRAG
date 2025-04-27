@@ -119,7 +119,6 @@ class ProgrammingQuestionRAG:
            - The intuition behind the approach
            - Time and space complexity
            - Important considerations about the algorithm
-        3. Possible optimizations or alternative approaches
         """
         
         return context
@@ -185,7 +184,7 @@ class ProgrammingQuestionRAG:
         context = f"CURRENT QUESTION:\n{question}\n\n"
         
         # Adicionar questões similares
-        context += "QUESTÕES SIMILARES:\n"
+        context += "SIMILAR QUESTIONS:\n"
         for i, q in enumerate(similar_questions):
             context += f"Similar question {i+1}:\n"
             context += f"Title: {q['title']}\n"
