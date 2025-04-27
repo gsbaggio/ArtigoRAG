@@ -82,7 +82,7 @@ class ProgrammingQuestionRAG:
         
         return similar_questions
 
-    def save_context_to_file(self, context: str, output_path: str = "resposta.txt"):
+    def save_context_to_file(self, context: str, output_path: str = "prompt.txt"):
         """
         Salva o contexto completo do RAG em um arquivo de texto.
         
@@ -107,24 +107,24 @@ class ProgrammingQuestionRAG:
         Returns:
             Contexto formatado para o LLM sem os documentos recuperados
         """
-        context = f"QUESTÃO ATUAL:\n{question}\n\n"
+        context = f"CURRENT QUESTION:\n{question}\n\n"
         
         # Adicionar instrução para o LLM
         context += """
-        INSTRUÇÕES:
-        Resolva a questão atual.
-        Forneça:
-        1. Uma solução de código completa e eficiente
-        2. Uma explicação detalhada da solução, incluindo:
-           - A intuição por trás da abordagem
-           - A complexidade de tempo e espaço
-           - Considerações importantes sobre o algoritmo
-        3. Possíveis otimizações ou abordagens alternativas
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach
+           - Time and space complexity
+           - Important considerations about the algorithm
+        3. Possible optimizations or alternative approaches
         """
         
         return context
 
-    def save_context_without_rag(self, question: str, output_path: str = "resposta_sem_rag.txt"):
+    def save_context_without_rag(self, question: str, output_path: str = "prompt_sem_rag.txt"):
         """
         Salva um contexto sem os documentos recuperados pelo RAG em um arquivo de texto.
         
@@ -182,29 +182,29 @@ class ProgrammingQuestionRAG:
         Returns:
             Contexto formatado para o LLM
         """
-        context = f"QUESTÃO ATUAL:\n{question}\n\n"
+        context = f"CURRENT QUESTION:\n{question}\n\n"
         
         # Adicionar questões similares
         context += "QUESTÕES SIMILARES:\n"
         for i, q in enumerate(similar_questions):
-            context += f"Questão Similar {i+1}:\n"
-            context += f"Título: {q['title']}\n"
-            context += f"Categorias: {q['category']}\n"
-            context += f"Descrição: {q['question_text']}\n"
-            context += f"Solução: {q['solution']}\n"
-            context += f"Explicação: {q['explanation']}\n\n"
+            context += f"Similar question {i+1}:\n"
+            context += f"Title: {q['title']}\n"
+            context += f"Categorys: {q['category']}\n"
+            context += f"Question text: {q['question_text']}\n"
+            context += f"Solution: {q['solution']}\n"
+            context += f"Explanation: {q['explanation']}\n\n"
         
         # Adicionar instrução para o LLM
         context += """
-        INSTRUÇÕES:
-        Com base nas questões similares acima, resolva a questão atual.
-        Forneça:
-        1. Uma solução de código completa e eficiente
-        2. Uma explicação detalhada da solução, incluindo:
-           - A intuição por trás da abordagem
-           - A complexidade de tempo e espaço
-           - Considerações importantes sobre o algoritmo
-        3. Possíveis otimizações ou abordagens alternativas
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach
+           - Time and space complexity
+           - Important considerations about the algorithm
+        3. Possible optimizations or alternative approaches
         """
         
         return context
@@ -217,16 +217,13 @@ if __name__ == "__main__":
     # Inicializar o sistema RAG
     rag_system = ProgrammingQuestionRAG(questions_db)
     
-    # Exemplo de questão
-    sample_question = """
-    Dado um array nums contendo n números inteiros, encontre três números em nums de forma que a soma seja a mais próxima possível de um número alvo target.
-    Retorne a soma dos três números.
-    
-    Exemplo:
-    Input: nums = [-1,2,1,-4], target = 1
-    Output: 2
-    Explicação: A soma que é mais próxima do alvo é 2. (-1 + 2 + 1 = 2).
-    """
+    # Ler a questão do arquivo query.txt
+    try:
+        with open("query.txt", "r", encoding="utf-8") as f:
+            sample_question = f.read().strip()
+    except FileNotFoundError:
+        print("Erro: O arquivo 'query.txt' não foi encontrado.")
+        exit(1)
     
     # Gerar e salvar contextos
     result = rag_system.generate_solution(sample_question)
