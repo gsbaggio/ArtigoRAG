@@ -1,0 +1,265 @@
+QUESTÃO ATUAL:
+
+    Dado um array nums contendo n números inteiros, encontre três números em nums de forma que a soma seja a mais próxima possível de um número alvo target.
+    Retorne a soma dos três números.
+    
+    Exemplo:
+    Input: nums = [-1,2,1,-4], target = 1
+    Output: 2
+    Explicação: A soma que é mais próxima do alvo é 2. (-1 + 2 + 1 = 2).
+    
+
+QUESTÕES SIMILARES:
+Questão Similar 1:
+Título: Two Sum
+Categorias: Array Hash Table
+Descrição: Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+You can return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
+Example 2:
+
+Input: nums = [3,2,4], target = 6
+Output: [1,2]
+Example 3:
+
+Input: nums = [3,3], target = 6
+Output: [0,1]
+ 
+
+Constraints:
+
+2 <= nums.length <= 104
+-109 <= nums[i] <= 109
+-109 <= target <= 109
+Only one valid answer exists.
+ 
+
+Follow-up: Can you come up with an algorithm that is less than O(n2) time complexity?
+Solução: class Solution {
+public:
+    vector<int> twoSum(vector<int> &nums, int target) {
+        unordered_map<int, int> hash;
+        for (int i = 0; i < nums.size(); i++) {
+            hash[nums[i]] = i;
+        }
+        for (int i = 0; i < nums.size(); i++) {
+            int complement = target - nums[i];
+            if (hash.find(complement) != hash.end() && hash[complement] != i) {
+                return {i, hash[complement]};
+            }
+        }
+        // If no valid pair is found, return an empty vector
+        return {};
+    }
+};
+Explicação: Intuition
+
+To improve our runtime complexity, we need a more efficient way to check if the complement exists in the array. If the complement exists, we need to get its index. What is the best way to maintain a mapping of each element in the array to its index? A hash table.
+
+We can reduce the lookup time from O(n) to O(1) by trading space for speed. A hash table is well suited for this purpose because it supports fast lookup in near constant time. I say "near" because if a collision occurred, a lookup could degenerate to O(n) time. However, lookup in a hash table should be amortized O(1) time as long as the hash function was chosen carefully.
+
+Algorithm
+
+A simple implementation uses two iterations. In the first iteration, we add each element's value as a key and its index as a value to the hash table. Then, in the second iteration, we check if each element's complement (target−nums[i]) exists in the hash table. If it does exist, we return current element's index and its complement's index. Beware that the complement must not be nums[i] itself!
+Complexity Analysis
+
+Time complexity: O(n).
+We traverse the list containing n elements exactly twice. Since the hash table reduces the lookup time to O(1), the overall time complexity is O(n).
+
+Space complexity: O(n).
+The extra space required depends on the number of items stored in the hash table, which stores exactly n elements.
+
+Questão Similar 2:
+Título: Maximum Unique Subarray Sum After Deletion
+Categorias: Array Hash Table Greedy
+Descrição: You are given an integer array nums.
+
+You are allowed to delete any number of elements from nums without making it empty. After performing the deletions, select a subarray of nums such that:
+
+All elements in the subarray are unique.
+The sum of the elements in the subarray is maximized.
+Return the maximum sum of such a subarray.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,4,5]
+
+Output: 15
+
+Explanation:
+
+Select the entire array without deleting any element to obtain the maximum sum.
+
+Example 2:
+
+Input: nums = [1,1,0,1,1]
+
+Output: 1
+
+Explanation:
+
+Delete the element nums[0] == 1, nums[1] == 1, nums[2] == 0, and nums[3] == 1. Select the entire array [1] to obtain the maximum sum.
+
+Example 3:
+
+Input: nums = [1,2,-1,-2,1,0,-1]
+
+Output: 3
+
+Explanation:
+
+Delete the elements nums[2] == -1 and nums[3] == -2, and select the subarray [2, 1] from [1, 2, 1, 0, -1] to obtain the maximum sum.
+
+ 
+
+Constraints:
+
+1 <= nums.length <= 100
+-100 <= nums[i] <= 100
+Solução: class Solution {
+public:
+    int maxSum(vector<int>& nums) {
+        int sum = 0;
+        set<int> st;
+        int mxNeg = INT_MIN;
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] > 0)
+                st.insert(nums[i]);
+            else
+                mxNeg = max(mxNeg, nums[i]);
+        }
+        for (auto val : st) {
+            sum += val;
+        }
+        if (st.size())
+            return sum;
+        else
+            return mxNeg;
+    }
+};
+Explicação: Intuition
+The problem is asking for the maximum sum of a subarray with unique elements. We need to maximize the sum while ensuring that no duplicates are included in the subarray. This means we will need to track positive numbers and handle cases where no positive numbers exist.
+
+Approach
+Traverse through the array and store positive numbers in a set (which ensures uniqueness).
+Keep track of the maximum negative number in case there are no positive numbers.
+The result will either be the sum of unique positive numbers or the largest negative number.
+Complexity
+Time complexity: (O(n))
+We process each element of the array exactly once, either inserting it into a set or comparing it to the current maximum negative value.
+
+Space complexity: (O(n))
+The space is used by the set to store unique positive numbers, which may be up to (n) elements in the worst case.
+
+Questão Similar 3:
+Título: Split Array With Same Average
+Categorias: Array Math Dynamic Programming Bit Manipulation Bitmask
+Descrição: You are given an integer array nums.
+
+You should move each element of nums into one of the two arrays A and B such that A and B are non-empty, and average(A) == average(B).
+
+Return true if it is possible to achieve that and false otherwise.
+
+Note that for an array arr, average(arr) is the sum of all the elements of arr over the length of arr.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,4,5,6,7,8]
+Output: true
+Explanation: We can split the array into [1,4,5,8] and [2,3,6,7], and both of them have an average of 4.5.
+Example 2:
+
+Input: nums = [3,1]
+Output: false
+ 
+
+Constraints:
+
+1 <= nums.length <= 30
+0 <= nums[i] <= 104
+Solução: class Solution(object):
+    def splitArraySameAverage(self, A):
+        from fractions import Fraction
+        N = len(A)
+        S = sum(A)
+        A = [z - Fraction(S, N) for z in A]
+
+        if N == 1: return False
+
+        #Want zero subset sum
+        left = {A[0]}
+        for i in xrange(1, N/2):
+            left = {z + A[i] for z in left} | left | {A[i]}
+        if 0 in left: return True
+
+        right = {A[-1]}
+        for i in xrange(N/2, N-1):
+            right = {z + A[i] for z in right} | right | {A[i]}
+        if 0 in right: return True
+
+        sleft = sum(A[i] for i in xrange(N/2))
+        sright = sum(A[i] for i in xrange(N/2, N))
+
+        return any(-ha in right and (ha, -ha) != (sleft, sright) for ha in left)
+Explicação: Intuition and Algorithm
+
+First, let's get a sense of the condition that average(B) = average(C), where B, C are defined in the problem statement.
+
+Say A (the input array) has N elements which sum to S, and B (one of the splitting sets) has K elements which sum to X. Then the equation for average(B) = average(C) becomes  
+K
+X
+​
+ = 
+N−K
+S−X
+​
+ . This reduces to X(N−K)=(S−X)K which is  
+K
+X
+​
+ = 
+N
+S
+​
+ . That is, average(B) = average(A).
+
+Now, we could delete average(A) from each element A[i] without changing our choice for B. (A[i] -= mu, where mu = average(A)). This means we just want to choose a set B that sums to 0.
+
+Trying all 2 
+N
+  sets is still too many choices, so we will create sets of sums left, right of the approximately 2 
+N/2
+  choices on the left and on the right separately. (That is, left is a set of sums of every powerset in the first half of A, and right is the set of sums of every powerset in the second half of A). Then, it is true if we find 0 in these powersets, or if two sums in different halves cancel out (-x in right for x in left), except for one minor detail below.
+
+Care must be taken that we do not specify sets that would make the original B or C empty. If sleft = A[0] + A[1] + ... + A[N/2 - 1], and sright = A[N/2] + ... + A[N-1], (where A[i] was transformed to the new A[i] - average(A)) then we cannot choose both (sleft, sright). This is correct because if for example sleft was a sum reached by a strictly smaller powerset than {A[0], A[1], ..., A[N/2 - 1]}, then the difference between these sets would be non-empty and have sum 0.
+Complexity Analysis
+
+Time Complexity: O(2 N/2 ), where N is the length of A.
+
+Space Complexity: O(2 N/2 ).
+
+
+        INSTRUÇÕES:
+        Com base nas questões similares acima, resolva a questão atual.
+        Forneça:
+        1. Uma solução de código completa e eficiente
+        2. Uma explicação detalhada da solução, incluindo:
+           - A intuição por trás da abordagem
+           - A complexidade de tempo e espaço
+           - Considerações importantes sobre o algoritmo
+        3. Possíveis otimizações ou abordagens alternativas
+        
