@@ -1,62 +1,59 @@
-TITLE:Second Minimum Node In a Binary Tree
-DIFFICULTY:Easy
-CATEGORY:Tree Depth-First Search Binary Tree
+TITLE:Longest Uncommon Subsequence II
+DIFFICULTY:Medium
+CATEGORY:Array Hash Table Two Pointers String Sorting
 QUESTION: 
-Given a non-empty special binary tree consisting of nodes with the non-negative value, where each node in this tree has exactly two or zero sub-node. If the node has two sub-nodes, then this node's value is the smaller value among its two sub-nodes. More formally, the property root.val = min(root.left.val, root.right.val) always holds.
+Given an array of strings strs, return the length of the longest uncommon subsequence between them. If the longest uncommon subsequence does not exist, return -1.
 
-Given such a binary tree, you need to output the second minimum value in the set made of all the nodes' value in the whole tree.
+An uncommon subsequence between an array of strings is a string that is a subsequence of one string but not the others.
 
-If no such second minimum value exists, output -1 instead.
+A subsequence of a string s is a string that can be obtained after deleting any number of characters from s.
 
- 
-
+For example, "abc" is a subsequence of "aebdc" because you can delete the underlined characters in "aebdc" to get "abc". Other subsequences of "aebdc" include "aebdc", "aeb", and "" (empty string).
  
 
 Example 1:
 
-Input: root = [2,2,5,null,null,5,7]
-Output: 5
-Explanation: The smallest value is 2, the second smallest value is 5.
+Input: strs = ["aba","cdc","eae"]
+Output: 3
 Example 2:
-Input: root = [2,2,2]
+
+Input: strs = ["aaa","aaa","aa"]
 Output: -1
-Explanation: The smallest value is 2, but there isn't any second smallest value.
  
 
 Constraints:
 
-The number of nodes in the tree is in the range [1, 25].
-1 <= Node.val <= 231 - 1
-root.val == min(root.left.val, root.right.val) for each internal node of the tree.
+2 <= strs.length <= 50
+1 <= strs[i].length <= 10
+strs[i] consists of lowercase English letters.
 SOLUTION:
 class Solution {
-    int min1;
-    long ans = Long.MAX_VALUE;
-
-    public void dfs(TreeNode root) {
-        if (root != null) {
-            if (min1 < root.val && root.val < ans) {
-                ans = root.val;
-            } else if (min1 == root.val) {
-                dfs(root.left);
-                dfs(root.right);
+public:
+    int findLUSlength(vector<string>& strs) {
+        int maxi = -1;
+        // the longest string which is not a subsequence of other is the answer
+        for (int i = 0; i < strs.size(); i++) {
+            bool isSubsequence = false;
+            for (int j = 0; j < strs.size(); j++) {
+                if (i != j && subseq(strs[i], strs[j])) {
+                    isSubsequence = true;
+                    break;
+                }
             }
+            if (!isSubsequence) maxi = max(maxi, (int)strs[i].length());
         }
+        return maxi;
     }
-    public int findSecondMinimumValue(TreeNode root) {
-        min1 = root.val;
-        dfs(root);
-        return ans < Long.MAX_VALUE ? (int) ans : -1;
+
+    bool subseq(string a, string b) {
+    int i = 0;
+    for (char c : b) if (i < a.size() && a[i] == c) i++;
+    return i == a.size();
     }
-}
+};
 EXPLANATION:
-Intuition and Algorithm
-
-Let min1 = root.val. When traversing the tree at some node, node, if node.val > min1, we know all values in the subtree at node are at least node.val, so there cannot be a better candidate for the second minimum in this subtree. Thus, we do not need to search this subtree.
-
-Also, as we only care about the second minimum ans, we do not need to record any values that are larger than our current candidate for the second minimum, so unlike Approach #1, we can skip maintaining a Set of values(uniques) entirely.
-Complexity Analysis
-
-Time Complexity: O(N), where N is the total number of nodes in the given tree. We visit each node at most once.
-
-Space Complexity: O(N). The information stored in ans and min1 is O(1), but our depth-first search may store up to O(h)=O(N) information in the call stack, where h is the height of the tree.
+Insights
+We need to find the longest string which is not a subsequence of other.
+This question is similar to the first version of it where we needed to simply return the longest string if both the strings were not equal.
+Similarly, here we need to find the longest such string from an array of strings, so it is as simple as the first question.
+Go through the strings one by one and check which string isn't a subsequence of another and has the longest length. We can simply pick that string as the LUS.
