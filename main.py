@@ -119,6 +119,8 @@ class ProgrammingQuestionRAG:
            - The intuition behind the approach
            - Time and space complexity
            - Important considerations about the algorithm
+        3. Need to be implemented in Solution class, any language is accepted
+        4. Don't use any external libraries. Don't need to import any libraries.
         """
         
         return context
@@ -198,12 +200,13 @@ class ProgrammingQuestionRAG:
         INSTRUCTIONS:
         Solve the current question.
         Provide:
-        1. A complete and efficient code solution
+        1. A complete and efficient code solution, optimized for both time and space complexity
         2. A detailed explanation of the solution, including:
            - The intuition behind the approach
            - Time and space complexity
            - Important considerations about the algorithm
-        3. Possible optimizations or alternative approaches
+        3. If the language has classes, implement in 'Solution' class, any language is accepted
+        4. Don't use any external libraries. Don't need to import any libraries.
         """
         
         return context
