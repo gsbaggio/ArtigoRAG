@@ -1,335 +1,181 @@
 CURRENT QUESTION:
-Given a string s, return whether s is a valid number.
+You are given an integer array prices where prices[i] is the price of a given stock on the ith day.
 
-For example, all the following are valid numbers: "2", "0089", "-0.1", "+3.14", "4.", "-.9", "2e10", "-90E3", "3e+7", "+6e-1", "53.5e93", "-123.456e789", while the following are not valid numbers: "abc", "1a", "1e", "e3", "99e2.5", "--6", "-+3", "95a54e53".
+On each day, you may decide to buy and/or sell the stock. You can only hold at most one share of the stock at any time. However, you can buy it then immediately sell it on the same day.
 
-Formally, a valid number is defined using one of the following definitions:
-
-An integer number followed by an optional exponent.
-A decimal number followed by an optional exponent.
-An integer number is defined with an optional sign '-' or '+' followed by digits.
-
-A decimal number is defined with an optional sign '-' or '+' followed by one of the following definitions:
-
-Digits followed by a dot '.'.
-Digits followed by a dot '.' followed by digits.
-A dot '.' followed by digits.
-An exponent is defined with an exponent notation 'e' or 'E' followed by an integer number.
-
-The digits are defined as one or more digits.
+Find and return the maximum profit you can achieve.
 
  
 
 Example 1:
 
-Input: s = "0"
-
-Output: true
-
+Input: prices = [7,1,5,3,6,4]
+Output: 7
+Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+Total profit is 4 + 3 = 7.
 Example 2:
 
-Input: s = "e"
-
-Output: false
-
+Input: prices = [1,2,3,4,5]
+Output: 4
+Explanation: Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
+Total profit is 4.
 Example 3:
 
-Input: s = "."
-
-Output: false
-
+Input: prices = [7,6,4,3,1]
+Output: 0
+Explanation: There is no way to make a positive profit, so we never buy the stock to achieve the maximum profit of 0.
  
 
 Constraints:
 
-1 <= s.length <= 20
-s consists of only English letters (both uppercase and lowercase), digits (0-9), plus '+', minus '-', or dot '.'.
+1 <= prices.length <= 3 * 104
+0 <= prices[i] <= 104
 
 SIMILAR QUESTIONS:
-Similar question 1:
-Title: Basic Calculator
-Categorys: Math String Stack Recursion
-Question text: Given a string s representing a valid expression, implement a basic calculator to evaluate it, and return the result of the evaluation.
+Similar question 1 (Similarity score: 0.95):
+Title: Best Time to Buy and Sell Stock III
+Categorys: Array Dynamic Programming
+Question text: You are given an array prices where prices[i] is the price of a given stock on the ith day.
 
-Note: You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as eval().
+Find the maximum profit you can achieve. You may complete at most two transactions.
+
+Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
 
  
 
 Example 1:
 
-Input: s = "1 + 1"
-Output: 2
+Input: prices = [3,3,5,0,0,3,1,4]
+Output: 6
+Explanation: Buy on day 4 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
+Then buy on day 7 (price = 1) and sell on day 8 (price = 4), profit = 4-1 = 3.
 Example 2:
 
-Input: s = " 2-1 + 2 "
-Output: 3
+Input: prices = [1,2,3,4,5]
+Output: 4
+Explanation: Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
+Note that you cannot buy on day 1, buy on day 2 and sell them later, as you are engaging multiple transactions at the same time. You must sell before buying again.
 Example 3:
 
-Input: s = "(1+(4+5+2)-3)+(6+8)"
-Output: 23
+Input: prices = [7,6,4,3,1]
+Output: 0
+Explanation: In this case, no transaction is done, i.e. max profit = 0.
  
 
 Constraints:
 
-1 <= s.length <= 3 * 105
-s consists of digits, '+', '-', '(', ')', and ' '.
-s represents a valid expression.
-'+' is not used as a unary operation (i.e., "+1" and "+(2 + 3)" is invalid).
-'-' could be used as a unary operation (i.e., "-1" and "-(2 + 3)" is valid).
-There will be no two consecutive operators in the input.
-Every number and running calculation will fit in a signed 32-bit integer.
-Solution: public int calculate(String s) {
-    Stack<Integer> stack = new Stack<Integer>();
-    int result = 0;
-    int number = 0;
-    int sign = 1;
-    for(int i = 0; i < s.length(); i++){
-        char c = s.charAt(i);
-        if(Character.isDigit(c)){
-            number = 10 * number + (int)(c - '0');
-        }else if(c == '+'){
-            result += sign * number;
-            number = 0;
-            sign = 1;
-        }else if(c == '-'){
-            result += sign * number;
-            number = 0;
-            sign = -1;
-        }else if(c == '('){
-            //we push the result first, then sign;
-            stack.push(result);
-            stack.push(sign);
-            //reset the sign and result for the value in the parenthesis
-            sign = 1;   
-            result = 0;
-        }else if(c == ')'){
-            result += sign * number;  
-            number = 0;
-            result *= stack.pop();    //stack.pop() is the sign before the parenthesis
-            result += stack.pop();   //stack.pop() now is the result calculated before the parenthesis
-            
+1 <= prices.length <= 105
+0 <= prices[i] <= 105
+Solution: public int MaxProfitDpCompactFinal(int[] prices)  {
+            int buy1 = int.MaxValue, buy2 = int.MaxValue;
+            int sell1 = 0, sell2 = 0;
+
+            for (int i = 0; i < prices.Length; i++) {
+                buy1 = Math.Min(buy1, prices[i]);
+                sell1 = Math.Max(sell1, prices[i] - buy1);
+                buy2 = Math.Min(buy2, prices[i] - sell1);
+                sell2 = Math.Max(sell2, prices[i] - buy2);
+            }
+
+            return sell2;
         }
-    }
-    if(number != 0) result += sign * number;
-    return result;
-}
-Explanation: Simple iterative solution by identifying characters one by one. One important thing is that the input is valid, which means the parentheses are always paired and in order.
-Only 5 possible input we need to pay attention:
+Explanation: It's not difficult to get the DP recursive formula:
 
-digit: it should be one digit from the current number
+dp[k, i] = max(dp[k, i-1], prices[i] - prices[j] + dp[k-1, j-1]), j=[0..i-1]
+For k transactions, on i-th day,
+if we don't trade then the profit is same as previous day dp[k, i-1];
+and if we bought the share on j-th day where j=[0..i-1], then sell the share on i-th day then the profit is prices[i] - prices[j] + dp[k-1, j-1] .
+Actually j can be i as well. When j is i, the one more extra item prices[i] - prices[j] + dp[k-1, j] = dp[k-1, i] looks like we just lose one chance of transaction.
 
-'+': number is over, we can add the previous number and start a new number
+I see someone else use the formula dp[k, i] = max(dp[k, i-1], prices[i] - prices[j] + dp[k-1, j]), where the last one is dp[k-1, j] instead of dp[k-1, j-1]. It's not the direct sense, as if the share was bought on j-th day, then the total profit of previous transactions should be done on (j-1)th day. However, the result based on that formula is also correct, because if the share was sold on j-th day and then bought again, it is the same if we didn't trade on that day.
 
-'-': same as above
+So the straigtforward implementation is:
 
-'(': push the previous result and the sign into the stack, set result to 0, just calculate the new result within the parenthesis.
+Similar question 2 (Similarity score: 0.93):
+Title: Best Time to Buy and Sell Stock
+Categorys: Array Dynamic Programming
+Question text: You are given an array prices where prices[i] is the price of a given stock on the ith day.
 
-')': pop out the top two numbers from stack, first one is the sign before this pair of parenthesis, second is the temporary result before this pair of parenthesis. We add them together.
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
 
-Finally if there is only one number, from the above solution, we haven't add the number to the result, so we do a check see if the number is zero.
-
-Similar question 2:
-Title: String to Integer (atoi)
-Categorys: String
-Question text: Implement the myAtoi(string s) function, which converts a string to a 32-bit signed integer.
-
-The algorithm for myAtoi(string s) is as follows:
-
-Whitespace: Ignore any leading whitespace (" ").
-Signedness: Determine the sign by checking if the next character is '-' or '+', assuming positivity if neither present.
-Conversion: Read the integer by skipping leading zeros until a non-digit character is encountered or the end of the string is reached. If no digits were read, then the result is 0.
-Rounding: If the integer is out of the 32-bit signed integer range [-231, 231 - 1], then round the integer to remain in the range. Specifically, integers less than -231 should be rounded to -231, and integers greater than 231 - 1 should be rounded to 231 - 1.
-Return the integer as the final result.
+Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
 
  
 
 Example 1:
 
-Input: s = "42"
-
-Output: 42
-
-Explanation:
-
-The underlined characters are what is read in and the caret is the current reader position.
-Step 1: "42" (no characters read because there is no leading whitespace)
-         ^
-Step 2: "42" (no characters read because there is neither a '-' nor '+')
-         ^
-Step 3: "42" ("42" is read in)
-           ^
+Input: prices = [7,1,5,3,6,4]
+Output: 5
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
 Example 2:
 
-Input: s = " -042"
-
-Output: -42
-
-Explanation:
-
-Step 1: "   -042" (leading whitespace is read and ignored)
-            ^
-Step 2: "   -042" ('-' is read, so the result should be negative)
-             ^
-Step 3: "   -042" ("042" is read in, leading zeros ignored in the result)
-               ^
-Example 3:
-
-Input: s = "1337c0d3"
-
-Output: 1337
-
-Explanation:
-
-Step 1: "1337c0d3" (no characters read because there is no leading whitespace)
-         ^
-Step 2: "1337c0d3" (no characters read because there is neither a '-' nor '+')
-         ^
-Step 3: "1337c0d3" ("1337" is read in; reading stops because the next character is a non-digit)
-             ^
-Example 4:
-
-Input: s = "0-1"
-
+Input: prices = [7,6,4,3,1]
 Output: 0
-
-Explanation:
-
-Step 1: "0-1" (no characters read because there is no leading whitespace)
-         ^
-Step 2: "0-1" (no characters read because there is neither a '-' nor '+')
-         ^
-Step 3: "0-1" ("0" is read in; reading stops because the next character is a non-digit)
-          ^
-Example 5:
-
-Input: s = "words and 987"
-
-Output: 0
-
-Explanation:
-
-Reading stops at the first non-digit character 'w'.
-
+Explanation: In this case, no transactions are done and the max profit = 0.
  
 
 Constraints:
 
-0 <= s.length <= 200
-s consists of English letters (lower-case and upper-case), digits (0-9), ' ', '+', '-', and '.'.
-Solution: #include <iostream>
-#include <string>
-using namespace std;
-
-class Solution {
-public:
-    int myAtoi(string s) {
-        int i = 0, sign = 1;
-        long res = 0; // Using long to handle overflow cases
-
-        // Trim leading spaces
-        while (i < s.size() && s[i] == ' ') i++;
-        if (i == s.size()) return 0;
-
-        // Check for sign
-        if (s[i] == '-') { sign = -1; i++; }
-        else if (s[i] == '+') i++;
-
-        // Process numerical characters
-        while (i < s.size() && isdigit(s[i])) {
-            res = res * 10 + (s[i] - '0');
-
-            // Handle overflow
-            if (sign * res > INT_MAX) return INT_MAX;
-            if (sign * res < INT_MIN) return INT_MIN;
-
-            i++;
-        }
-
-        return (int)(sign * res);
-    }
-};
-Explanation: Intuition
-The problem requires converting a given string into an integer while following specific rules. Key challenges include handling whitespace, signs (+ and -), non-numeric characters, and integer overflow.
-
-A simple string parsing approach can be used:
-
-Ignore leading whitespace.
-Determine the sign (+ or -).
-Convert valid numeric characters to an integer.
-Stop conversion when a non-numeric character appears.
-Handle integer overflow by capping the value at INT_MAX or INT_MIN.
-Approach
-Trim leading spaces using trim().
-Check for sign at the beginning (+ or -).
-Iterate through characters while they are numeric:
-Convert each character to a digit.
-Multiply the existing result by 10 and add the new digit.
-Check for integer overflow conditions.
-Return the final computed integer with the correct sign.
-This approach ensures we efficiently extract and convert the number in O(n) time complexity.
-
-Complexity
-Time Complexity: O(n) (where n is the length of the string)
-Space Complexity: O(1) (constant extra space used)
-
-Similar question 3:
-Title: Base 7
-Categorys: Math
-Question text: Given an integer num, return a string of its base 7 representation.
-
- 
-
-Example 1:
-
-Input: num = 100
-Output: "202"
-Example 2:
-
-Input: num = -7
-Output: "-10"
- 
-
-Constraints:
-
--107 <= num <= 107
+1 <= prices.length <= 105
+0 <= prices[i] <= 104
 Solution: class Solution {
 public:
-    string convertToBase7(int num) {
-        if (num == 0) return "0";
-        string res;
-        bool neg = num < 0;
-        num = abs(num);
-        while (num > 0) {
-            res = to_string(num % 7) + res;
-            num /= 7;
+    int maxProfit(std::vector<int>& prices) {
+        int buy = prices[0];
+        int profit = 0;
+        for (int i = 1; i < prices.size(); i++) {
+            if (prices[i] < buy) {
+                buy = prices[i];
+            } else if (prices[i] - buy > profit) {
+                profit = prices[i] - buy;
+            }
         }
-        return neg ? "-" + res : res;
+        return profit;
     }
 };
 Explanation: Intuition
-The simplest way to convert a number to base 7 is by leveraging built-in conversion functions. Many languages have direct methods to convert a number to a different base.
-
+The problem aims to find the maximum profit that can be obtained by buying and selling a stock. The given solution seems to follow a simple approach of iterating through the prices, keeping track of the minimum buying price, and updating the profit whenever a higher selling price is encountered.
 Approach
-Use a built-in function (if available) to convert num to a base 7 string.
+Initialize variables buy with the first element of the prices array and profit as 0.
+Iterate through the prices starting from the second element.
+Update the buy variable if the current price is lower than the current buying price.
+Update the profit if the difference between the current price and the buying price is greater than the current profit.
+Return the final profit.
+Kadane's Algorithm
+Kadane's Algorithm is a dynamic programming technique used to find the maximum subarray sum in an array of numbers. The algorithm maintains two variables: max_current represents the maximum sum ending at the current position, and max_global represents the maximum subarray sum encountered so far. At each iteration, it updates max_current to include the current element or start a new subarray if the current element is larger than the accumulated sum. The max_global is updated if max_current surpasses its value.
 
-If not available, manually implement base conversion by repeatedly dividing the number by 7 and collecting remainders.
+Relating with the Approach
+In the provided approach for finding the maximum profit in stock prices, the algorithm can be seen as a variation of Kadane's Algorithm. Instead of finding the maximum subarray sum directly, it focuses on finding the maximum positive difference between consecutive elements (prices) in the array.
 
+Here's how the approach relates to Kadane's Algorithm:
+
+Initialization:
+
+In Kadane's Algorithm, max_current and max_global are initialized to the first element of the array.
+In the stock profit approach, buy is initialized with the first element of the prices array, and profit is initialized to 0.
+Iteration:
+
+Kadane's Algorithm iterates through the array, updating max_current based on the current element's value and deciding whether to start a new subarray.
+The stock profit approach iterates through the prices array, updating buy when a lower price is encountered and treating the difference between the current price and buy as a potential profit.
+Comparison and Update:
+
+Kadane's Algorithm compares and updates max_current and max_global at each iteration.
+The stock profit approach compares and updates profit whenever a positive difference between the current price and buy exceeds the current profit.
 Complexity
-Time complexity: O(log n)
-Since the number is divided by 7 in each step
-
-Space complexity: O(1)
-Constant space usage
+Time complexity: O(n), where n is the length of the prices array. The algorithm iterates through the array once.
+Space complexity: O(1), as only a constant amount of extra space is used.
 
 
         INSTRUCTIONS:
         Solve the current question.
         Provide:
-        1. A complete and efficient code solution, optimized for both time and space complexity
+        1. A complete and efficient code solution, optimized for both time and space complexity.
         2. A detailed explanation of the solution, including:
-           - The intuition behind the approach
-           - Time and space complexity
-           - Important considerations about the algorithm
-        3. If the language has classes, implement in 'Solution' class. Any language is accepted
-        4. Don't use any external libraries. Don't need to import any libraries.
-        
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. Use the similar questions as references to improve the solution, but only if they are relevant.
+        5. Don't use any external libraries. Don't need to import any libraries.

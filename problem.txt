@@ -1,99 +1,32 @@
-TITLE:Find Closest Node to Given Two Nodes
-DIFFICULTY:Medium
-CATEGORY:Depth-First Search Graph
-QUESTION: 
-You are given a directed graph of n nodes numbered from 0 to n - 1, where each node has at most one outgoing edge.
+You are given an integer array prices where prices[i] is the price of a given stock on the ith day.
 
-The graph is represented with a given 0-indexed array edges of size n, indicating that there is a directed edge from node i to node edges[i]. If there is no outgoing edge from i, then edges[i] == -1.
+On each day, you may decide to buy and/or sell the stock. You can only hold at most one share of the stock at any time. However, you can buy it then immediately sell it on the same day.
 
-You are also given two integers node1 and node2.
-
-Return the index of the node that can be reached from both node1 and node2, such that the maximum between the distance from node1 to that node, and from node2 to that node is minimized. If there are multiple answers, return the node with the smallest index, and if no possible answer exists, return -1.
-
-Note that edges may contain cycles.
+Find and return the maximum profit you can achieve.
 
  
 
 Example 1:
-Input: edges = [2,2,3,-1], node1 = 0, node2 = 1
-Output: 2
-Explanation: The distance from node 0 to node 2 is 1, and the distance from node 1 to node 2 is 1.
-The maximum of those two distances is 1. It can be proven that we cannot get a node with a smaller maximum distance than 1, so we return node 2.
+
+Input: prices = [7,1,5,3,6,4]
+Output: 7
+Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+Total profit is 4 + 3 = 7.
 Example 2:
-Input: edges = [1,2,-1], node1 = 0, node2 = 2
-Output: 2
-Explanation: The distance from node 0 to node 2 is 2, and the distance from node 2 to itself is 0.
-The maximum of those two distances is 2. It can be proven that we cannot get a node with a smaller maximum distance than 2, so we return node 2.
+
+Input: prices = [1,2,3,4,5]
+Output: 4
+Explanation: Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
+Total profit is 4.
+Example 3:
+
+Input: prices = [7,6,4,3,1]
+Output: 0
+Explanation: There is no way to make a positive profit, so we never buy the stock to achieve the maximum profit of 0.
  
 
 Constraints:
 
-n == edges.length
-2 <= n <= 105
--1 <= edges[i] < n
-edges[i] != i
-0 <= node1, node2 < n
-SOLUTION:
-class Solution {
-public:
-    void bfs(int startNode, vector<int>& edges, vector<int>& dist) {
-        int n = edges.size();
-        queue<int> q;
-        q.push(startNode);
-
-        vector<bool> visit(n);
-        dist[startNode] = 0;
-
-        while (!q.empty()) {
-            int node = q.front();
-            q.pop();
-
-            if (visit[node]) {
-                continue;
-            }
-
-            visit[node] = true;
-            int neighbor = edges[node];
-            if (neighbor != -1 && !visit[neighbor]) {
-                dist[neighbor] = 1 + dist[node];
-                q.push(neighbor);
-            }
-        }
-    }
-
-    int closestMeetingNode(vector<int>& edges, int node1, int node2) {
-        int n = edges.size();
-        vector<int> dist1(n, numeric_limits<int>::max()), dist2(n, numeric_limits<int>::max());
-
-        bfs(node1, edges, dist1);
-        bfs(node2, edges, dist2);
-
-        int minDistNode = -1, minDistTillNow = numeric_limits<int>::max();
-        for (int currNode = 0; currNode < n; currNode++) {
-            if (minDistTillNow > max(dist1[currNode], dist2[currNode])) {
-                minDistNode = currNode;
-                minDistTillNow = max(dist1[currNode], dist2[currNode]);
-            }
-        }
-
-        return minDistNode;
-    }
-};
-EXPLANATION:
-Algorithm
-Initialize two arrays, dist1 and dist2 storing the shortest distances from node1 and node2 to all the nodes. Initialize them with large values.
-Start a BFS traversal.
-We use a function bfs to perform the traversal. It requires startNode, edges, dist as the parameters, where dist is the array that stores the shortest distances from startNode to all the nodes.
-Start with node1, edges, dist1.
-Initialize a queue with startNode in the queue.
-Initialize an array visit, storing a boolean for each node to indicate if a node is visited. Initialize it with false for all the nodes.
-Then, while the queue is not empty:
-Dequeue the first node from the queue. If it has not been visited, mark it as visited. Otherwise, if it has been visited, repeat step 4.
-Check if node has an outgoing edge. If there is no outgoing edge, we don't do anything.
-If the node has an outgoing edge to another node called neighbor, and neighbor has not yet been visited, update the dist[neighbor] to dist[neighbor] = 1 + dist[node] and push the neighbor into the queue.
-Perform another BFS traversal with node2, edges, dist2 to get the shortest distances from node2 to every other node in dist2.
-Initialize two variables: minDistNode = -1, which is the answer to our problem, and minDistTillNow, which is the maximum between the distances from node1 to minDistNode and from node2 to minDistNode.
-Run a loop over all the nodes and check each node called currNode.
-If minDistTillNow > max(dist1[currNode], dist2[currNode]), update minDistTillNow to minDistTillNow = max(dist1[currNode], dist2[currNode]) and update minDistNode to minDistNode = currNode.
-Otherwise, we do not update anything.
-Return minDistNode.
+1 <= prices.length <= 3 * 104
+0 <= prices[i] <= 104

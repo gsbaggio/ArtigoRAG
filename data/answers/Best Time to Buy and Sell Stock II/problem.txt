@@ -1,4 +1,3 @@
-CURRENT QUESTION:
 You are given an integer array prices where prices[i] is the price of a given stock on the ith day.
 
 On each day, you may decide to buy and/or sell the stock. You can only hold at most one share of the stock at any time. However, you can buy it then immediately sell it on the same day.
@@ -31,16 +30,3 @@ Constraints:
 
 1 <= prices.length <= 3 * 104
 0 <= prices[i] <= 104
-
-
-        INSTRUCTIONS:
-        Solve the current question.
-        Provide:
-        1. A complete and efficient code solution, optimized for both time and space complexity.
-        2. A detailed explanation of the solution, including:
-           - The intuition behind the approach;
-           - Time and space complexity;
-           - Important considerations about the algorithm.
-        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-        4. Don't use any external libraries. Don't need to import any libraries.
-        
