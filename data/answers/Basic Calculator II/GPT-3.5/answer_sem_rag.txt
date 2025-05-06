@@ -1,0 +1,38 @@
+class Solution:
+    def calculate(self, s: str) -> int:
+        stack = []
+        num = 0
+        sign = '+'
+
+        for i in range(len(s)):
+            if s[i].isdigit():
+                num = num * 10 + int(s[i])
+
+            if (not s[i].isdigit() and s[i] != ' ') or i == len(s) - 1:
+                if sign == '+':
+                    stack.append(num)
+                elif sign == '-':
+                    stack.append(-num)
+                elif sign == '*':
+                    stack.append(stack.pop() * num)
+                elif sign == '/':
+                    stack.append(int(stack.pop() / num))
+
+                sign = s[i]
+                num = 0
+
+        return sum(stack)
+
+Explanation:
+
+We iterate through the input string s character by character.
+We maintain a stack to keep track of the intermediate results.
+We use num to accumulate the digits of the current number being processed and sign to keep track of the current operator.
+When we encounter a digit, we update num. When we encounter an operator or reach the end of the string, we perform the operation based on the sign and the accumulated num.
+At the end, we sum up all the elements in the stack to get the final result.
+Time Complexity:
+
+The time complexity of this approach is O(N), where N is the length of the input string s.
+Space Complexity:
+
+The space complexity is also O(N) in the worst-case scenario, where N is the length of the input string s.

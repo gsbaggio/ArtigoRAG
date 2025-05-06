@@ -1,0 +1,30 @@
+class Solution:
+    def calculate(self, s: str) -> int:
+        # Initialize variables
+        stack = []
+        current_number = 0
+        operation = '+'  # Default operation is addition
+        
+        # Iterate through the string
+        for i, char in enumerate(s):
+            if char.isdigit():
+                current_number = current_number * 10 + int(char)  # Build the current number
+            
+            # If the character is an operator or the last character in the string
+            if char in "+-*/" or i == len(s) - 1:
+                if operation == '+':
+                    stack.append(current_number)
+                elif operation == '-':
+                    stack.append(-current_number)
+                elif operation == '*':
+                    stack.append(stack.pop() * current_number)
+                elif operation == '/':
+                    # Perform integer division truncating toward zero
+                    stack.append(int(stack.pop() / current_number))
+                
+                # Update operation and reset current_number
+                operation = char
+                current_number = 0
+        
+        # Return the sum of the stack
+        return sum(stack)

@@ -1,0 +1,142 @@
+class Solution:
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        # Create a map of variable values
+        eval_map = dict(zip(evalvars, evalints))
+        
+        # Define a class to represent terms
+        class Term:
+            def __init__(self, coefficient=0, variables=None):
+                self.coefficient = coefficient
+                self.variables = [] if variables is None else sorted(variables)
+            
+            def __mul__(self, other):
+                return Term(
+                    self.coefficient * other.coefficient,
+                    self.variables + other.variables
+                )
+            
+            def __eq__(self, other):
+                return (self.variables == other.variables)
+            
+            def __hash__(self):
+                return hash(tuple(self.variables))
+            
+            def __str__(self):
+                if not self.variables:
+                    return str(self.coefficient)
+                return str(self.coefficient) + "*" + "*".join(self.variables)
+        
+        # Define a class to represent expressions (collection of terms)
+        class Expression:
+            def __init__(self, terms=None):
+                self.terms = {} if terms is None else terms
+            
+            def __add__(self, other):
+                result = Expression(self.terms.copy())
+                for term, coef in other.terms.items():
+                    if term in result.terms:
+                        result.terms[term] += coef
+                        if result.terms[term] == 0:
+                            del result.terms[term]
+                    else:
+                        result.terms[term] = coef
+                return result
+            
+            def __sub__(self, other):
+                result = Expression(self.terms.copy())
+                for term, coef in other.terms.items():
+                    if term in result.terms:
+                        result.terms[term] -= coef
+                        if result.terms[term] == 0:
+                            del result.terms[term]
+                    else:
+                        result.terms[term] = -coef
+                return result
+            
+            def __mul__(self, other):
+                result = Expression()
+                for term1, coef1 in self.terms.items():
+                    for term2, coef2 in other.terms.items():
+                        new_term = term1 * term2
+                        if new_term in result.terms:
+                            result.terms[new_term] += coef1 * coef2
+                        else:
+                            result.terms[new_term] = coef1 * coef2
+                        if result.terms[new_term] == 0:
+                            del result.terms[new_term]
+                return result
+            
+            @staticmethod
+            def parse_expr(expr, i=0):
+                result = Expression()
+                curr_term = Expression({Term(): 1})  # Representing 1
+                op = '+'
+                
+                while i < len(expr):
+                    if expr[i] == ' ':
+                        i += 1
+                        continue
+                    
+                    if expr[i] in '+-*':
+                        op = expr[i]
+                        i += 1
+                        continue
+                    
+                    if expr[i] == '(':
+                        next_term, i = Expression.parse_expr(expr, i + 1)
+                    else:
+                        next_term, i = Expression.parse_atom(expr, i)
+                    
+                    if op == '+':
+                        curr_term = curr_term + next_term
+                    elif op == '-':
+                        curr_term = curr_term - next_term
+                    elif op == '*':
+                        curr_term = curr_term * next_term
+                    
+                    if i < len(expr) and expr[i] == ')':
+                        return curr_term, i + 1
+                
+                return curr_term, i
+            
+            @staticmethod
+            def parse_atom(expr, i):
+                j = i
+                # Parse a number or a variable
+                while j < len(expr) and (expr[j].isalnum()):
+                    j += 1
+                
+                if i == j:
+                    return Expression(), j
+                
+                token = expr[i:j]
+                if token.isdigit():
+                    return Expression({Term(): int(token)}), j
+                elif token in eval_map:
+                    return Expression({Term(): eval_map[token]}), j
+                else:
+                    return Expression({Term(1, [token]): 1}), j
+            
+            def to_list(self):
+                # Sort terms by degree (number of variables) and then lexicographically
+                sorted_terms = []
+                for term, coef in self.terms.items():
+                    if coef != 0:
+                        sorted_terms.append((term, coef))
+                
+                sorted_terms.sort(key=lambda x: (-len(x[0].variables), x[0].variables))
+                
+                result = []
+                for term, coef in sorted_terms:
+                    if not term.variables:
+                        result.append(str(coef))
+                    else:
+                        result.append(f"{coef}*{'*'.join(term.variables)}")
+                
+                return result
+        
+        # Parse the expression
+        expr, _ = Expression.parse_expr(expression)
+        
+        # Convert to the required format
+        return expr.to_list()

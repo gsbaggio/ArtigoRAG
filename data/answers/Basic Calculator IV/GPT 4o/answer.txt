@@ -1,0 +1,77 @@
+class Solution:
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        from collections import defaultdict
+        import re
+
+        # Map variables to their values
+        eval_map = dict(zip(evalvars, evalints))
+
+        # Parse the expression into tokens
+        def tokenize(expression):
+            return re.findall(r'\w+|\+|\-|\*|\(|\)', expression)
+
+        # Evaluate the expression recursively
+        def evaluate(tokens):
+            stack = []
+            operand = defaultdict(int)  # To store terms as {variables: coefficient}
+            operator = '+'
+
+            def apply_operator(op, left, right):
+                result = defaultdict(int)
+                if op == '+':
+                    for k, v in left.items():
+                        result[k] += v
+                    for k, v in right.items():
+                        result[k] += v
+                elif op == '-':
+                    for k, v in left.items():
+                        result[k] += v
+                    for k, v in right.items():
+                        result[k] -= v
+                elif op == '*':
+                    for k1, v1 in left.items():
+                        for k2, v2 in right.items():
+                            new_key = tuple(sorted(k1 + k2))
+                            result[new_key] += v1 * v2
+                return result
+
+            while tokens:
+                token = tokens.pop(0)
+                if token == '(':
+                    # Evaluate the sub-expression
+                    sub_expr = evaluate(tokens)
+                    operand = apply_operator(operator, operand, sub_expr)
+                elif token == ')':
+                    break
+                elif token in '+-*':
+                    operator = token
+                else:
+                    # Parse the token as a number, variable, or evaluated variable
+                    if token.isdigit():
+                        current = {(): int(token)}
+                    elif token in eval_map:
+                        current = {(): eval_map[token]}
+                    else:
+                        current = {(token,): 1}
+                    operand = apply_operator(operator, operand, current)
+
+            return operand
+
+        # Tokenize the input expression
+        tokens = tokenize(expression)
+        result = evaluate(tokens)
+
+        # Format the result
+        def format_result(terms):
+            sorted_terms = sorted(terms.items(), key=lambda x: (-len(x[0]), x[0]))
+            formatted = []
+            for vars, coeff in sorted_terms:
+                if coeff == 0:
+                    continue
+                term = f"{coeff}"
+                if vars:
+                    term += "*" + "*".join(vars)
+                formatted.append(term)
+            return formatted
+
+        return format_result(result)

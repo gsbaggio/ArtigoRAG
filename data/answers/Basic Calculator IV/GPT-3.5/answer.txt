@@ -1,0 +1,70 @@
+from collections import defaultdict
+
+class Solution:
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        def combine(poly1, poly2, sign):
+            for monomial, coeff in poly2.items():
+                poly1[monomial] += sign * coeff
+
+        def parse(s):
+            s = s.replace(' ', '')
+            if s[0] != '(':
+                if s[0].isdigit() or s[0] == '-':
+                    return {(): int(s)}
+                return {(s,): 1}
+
+            bal = 0
+            for j in range(len(s)):
+                if s[j] == '(':
+                    bal += 1
+                if s[j] == ')':
+                    bal -= 1
+                if bal == 0:
+                    break
+
+            terms = []
+            start = 0
+            bal = 0
+            for i in range(len(s)):
+                if s[i] == '(':
+                    bal += 1
+                if s[i] == ')':
+                    bal -= 1
+                if bal == 0 and s[i] == ' ':
+                    terms.append(s[start:i])
+                    start = i + 1
+
+            return parse(terms[0]), parse(terms[2][1:])
+
+        def evaluate(parsed, lookup):
+            if isinstance(parsed, int):
+                return parsed
+
+            ans = defaultdict(int)
+            if isinstance(parsed, tuple):
+                if parsed in lookup:
+                    return {(lookup[parsed],): 1}
+                return parsed
+
+            left = evaluate(parsed[0], lookup)
+            right = evaluate(parsed[1], lookup)
+
+            for p1, v1 in left.items():
+                for p2, v2 in right.items():
+                    comb = list(p1 + p2)
+                    comb.sort()
+                    ans[tuple(comb)] += v1 * v2
+
+            return ans
+
+        lookup = dict(zip(evalvars, evalints))
+        parsed = parse(expression)
+
+        result = defaultdict(int)
+        for monomial, coeff in evaluate(parsed, lookup).items():
+            if coeff != 0:
+                result[monomial] += coeff
+
+        sorted_result = sorted(result.items(), key=lambda x: (-len(x[0]), x[0]))
+
+        return ["*".join([str(v)] + list(k)) for k, v in sorted_result if v]

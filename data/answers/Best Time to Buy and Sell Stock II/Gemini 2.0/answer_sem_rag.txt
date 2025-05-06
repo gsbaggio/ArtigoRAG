@@ -1,0 +1,22 @@
+class Solution:
+    def maxProfit(self, prices: list[int]) -> int:
+        """
+        Calculates the maximum profit that can be achieved by buying and selling a stock
+        with the possibility of multiple transactions.
+
+        The approach is to iterate through the prices and accumulate profit whenever the
+        current price is higher than the previous day's price. This is based on the
+        intuition that we should buy at every local minimum and sell at every local maximum.
+
+        Time Complexity: O(n), where n is the number of days (length of prices array).
+        Space Complexity: O(1), as it uses only a constant amount of extra space.
+
+        Important Considerations:
+        - The algorithm assumes that you can buy and sell on the same day.
+        - It efficiently calculates the maximum profit without needing to store intermediate states.
+        """
+        profit = 0
+        for i in range(1, len(prices)):
+            if prices[i] > prices[i - 1]:
+                profit += prices[i] - prices[i - 1]
+        return profit

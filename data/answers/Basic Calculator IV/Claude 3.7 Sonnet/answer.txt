@@ -1,0 +1,122 @@
+class Solution:
+    def basicCalculatorIV(self, expression: str, evalvars: list[str], evalints: list[int]) -> list[str]:
+        # Create evaluation map
+        eval_map = dict(zip(evalvars, evalints))
+        
+        # Polynomial represented as a dictionary: {(var1, var2, ...): coefficient}
+        # For example: {'a': 2, 'b': 3, ('a', 'b'): 5} represents 2*a + 3*b + 5*a*b
+        
+        # Parse and evaluate expression
+        def parse(expr):
+            # Tokenize the expression
+            expr = expr.replace('(', ' ( ').replace(')', ' ) ').replace('+', ' + ').replace('-', ' - ').replace('*', ' * ')
+            tokens = expr.split()
+            
+            # Parse tokens using a recursive descent parser
+            i, result = parse_expr(tokens, 0)
+            return result
+        
+        def parse_expr(tokens, i):
+            values = []
+            ops = []
+            
+            def apply_op():
+                if not ops:
+                    return
+                op = ops.pop()
+                right = values.pop()
+                left = values.pop()
+                
+                if op == '+':
+                    values.append(add(left, right))
+                elif op == '-':
+                    values.append(subtract(left, right))
+                elif op == '*':
+                    values.append(multiply(left, right))
+            
+            while i < len(tokens):
+                token = tokens[i]
+                i += 1
+                
+                if token == '(':
+                    # Recursively parse the subexpression
+                    i, subexpr = parse_expr(tokens, i)
+                    values.append(subexpr)
+                elif token == ')':
+                    # End of current expression
+                    break
+                elif token in '+-*':
+                    # Apply all operators with higher precedence
+                    while ops and ((token in '+-' and ops[-1] in '+-*') or (token == '*' and ops[-1] == '*')):
+                        apply_op()
+                    ops.append(token)
+                else:
+                    # Variable or number
+                    values.append(to_poly(token))
+            
+            # Apply any remaining operators
+            while ops:
+                apply_op()
+            
+            return i, values[0] if values else {}
+        
+        def to_poly(token):
+            # Convert a token to a polynomial
+            if token.isdigit():
+                return {(): int(token)}
+            elif token in eval_map:
+                return {(): eval_map[token]}
+            else:
+                return {(token,): 1}
+        
+        # Polynomial operations
+        def add(p1, p2):
+            result = p1.copy()
+            for term, coef in p2.items():
+                result[term] = result.get(term, 0) + coef
+            return {k: v for k, v in result.items() if v != 0}
+        
+        def subtract(p1, p2):
+            result = p1.copy()
+            for term, coef in p2.items():
+                result[term] = result.get(term, 0) - coef
+            return {k: v for k, v in result.items() if v != 0}
+        
+        def multiply(p1, p2):
+            result = {}
+            for term1, coef1 in p1.items():
+                for term2, coef2 in p2.items():
+                    # Combine variables and sort them
+                    combined = tuple(sorted(term1 + term2))
+                    result[combined] = result.get(combined, 0) + coef1 * coef2
+            return {k: v for k, v in result.items() if v != 0}
+        
+        # Format result according to requirements
+        def format_result(poly):
+            if not poly:
+                return []
+                
+            terms = []
+            for term, coef in poly.items():
+                if coef == 0:
+                    continue
+                
+                if not term:  # Constant term
+                    terms.append(str(coef))
+                else:
+                    terms.append(f"{coef}*{'*'.join(term)}")
+            
+            # Sort by degree (descending) then lexicographically
+            def sort_key(term):
+                if '*' not in term:
+                    return (0, term)
+                
+                coef, rest = term.split('*', 1)
+                vars_count = rest.count('*') + 1
+                return (-vars_count, rest)
+            
+            return sorted(terms, key=sort_key)
+        
+        # Main execution
+        result_poly = parse(expression)
+        return format_result(result_poly)

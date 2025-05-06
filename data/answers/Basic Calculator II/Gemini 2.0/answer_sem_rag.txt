@@ -1,0 +1,68 @@
+class Solution:
+    def calculate(self, s: str) -> int:
+        """
+        Evaluates a string expression and returns its value.
+
+        The integer division should truncate toward zero.
+        You may assume that the given expression is always valid.
+        All intermediate results will be in the range of [-231, 231 - 1].
+
+        Example:
+        s = "3+2*2"
+        Output: 7
+
+        s = " 3/2 "
+        Output: 1
+
+        s = " 3+5 / 2 "
+        Output: 5
+
+        Constraints:
+        1 <= s.length <= 3 * 105
+        s consists of integers and operators ('+', '-', '*', '/') separated by some number of spaces.
+        s represents a valid expression.
+        All the integers in the expression are non-negative integers in the range [0, 231 - 1].
+        The answer is guaranteed to fit in a 32-bit integer.
+        """
+        stack = []
+        num = 0
+        op = '+'
+        s += '+0'  # Append a dummy operator to process the last number
+        for char in s:
+            if char.isdigit():
+                num = num * 10 + int(char)
+            elif char in '+-*/ ':
+                if char == ' ':
+                    continue
+                if op == '+':
+                    stack.append(num)
+                elif op == '-':
+                    stack.append(-num)
+                elif op == '*':
+                    stack.append(stack.pop() * num)
+                elif op == '/':
+                    top = stack.pop()
+                    if top < 0 and num > 0:
+                        stack.append(-(abs(top) // num))
+                    else:
+                        stack.append(top // num)
+                op = char
+                num = 0
+        return sum(stack)
+
+# Explanation:
+# 1. Intuition:
+#    The main idea is to use a stack to store the numbers and perform the operations based on operator precedence.
+#    We iterate through the string, and when we encounter a number, we accumulate it. When we encounter an operator,
+#    we perform the previous operation based on the previous operator and push the result onto the stack.
+#    Finally, we sum up all the numbers in the stack to get the final result.
+#
+# 2. Time and space complexity:
+#    - Time complexity: O(n), where n is the length of the string. We iterate through the string once.
+#    - Space complexity: O(n), where n is the length of the string. In the worst case, we might store all the numbers in the stack.
+#
+# 3. Important considerations:
+#    - We need to handle the case where the expression contains spaces.
+#    - We need to handle the case where the expression contains multiplication and division, which have higher precedence than addition and subtraction.
+#    - We need to handle the case where the expression contains integer division, which should truncate toward zero.
+#    - We append a dummy operator to the end of the string to process the last number.

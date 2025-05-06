@@ -1,0 +1,71 @@
+class Solution:
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        # Step 1: Create a mapping of variables to their values
+        eval_map = dict(zip(evalvars, evalints))
+        
+        # Step 2: Define a helper function to parse and evaluate the expression
+        def parse(expression):
+            stack = []
+            num, sign = 0, 1
+            term = [{}]  # A term is represented as a dictionary {variables: coefficient}
+            
+            def add_term(coeff, vars):
+                vars = tuple(sorted(vars))
+                if vars in term[-1]:
+                    term[-1][vars] += coeff
+                else:
+                    term[-1][vars] = coeff
+            
+            i = 0
+            while i < len(expression):
+                char = expression[i]
+                if char.isdigit():
+                    num = 0
+                    while i < len(expression) and expression[i].isdigit():
+                        num = num * 10 + int(expression[i])
+                        i += 1
+                    add_term(sign * num, [])
+                    continue
+                elif char.isalpha():
+                    var = ""
+                    while i < len(expression) and expression[i].isalpha():
+                        var += expression[i]
+                        i += 1
+                    if var in eval_map:
+                        add_term(sign * eval_map[var], [])
+                    else:
+                        add_term(sign, [var])
+                    continue
+                elif char == '+':
+                    sign = 1
+                elif char == '-':
+                    sign = -1
+                elif char == '(':
+                    stack.append((term, sign))
+                    term = [{}]
+                    sign = 1
+                elif char == ')':
+                    prev_term, prev_sign = stack.pop()
+                    for vars, coeff in term[-1].items():
+                        if vars in prev_term[-1]:
+                            prev_term[-1][vars] += prev_sign * coeff
+                        else:
+                            prev_term[-1][vars] = prev_sign * coeff
+                    term = prev_term
+                i += 1
+            
+            return term[-1]
+        
+        # Step 3: Parse the expression and simplify the terms
+        terms = parse(expression)
+        
+        # Step 4: Sort and format the output
+        result = []
+        for vars, coeff in sorted(terms.items(), key=lambda x: (-len(x[0]), x[0])):
+            if coeff != 0:
+                if vars:
+                    result.append(f"{coeff}*{'*'.join(vars)}")
+                else:
+                    result.append(str(coeff))
+        
+        return result

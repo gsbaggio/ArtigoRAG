@@ -1,0 +1,124 @@
+class Solution:
+    def basicCalculatorIV(self, expression: str, evalvars: list[str], evalints: list[int]) -> list[str]:
+        """
+        Evaluates a given expression with variable substitutions and returns a simplified list of tokens.
+
+        The approach involves parsing the expression into tokens, evaluating the expression recursively,
+        and then formatting the result into the required output format.
+
+        Time Complexity: O(N * M * log(M)), where N is the length of the expression and M is the number of terms
+                         in the polynomial after expansion. The log(M) factor comes from sorting the terms.
+        Space Complexity: O(M), where M is the number of terms in the polynomial after expansion.
+
+        Important Considerations:
+        - The expression is parsed into tokens separated by spaces.
+        - Variables are substituted with their corresponding integer values if available.
+        - The expression is evaluated recursively using the order of operations (brackets, multiplication, addition/subtraction).
+        - The result is formatted into a list of tokens, where each token represents a term in the simplified expression.
+        - Terms are sorted by degree and lexicographically within the same degree.
+        - Coefficients of 0 are not included in the output.
+        """
+
+        def tokenize(expression: str) -> list[str]:
+            """
+            Tokenizes the expression into a list of tokens.
+            """
+            return expression.split()
+
+        def evaluate(tokens: list[str], eval_map: dict[str, int]) -> dict[tuple, int]:
+            """
+            Evaluates the expression and returns a polynomial represented as a dictionary.
+            """
+
+            def multiply(poly1: dict[tuple, int], poly2: dict[tuple, int]) -> dict[tuple, int]:
+                """
+                Multiplies two polynomials.
+                """
+                result = {}
+                for term1, coeff1 in poly1.items():
+                    for term2, coeff2 in poly2.items():
+                        new_term = tuple(sorted(term1 + term2))
+                        new_coeff = coeff1 * coeff2
+                        result[new_term] = result.get(new_term, 0) + new_coeff
+                return result
+
+            def add(poly1: dict[tuple, int], poly2: dict[tuple, int], sign: int) -> dict[tuple, int]:
+                """
+                Adds or subtracts two polynomials.
+                """
+                result = poly1.copy()
+                for term, coeff in poly2.items():
+                    result[term] = result.get(term, 0) + sign * coeff
+                return result
+
+            def parse(tokens: list[str], start: int) -> tuple[dict[tuple, int], int]:
+                """
+                Parses the tokens and evaluates the expression recursively.
+                """
+                result = {}
+                op = "+"
+                i = start
+                while i < len(tokens):
+                    token = tokens[i]
+                    if token == "(":
+                        poly, i = parse(tokens, i + 1)
+                        if op == "+":
+                            result = add(result, poly, 1)
+                        elif op == "-":
+                            result = add(result, poly, -1)
+                        elif op == "*":
+                            result = multiply(result, poly)
+                    elif token == ")":
+                        return result, i
+                    elif token in ["+", "-", "*"]:
+                        op = token
+                    else:
+                        if token.isnumeric():
+                            poly = {(): int(token)}
+                        elif token in eval_map:
+                            poly = {(): eval_map[token]}
+                        else:
+                            poly = {(token,): 1}
+
+                        if op == "+":
+                            result = add(result, poly, 1)
+                        elif op == "-":
+                            result = add(result, poly, -1)
+                        elif op == "*":
+                            result = multiply(result, poly)
+                    i += 1
+                return result, i
+
+            polynomial, _ = parse(tokens, 0)
+            return polynomial
+
+        def format_result(polynomial: dict[tuple, int]) -> list[str]:
+            """
+            Formats the polynomial into the required output format.
+            """
+            terms = []
+            for term, coeff in polynomial.items():
+                if coeff == 0:
+                    continue
+                if not term:
+                    terms.append(str(coeff))
+                else:
+                    term_str = "*".join(term)
+                    terms.append(str(coeff) + "*" + term_str)
+
+            terms.sort(key=lambda x: (-x.count("*"), x.replace("-", "")))
+            return terms
+
+        # Create evaluation map
+        eval_map = {evalvars[i]: evalints[i] for i in range(len(evalvars))}
+
+        # Tokenize the expression
+        tokens = tokenize(expression)
+
+        # Evaluate the expression
+        polynomial = evaluate(tokens, eval_map)
+
+        # Format the result
+        result = format_result(polynomial)
+
+        return result

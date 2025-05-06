@@ -1,0 +1,55 @@
+class Solution:
+    def calculate(self, s: str) -> int:
+        s = s.strip()
+        length = len(s)
+        
+        stack = []
+        current_num = 0
+        operation = '+'  # Default starting operation
+        
+        for i in range(length):
+            char = s[i]
+            
+            # Parse digits into numbers
+            if char.isdigit():
+                current_num = current_num * 10 + int(char)
+            
+            # Process operation when we encounter an operator or reach the end
+            if (not char.isdigit() and char != ' ') or i == length - 1:
+                if operation == '+':
+                    stack.append(current_num)
+                elif operation == '-':
+                    stack.append(-current_num)
+                elif operation == '*':
+                    stack.append(stack.pop() * current_num)
+                elif operation == '/':
+                    # Integer division truncating toward zero
+                    stack.append(int(stack.pop() / current_num))
+                
+                operation = char
+                current_num = 0
+        
+        # Sum up all values in the stack for final result
+        return sum(stack)
+
+Explanation
+We iterate through each character of the string.
+
+We parse numbers digit by digit, building multi-digit numbers as we go.
+
+When we encounter an operator or reach the end of the string, we process the previous operation:
+
+For +: We push the number onto the stack
+For -: We push the negation of the number onto the stack
+For *: We multiply the number with the top of the stack
+For /: We divide the top of the stack by the current number
+After processing all characters, we sum up all values in the stack to get our final result.
+
+Time and Space Complexity
+Time Complexity: O(n) where n is the length of the string. We iterate through the string once.
+Space Complexity: O(n) in the worst case, as the stack might hold approximately n/2 numbers if most operators are + or -.
+Key Considerations
+We handle multi-digit numbers by multiplying the current value by 10 and adding the new digit.
+For division, we need to use int(a / b) rather than a // b to get the correct truncation behavior for negative numbers.
+We maintain the state of the last operation and only process it when we encounter the next operator or reach the end.
+By storing the additive operations (+, -) in a stack and performing multiplicative operations (*, /) immediately, we respect operator precedence naturally.

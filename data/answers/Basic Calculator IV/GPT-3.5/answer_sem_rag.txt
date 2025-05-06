@@ -1,0 +1,83 @@
+class Solution:
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        def combine(terms1, terms2, sign):
+            terms = {}
+            for term, coeff in terms1.items():
+                terms[term] = terms.get(term, 0) + coeff * sign
+            for term, coeff in terms2.items():
+                terms[term] = terms.get(term, 0) + coeff
+            return {k: v for k, v in terms.items() if v != 0}
+
+        def evaluate(expression, variables, values):
+            for i in range(len(expression)):
+                if expression[i] in variables:
+                    expression[i] = str(values[variables.index(expression[i])])
+            return eval(''.join(expression))
+
+        def tokenize(expr):
+            tokens = []
+            for token in expr.replace('(', ' ( ').replace(')', ' ) ').split():
+                if token.isdigit():
+                    tokens.append(('num', int(token)))
+                elif token.isalpha():
+                    tokens.append(('var', token))
+                else:
+                    tokens.append(('op', token))
+            return tokens
+
+        def parse(tokens, variables):
+            stack = []
+            for token in tokens:
+                if token[0] == 'op' and token[1] == '(':
+                    stack.append('(')
+                elif token[0] == 'op' and token[1] == ')':
+                    right = stack.pop()
+                    stack.pop()  # pop '('
+                    stack.append(right)
+                else:
+                    stack.append(token)
+            return stack[0]
+
+        def collect_terms(expr):
+            if type(expr) is int:
+                return {(): expr}
+            if type(expr) is str:
+                return {(expr,): 1}
+            terms = {}
+            for var, coeff in expr.items():
+                for term, val in collect_terms(var).items():
+                    terms[term] = terms.get(term, 0) + val * coeff
+            return terms
+
+        def format_output(terms):
+            return [('*'.join([str(terms[term])] + list(term)) if term else str(terms[term])) for term in sorted(terms, key=lambda x: (-len(x), x)) if terms[term] != 0]
+
+        def simplify(expr, variables, values):
+            if type(expr) is int:
+                return expr
+            if type(expr) is str:
+                return expr if expr not in variables else values[variables.index(expr)]
+            op = expr[0]
+            left = simplify(expr[1], variables, values)
+            right = simplify(expr[2], variables, values)
+            if op == '+':
+                return left + right
+            elif op == '-':
+                return left - right
+            else:  # op == '*'
+                return left * right
+
+        # Parse the input expression and evaluation map
+        tokens = tokenize(expression)
+        variables = [var for var in evalvars]
+        values = [val for val in evalints]
+
+        # Evaluate the expression with the provided values
+        evaluated_expr = evaluate([str(t[1]) if t[0] == 'num' else t[1] for t in tokens], variables, values)
+
+        # Simplify the expression and collect like terms
+        simplified_expr = parse(tokens, variables)
+        terms = collect_terms(simplified_expr)
+
+        # Format the output in the specified way
+        return format_output(terms)
