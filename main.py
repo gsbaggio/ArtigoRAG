@@ -186,22 +186,106 @@ class ProgrammingQuestionRAG:
         
         return context
 
+    def process_problem(self, problem_path: str, output_dir: str = None) -> Dict[str, Any]:
+        """
+        Process a single problem file and generate RAG and non-RAG contexts.
+        
+        Args:
+            problem_path: Path to the problem.txt file
+            output_dir: Directory where prompt files should be saved (defaults to same dir as problem_path)
+        
+        Returns:
+            Dictionary with processing results
+        """
+        try:
+            with open(problem_path, "r", encoding="utf-8") as f:
+                question = f.read().strip()
+        except FileNotFoundError:
+            print(f"Erro: O arquivo '{problem_path}' não foi encontrado.")
+            return None
+        
+        # If no output directory specified, use the same directory as the problem file
+        if output_dir is None:
+            output_dir = os.path.dirname(problem_path)
+            
+        # Generate output file paths
+        prompt_with_rag_path = os.path.join(output_dir, "prompt.txt")
+        prompt_without_rag_path = os.path.join(output_dir, "prompt_sem_rag.txt")
+        
+        # Get similar questions
+        similar_questions = self.retrieve_similar_questions(
+            question, 
+            top_k=3, 
+            min_threshold=0.65,
+            use_adaptive_threshold=True
+        )
+        
+        # Build and save RAG context
+        context_with_rag = self._build_context(question, similar_questions)
+        self.save_context_to_file(context_with_rag, prompt_with_rag_path)
+        
+        # Build and save non-RAG context
+        context_without_rag = self._build_context_without_rag(question)
+        self.save_context_to_file(context_without_rag, prompt_without_rag_path)
+        
+        return {
+            "question": question,
+            "timestamp": datetime.now().isoformat(),
+            "context_with_rag_path": prompt_with_rag_path,
+            "context_without_rag_path": prompt_without_rag_path,
+            "similar_questions_found": len(similar_questions),
+            "similarity_scores": [q['similarity_score'] for q in similar_questions] if similar_questions else []
+        }
+    
+    def process_all_problems_in_answers(self, answers_dir: str = "data/answers") -> List[Dict[str, Any]]:
+        """
+        Process all problem.txt files found in subdirectories of data/answers/
+        
+        Args:
+            answers_dir: Path to the answers directory
+        
+        Returns:
+            List of dictionaries with processing results for each problem
+        """
+        results = []
+        
+        # Ensure the answers directory exists
+        if not os.path.exists(answers_dir) or not os.path.isdir(answers_dir):
+            print(f"Diretório '{answers_dir}' não existe ou não é um diretório.")
+            return results
+        
+        # Get all subdirectories within answers_dir
+        subdirs = [d for d in os.listdir(answers_dir) if os.path.isdir(os.path.join(answers_dir, d))]
+        
+        for subdir in subdirs:
+            subdir_path = os.path.join(answers_dir, subdir)
+            problem_path = os.path.join(subdir_path, "problem.txt")
+            
+            if os.path.exists(problem_path):
+                print(f"Processando problema em: {subdir_path}")
+                result = self.process_problem(problem_path, subdir_path)
+                if result:
+                    results.append(result)
+            else:
+                print(f"Arquivo problem.txt não encontrado em: {subdir_path}")
+        
+        return results
+
 if __name__ == "__main__":
     questions_db = "data/programming_questions.json"
-
     rag_system = ProgrammingQuestionRAG(questions_db)
     
+    # Process the top-level problem.txt as before
     try:
-        with open("problem.txt", "r", encoding="utf-8") as f:
-            sample_question = f.read().strip()
-    except FileNotFoundError:
-        print("Erro: O arquivo 'problem.txt' não foi encontrado.")
-        exit(1)
+        top_level_result = rag_system.process_problem("problem.txt")
+        if top_level_result:
+            print("Questão de nível superior processada:")
+            print(f"Com RAG: {top_level_result['context_with_rag_path']}")
+            print(f"Sem RAG: {top_level_result['context_without_rag_path']}")
+    except Exception as e:
+        print(f"Erro ao processar problema de nível superior: {e}")
     
-    result = rag_system.generate_solution(sample_question)
-    
-    print("Questão:")
-    print(sample_question)
-    print("\nContextos salvos em:")
-    print(f"Com RAG: {result['context_with_rag_path']}")
-    print(f"Sem RAG: {result['context_without_rag_path']}")
+    # Process all problems in data/answers subdirectories
+    print("\nProcessando problemas em data/answers/...")
+    answers_results = rag_system.process_all_problems_in_answers()
+    print(f"\n{len(answers_results)} problemas processados em data/answers/")

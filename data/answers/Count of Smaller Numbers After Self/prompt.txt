@@ -1,0 +1,212 @@
+CURRENT QUESTION:
+Given an integer array nums, return an integer array counts where counts[i] is the number of smaller elements to the right of nums[i].
+
+ 
+
+Example 1:
+
+Input: nums = [5,2,6,1]
+Output: [2,1,1,0]
+Explanation:
+To the right of 5 there are 2 smaller elements (2 and 1).
+To the right of 2 there is only 1 smaller element (1).
+To the right of 6 there is 1 smaller element (1).
+To the right of 1 there is 0 smaller element.
+Example 2:
+
+Input: nums = [-1]
+Output: [0]
+Example 3:
+
+Input: nums = [-1,-1]
+Output: [0,0]
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+-104 <= nums[i] <= 104
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.77):
+Title: Count of Range Sum
+Categorys: Array Binary Search Divide and Conquer Binary Indexed Tree Segment Tree Merge Sort Ordered Set
+Question text: Given an integer array nums and two integers lower and upper, return the number of range sums that lie in [lower, upper] inclusive.
+
+Range sum S(i, j) is defined as the sum of the elements in nums between indices i and j inclusive, where i <= j.
+
+ 
+
+Example 1:
+
+Input: nums = [-2,5,-1], lower = -2, upper = 2
+Output: 3
+Explanation: The three ranges are: [0,0], [2,2], and [0,2] and their respective sums are: -2, -1, 2.
+Example 2:
+
+Input: nums = [0], lower = 0, upper = 0
+Output: 1
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+-231 <= nums[i] <= 231 - 1
+-105 <= lower <= upper <= 105
+The answer is guaranteed to fit in a 32-bit integer.
+Solution: public int countRangeSum(int[] nums, int lower, int upper) {
+    int n = nums.length;
+    long[] sums = new long[n + 1];
+    for (int i = 0; i < n; ++i)
+        sums[i + 1] = sums[i] + nums[i];
+    return countWhileMergeSort(sums, 0, n + 1, lower, upper);
+}
+
+private int countWhileMergeSort(long[] sums, int start, int end, int lower, int upper) {
+    if (end - start <= 1) return 0;
+    int mid = (start + end) / 2;
+    int count = countWhileMergeSort(sums, start, mid, lower, upper) 
+              + countWhileMergeSort(sums, mid, end, lower, upper);
+    int j = mid, k = mid, t = mid;
+    long[] cache = new long[end - start];
+    for (int i = start, r = 0; i < mid; ++i, ++r) {
+        while (k < end && sums[k] - sums[i] < lower) k++;
+        while (j < end && sums[j] - sums[i] <= upper) j++;
+        while (t < end && sums[t] < sums[i]) cache[r++] = sums[t++];
+        cache[r] = sums[i];
+        count += j - k;
+    }
+    System.arraycopy(cache, 0, sums, start, t - start);
+    return count;
+}
+Explanation: Recall count smaller number after self where we encountered the problem
+
+count[i] = count of nums[j] - nums[i] < 0 with j > i
+Here, after we did the preprocess, we need to solve the problem
+
+count[i] = count of a <= S[j] - S[i] <= b with j > i
+ans = sum(count[:])
+Therefore the two problems are almost the same. We can use the same technique used in that problem to solve this problem. One solution is merge sort based; another one is Balanced BST based. The time complexity are both O(n log n).
+
+The merge sort based solution counts the answer while doing the merge. During the merge stage, we have already sorted the left half [start, mid) and right half [mid, end). We then iterate through the left half with index i. For each i, we need to find two indices k and j in the right half where
+
+j is the first index satisfy sums[j] - sums[i] > upper and
+k is the first index satisfy sums[k] - sums[i] >= lower.
+Then the number of sums in [lower, upper] is j-k. We also use another index t to copy the elements satisfy sums[t] < sums[i] to a cache in order to complete the merge sort.
+
+Despite the nested loops, the time complexity of the "merge & count" stage is still linear. Because the indices k, j, t will only increase but not decrease, each of them will only traversal the right half once at most. The total time complexity of this divide and conquer solution is then O(n log n).
+
+One other concern is that the sums may overflow integer. So we use long instead.
+
+Similar question 2 (Similarity score: 0.75):
+Title: Non-decreasing Array
+Categorys: Array
+Question text: Given an array nums with n integers, your task is to check if it could become non-decreasing by modifying at most one element.
+
+We define an array is non-decreasing if nums[i] <= nums[i + 1] holds for every i (0-based) such that (0 <= i <= n - 2).
+
+ 
+
+Example 1:
+
+Input: nums = [4,2,3]
+Output: true
+Explanation: You could modify the first 4 to 1 to get a non-decreasing array.
+Example 2:
+
+Input: nums = [4,2,1]
+Output: false
+Explanation: You cannot get a non-decreasing array by modifying at most one element.
+ 
+
+Constraints:
+
+n == nums.length
+1 <= n <= 104
+-105 <= nums[i] <= 105
+Solution: bool checkPossibility(vector<int>& nums) {
+        int cnt = 0;                                                                    //the number of changes
+        for(int i = 1; i < nums.size() && cnt<=1 ; i++){
+            if(nums[i-1] > nums[i]){
+                cnt++;
+                if(i-2<0 || nums[i-2] <= nums[i])nums[i-1] = nums[i];                    //modify nums[i-1] of a priority
+                else nums[i] = nums[i-1];                                                //have to modify nums[i]
+            }
+        }
+        return cnt<=1;
+    }
+Explanation: This problem is like a greedy problem. When you find nums[i-1] > nums[i] for some i, you will prefer to change nums[i-1]'s value, since a larger nums[i] will give you more risks that you get inversion errors after position i. But, if you also find nums[i-2] > nums[i], then you have to change nums[i]'s value instead, or else you need to change both of nums[i-2]'s and nums[i-1]'s values.
+
+Similar question 3 (Similarity score: 0.75):
+Title: Binary Search
+Categorys: Array Binary Search
+Question text: Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums. If target exists, then return its index. Otherwise, return -1.
+
+You must write an algorithm with O(log n) runtime complexity.
+
+ 
+
+Example 1:
+
+Input: nums = [-1,0,3,5,9,12], target = 9
+Output: 4
+Explanation: 9 exists in nums and its index is 4
+Example 2:
+
+Input: nums = [-1,0,3,5,9,12], target = 2
+Output: -1
+Explanation: 2 does not exist in nums so return -1
+ 
+
+Constraints:
+
+1 <= nums.length <= 104
+-104 < nums[i], target < 104
+All the integers in nums are unique.
+nums is sorted in ascending order.
+Solution: class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        // Find the insertion position `idx`.
+        int idx = upper_bound(nums.begin(), nums.end(), target) - nums.begin();
+
+        if (idx > 0 && nums[idx - 1] == target) {
+            return idx - 1;
+        } else {
+            return -1;
+        }    
+    }
+};
+Explanation: Intuition
+We have implemented various templates of binary search, now let's quickly go through the last approach that uses built-in functions. C++ provides the <algorithm> library that defines functions for binary searching, Python provides bisect module which also supports binary search functions. If we are solving some standard problems that do not require a lot of customization, it's feasible to rely on these built-in tools to save time.
+
+Note that upper_bound and bisect.bisect_right look for the rightmost insertion position and bring the same result as approach 2, while lower_bound and bisect.bisect_left look for the leftmost insertion position and end up with the same result as approach 3. Once we find the insertion position, check if the value at the corresponding position equals target.
+
+Here we implement the method that uses upper_bound or bisect.bisect_right and leave another half as a practice!
+
+
+Algorithm
+Use built-in tools to locate the rightmost insertion position idx.
+If idx > 0 and nums[idx - 1] = target, return idx -1. Otherwise, return -1.
+Complexity Analysis
+Let n be the size of the input array nums.
+
+Time complexity: O(logn)
+
+The time complexity of the built-in binary search is O(logn).
+Space complexity: O(1)
+
+The built-in binary search only takes O(1) space.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. Use the similar questions as references to improve the solution, but only if they are relevant.
+        5. Don't use any external libraries. Don't need to import any libraries.

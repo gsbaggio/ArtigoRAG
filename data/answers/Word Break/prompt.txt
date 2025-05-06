@@ -1,0 +1,142 @@
+CURRENT QUESTION:
+Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+ 
+
+Example 1:
+
+Input: s = "leetcode", wordDict = ["leet","code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+Example 2:
+
+Input: s = "applepenapple", wordDict = ["apple","pen"]
+Output: true
+Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+Note that you are allowed to reuse a dictionary word.
+Example 3:
+
+Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+Output: false
+ 
+
+Constraints:
+
+1 <= s.length <= 300
+1 <= wordDict.length <= 1000
+1 <= wordDict[i].length <= 20
+s and wordDict[i] consist of only lowercase English letters.
+All the strings of wordDict are unique.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.88):
+Title: Word Break II
+Categorys: Array Hash Table String Dynamic Programming Backtracking Trie Memoization
+Question text: Given a string s and a dictionary of strings wordDict, add spaces in s to construct a sentence where each word is a valid dictionary word. Return all such possible sentences in any order.
+
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+ 
+
+Example 1:
+
+Input: s = "catsanddog", wordDict = ["cat","cats","and","sand","dog"]
+Output: ["cats and dog","cat sand dog"]
+Example 2:
+
+Input: s = "pineapplepenapple", wordDict = ["apple","pen","applepen","pine","pineapple"]
+Output: ["pine apple pen apple","pineapple pen apple","pine applepen apple"]
+Explanation: Note that you are allowed to reuse a dictionary word.
+Example 3:
+
+Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+Output: []
+ 
+
+Constraints:
+
+1 <= s.length <= 20
+1 <= wordDict.length <= 1000
+1 <= wordDict[i].length <= 10
+s and wordDict[i] consist of only lowercase English letters.
+All the strings of wordDict are unique.
+Input is generated in a way that the length of the answer doesn't exceed 105.
+Solution: class Solution {
+public:
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> wordSet(wordDict.begin(), wordDict.end());
+        unordered_map<string, vector<string>> memoization;
+        return dfs(s, wordSet, memoization);
+    }
+
+private:
+    // Depth-first search function to find all possible word break combinations
+    vector<string> dfs(const string& remainingStr,
+                       const unordered_set<string>& wordSet,
+                       unordered_map<string, vector<string>>& memoization) {
+        // Check if result for this substring is already memoized
+        if (memoization.count(remainingStr)) return memoization[remainingStr];
+        // Base case: when the string is empty, return a list containing an
+        // empty string
+        if (remainingStr.empty()) return {""};
+        vector<string> results;
+        for (int i = 1; i <= remainingStr.length(); ++i) {
+            string currentWord = remainingStr.substr(0, i);
+            // If the current substring is a valid word
+            if (wordSet.count(currentWord)) {
+                for (const string& nextWord :
+                     dfs(remainingStr.substr(i), wordSet, memoization)) {
+                    // Append current word and next word with space in between
+                    // if next word exists
+                    results.push_back(currentWord +
+                                      (nextWord.empty() ? "" : " ") + nextWord);
+                }
+            }
+        }
+        // Memoize the results for the current substring
+        memoization[remainingStr] = results;
+        return results;
+    }
+};
+Explanation: Intuition
+We can improve the efficiency of the backtracking method by using Memoization, which stores the results of subproblems to avoid recalculating them.
+
+We use a depth-first search (DFS) function that recursively breaks the string into words. However, before performing a recursive call, we check if the results for the current substring have already been computed and stored in a memoization map (typically a dictionary or hash table).
+
+If the results of the current substring are found in the memoization map, we can directly return them without further computation. If not, we proceed with the recursive call, computing the results and storing them in the memoization map before returning them.
+
+By memoizing the results, we can reduce the number of computations by ensuring that each substring is processed only once in average cases.
+
+Algorithm
+wordBreak Function:
+
+Convert the wordDict array into an unordered set wordSet for efficient lookups.
+Initialize an empty unordered map memoization to store the results of subproblems.
+Call the dfs function with the input string s, wordSet, and memoization.
+dfs Function:
+
+Check if the answer for the current remainingStr(the remaining part of the string to be processed) are already in memoization. If so, return them.
+Base Case: If remainingStr is empty, it means that all characters have been processed. An empty string represents a valid sentence so return an array containing the empty string.
+Initialize an empty array results.
+Iterate from 1 to the length of remainingStr:
+Extract the substring currentWord from 0 to i to check if it is a valid word.
+If currentWord is found in wordSet:
+Recursively call dfs with remainingStr.substr(i), wordSet, and memoization.
+Append currentWord and the recursive results to results(with a space if needed) to form valid sentences.
+Store the results for remainingStr in memoization.
+Return results.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. Use the similar questions as references to improve the solution, but only if they are relevant.
+        5. Don't use any external libraries. Don't need to import any libraries.
