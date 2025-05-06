@@ -1,0 +1,67 @@
+class Solution:
+    def maxProfit(self, k: int, prices: list[int]) -> int:
+        """
+        You are given an integer array prices where prices[i] is the price of a given stock on the ith day, and an integer k.
+
+        Find the maximum profit you can achieve. You may complete at most k transactions: i.e. you may buy at most k times and sell at most k times.
+
+        Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
+
+        Example 1:
+
+        Input: k = 2, prices = [2,4,1]
+        Output: 2
+        Explanation: Buy on day 1 (price = 2) and sell on day 2 (price = 4), profit = 4-2 = 2.
+        Example 2:
+
+        Input: k = 2, prices = [3,2,6,5,0,3]
+        Output: 7
+        Explanation: Buy on day 2 (price = 2) and sell on day 3 (price = 6), profit = 6-2 = 4. Then buy on day 5 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
+
+        Constraints:
+
+        1 <= k <= 100
+        1 <= prices.length <= 1000
+        0 <= prices[i] <= 1000
+        """
+        n = len(prices)
+
+        # If the number of transactions is too large, we can perform infinite transactions
+        if k >= n // 2:
+            profit = 0
+            for i in range(1, n):
+                if prices[i] > prices[i - 1]:
+                    profit += prices[i] - prices[i - 1]
+            return profit
+
+        # dp[i][j] represents the maximum profit we can get with at most i transactions until day j
+        dp = [[0] * n for _ in range(k + 1)]
+
+        for i in range(1, k + 1):
+            # Initialize the maximum profit after buying on day 0
+            max_profit_after_buy = -prices[0]
+            for j in range(1, n):
+                # Either we don't do anything on day j, or we sell on day j
+                dp[i][j] = max(dp[i][j - 1], prices[j] + max_profit_after_buy)
+                # Update the maximum profit after buying on day j
+                max_profit_after_buy = max(max_profit_after_buy, dp[i - 1][j - 1] - prices[j])
+
+        return dp[k][n - 1]
+    
+        """
+        Intuition:
+        The problem can be solved using dynamic programming. We can define dp[i][j] as the maximum profit we can get with at most i transactions until day j.
+        Then, for each day j, we have two choices: either we don't do anything on day j, or we sell on day j.
+        If we don't do anything on day j, then dp[i][j] = dp[i][j - 1].
+        If we sell on day j, then we must have bought the stock before day j. Let's say we bought the stock on day m, then the profit we can get is prices[j] - prices[m] + dp[i - 1][m - 1].
+        We want to maximize this profit, so we can define max_profit_after_buy as the maximum profit we can get after buying the stock on day m.
+        Then, dp[i][j] = max(dp[i][j - 1], prices[j] + max_profit_after_buy).
+        We can update max_profit_after_buy as max(max_profit_after_buy, dp[i - 1][j - 1] - prices[j]).
+
+        Time and space complexity:
+        The time complexity is O(k * n), where k is the number of transactions and n is the number of days.
+        The space complexity is O(k * n).
+
+        Important considerations about the algorithm:
+        If the number of transactions is too large, we can perform infinite transactions. In this case, we can simply sum up the profit for each day.
+        """

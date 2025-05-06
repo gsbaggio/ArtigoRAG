@@ -1,0 +1,31 @@
+class Solution:
+    def maxProfit(self, k: int, prices: List[int]) -> int:
+        if not prices or k == 0:
+            return 0
+        
+        n = len(prices)
+        
+        if k >= n // 2:
+            # If k is large enough, we can perform as many transactions as we want
+            # This reduces it to the problem of finding maximum profit with unlimited transactions
+            profit = 0
+            for i in range(1, n):
+                if prices[i] > prices[i - 1]:
+                    profit += prices[i] - prices[i - 1]
+            return profit
+        
+        # Initialize the buy and sell arrays
+        # buy[i][j] represents the maximum profit on day i with at most j transactions and holding a stock
+        # sell[i][j] represents the maximum profit on day i with at most j transactions and not holding a stock
+        buy = [[float('-inf')] * (k + 1) for _ in range(n)]
+        sell = [[0] * (k + 1) for _ in range(n)]
+        
+        for i in range(n):
+            for j in range(1, k + 1):
+                if i == 0:
+                    buy[i][j] = -prices[i]
+                else:
+                    buy[i][j] = max(buy[i - 1][j], sell[i - 1][j - 1] - prices[i])
+                    sell[i][j] = max(sell[i - 1][j], buy[i - 1][j] + prices[i])
+        
+        return sell[n - 1][k]
