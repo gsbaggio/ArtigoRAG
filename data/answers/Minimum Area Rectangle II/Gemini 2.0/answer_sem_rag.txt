@@ -1,0 +1,57 @@
+class Solution:
+    def minAreaFreeRect(self, points):
+        """
+        Finds the minimum area of any rectangle formed from the given points.
+
+        Args:
+            points (list of list of int): A list of points in the X-Y plane.
+
+        Returns:
+            float: The minimum area of any rectangle formed from these points.
+                   Returns 0 if there is no such rectangle.
+        """
+        n = len(points)
+        if n < 4:
+            return 0.0
+
+        point_set = set((x, y) for x, y in points)
+        min_area = float('inf')
+
+        for i in range(n):
+            for j in range(i + 1, n):
+                # Consider points[i] and points[j] as diagonal points of a potential rectangle.
+                p1x, p1y = points[i]
+                p2x, p2y = points[j]
+
+                # Calculate the midpoint of the diagonal.
+                mid_x = (p1x + p2x) / 2.0
+                mid_y = (p1y + p2y) / 2.0
+
+                # Calculate the squared distance between the two points.
+                dist_sq = (p1x - p2x)**2 + (p1y - p2y)**2
+
+                for k in range(j + 1, n):
+                    # Consider points[k] as one of the other corners of the potential rectangle.
+                    p3x, p3y = points[k]
+
+                    # Calculate the potential fourth corner of the rectangle.
+                    p4x = p1x + p2x - p3x
+                    p4y = p1y + p2y - p3y
+
+                    # Check if the fourth point exists in the set of points.
+                    if (p4x, p4y) in point_set:
+                        # Calculate the squared distances of the sides.
+                        dist1_sq = (p1x - p3x)**2 + (p1y - p3y)**2
+                        dist2_sq = (p2x - p3x)**2 + (p2y - p3y)**2
+
+                        # Calculate the area of the rectangle.
+                        area = (dist1_sq**0.5) * (dist2_sq**0.5)
+
+                        # Update the minimum area if the current area is smaller.
+                        min_area = min(min_area, area)
+
+        # If no rectangle is found, return 0.
+        if min_area == float('inf'):
+            return 0.0
+        else:
+            return min_area

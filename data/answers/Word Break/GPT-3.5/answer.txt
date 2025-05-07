@@ -1,0 +1,26 @@
+#include <vector>
+#include <string>
+#include <unordered_set>
+#include <unordered_map>
+
+using namespace std;
+
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> wordSet(wordDict.begin(), wordDict.end());
+        unordered_set<int> visited; // To store the indices where valid words end
+        visited.insert(0);
+
+        for (int i = 1; i <= s.size(); ++i) {
+            for (int j : visited) {
+                if (wordSet.count(s.substr(j, i - j))) {
+                    visited.insert(i);
+                    break;
+                }
+            }
+        }
+
+        return visited.count(s.size()) > 0;
+    }
+};

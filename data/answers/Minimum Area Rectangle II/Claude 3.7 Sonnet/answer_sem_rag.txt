@@ -1,0 +1,60 @@
+from collections import defaultdict
+import math
+
+class Solution:
+    def minAreaFreeRect(self, points: list[list[int]]) -> float:
+        n = len(points)
+        if n < 4:
+            return 0
+        
+        # Convert points to tuples for hashing
+        points = [tuple(point) for point in points]
+        points_set = set(points)
+        
+        min_area = float('inf')
+        found = False
+        
+        # Group point pairs by their midpoint and distance from midpoint
+        midpoint_groups = defaultdict(list)
+        
+        for i in range(n):
+            for j in range(i + 1, n):
+                p1 = points[i]
+                p2 = points[j]
+                
+                # Calculate midpoint and squared distance
+                mid_x = (p1[0] + p2[0]) / 2
+                mid_y = (p1[1] + p2[1]) / 2
+                dist_squared = (p1[0] - p2[0])**2 + (p1[1] - p2[1])**2
+                
+                # Store vector from midpoint to p1 for direction checking
+                vector = (p1[0] - mid_x, p1[1] - mid_y)
+                
+                midpoint_groups[(mid_x, mid_y, dist_squared)].append((p1, p2, vector))
+        
+        # Check each group of point pairs sharing the same midpoint and distance
+        for group in midpoint_groups.values():
+            m = len(group)
+            
+            # Need at least 2 pairs to form a rectangle
+            if m < 2:
+                continue
+                
+            for i in range(m):
+                p1, p2, v1 = group[i]
+                
+                for j in range(i + 1, m):
+                    p3, p4, v2 = group[j]
+                    
+                    # Vectors must be perpendicular to form a rectangle
+                    if abs(v1[0]*v2[0] + v1[1]*v2[1]) < 1e-9:  # dot product ≈ 0
+                        # Calculate sides of the rectangle
+                        side1 = math.sqrt((p1[0] - p3[0])**2 + (p1[1] - p3[1])**2)
+                        side2 = math.sqrt((p1[0] - p4[0])**2 + (p1[1] - p4[1])**2)
+                        
+                        # Calculate area
+                        area = side1 * side2
+                        min_area = min(min_area, area)
+                        found = True
+        
+        return min_area if found else 0

@@ -1,0 +1,75 @@
+class Solution {
+    private int[] count;
+    private int[] indices;
+    private int[] result;
+    
+    public List<Integer> countSmaller(int[] nums) {
+        int n = nums.length;
+        result = new int[n];
+        indices = new int[n]; // original indices
+        count = new int[n]; // count of smaller elements
+        
+        // Initialize indices array
+        for (int i = 0; i < n; i++) {
+            indices[i] = i;
+        }
+        
+        // Perform merge sort
+        mergeSort(nums, 0, n - 1);
+        
+        // Convert result to List
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            list.add(result[i]);
+        }
+        return list;
+    }
+    
+    private void mergeSort(int[] nums, int start, int end) {
+        if (start >= end) return;
+        
+        int mid = start + (end - start) / 2;
+        mergeSort(nums, start, mid);
+        mergeSort(nums, mid + 1, end);
+        merge(nums, start, mid, end);
+    }
+    
+    private void merge(int[] nums, int start, int mid, int end) {
+        int[] temp = new int[end - start + 1];
+        int[] tempIndices = new int[end - start + 1];
+        
+        int i = start, j = mid + 1, k = 0;
+        
+        while (i <= mid && j <= end) {
+            if (nums[indices[i]] <= nums[indices[j]]) {
+                // If element on left is smaller or equal, add count of smaller elements on right
+                result[indices[i]] += j - (mid + 1);
+                tempIndices[k] = indices[i];
+                temp[k++] = nums[indices[i++]];
+            } else {
+                // If element on right is smaller, take it
+                tempIndices[k] = indices[j];
+                temp[k++] = nums[indices[j++]];
+            }
+        }
+        
+        // Process remaining elements on left
+        while (i <= mid) {
+            // Add count of all elements on right
+            result[indices[i]] += j - (mid + 1);
+            tempIndices[k] = indices[i];
+            temp[k++] = nums[indices[i++]];
+        }
+        
+        // Process remaining elements on right
+        while (j <= end) {
+            tempIndices[k] = indices[j];
+            temp[k++] = nums[indices[j++]];
+        }
+        
+        // Copy back to original arrays
+        for (i = 0; i < k; i++) {
+            indices[start + i] = tempIndices[i];
+        }
+    }
+}

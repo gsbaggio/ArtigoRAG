@@ -1,0 +1,37 @@
+class Solution:
+    def isStrongPassword(self, password: str) -> bool:
+        # Check length requirement
+        if len(password) < 8:
+            return False
+
+        # Initialize flags for each requirement
+        has_lowercase = False
+        has_uppercase = False
+        has_digit = False
+        has_special = False
+        no_adjacent_repeats = True
+
+        # Define the set of special characters
+        special_characters = set("!@#$%^&*()-+")
+
+        # Iterate through the password to check all conditions
+        for i, char in enumerate(password):
+            if char.islower():
+                has_lowercase = True
+            if char.isupper():
+                has_uppercase = True
+            if char.isdigit():
+                has_digit = True
+            if char in special_characters:
+                has_special = True
+            if i > 0 and password[i] == password[i - 1]:
+                no_adjacent_repeats = False
+
+        # Return True if all conditions are met
+        return (
+            has_lowercase
+            and has_uppercase
+            and has_digit
+            and has_special
+            and no_adjacent_repeats
+        )

@@ -1,0 +1,42 @@
+class Solution:
+    def minAreaFreeRect(self, points):
+        from math import sqrt
+        from collections import defaultdict
+
+        # Convert points to tuples for hashing
+        points = [tuple(p) for p in points]
+        point_set = set(points)
+        n = len(points)
+        min_area = float('inf')
+
+        # Dictionary to store midpoints and their corresponding pairs
+        midpoints = defaultdict(list)
+
+        # Iterate over all pairs of points
+        for i in range(n):
+            for j in range(i + 1, n):
+                # Calculate the midpoint and distance squared
+                x1, y1 = points[i]
+                x2, y2 = points[j]
+                mid_x, mid_y = (x1 + x2) / 2, (y1 + y2) / 2
+                dist_sq = (x2 - x1) ** 2 + (y2 - y1) ** 2
+
+                # Store the midpoint and distance squared
+                midpoints[(mid_x, mid_y, dist_sq)].append((points[i], points[j]))
+
+        # Check for rectangles
+        for key, pairs in midpoints.items():
+            if len(pairs) > 1:
+                # Iterate over all pairs of points with the same midpoint and distance
+                for p1, p2 in pairs:
+                    for p3, p4 in pairs:
+                        if p1 != p3 and p2 != p4:
+                            # Calculate the area of the rectangle
+                            x1, y1 = p1
+                            x2, y2 = p2
+                            x3, y3 = p3
+                            area = sqrt((x2 - x3) ** 2 + (y2 - y3) ** 2) * sqrt((x1 - x3) ** 2 + (y1 - y3) ** 2)
+                            min_area = min(min_area, area)
+
+        # Return the minimum area found, or 0 if no rectangle was found
+        return min_area if min_area < float('inf') else 0

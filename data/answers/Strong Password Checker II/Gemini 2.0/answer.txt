@@ -1,0 +1,48 @@
+class Solution:
+    def strongPasswordCheckerII(self, password: str) -> bool:
+        """
+        Checks if a password is strong based on the given criteria.
+
+        Args:
+            password (str): The password string to check.
+
+        Returns:
+            bool: True if the password is strong, False otherwise.
+
+        Intuition:
+        The problem requires us to validate a password against several criteria. We can solve this by iterating through the password once and checking each condition. We use boolean flags to track whether each condition is met. The adjacent character check is done during the same iteration.
+
+        Time Complexity: O(n), where n is the length of the password. We iterate through the password once.
+        Space Complexity: O(1). We use a constant amount of extra space to store the boolean flags.
+
+        Important Considerations:
+        - Handle edge cases such as empty passwords or passwords with length less than 8.
+        - Ensure that each condition is checked correctly and that the flags are updated accordingly.
+        - The adjacent character check must be performed during the iteration to avoid a separate loop.
+        """
+        if len(password) < 8:
+            return False
+
+        has_lower = False
+        has_upper = False
+        has_digit = False
+        has_special = False
+        special_chars = "!@#$%^&*()-+"
+        adjacent = False
+
+        for i in range(len(password)):
+            char = password[i]
+
+            if 'a' <= char <= 'z':
+                has_lower = True
+            elif 'A' <= char <= 'Z':
+                has_upper = True
+            elif '0' <= char <= '9':
+                has_digit = True
+            elif char in special_chars:
+                has_special = True
+
+            if i > 0 and password[i] == password[i - 1]:
+                adjacent = True
+
+        return (has_lower and has_upper and has_digit and has_special and not adjacent)

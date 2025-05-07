@@ -1,0 +1,18 @@
+class Solution:
+    def hIndex(self, citations):
+        """
+        :type citations: List[int]
+        :rtype: int
+        """
+        # Step 1: Sort the citations array in descending order
+        citations.sort(reverse=True)
+        
+        # Step 2: Iterate through the sorted array to find the h-index
+        h_index = 0
+        for i, citation in enumerate(citations):
+            if citation >= i + 1:
+                h_index = i + 1
+            else:
+                break
+        
+        return h_index

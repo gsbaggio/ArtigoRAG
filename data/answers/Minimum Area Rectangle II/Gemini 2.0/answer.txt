@@ -1,0 +1,84 @@
+class Solution:
+    def minAreaRect(self, points):
+        """
+        Finds the minimum area of any rectangle formed from the given points,
+        with sides not necessarily parallel to the X and Y axes.
+
+        Args:
+            points (list of list of int): A list of points in the X-Y plane.
+
+        Returns:
+            float: The minimum area of any such rectangle, or 0 if there is none.
+        """
+        n = len(points)
+        if n < 4:
+            return 0.0
+
+        min_area = float('inf')
+
+        for i in range(n):
+            for j in range(i + 1, n):
+                for k in range(j + 1, n):
+                    # Check if these three points can form a rectangle
+                    x1, y1 = points[i]
+                    x2, y2 = points[j]
+                    x3, y3 = points[k]
+
+                    # Calculate the potential fourth point
+                    x4 = x1 + x2 - x3
+                    y4 = y1 + y2 - y3
+
+                    # Check if the fourth point exists in the input points
+                    if [x4, y4] in points and [x4, y4] != [x1,y1] and [x4, y4] != [x2,y2] and [x4, y4] != [x3,y3]:
+                        # Calculate the area of the parallelogram
+                        area = abs((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1))
+
+                        # Check if it's a rectangle (dot product of diagonals is zero)
+                        dx1 = x2 - x1
+                        dy1 = y2 - y1
+                        dx2 = x3 - x4
+                        dy2 = y3 - y4
+
+                        if abs(dx1 * dx2 + dy1 * dy2) < 1e-6:  # Account for floating-point errors
+                            min_area = min(min_area, area)
+
+                    # Calculate the potential fourth point
+                    x4 = x1 + x3 - x2
+                    y4 = y1 + y3 - y2
+
+                    # Check if the fourth point exists in the input points
+                    if [x4, y4] in points and [x4, y4] != [x1,y1] and [x4, y4] != [x2,y2] and [x4, y4] != [x3,y3]:
+                        # Calculate the area of the parallelogram
+                        area = abs((x3 - x1) * (y2 - y1) - (x2 - x1) * (y3 - y1))
+
+                        # Check if it's a rectangle (dot product of diagonals is zero)
+                        dx1 = x3 - x1
+                        dy1 = y3 - y1
+                        dx2 = x2 - x4
+                        dy2 = y2 - y4
+
+                        if abs(dx1 * dx2 + dy1 * dy2) < 1e-6:  # Account for floating-point errors
+                            min_area = min(min_area, area)
+                            
+                    # Calculate the potential fourth point
+                    x4 = x2 + x3 - x1
+                    y4 = y2 + y3 - y1
+
+                    # Check if the fourth point exists in the input points
+                    if [x4, y4] in points and [x4, y4] != [x1,y1] and [x4, y4] != [x2,y2] and [x4, y4] != [x3,y3]:
+                        # Calculate the area of the parallelogram
+                        area = abs((x3 - x2) * (y1 - y2) - (x1 - x2) * (y3 - y2))
+
+                        # Check if it's a rectangle (dot product of diagonals is zero)
+                        dx1 = x3 - x2
+                        dy1 = y3 - y2
+                        dx2 = x1 - x4
+                        dy2 = y1 - y4
+
+                        if abs(dx1 * dx2 + dy1 * dy2) < 1e-6:  # Account for floating-point errors
+                            min_area = min(min_area, area)
+
+        if min_area == float('inf'):
+            return 0.0
+        else:
+            return min_area

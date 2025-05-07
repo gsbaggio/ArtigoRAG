@@ -1,0 +1,26 @@
+import java.util.*;
+
+class Solution {
+    private int[] nums;
+    private Map<Integer, List<Integer>> indexMap;
+    private Random random;
+
+    public Solution(int[] nums) {
+        this.nums = nums;
+        this.indexMap = new HashMap<>();
+        this.random = new Random();
+
+        for (int i = 0; i < nums.length; i++) {
+            if (!indexMap.containsKey(nums[i])) {
+                indexMap.put(nums[i], new ArrayList<>());
+            }
+            indexMap.get(nums[i]).add(i);
+        }
+    }
+
+    public int pick(int target) {
+        List<Integer> indices = indexMap.get(target);
+        int randomIndex = random.nextInt(indices.size());
+        return indices.get(randomIndex);
+    }
+}

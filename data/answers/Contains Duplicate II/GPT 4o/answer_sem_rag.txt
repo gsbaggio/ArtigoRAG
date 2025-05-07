@@ -1,0 +1,15 @@
+class Solution:
+    def containsNearbyDuplicate(self, nums, k):
+        # Dictionary to store the last seen index of each number
+        num_indices = {}
+        
+        # Iterate through the array
+        for i, num in enumerate(nums):
+            # Check if the number exists in the dictionary and the difference of indices is <= k
+            if num in num_indices and i - num_indices[num] <= k:
+                return True
+            # Update the last seen index of the number
+            num_indices[num] = i
+        
+        # If no such pair is found, return False
+        return False

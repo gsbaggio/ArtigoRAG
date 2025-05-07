@@ -1,0 +1,40 @@
+class Solution:
+    def hIndex(self, citations: list[int]) -> int:
+        """
+        Calculates the h-index of a researcher given an array of citations.
+
+        The h-index is defined as the maximum value of h such that the given researcher
+        has published at least h papers that have each been cited at least h times.
+
+        Args:
+            citations: A list of integers where citations[i] is the number of citations
+                       a researcher received for their ith paper.
+
+        Returns:
+            The researcher's h-index.
+
+        Time Complexity: O(n log n) due to sorting.
+        Space Complexity: O(1) if the sorting is done in-place.  O(n) if a copy is made for sorting.
+
+        Intuition:
+        The h-index represents the point where the number of papers with at least that many citations
+        meets or exceeds the citation count.  We can find this by sorting the citations in descending order.
+        Then, we iterate through the sorted citations, checking if the citation count at each index `i`
+        is greater than or equal to `i + 1`. The first index where this condition is false indicates that
+        the h-index is `i`. If the condition is true for all indices, the h-index is the total number of papers.
+
+        Important Considerations:
+        - The citations array can contain duplicate values.
+        - The h-index cannot exceed the total number of papers.
+        """
+        n = len(citations)
+        citations.sort(reverse=True)  # Sort in descending order
+        
+        h_index = 0
+        for i in range(n):
+            if citations[i] >= i + 1:
+                h_index = i + 1
+            else:
+                break  # Optimization: No need to continue if citations[i] < i + 1
+        
+        return h_index

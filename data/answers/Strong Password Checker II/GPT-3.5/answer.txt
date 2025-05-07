@@ -1,0 +1,17 @@
+class Solution:
+    def strongPasswordCheckerII(self, password: str) -> bool:
+        # Criteria for a strong password
+        length_check = len(password) >= 8
+        lowercase_check = any(c.islower() for c in password)
+        uppercase_check = any(c.isupper() for c in password)
+        digit_check = any(c.isdigit() for c in password)
+        special_chars = set("!@#$%^&*()-+")
+        special_check = any(c in special_chars for c in password)
+        
+        # Check for repeating characters
+        for i in range(1, len(password)):
+            if password[i] == password[i-1]:
+                return False
+
+        # Return True only if all criteria are met
+        return all([length_check, lowercase_check, uppercase_check, digit_check, special_check])

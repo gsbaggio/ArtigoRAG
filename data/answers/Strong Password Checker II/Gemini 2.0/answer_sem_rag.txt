@@ -1,0 +1,47 @@
+class Solution:
+    def strongPasswordCheckerII(self, password: str) -> bool:
+        """
+        Checks if a password is strong based on the given criteria.
+
+        Args:
+            password (str): The password string to check.
+
+        Returns:
+            bool: True if the password is strong, False otherwise.
+
+        Intuition:
+        The problem requires us to validate a password against several criteria.  We can iterate through the password once, checking each condition and returning False immediately if any condition is not met.  This approach ensures efficiency by avoiding unnecessary computations once a weakness is found.
+
+        Time Complexity: O(n), where n is the length of the password.  We iterate through the password at most once.
+        Space Complexity: O(1). We use a constant amount of extra space to store flags and the set of special characters.
+
+        Important Considerations:
+        - The order of checks can impact performance slightly. Checking the length first is generally a good idea because it's a simple check and can quickly disqualify many passwords.
+        - Using a set for special characters allows for O(1) lookup time when checking for special characters.
+        - The adjacent character check must be performed carefully to avoid index out-of-bounds errors.
+        """
+        if len(password) < 8:
+            return False
+
+        has_lower = False
+        has_upper = False
+        has_digit = False
+        has_special = False
+        special_chars = "!@#$%^&*()-+"
+
+        for i in range(len(password)):
+            char = password[i]
+
+            if 'a' <= char <= 'z':
+                has_lower = True
+            elif 'A' <= char <= 'Z':
+                has_upper = True
+            elif '0' <= char <= '9':
+                has_digit = True
+            elif char in special_chars:
+                has_special = True
+
+            if i > 0 and password[i] == password[i - 1]:
+                return False
+
+        return has_lower and has_upper and has_digit and has_special

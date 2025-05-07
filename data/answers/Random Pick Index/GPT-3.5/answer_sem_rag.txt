@@ -1,0 +1,16 @@
+import random
+
+class Solution:
+    def __init__(self, nums):
+        self.nums = nums
+
+    def pick(self, target):
+        count = 0
+        result = 0
+        for i, num in enumerate(self.nums):
+            if num == target:
+                count += 1
+                # Randomly select an index with 1/count probability
+                if random.randint(1, count) == 1:
+                    result = i
+        return result

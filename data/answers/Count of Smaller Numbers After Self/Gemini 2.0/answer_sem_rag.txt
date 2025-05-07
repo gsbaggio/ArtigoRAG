@@ -1,0 +1,57 @@
+class Solution:
+    def countSmaller(self, nums: list[int]) -> list[int]:
+        """
+        Given an integer array nums, return an integer array counts where counts[i] is the number of smaller elements to the right of nums[i].
+
+        The approach uses a modified merge sort algorithm to count the number of smaller elements to the right of each element.
+        The intuition is that during the merge process, we can count how many elements from the right subarray are smaller than the current element from the left subarray.
+
+        Time Complexity: O(n log n), where n is the length of the input array. This is due to the merge sort algorithm.
+        Space Complexity: O(n), where n is the length of the input array. This is due to the auxiliary space used by the merge sort algorithm.
+
+        Important considerations:
+        - The algorithm modifies the original array in place.
+        - The algorithm uses a stable sorting algorithm to maintain the relative order of equal elements.
+
+        Args:
+            nums (list[int]): The input array of integers.
+
+        Returns:
+            list[int]: An array where counts[i] is the number of smaller elements to the right of nums[i].
+        """
+        n = len(nums)
+        counts = [0] * n
+        indexed_nums = list(enumerate(nums))  # Store original indices
+
+        def merge_sort(arr):
+            if len(arr) <= 1:
+                return arr
+
+            mid = len(arr) // 2
+            left = merge_sort(arr[:mid])
+            right = merge_sort(arr[mid:])
+
+            merged = []
+            i = j = 0
+            while i < len(left) and j < len(right):
+                if left[i][1] <= right[j][1]:
+                    counts[left[i][0]] += j  # Count smaller elements from right subarray
+                    merged.append(left[i])
+                    i += 1
+                else:
+                    merged.append(right[j])
+                    j += 1
+
+            # Add remaining elements from left and right subarrays
+            while i < len(left):
+                counts[left[i][0]] += j
+                merged.append(left[i])
+                i += 1
+            while j < len(right):
+                merged.append(right[j])
+                j += 1
+
+            return merged
+
+        merge_sort(indexed_nums)
+        return counts

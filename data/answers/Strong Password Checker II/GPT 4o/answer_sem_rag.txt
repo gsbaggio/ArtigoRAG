@@ -1,0 +1,39 @@
+class Solution:
+    def strongPasswordCheckerII(self, password: str) -> bool:
+        # Check length requirement
+        if len(password) < 8:
+            return False
+
+        # Initialize flags for each requirement
+        has_lower = False
+        has_upper = False
+        has_digit = False
+        has_special = False
+        special_characters = "!@#$%^&*()-+"
+
+        # Iterate through the password to check requirements
+        for i in range(len(password)):
+            char = password[i]
+
+            # Check for lowercase letter
+            if char.islower():
+                has_lower = True
+
+            # Check for uppercase letter
+            if char.isupper():
+                has_upper = True
+
+            # Check for digit
+            if char.isdigit():
+                has_digit = True
+
+            # Check for special character
+            if char in special_characters:
+                has_special = True
+
+            # Check for adjacent duplicate characters
+            if i > 0 and password[i] == password[i - 1]:
+                return False
+
+        # Return True if all requirements are met
+        return has_lower and has_upper and has_digit and has_special

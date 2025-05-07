@@ -1,0 +1,27 @@
+class Solution:
+    def countSmaller(self, nums: List[int]) -> List[int]:
+        def mergeSort(arr):
+            if len(arr) <= 1:
+                return arr, [0]
+
+            mid = len(arr) // 2
+            left, left_count = mergeSort(arr[:mid])
+            right, right_count = mergeSort(arr[mid])
+
+            merged = []
+            merged_count = []
+            i, j = 0, 0
+            while i < len(left) or j < len(right):
+                if j == len(right) or (i < len(left) and left[i][0] <= right[j][0]):
+                    merged.append(left[i])
+                    merged_count.append(left_count[i] + j)
+                    i += 1
+                else:
+                    merged.append(right[j])
+                    merged_count.append(right_count[j])
+                    j += 1
+
+            return merged, merged_count
+
+        _, result = mergeSort(list(enumerate(nums)))
+        return result

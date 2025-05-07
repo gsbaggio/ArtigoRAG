@@ -1,0 +1,29 @@
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        // Create an unordered set for efficient word lookup
+        unordered_set<string> wordSet(wordDict.begin(), wordDict.end());
+        
+        // dp[i] is true if s[0...i-1] can be segmented into dictionary words
+        vector<bool> dp(s.length() + 1, false);
+        
+        // Base case: an empty string can be segmented
+        dp[0] = true;
+        
+        // Iterate through all possible lengths of the string
+        for (int i = 1; i <= s.length(); ++i) {
+            // Iterate through all possible starting positions for the last word
+            for (int j = 0; j < i; ++j) {
+                // If s[0...j-1] can be segmented and s[j...i-1] is a valid word
+                if (dp[j] && wordSet.count(s.substr(j, i - j))) {
+                    // Then s[0...i-1] can be segmented
+                    dp[i] = true;
+                    break; // Optimization: no need to check other starting positions
+                }
+            }
+        }
+        
+        // Return whether the entire string can be segmented
+        return dp[s.length()];
+    }
+};

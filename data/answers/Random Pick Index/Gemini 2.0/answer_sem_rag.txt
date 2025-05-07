@@ -1,0 +1,38 @@
+import random
+
+class Solution:
+    def __init__(self, nums):
+        """
+        Initializes the Solution object with the input array nums.
+        """
+        self.nums = nums
+
+    def pick(self, target):
+        """
+        Picks a random index i from nums where nums[i] == target.
+
+        Args:
+            target (int): The target number to find the index of.
+
+        Returns:
+            int: A random index i such that nums[i] == target.
+        """
+        indices = []
+        for i, num in enumerate(self.nums):
+            if num == target:
+                indices.append(i)
+        return random.choice(indices)
+
+# Explanation:
+
+# Intuition:
+# The problem requires us to randomly pick an index from the input array where the element at that index is equal to the given target.  The key is to ensure that if there are multiple such indices, each has an equal probability of being selected. The simplest approach is to iterate through the array, collect all indices where the element equals the target, and then randomly choose one from the collected indices.
+
+# Time and Space Complexity:
+# - Time Complexity: O(n), where n is the length of the input array `nums`. This is because we need to iterate through the entire array once to find all indices that match the target.
+# - Space Complexity: O(m), where m is the number of occurrences of the target in the array. In the worst case, if all elements in the array are equal to the target, the space complexity would be O(n).
+
+# Important Considerations:
+# 1. **Randomness**: The `random.choice()` function ensures that each index has an equal probability of being selected from the list of valid indices.
+# 2. **Target Existence**: The problem statement guarantees that the target number exists in the array, so we don't need to handle the case where no such index exists.
+# 3. **Space Optimization**:  For very large arrays and frequent calls to `pick`, the space complexity could become a concern.  Reservoir sampling could be used to reduce the space complexity to O(1), but it would make the code slightly more complex.  Given the constraints (array size <= 2 * 10^4 and at most 10^4 calls to pick), the current solution is efficient enough.

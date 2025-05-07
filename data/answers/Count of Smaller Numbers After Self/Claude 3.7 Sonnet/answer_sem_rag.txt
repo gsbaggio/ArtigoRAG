@@ -1,0 +1,32 @@
+class Solution:
+    def countSmaller(self, nums):
+        # Discretize values for BIT
+        sorted_nums = sorted(set(nums))
+        rank = {num: i + 1 for i, num in enumerate(sorted_nums)}
+        
+        n = len(nums)
+        result = [0] * n
+        bit = [0] * (len(rank) + 1)
+        
+        # Update value at index in BIT
+        def update(index, val):
+            while index < len(bit):
+                bit[index] += val
+                index += index & -index
+        
+        # Query sum up to index
+        def query(index):
+            res = 0
+            while index > 0:
+                res += bit[index]
+                index -= index & -index
+            return res
+        
+        # Process array from right to left
+        for i in range(n - 1, -1, -1):
+            # Query count of numbers smaller than current
+            result[i] = query(rank[nums[i]] - 1)
+            # Add current number to the tree
+            update(rank[nums[i]], 1)
+        
+        return result

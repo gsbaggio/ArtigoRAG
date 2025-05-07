@@ -1,0 +1,59 @@
+class Solution:
+    def minAreaFreeRect(self, points):
+        # Convert to tuples for hashability
+        points = [tuple(point) for point in points]
+        n = len(points)
+        point_set = set(points)
+        
+        # Dictionary to store potential diagonals
+        # Key: (center_x, center_y, distance_squared)
+        # Value: list of pairs of points forming this diagonal
+        diagonals = {}
+        
+        # Process all pairs of points
+        for i in range(n):
+            for j in range(i+1, n):
+                p1, p2 = points[i], points[j]
+                
+                # Calculate center point and squared distance
+                center_x = (p1[0] + p2[0]) / 2
+                center_y = (p1[1] + p2[1]) / 2
+                dist_squared = (p1[0] - p2[0])**2 + (p1[1] - p2[1])**2
+                
+                # Use a tuple with center coordinates and distance as key
+                key = (center_x, center_y, dist_squared)
+                
+                if key not in diagonals:
+                    diagonals[key] = []
+                
+                diagonals[key].append((p1, p2))
+        
+        min_area = float('inf')
+        
+        # Check each diagonal group
+        for diagonal_group in diagonals.values():
+            # If we have multiple pairs of points with the same center and distance,
+            # they could form rectangles
+            for i in range(len(diagonal_group)):
+                for j in range(i+1, len(diagonal_group)):
+                    p1, p2 = diagonal_group[i]
+                    p3, p4 = diagonal_group[j]
+                    
+                    # Calculate vectors
+                    v1 = (p1[0] - p3[0], p1[1] - p3[1])
+                    v2 = (p1[0] - p4[0], p1[1] - p4[1])
+                    
+                    # Calculate area using the cross product
+                    # Area = |v1 × v2| = |v1||v2|sinθ = sqrt(|v1|^2 * |v2|^2 - (v1·v2)^2)
+                    dot_product = v1[0] * v2[0] + v1[1] * v2[1]
+                    
+                    # Calculate the squared lengths
+                    len_v1_squared = v1[0]**2 + v1[1]**2
+                    len_v2_squared = v2[0]**2 + v2[1]**2
+                    
+                    # Calculate area
+                    area = (len_v1_squared * len_v2_squared - dot_product**2)**0.5
+                    
+                    min_area = min(min_area, area)
+        
+        return min_area if min_area != float('inf') else 0

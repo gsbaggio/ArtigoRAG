@@ -1,0 +1,28 @@
+class Solution:
+    def strongPasswordCheckerII(self, password: str) -> bool:
+        if len(password) < 8:
+            return False
+        
+        has_lowercase = False
+        has_uppercase = False
+        has_digit = False
+        has_special = False
+        special_chars = "!@#$%^&*()-+"
+        
+        for i, char in enumerate(password):
+            # Check for adjacent identical characters
+            if i > 0 and password[i] == password[i-1]:
+                return False
+            
+            # Check for character types
+            if char.islower():
+                has_lowercase = True
+            elif char.isupper():
+                has_uppercase = True
+            elif char.isdigit():
+                has_digit = True
+            elif char in special_chars:
+                has_special = True
+        
+        # Check if all criteria are met
+        return has_lowercase and has_uppercase and has_digit and has_special

@@ -1,0 +1,20 @@
+class Solution:
+    def hIndex(self, citations):
+        """
+        Calculate the h-index of a researcher based on their citations.
+
+        :param citations: List[int] - List of citations for each paper
+        :return: int - The h-index
+        """
+        # Step 1: Sort the citations in descending order
+        citations.sort(reverse=True)
+        
+        # Step 2: Iterate through the sorted list and find the h-index
+        h_index = 0
+        for i, citation in enumerate(citations):
+            if citation >= i + 1:
+                h_index = i + 1
+            else:
+                break
+        
+        return h_index

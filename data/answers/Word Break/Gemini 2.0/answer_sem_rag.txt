@@ -1,0 +1,58 @@
+class Solution:
+    def wordBreak(self, s: str, wordDict: list[str]) -> bool:
+        """
+        Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+        Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+        Example 1:
+
+        Input: s = "leetcode", wordDict = ["leet","code"]
+        Output: true
+        Explanation: Return true because "leetcode" can be segmented as "leet code".
+        Example 2:
+
+        Input: s = "applepenapple", wordDict = ["apple","pen"]
+        Output: true
+        Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+        Note that you are allowed to reuse a dictionary word.
+        Example 3:
+
+        Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+        Output: false
+
+        Constraints:
+
+        1 <= s.length <= 300
+        1 <= wordDict.length <= 1000
+        1 <= wordDict[i].length <= 20
+        s and wordDict[i] consist of only lowercase English letters.
+        All the strings of wordDict are unique.
+        """
+        n = len(s)
+        dp = [False] * (n + 1)
+        dp[0] = True  # Base case: an empty string can be segmented
+
+        for i in range(1, n + 1):
+            for word in wordDict:
+                if i >= len(word) and s[i - len(word):i] == word:
+                    dp[i] = dp[i] or dp[i - len(word)]
+
+        return dp[n]
+
+# Explanation:
+# 1. Intuition:
+#    - We use dynamic programming to solve this problem.
+#    - dp[i] represents whether the substring s[0:i] can be segmented into words from the dictionary.
+#    - The base case is dp[0] = True, which means an empty string can be segmented.
+#    - For each i from 1 to n, we iterate through the words in the dictionary.
+#    - If the current word is a suffix of s[0:i] and dp[i - len(word)] is True, then dp[i] is True.
+#
+# 2. Time and space complexity:
+#    - Time complexity: O(n * m * k), where n is the length of s, m is the number of words in wordDict, and k is the average length of the words in wordDict.
+#    - Space complexity: O(n), where n is the length of s.
+#
+# 3. Important considerations:
+#    - The order of the words in the dictionary does not matter.
+#    - The same word in the dictionary may be reused multiple times in the segmentation.
+#    - The algorithm can be optimized by using a set to store the words in the dictionary, which reduces the time complexity to O(n * m), where n is the length of s and m is the number of words in wordDict.
