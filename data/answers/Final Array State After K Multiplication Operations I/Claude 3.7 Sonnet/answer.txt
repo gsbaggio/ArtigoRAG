@@ -1,0 +1,23 @@
+class Solution:
+    def getFinalState(self, nums, k, multiplier):
+        # Make a copy to avoid modifying the input
+        nums = nums.copy()
+        
+        # Early return if multiplier is 1 (no change occurs)
+        if multiplier == 1:
+            return nums
+        
+        # Use a min heap to efficiently find the minimum element
+        # Store (value, index, original_index) tuples
+        from heapq import heapify, heappop, heappush
+        
+        heap = [(nums[i], i, i) for i in range(len(nums))]
+        heapify(heap)
+        
+        for _ in range(k):
+            val, idx, orig_idx = heappop(heap)
+            new_val = val * multiplier
+            nums[orig_idx] = new_val
+            heappush(heap, (new_val, idx, orig_idx))
+        
+        return nums

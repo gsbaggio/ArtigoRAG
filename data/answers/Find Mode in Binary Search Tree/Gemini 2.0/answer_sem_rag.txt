@@ -1,0 +1,132 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def findMode(self, root: TreeNode) -> list[int]:
+        """
+        Finds the mode(s) in a binary search tree (BST) with duplicates.
+
+        Args:
+            root: The root of the BST.
+
+        Returns:
+            A list of the mode(s) in the BST.
+        """
+
+        self.count = {}  # Stores the frequency of each value
+        self.max_frequency = 0  # Stores the maximum frequency encountered
+
+        def inorder(node):
+            """
+            Performs an inorder traversal of the BST to count the frequency of each value.
+            """
+            if not node:
+                return
+
+            inorder(node.left)
+
+            # Update the count for the current node's value
+            self.count[node.val] = self.count.get(node.val, 0) + 1
+            self.max_frequency = max(self.max_frequency, self.count[node.val])
+
+            inorder(node.right)
+
+        inorder(root)
+
+        # Collect the modes (values with maximum frequency)
+        modes = [val for val, freq in self.count.items() if freq == self.max_frequency]
+
+        return modes
+
+# Explanation:
+# 1. Intuition:
+#    - The inorder traversal of a BST visits nodes in ascending order. This property is useful because it groups duplicate values together.
+#    - By keeping track of the frequency of each value during the inorder traversal, we can efficiently determine the mode(s).
+#    - We use a dictionary (self.count) to store the frequency of each value encountered.
+#    - We also maintain a variable (self.max_frequency) to keep track of the maximum frequency seen so far.
+# 2. Time and Space Complexity:
+#    - Time Complexity: O(N), where N is the number of nodes in the BST. This is because we visit each node exactly once during the inorder traversal.
+#    - Space Complexity: O(N) in the worst case, where N is the number of nodes in the BST. This is because the dictionary (self.count) may store up to N unique values if all nodes have distinct values. The recursion stack for the inorder traversal can also take up to O(H) space, where H is the height of the tree. In the worst case (skewed tree), H can be equal to N.
+# 3. Important Considerations:
+#    - The inorder traversal ensures that we visit nodes in ascending order, which simplifies the process of counting frequencies.
+#    - The dictionary (self.count) allows us to efficiently store and update the frequency of each value.
+#    - The variable (self.max_frequency) helps us to quickly identify the mode(s) without having to iterate through the dictionary multiple times.
+#    - The code handles the case where there are multiple modes by collecting all values with the maximum frequency.
+#    - The code assumes that the input tree is a valid BST.
+# 4. Follow up: Could you do that without using any extra space? (Assume that the implicit stack space incurred due to recursion does not count).
+#    The above solution uses O(N) extra space. To solve it in O(1) space, we can use the Morris traversal algorithm.
+#    The Morris traversal algorithm is a tree traversal algorithm that does not use any extra space. It works by modifying the tree structure temporarily to keep track of the nodes that have been visited.
+#    Here is the code for the O(1) space solution:
+
+    def findMode_constant_space(self, root: TreeNode) -> list[int]:
+        """
+        Finds the mode(s) in a binary search tree (BST) with duplicates using constant space.
+
+        Args:
+            root: The root of the BST.
+
+        Returns:
+            A list of the mode(s) in the BST.
+        """
+
+        self.current_val = None
+        self.current_count = 0
+        self.max_count = 0
+        self.modes = []
+
+        def update_mode(val):
+            if val == self.current_val:
+                self.current_count += 1
+            else:
+                self.current_val = val
+                self.current_count = 1
+
+            if self.current_count > self.max_count:
+                self.max_count = self.current_count
+                self.modes = [val]
+            elif self.current_count == self.max_count:
+                self.modes.append(val)
+
+        node = root
+        while node:
+            if node.left:
+                # Find the inorder predecessor
+                predecessor = node.left
+                while predecessor.right and predecessor.right != node:
+                    predecessor = predecessor.right
+
+                if not predecessor.right:
+                    # Make the current node the right child of its inorder predecessor
+                    predecessor.right = node
+                    node = node.left
+                else:
+                    # Revert the changes made in the 'if' block
+                    predecessor.right = None
+                    update_mode(node.val)
+                    node = node.right
+            else:
+                update_mode(node.val)
+                node = node.right
+
+        return self.modes
+
+# Explanation:
+# 1. Intuition:
+#    - The Morris traversal algorithm allows us to traverse the tree in inorder without using any extra space.
+#    - We keep track of the current value, its count, the maximum count, and the modes.
+#    - We update the mode whenever we encounter a value with a higher count than the current maximum count.
+# 2. Time and Space Complexity:
+#    - Time Complexity: O(N), where N is the number of nodes in the BST. This is because we visit each node at most twice.
+#    - Space Complexity: O(1), excluding the space used to store the output.
+# 3. Important Considerations:
+#    - The Morris traversal algorithm modifies the tree structure temporarily, but it restores the tree to its original state before returning.
+#    - The code handles the case where there are multiple modes by appending all values with the maximum count to the modes list.
+#    - The code assumes that the input tree is a valid BST.
+# 4. Example Usage:
+#    root = TreeNode(1, None, TreeNode(2, TreeNode(2)))
+#    solution = Solution()
+#    modes = solution.findMode_constant_space(root)
+#    print(modes)  # Output: [2]

@@ -1,0 +1,20 @@
+class Solution:
+    def modifyArray(self, nums, k, multiplier):
+        # Perform k operations
+        for _ in range(k):
+            # Find the index of the first occurrence of the minimum value
+            min_index = 0
+            for i in range(1, len(nums)):
+                if nums[i] < nums[min_index]:
+                    min_index = i
+            
+            # Replace the minimum value with its multiplied value
+            nums[min_index] *= multiplier
+        
+        # Return the modified array
+        return nums
+
+# Example usage:
+solution = Solution()
+print(solution.modifyArray([2, 1, 3, 5, 6], 5, 2))  # Output: [8, 4, 6, 5, 6]
+print(solution.modifyArray([1, 2], 3, 4))           # Output: [16, 8]

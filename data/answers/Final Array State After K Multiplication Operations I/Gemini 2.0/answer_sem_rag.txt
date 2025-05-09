@@ -1,0 +1,42 @@
+class Solution:
+    def modify_array(self, nums, k, multiplier):
+        """
+        Modifies the input array 'nums' by performing 'k' operations.
+        In each operation, the minimum value in 'nums' is replaced by its product with 'multiplier'.
+
+        Args:
+            nums (list of int): The input array of integers.
+            k (int): The number of operations to perform.
+            multiplier (int): The multiplier to apply to the minimum value in each operation.
+
+        Returns:
+            list of int: The modified array after performing 'k' operations.
+        """
+
+        for _ in range(k):
+            min_val = float('inf')
+            min_index = -1
+
+            # Find the minimum value and its index in the array
+            for i in range(len(nums)):
+                if nums[i] < min_val:
+                    min_val = nums[i]
+                    min_index = i
+
+            # Replace the minimum value with its product with the multiplier
+            nums[min_index] = nums[min_index] * multiplier
+
+        return nums
+
+# Explanation:
+# 1. Intuition:
+#    The problem requires us to repeatedly find the minimum element in the array and multiply it by a given multiplier.
+#    A straightforward approach is to iterate 'k' times, and in each iteration, find the minimum element and update it.
+
+# 2. Time and Space Complexity:
+#    - Time Complexity: O(k * n), where 'k' is the number of operations and 'n' is the length of the array. This is because, in each of the 'k' iterations, we iterate through the entire array to find the minimum element.
+#    - Space Complexity: O(1), as we are modifying the array in-place and not using any extra space that scales with the input size.
+
+# 3. Important Considerations:
+#    - The problem statement specifies that if there are multiple occurrences of the minimum value, we should select the one that appears first. The code correctly handles this by iterating through the array from left to right and updating the 'min_index' only when a smaller value is found.
+#    - The constraints specify that 1 <= nums[i] <= 100 and 1 <= multiplier <= 5. This means that the values in the array can grow significantly with each operation. However, since the maximum number of operations 'k' is limited to 10, the values will not grow so large as to cause integer overflow issues in most programming languages.

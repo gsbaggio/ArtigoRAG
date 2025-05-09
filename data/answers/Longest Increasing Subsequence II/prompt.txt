@@ -1,0 +1,358 @@
+CURRENT QUESTION:
+You are given an integer array nums and an integer k.
+
+Find the longest subsequence of nums that meets the following requirements:
+
+The subsequence is strictly increasing and
+The difference between adjacent elements in the subsequence is at most k.
+Return the length of the longest subsequence that meets the requirements.
+
+A subsequence is an array that can be derived from another array by deleting some or no elements without changing the order of the remaining elements.
+
+ 
+
+Example 1:
+
+Input: nums = [4,2,1,4,3,4,5,8,15], k = 3
+Output: 5
+Explanation:
+The longest subsequence that meets the requirements is [1,3,4,5,8].
+The subsequence has a length of 5, so we return 5.
+Note that the subsequence [1,3,4,5,8,15] does not meet the requirements because 15 - 8 = 7 is larger than 3.
+Example 2:
+
+Input: nums = [7,4,5,1,8,12,4,7], k = 5
+Output: 4
+Explanation:
+The longest subsequence that meets the requirements is [4,5,8,12].
+The subsequence has a length of 4, so we return 4.
+Example 3:
+
+Input: nums = [1,5], k = 1
+Output: 1
+Explanation:
+The longest subsequence that meets the requirements is [1].
+The subsequence has a length of 1, so we return 1.
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+1 <= nums[i], k <= 105
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.86):
+Title: Longest Subsequence With Decreasing Adjacent Difference
+Categorys: Array Dynamic Programming
+Question text: You are given an array of integers nums.
+
+Your task is to find the length of the longest subsequence seq of nums, such that the absolute differences between consecutive elements form a non-increasing sequence of integers. In other words, for a subsequence seq0, seq1, seq2, ..., seqm of nums, |seq1 - seq0| >= |seq2 - seq1| >= ... >= |seqm - seqm - 1|.
+
+Return the length of such a subsequence.
+
+ 
+
+Example 1:
+
+Input: nums = [16,6,3]
+
+Output: 3
+
+Explanation: 
+
+The longest subsequence is [16, 6, 3] with the absolute adjacent differences [10, 3].
+
+Example 2:
+
+Input: nums = [6,5,3,4,2,1]
+
+Output: 4
+
+Explanation:
+
+The longest subsequence is [6, 4, 2, 1] with the absolute adjacent differences [2, 2, 1].
+
+Example 3:
+
+Input: nums = [10,20,10,19,10,20]
+
+Output: 5
+
+Explanation: 
+
+The longest subsequence is [10, 20, 10, 19, 10] with the absolute adjacent differences [10, 10, 9, 9].
+
+ 
+
+Constraints:
+
+2 <= nums.length <= 104
+1 <= nums[i] <= 300
+Solution: class Solution {
+public:
+    int longestSubsequence(vector<int>& nums) {
+        vector<vector<int>> dp(302, vector<int>(302));
+
+        for (int i = nums.size() - 1; i >= 0; --i){
+            int num = nums[i];
+    
+            for (int next = 1; next <= 300; ++next){
+                int diff = abs(next - num);
+                dp[num][diff] = max(dp[num][diff], dp[next][diff] + 1);
+            }
+
+            for (int j = 1; j <= 300; ++j){
+                dp[num][j] = max(dp[num][j], dp[num][j - 1]);
+            }
+        }
+
+        int ans = INT_MIN;
+        for (int i = 0; i <= 301; ++i){
+            for (int j = 0; j <= 301; ++j){
+                ans = max(ans, dp[i][j]);
+            }
+        }
+
+        return ans;
+    }
+};
+Explanation: Intuition
+Since the range of values is small we can store information about longest subsequences starting from specific values and having differences less than or equal to some value.
+
+Approach
+Going from back to front, compute for the current number num and for each possible absolute difference d, the maximum length subsequence starting from that number and having differences less than or equal to d between successive elements.
+
+To do so, we can use information computed earlier. For each other number num2, update dp[num][abs(num−num2)] using dp[num2][abs(num−num2)].
+
+Once this is done we can compute dp[num][diff] as max 
+d≤diff
+​
+ dp[num][d]. This is done because we are interested in the longest subsequences whose differences between successive elements are bounded by diff.
+
+Complexity
+Time complexity:
+O(n∗max_value)
+
+Space complexity:
+O(max_value 
+2
+ )
+
+Similar question 2 (Similarity score: 0.70):
+Title: Sum of Subsequence Widths
+Categorys: Array Math Sorting
+Question text: The width of a sequence is the difference between the maximum and minimum elements in the sequence.
+
+Given an array of integers nums, return the sum of the widths of all the non-empty subsequences of nums. Since the answer may be very large, return it modulo 109 + 7.
+
+A subsequence is a sequence that can be derived from an array by deleting some or no elements without changing the order of the remaining elements. For example, [3,6,2,7] is a subsequence of the array [0,3,1,6,2,2,7].
+
+ 
+
+Example 1:
+
+Input: nums = [2,1,3]
+Output: 6
+Explanation: The subsequences are [1], [2], [3], [2,1], [2,3], [1,3], [2,1,3].
+The corresponding widths are 0, 0, 0, 1, 1, 2, 2.
+The sum of these widths is 6.
+Example 2:
+
+Input: nums = [2]
+Output: 0
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+1 <= nums[i] <= 105
+Solution: class Solution {
+    public int sumSubseqWidths(int[] A) {
+        int MOD = 1_000_000_007;
+        int N = A.length;
+        Arrays.sort(A);
+
+        long[] pow2 = new long[N];
+        pow2[0] = 1;
+        for (int i = 1; i < N; ++i)
+            pow2[i] = pow2[i-1] * 2 % MOD;
+
+        long ans = 0;
+        for (int i = 0; i < N; ++i)
+            ans = (ans + (pow2[i] - pow2[N-1-i]) * A[i]) % MOD;
+
+        return (int) ans;
+    }
+}
+Explanation: Mathematical
+Intuition
+
+Let's try to count the number of subsequences with minimum A[i] and maximum A[j].
+
+Algorithm
+
+We can sort the array as it doesn't change the answer. After sorting the array, this allows us to know that the number of subsequences with minimum A[i] and maximum A[j] is 2 
+j−i−1
+ . Hence, the desired answer is:
+
+j>i
+∑
+​
+ (2 
+j−i−1
+ )(A 
+j
+​
+ −A 
+i
+​
+ )
+
+=( 
+i=0
+∑
+n−2
+​
+  
+j=i+1
+∑
+n−1
+​
+ (2 
+j−i−1
+ )(A 
+j
+​
+ ))−( 
+i=0
+∑
+n−2
+​
+  
+j=i+1
+∑
+n−1
+​
+ (2 
+j−i−1
+ )(A 
+i
+​
+ ))
+
+=((2 
+0
+ A 
+1
+​
+ +2 
+1
+ A 
+2
+​
+ +2 
+2
+ A 
+3
+​
+ +⋯)+(2 
+0
+ A 
+2
+​
+ +2 
+1
+ A 
+3
+​
+ +⋯)+(2 
+0
+ A 
+3
+​
+ +2 
+1
+ A 
+4
+​
+ +⋯)+⋯)
+−( 
+i=0
+∑
+n−2
+​
+ (2 
+0
+ +2 
+1
+ +⋯+2 
+N−i−2
+ )(A 
+i
+​
+ ))
+
+=( 
+j=1
+∑
+n−1
+​
+ (2 
+j
+ −1)A 
+j
+​
+ )−( 
+i=0
+∑
+n−2
+​
+ (2 
+N−i−1
+ −1)A 
+i
+​
+ )
+
+= 
+i=0
+∑
+n−1
+​
+ (((2 
+i
+ −1)A 
+i
+​
+ )−((2 
+N−i−1
+ −1)A 
+i
+​
+ ))
+
+= 
+i=0
+∑
+n−1
+​
+ (2 
+i
+ −2 
+N−i−1
+ )A 
+i
+​
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. Use the similar questions as references to improve the solution, but only if they are relevant.
+        5. Don't use any external libraries. Don't need to import any libraries.

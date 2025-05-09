@@ -1,0 +1,54 @@
+#include <vector>
+using namespace std;
+
+class Solution {
+private:
+    int currentCount = 0;  // Count of the current value
+    int maxCount = 0;      // Maximum frequency of any value
+    int previousValue = INT_MIN; // Previous value during in-order traversal
+    vector<int> modes;     // Stores the modes
+
+    // Helper function for in-order traversal
+    void inOrder(TreeNode* node, bool collectModes) {
+        if (!node) return;
+
+        // Traverse the left subtree
+        inOrder(node->left, collectModes);
+
+        // Process the current node
+        if (node->val == previousValue) {
+            currentCount++;
+        } else {
+            currentCount = 1;
+            previousValue = node->val;
+        }
+
+        if (currentCount > maxCount) {
+            maxCount = currentCount;
+            if (collectModes) {
+                modes.clear();
+                modes.push_back(node->val);
+            }
+        } else if (currentCount == maxCount && collectModes) {
+            modes.push_back(node->val);
+        }
+
+        // Traverse the right subtree
+        inOrder(node->right, collectModes);
+    }
+
+public:
+    vector<int> findMode(TreeNode* root) {
+        // First pass: Determine the maximum frequency
+        inOrder(root, false);
+
+        // Reset variables for the second pass
+        currentCount = 0;
+        previousValue = INT_MIN;
+
+        // Second pass: Collect all modes
+        inOrder(root, true);
+
+        return modes;
+    }
+};

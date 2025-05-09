@@ -1,0 +1,44 @@
+import random
+
+class RandomizedSet:
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.data = []  # List to store elements
+        self.index_map = {}  # Dictionary to store element-to-index mapping
+
+    def insert(self, val: int) -> bool:
+        """
+        Inserts a value to the set. Returns true if the set did not already contain the specified element.
+        """
+        if val in self.index_map:
+            return False  # Element already exists
+        self.index_map[val] = len(self.data)  # Map the value to its index
+        self.data.append(val)  # Add the value to the list
+        return True
+
+    def remove(self, val: int) -> bool:
+        """
+        Removes a value from the set. Returns true if the set contained the specified element.
+        """
+        if val not in self.index_map:
+            return False  # Element does not exist
+        # Get the index of the element to remove
+        index_to_remove = self.index_map[val]
+        # Get the last element in the list
+        last_element = self.data[-1]
+        # Swap the last element with the element to remove
+        self.data[index_to_remove] = last_element
+        self.index_map[last_element] = index_to_remove
+        # Remove the last element from the list
+        self.data.pop()
+        # Remove the element from the map
+        del self.index_map[val]
+        return True
+
+    def getRandom(self) -> int:
+        """
+        Get a random element from the set.
+        """
+        return random.choice(self.data)

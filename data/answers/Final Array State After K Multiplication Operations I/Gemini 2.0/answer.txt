@@ -1,0 +1,29 @@
+class Solution:
+    def getFinalState(self, nums, k, multiplier):
+        """
+        Performs k operations on the input array nums, where each operation involves
+        finding the minimum value, multiplying it by the multiplier, and updating the array.
+
+        Args:
+            nums (List[int]): The input integer array.
+            k (int): The number of operations to perform.
+            multiplier (int): The multiplier to apply to the minimum value in each operation.
+
+        Returns:
+            List[int]: The final state of the nums array after performing k operations.
+        """
+
+        for _ in range(k):
+            min_val = float('inf')
+            min_index = -1
+
+            # Find the minimum value and its index
+            for i in range(len(nums)):
+                if nums[i] < min_val:
+                    min_val = nums[i]
+                    min_index = i
+
+            # Replace the minimum value with its multiplied value
+            nums[min_index] *= multiplier
+
+        return nums

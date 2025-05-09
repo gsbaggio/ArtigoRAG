@@ -1,0 +1,137 @@
+CURRENT QUESTION:
+You are given an integer array nums.
+
+A XOR triplet is defined as the XOR of three elements nums[i] XOR nums[j] XOR nums[k] where i <= j <= k.
+
+Return the number of unique XOR triplet values from all possible triplets (i, j, k).
+
+ 
+
+Example 1:
+
+Input: nums = [1,3]
+
+Output: 2
+
+Explanation:
+
+The possible XOR triplet values are:
+
+(0, 0, 0) → 1 XOR 1 XOR 1 = 1
+(0, 0, 1) → 1 XOR 1 XOR 3 = 3
+(0, 1, 1) → 1 XOR 3 XOR 3 = 1
+(1, 1, 1) → 3 XOR 3 XOR 3 = 3
+The unique XOR values are {1, 3}. Thus, the output is 2.
+
+Example 2:
+
+Input: nums = [6,7,8,9]
+
+Output: 4
+
+Explanation:
+
+The possible XOR triplet values are {6, 7, 8, 9}. Thus, the output is 4.
+
+ 
+
+Constraints:
+
+1 <= nums.length <= 1500
+1 <= nums[i] <= 1500
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.93):
+Title: Number of Unique XOR Triplets I
+Categorys: Array Math Bit Manipulation
+Question text: You are given an integer array nums of length n, where nums is a permutation of the numbers in the range [1, n].
+
+A XOR triplet is defined as the XOR of three elements nums[i] XOR nums[j] XOR nums[k] where i <= j <= k.
+
+Return the number of unique XOR triplet values from all possible triplets (i, j, k).
+
+ 
+
+Example 1:
+
+Input: nums = [1,2]
+
+Output: 2
+
+Explanation:
+
+The possible XOR triplet values are:
+
+(0, 0, 0) → 1 XOR 1 XOR 1 = 1
+(0, 0, 1) → 1 XOR 1 XOR 2 = 2
+(0, 1, 1) → 1 XOR 2 XOR 2 = 1
+(1, 1, 1) → 2 XOR 2 XOR 2 = 2
+The unique XOR values are {1, 2}, so the output is 2.
+
+Example 2:
+
+Input: nums = [3,1,2]
+
+Output: 4
+
+Explanation:
+
+The possible XOR triplet values include:
+
+(0, 0, 0) → 3 XOR 3 XOR 3 = 3
+(0, 0, 1) → 3 XOR 3 XOR 1 = 1
+(0, 0, 2) → 3 XOR 3 XOR 2 = 2
+(0, 1, 2) → 3 XOR 1 XOR 2 = 0
+The unique XOR values are {0, 1, 2, 3}, so the output is 4.
+
+ 
+
+Constraints:
+
+1 <= n == nums.length <= 105
+1 <= nums[i] <= n
+nums is a permutation of integers from 1 to n.
+Solution: class Solution {
+public:
+    int uniqueXorTriplets(vector<int>& nums) {
+        int n = nums.size();
+
+        if(n < 3) return n;
+
+        // Find the Most Significant Bit
+        int cnt = 0;
+        int temp = n;
+        while(temp > 0){
+            temp >>= 1;
+            cnt++;
+        }
+        
+        return pow(2, cnt);
+    }
+};
+Explanation: Problem Summary
+Given a permutation nums of numbers from 1 to n, you are to find the number of unique values you can get by doing XOR of all triplets (i, j, k) where i <= j <= k.
+
+Understanding the Solution
+For n < 3
+For n = 1, only one element → 1 unique value.
+For n = 2, only 2 combinations → 2 unique values.
+For n >= 3
+The number of possible XOR values between numbers from 1 to n is bounded by the number of bits required to represent n.
+Since any XOR operation between values in [1, n] gives a result between 0 to (2^cnt - 1), the maximum number of unique values is 2^cnt.
+Complexity
+Time complexity: O(log n)
+Space complexity: O(1)
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. Use the similar questions as references to improve the solution, but only if they are relevant.
+        5. Don't use any external libraries. Don't need to import any libraries.

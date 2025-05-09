@@ -1,0 +1,23 @@
+class Solution:
+    def getFinalState(self, nums, k, multiplier):
+        # Initialize variables
+        min_val = min(nums)
+        min_idx = nums.index(min_val)
+        n = len(nums)
+        
+        # Perform k operations
+        for _ in range(k):
+            # Update the minimum value
+            min_val = min(min_val * multiplier, nums[min_idx])
+            # Update the array
+            nums[min_idx] = min_val
+            
+            # Find the next minimum value and its index
+            if min_idx + 1 < n and nums[min_idx + 1] < min_val:
+                min_val = nums[min_idx + 1]
+                min_idx += 1
+            else:
+                min_val = min(nums)
+                min_idx = nums.index(min_val)
+        
+        return nums

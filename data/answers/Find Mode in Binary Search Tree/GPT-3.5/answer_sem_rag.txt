@@ -1,0 +1,44 @@
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def findMode(self, root: TreeNode) -> List[int]:
+        def inorder_traversal(node):
+            nonlocal modes, prev_val, count, max_count, second_max_count
+            
+            if not node:
+                return
+            
+            inorder_traversal(node.left)
+            
+            if node.val == prev_val:
+                count += 1
+            else:
+                count = 1
+            
+            if count >= max_count:
+                if count > max_count:
+                    modes = []
+                modes.append(node.val)
+                second_max_count = max_count
+                max_count = count
+            elif count == second_max_count:
+                modes.append(node.val)
+            
+            prev_val = node.val
+            
+            inorder_traversal(node.right)
+        
+        modes = []
+        prev_val = None
+        count = 0
+        max_count = 0
+        second_max_count = 0
+        
+        inorder_traversal(root)
+        
+        return modes

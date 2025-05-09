@@ -1,0 +1,48 @@
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def findMode(self, root: TreeNode):
+        # Initialize variables to track state
+        self.current_val = None
+        self.current_count = 0
+        self.max_count = 0
+        self.modes = []
+
+        # Helper function for in-order traversal
+        def in_order(node):
+            if not node:
+                return
+            
+            # Traverse left subtree
+            in_order(node.left)
+            
+            # Process current node
+            handle_value(node.val)
+            
+            # Traverse right subtree
+            in_order(node.right)
+
+        # Function to handle the value of the current node
+        def handle_value(val):
+            if val != self.current_val:
+                self.current_val = val
+                self.current_count = 0
+            self.current_count += 1
+
+            # Update max_count and modes
+            if self.current_count > self.max_count:
+                self.max_count = self.current_count
+                self.modes = [val]
+            elif self.current_count == self.max_count:
+                self.modes.append(val)
+
+        # First pass: Determine the max frequency
+        in_order(root)
+
+        # Return the modes
+        return self.modes

@@ -1,0 +1,19 @@
+class Solution:
+    def getFinalState(self, nums, k, multiplier):
+        # Create a copy to avoid modifying the input
+        nums_copy = nums.copy()
+        
+        for _ in range(k):
+            # Find the minimum value and its index
+            min_value = float('inf')
+            min_index = -1
+            
+            for i in range(len(nums_copy)):
+                if nums_copy[i] < min_value:
+                    min_value = nums_copy[i]
+                    min_index = i
+            
+            # Replace the minimum value with its product with multiplier
+            nums_copy[min_index] *= multiplier
+        
+        return nums_copy

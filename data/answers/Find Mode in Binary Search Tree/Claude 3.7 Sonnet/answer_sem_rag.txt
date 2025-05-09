@@ -1,0 +1,59 @@
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def findMode(self, root: Optional[TreeNode]) -> List[int]:
+        # Edge case
+        if not root:
+            return []
+        
+        # Solution without extra space using in-order traversal properties of BST
+        self.prev = None
+        self.current_count = 0
+        self.max_count = 0
+        self.modes = []
+        
+        # First pass to find the maximum count
+        self.inorder_traverse(root, count_only=True)
+        
+        # Reset for second pass
+        self.prev = None
+        self.current_count = 0
+        
+        # Second pass to collect the modes
+        self.inorder_traverse(root, count_only=False)
+        
+        return self.modes
+    
+    def inorder_traverse(self, node, count_only):
+        if not node:
+            return
+        
+        # Left
+        self.inorder_traverse(node.left, count_only)
+        
+        # Process current node
+        if self.prev is None or node.val != self.prev:
+            # New value encountered
+            self.current_count = 1
+        else:
+            # Same value as previous
+            self.current_count += 1
+        
+        # Update max_count and collect modes if needed
+        if self.current_count > self.max_count:
+            self.max_count = self.current_count
+            if not count_only:
+                self.modes = [node.val]  # Reset modes with current value
+        elif self.current_count == self.max_count and not count_only:
+            self.modes.append(node.val)  # Add to modes
+        
+        # Update previous value
+        self.prev = node.val
+        
+        # Right
+        self.inorder_traverse(node.right, count_only)

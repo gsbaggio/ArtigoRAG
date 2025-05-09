@@ -1,0 +1,35 @@
+class RandomizedSet:
+    def __init__(self):
+        # List to store the elements
+        self.values = []
+        # Hash map to store the value-to-index mapping
+        self.val_to_index = {}
+
+    def insert(self, val: int) -> bool:
+        # If the value already exists, return False
+        if val in self.val_to_index:
+            return False
+        # Add the value to the list and update the hash map
+        self.values.append(val)
+        self.val_to_index[val] = len(self.values) - 1
+        return True
+
+    def remove(self, val: int) -> bool:
+        # If the value doesn't exist, return False
+        if val not in self.val_to_index:
+            return False
+        # Get the index of the value to be removed
+        index_to_remove = self.val_to_index[val]
+        # Swap the value with the last element in the list
+        last_element = self.values[-1]
+        self.values[index_to_remove] = last_element
+        self.val_to_index[last_element] = index_to_remove
+        # Remove the last element from the list and hash map
+        self.values.pop()
+        del self.val_to_index[val]
+        return True
+
+    def getRandom(self) -> int:
+        # Return a random element from the list
+        import random
+        return random.choice(self.values)
