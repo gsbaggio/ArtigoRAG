@@ -1,0 +1,79 @@
+#include <vector>
+#include <algorithm>
+#include <iostream>
+using namespace std;
+
+class FenwickTree {
+private:
+    vector<int> tree;
+    int size;
+
+public:
+    FenwickTree(int n) : size(n) {
+        tree.resize(n + 1, 0);
+    }
+
+    void update(int index, int value) {
+        while (index <= size) {
+            tree[index] = max(tree[index], value);
+            index += index & -index;
+        }
+    }
+
+    int query(int index) {
+        int maxVal = 0;
+        while (index > 0) {
+            maxVal = max(maxVal, tree[index]);
+            index -= index & -index;
+        }
+        return maxVal;
+    }
+};
+
+class Solution {
+public:
+    int longestSubsequence(vector<int>& nums, int k) {
+        int n = nums.size();
+        int maxVal = *max_element(nums.begin(), nums.end());
+
+        // Fenwick Tree for range queries
+        FenwickTree fenwick(maxVal);
+
+        int result = 0;
+
+        for (int num : nums) {
+            // Query the maximum dp value for the range [num - k, num - 1]
+            int maxDp = 0;
+            if (num - k > 0) {
+                maxDp = fenwick.query(num - k);
+            }
+
+            // Update dp value for the current number
+            int currentDp = maxDp + 1;
+            fenwick.update(num, currentDp);
+
+            // Update the result
+            result = max(result, currentDp);
+        }
+
+        return result;
+    }
+};
+
+// Example usage
+int main() {
+    Solution solution;
+    vector<int> nums1 = {4, 2, 1, 4, 3, 4, 5, 8, 15};
+    int k1 = 3;
+    cout << solution.longestSubsequence(nums1, k1) << endl; // Output: 5
+
+    vector<int> nums2 = {7, 4, 5, 1, 8, 12, 4, 7};
+    int k2 = 5;
+    cout << solution.longestSubsequence(nums2, k2) << endl; // Output: 4
+
+    vector<int> nums3 = {1, 5};
+    int k3 = 1;
+    cout << solution.longestSubsequence(nums3, k3) << endl; // Output: 1
+
+    return 0;
+}

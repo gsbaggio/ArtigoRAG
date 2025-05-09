@@ -1,0 +1,50 @@
+class Solution:
+    def longestSubsequence(self, nums, k):
+        """
+        Finds the length of the longest subsequence of nums that is strictly increasing and
+        the difference between adjacent elements in the subsequence is at most k.
+
+        Args:
+            nums (List[int]): The input list of integers.
+            k (int): The maximum difference between adjacent elements in the subsequence.
+
+        Returns:
+            int: The length of the longest subsequence that meets the requirements.
+        """
+
+        n = len(nums)
+        if n == 0:
+            return 0
+
+        # dp[i] stores the length of the longest subsequence ending at nums[i]
+        dp = [1] * n
+
+        for i in range(1, n):
+            for j in range(i):
+                # Check if nums[i] can be added to the subsequence ending at nums[j]
+                if nums[i] > nums[j] and nums[i] - nums[j] <= k:
+                    # Update dp[i] if adding nums[i] results in a longer subsequence
+                    dp[i] = max(dp[i], dp[j] + 1)
+
+        # The maximum value in dp is the length of the longest subsequence
+        return max(dp)
+
+# Explanation:
+# 1. Intuition:
+#    - The problem can be solved using dynamic programming.
+#    - We can build a dp array where dp[i] stores the length of the longest subsequence ending at nums[i].
+#    - For each element nums[i], we iterate through all previous elements nums[j] (where j < i).
+#    - If nums[i] is greater than nums[j] and the difference between them is at most k, then we can potentially extend the subsequence ending at nums[j] by adding nums[i].
+#    - We update dp[i] to be the maximum of its current value and dp[j] + 1.
+#    - Finally, the maximum value in the dp array will be the length of the longest subsequence that meets the requirements.
+
+# 2. Time and Space Complexity:
+#    - Time Complexity: O(n^2), where n is the length of the input array nums. This is because we have two nested loops.
+#    - Space Complexity: O(n), where n is the length of the input array nums. This is because we use a dp array of size n to store the lengths of the longest subsequences.
+
+# 3. Important Considerations:
+#    - The problem requires finding a strictly increasing subsequence with a maximum difference of k between adjacent elements.
+#    - The dynamic programming approach allows us to efficiently explore all possible subsequences and find the longest one that meets the requirements.
+#    - The base case for the dp array is that each element can form a subsequence of length 1 by itself.
+#    - The algorithm iterates through the array and updates the dp array based on the conditions specified in the problem.
+#    - The maximum value in the dp array represents the length of the longest subsequence that meets the requirements.

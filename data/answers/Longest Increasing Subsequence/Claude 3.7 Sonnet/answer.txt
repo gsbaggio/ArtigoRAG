@@ -1,0 +1,30 @@
+class Solution:
+    def lengthOfLIS(self, nums: list[int]) -> int:
+        # Edge case
+        if not nums:
+            return 0
+        
+        n = len(nums)
+        
+        # O(n log n) approach using binary search
+        # tails[i] represents the smallest ending value of an increasing subsequence of length i+1
+        tails = []
+        
+        for num in nums:
+            # Binary search to find the position to insert the current number
+            left, right = 0, len(tails)
+            while left < right:
+                mid = left + (right - left) // 2
+                if tails[mid] < num:
+                    left = mid + 1
+                else:
+                    right = mid
+            
+            # If we're at the end, append
+            if left == len(tails):
+                tails.append(num)
+            # Otherwise, replace the element at the position
+            else:
+                tails[left] = num
+                
+        return len(tails)

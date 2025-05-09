@@ -1,0 +1,37 @@
+class Solution {
+    public boolean predictTheWinner(int[] nums) {
+        int n = nums.length;
+        
+        // Use memoization to avoid recalculating subproblems
+        Integer[][] memo = new Integer[n][n];
+        
+        // maxDiff represents the maximum score difference (player's score - opponent's score)
+        // that the current player can achieve from the subarray nums[i...j]
+        int maxDiff = maxDifference(nums, 0, n-1, memo);
+        
+        // Player 1 wins if the maximum score difference is >= 0
+        return maxDiff >= 0;
+    }
+    
+    private int maxDifference(int[] nums, int left, int right, Integer[][] memo) {
+        // Base case: only one element left
+        if (left == right) {
+            return nums[left];
+        }
+        
+        // Check if this subproblem has already been solved
+        if (memo[left][right] != null) {
+            return memo[left][right];
+        }
+        
+        // Choose the left element and subtract opponent's best move from the remaining array
+        int chooseLeft = nums[left] - maxDifference(nums, left+1, right, memo);
+        
+        // Choose the right element and subtract opponent's best move from the remaining array
+        int chooseRight = nums[right] - maxDifference(nums, left, right-1, memo);
+        
+        // Take the maximum of the two choices
+        memo[left][right] = Math.max(chooseLeft, chooseRight);
+        return memo[left][right];
+    }
+}

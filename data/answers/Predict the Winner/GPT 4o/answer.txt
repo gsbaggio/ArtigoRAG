@@ -1,0 +1,32 @@
+class Solution:
+    def predictTheWinner(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: bool
+        """
+        # Memoization dictionary to store results of subproblems
+        memo = {}
+
+        def dp(left, right):
+            """
+            Returns the maximum score difference Player 1 can achieve
+            if the current array is nums[left:right+1].
+            """
+            if left == right:
+                # Base case: only one number left
+                return nums[left]
+
+            # Check if the result is already computed
+            if (left, right) in memo:
+                return memo[(left, right)]
+
+            # Player 1 chooses nums[left] or nums[right]
+            pick_left = nums[left] - dp(left + 1, right)
+            pick_right = nums[right] - dp(left, right - 1)
+
+            # Store the result in the memo table
+            memo[(left, right)] = max(pick_left, pick_right)
+            return memo[(left, right)]
+
+        # Start the recursion from the full array
+        return dp(0, len(nums) - 1) >= 0

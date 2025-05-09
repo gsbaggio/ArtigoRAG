@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int uniqueXorTriplets(vector<int>& nums) {
+        unordered_set<int> uniqueValues;
+        int n = nums.size();
+        
+        // Handle all possible triplets where i <= j <= k
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                for (int k = j; k < n; k++) {
+                    int xorValue = nums[i] ^ nums[j] ^ nums[k];
+                    uniqueValues.insert(xorValue);
+                }
+            }
+        }
+        
+        return uniqueValues.size();
+    }
+};

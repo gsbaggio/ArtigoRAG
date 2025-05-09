@@ -1,0 +1,43 @@
+#include <iostream>
+#include <vector>
+#include <unordered_set>
+
+class Solution {
+public:
+    int uniqueXorTriplets(std::vector<int>& nums) {
+        std::unordered_set<int> unique_xors;
+        int n = nums.size();
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = i; j < n; ++j) {
+                for (int k = j; k < n; ++k) {
+                    unique_xors.insert(nums[i] ^ nums[j] ^ nums[k]);
+                }
+            }
+        }
+
+        return unique_xors.size();
+    }
+};
+
+/*
+Explanation:
+
+The problem asks us to find the number of unique XOR triplet values from all possible triplets (i, j, k) in the input array `nums`, where i <= j <= k.
+
+Intuition:
+
+The most straightforward approach is to iterate through all possible triplets (i, j, k) that satisfy the condition i <= j <= k, calculate the XOR sum of the elements at these indices (nums[i] ^ nums[j] ^ nums[k]), and store the XOR sums in a set to keep track of the unique values.  Finally, the size of the set will give us the number of unique XOR triplet values.
+
+Time and Space Complexity:
+
+- Time Complexity: O(n^3), where n is the length of the input array `nums`. This is because we have three nested loops to iterate through all possible triplets.
+- Space Complexity: O(U), where U is the number of unique XOR triplet values. In the worst case, where all XOR triplet values are unique, the space complexity could be O(n^3). However, given the constraints (1 <= nums.length <= 1500, 1 <= nums[i] <= 1500), the number of unique XOR values is likely to be much smaller than n^3 in practice.  We use an unordered_set to store the unique XOR values, which provides average O(1) insertion and lookup times.
+
+Important Considerations:
+
+- The constraint i <= j <= k is crucial. It ensures that we only consider triplets in non-decreasing order of indices.
+- The use of an unordered_set is important for efficiently tracking unique XOR values.  It avoids duplicate counting and provides fast lookups.
+- The problem constraints (1 <= nums.length <= 1500, 1 <= nums[i] <= 1500) suggest that an O(n^3) solution is acceptable, as n is relatively small.  If the constraints were larger, we would need to explore more optimized approaches.
+
+*/

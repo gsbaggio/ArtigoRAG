@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int uniqueXorTriplets(vector<int>& nums) {
+        // Use a set to store unique XOR triplet values
+        unordered_set<int> uniqueXorValues;
+        int n = nums.size();
+
+        // Iterate through all possible triplets (i, j, k)
+        for (int i = 0; i < n; ++i) {
+            for (int j = i; j < n; ++j) {
+                for (int k = j; k < n; ++k) {
+                    // Calculate XOR of the triplet and add to the set
+                    int xorValue = nums[i] ^ nums[j] ^ nums[k];
+                    uniqueXorValues.insert(xorValue);
+                }
+            }
+        }
+
+        // The size of the set represents the number of unique XOR values
+        return uniqueXorValues.size();
+    }
+};

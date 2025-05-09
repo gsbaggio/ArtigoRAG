@@ -1,0 +1,7 @@
+class Solution:
+    def uniqueXorTriplets(self, nums):
+        # Use a set to store unique elements
+        unique_values = set(nums)
+        
+        # The number of unique XOR triplet values is the size of the set
+        return len(unique_values)

@@ -1,0 +1,50 @@
+class Solution:
+    def predictTheWinner(self, nums):
+        """
+        Predicts whether Player 1 can win the game.
+
+        Args:
+            nums (List[int]): The input array of integers.
+
+        Returns:
+            bool: True if Player 1 can win, False otherwise.
+        """
+        n = len(nums)
+        dp = {}  # Memoization dictionary to store results of subproblems
+
+        def solve(left, right, turn):
+            """
+            Recursive function to determine the score difference between Player 1 and Player 2.
+
+            Args:
+                left (int): The left index of the current subarray.
+                right (int): The right index of the current subarray.
+                turn (int): 1 if it's Player 1's turn, -1 if it's Player 2's turn.
+
+            Returns:
+                int: The score difference between Player 1 and Player 2 for the current subarray.
+            """
+            if left > right:
+                return 0  # Base case: no more elements in the array
+
+            if (left, right, turn) in dp:
+                return dp[(left, right, turn)]  # Return memoized result if available
+
+            # Player 1's turn: maximize the score difference
+            if turn == 1:
+                score = max(
+                    nums[left] + solve(left + 1, right, -1),  # Choose the left element
+                    nums[right] + solve(left, right - 1, -1),  # Choose the right element
+                )
+            # Player 2's turn: minimize the score difference (from Player 1's perspective)
+            else:
+                score = min(
+                    -nums[left] + solve(left + 1, right, 1),  # Choose the left element
+                    -nums[right] + solve(left, right - 1, 1),  # Choose the right element
+                )
+
+            dp[(left, right, turn)] = score  # Memoize the result
+            return score
+
+        # Player 1 wins if the score difference is non-negative
+        return solve(0, n - 1, 1) >= 0

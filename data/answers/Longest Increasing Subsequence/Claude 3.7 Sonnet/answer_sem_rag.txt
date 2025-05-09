@@ -1,0 +1,27 @@
+class Solution:
+    def lengthOfLIS(self, nums: list[int]) -> int:
+        if not nums:
+            return 0
+            
+        # This array will store the smallest ending value for each length
+        tails = []
+        
+        for num in nums:
+            # Binary search to find the position to insert the current element
+            left, right = 0, len(tails)
+            
+            while left < right:
+                mid = (left + right) // 2
+                if tails[mid] < num:
+                    left = mid + 1
+                else:
+                    right = mid
+            
+            # If we're at the end of tails array, we found a new longest sequence
+            if left == len(tails):
+                tails.append(num)
+            # Otherwise, replace the element at the found position
+            else:
+                tails[left] = num
+                
+        return len(tails)

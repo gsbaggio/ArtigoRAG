@@ -1,0 +1,61 @@
+class Solution:
+    def largestMagicSquare(self, grid: list[list[int]]) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        
+        # Precompute row and column prefix sums for efficient calculation
+        row_prefix = [[0] * (n + 1) for _ in range(m)]
+        col_prefix = [[0] * (m + 1) for _ in range(n)]
+        
+        for i in range(m):
+            for j in range(n):
+                row_prefix[i][j + 1] = row_prefix[i][j] + grid[i][j]
+                
+        for j in range(n):
+            for i in range(m):
+                col_prefix[j][i + 1] = col_prefix[j][i] + grid[i][j]
+        
+        # Check from the largest possible size down to 1
+        for k in range(min(m, n), 0, -1):
+            if self.hasMagicSquare(grid, k, row_prefix, col_prefix, m, n):
+                return k
+        
+        return 1  # Every 1×1 grid is trivially a magic square
+    
+    def hasMagicSquare(self, grid, k, row_prefix, col_prefix, m, n):
+        # Try all possible top-left positions for a k×k square
+        for i in range(m - k + 1):
+            for j in range(n - k + 1):
+                if self.isMagicSquare(grid, i, j, k, row_prefix, col_prefix):
+                    return True
+        return False
+    
+    def isMagicSquare(self, grid, row, col, k, row_prefix, col_prefix):
+        # Calculate the sum of the first row to use as reference
+        target_sum = row_prefix[row][col + k] - row_prefix[row][col]
+        
+        # Check all rows
+        for i in range(row, row + k):
+            if row_prefix[i][col + k] - row_prefix[i][col] != target_sum:
+                return False
+        
+        # Check all columns
+        for j in range(col, col + k):
+            if col_prefix[j][row + k] - col_prefix[j][row] != target_sum:
+                return False
+        
+        # Check main diagonal (top-left to bottom-right)
+        diag1_sum = 0
+        for i in range(k):
+            diag1_sum += grid[row + i][col + i]
+        if diag1_sum != target_sum:
+            return False
+        
+        # Check anti-diagonal (top-right to bottom-left)
+        diag2_sum = 0
+        for i in range(k):
+            diag2_sum += grid[row + i][col + k - 1 - i]
+        if diag2_sum != target_sum:
+            return False
+        
+        return True

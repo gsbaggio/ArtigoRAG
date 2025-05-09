@@ -1,33 +1,44 @@
 CURRENT QUESTION:
-Given an integer array nums with possible duplicates, randomly output the index of a given target number. You can assume that the given target number must exist in the array.
+You are given an integer array nums and an integer k.
 
-Implement the Solution class:
+Find the longest subsequence of nums that meets the following requirements:
 
-Solution(int[] nums) Initializes the object with the array nums.
-int pick(int target) Picks a random index i from nums where nums[i] == target. If there are multiple valid i's, then each index should have an equal probability of returning.
+The subsequence is strictly increasing and
+The difference between adjacent elements in the subsequence is at most k.
+Return the length of the longest subsequence that meets the requirements.
+
+A subsequence is an array that can be derived from another array by deleting some or no elements without changing the order of the remaining elements.
+
  
 
 Example 1:
 
-Input
-["Solution", "pick", "pick", "pick"]
-[[[1, 2, 3, 3, 3]], [3], [1], [3]]
-Output
-[null, 4, 0, 2]
+Input: nums = [4,2,1,4,3,4,5,8,15], k = 3
+Output: 5
+Explanation:
+The longest subsequence that meets the requirements is [1,3,4,5,8].
+The subsequence has a length of 5, so we return 5.
+Note that the subsequence [1,3,4,5,8,15] does not meet the requirements because 15 - 8 = 7 is larger than 3.
+Example 2:
 
-Explanation
-Solution solution = new Solution([1, 2, 3, 3, 3]);
-solution.pick(3); // It should return either index 2, 3, or 4 randomly. Each index should have equal probability of returning.
-solution.pick(1); // It should return 0. Since in the array only nums[0] is equal to 1.
-solution.pick(3); // It should return either index 2, 3, or 4 randomly. Each index should have equal probability of returning.
+Input: nums = [7,4,5,1,8,12,4,7], k = 5
+Output: 4
+Explanation:
+The longest subsequence that meets the requirements is [4,5,8,12].
+The subsequence has a length of 4, so we return 4.
+Example 3:
+
+Input: nums = [1,5], k = 1
+Output: 1
+Explanation:
+The longest subsequence that meets the requirements is [1].
+The subsequence has a length of 1, so we return 1.
  
 
 Constraints:
 
-1 <= nums.length <= 2 * 104
--231 <= nums[i] <= 231 - 1
-target is an integer from nums.
-At most 104 calls will be made to pick.
+1 <= nums.length <= 105
+1 <= nums[i], k <= 105
 
 
         INSTRUCTIONS:

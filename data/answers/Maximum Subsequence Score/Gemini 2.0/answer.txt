@@ -1,0 +1,35 @@
+#include <vector>
+#include <algorithm>
+#include <queue>
+
+class Solution {
+public:
+    int maximumScore(std::vector<int>& nums1, std::vector<int>& nums2, int k) {
+        int n = nums1.size();
+        std::vector<std::pair<int, int>> pairs(n);
+        for (int i = 0; i < n; ++i) {
+            pairs[i] = {nums2[i], nums1[i]};
+        }
+
+        std::sort(pairs.begin(), pairs.end(), std::greater<std::pair<int, int>>());
+
+        long long sum = 0;
+        std::priority_queue<int, std::vector<int>, std::greater<int>> pq;
+        for (int i = 0; i < k; ++i) {
+            sum += pairs[i].second;
+            pq.push(pairs[i].second);
+        }
+
+        long long maxScore = sum * pairs[k - 1].first;
+
+        for (int i = k; i < n; ++i) {
+            sum -= pq.top();
+            pq.pop();
+            sum += pairs[i].second;
+            pq.push(pairs[i].second);
+            maxScore = std::max(maxScore, sum * pairs[i].first);
+        }
+
+        return (int)maxScore;
+    }
+};

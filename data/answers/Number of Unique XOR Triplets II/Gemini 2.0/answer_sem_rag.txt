@@ -1,0 +1,42 @@
+class Solution:
+    def uniqueXorTriplets(self, nums):
+        """
+        Calculates the number of unique XOR triplet values from all possible triplets (i, j, k) in the input array nums,
+        where i <= j <= k.
+
+        The approach iterates through all possible triplets (i, j, k) in the input array, calculates the XOR sum of each triplet,
+        and stores the unique XOR sums in a set. Finally, it returns the size of the set, which represents the number of unique XOR triplet values.
+
+        Time Complexity: O(n^3), where n is the length of the input array nums. This is because the algorithm iterates through all possible triplets in the array.
+        Space Complexity: O(n^3) in the worst case, where n is the length of the input array nums. This is because, in the worst-case scenario, all XOR triplet values are unique, and the set will store all of them. However, in practice, the space complexity is often much lower than O(n^3) because the number of unique XOR triplet values is typically much smaller than the total number of possible triplets.
+
+        Important Considerations:
+        - The algorithm assumes that the input array nums is not empty and contains only integers.
+        - The algorithm uses a set to store the unique XOR triplet values, which ensures that each value is counted only once.
+        - The algorithm has a time complexity of O(n^3), which may be too slow for large input arrays. However, for the given constraints (1 <= nums.length <= 1500), the algorithm should be efficient enough.
+
+        Args:
+            nums (list[int]): A list of integers.
+
+        Returns:
+            int: The number of unique XOR triplet values from all possible triplets (i, j, k) in the input array nums.
+        """
+        xor_values = set()
+        n = len(nums)
+
+        for i in range(n):
+            for j in range(i, n):
+                for k in range(j, n):
+                    xor_values.add(nums[i] ^ nums[j] ^ nums[k])
+
+        return len(xor_values)
+
+    def countTriplets(self, nums: list[int]) -> int:
+        """
+        Given an integer array nums.
+
+        A XOR triplet is defined as the XOR of three elements nums[i] XOR nums[j] XOR nums[k] where i <= j <= k.
+
+        Return the number of unique XOR triplet values from all possible triplets (i, j, k).
+        """
+        return self.solve(nums)

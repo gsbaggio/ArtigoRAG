@@ -1,0 +1,17 @@
+class Solution:
+    def maxScore(self, nums1, nums2, k):
+        pairs = sorted([(nums1[i] * nums2[i], nums1[i], nums2[i]) for i in range(len(nums1))], reverse=True)
+        result = 0
+        used1 = [0] * len(nums1)
+        used2 = [0] * len(nums2)
+        
+        for prod, num1, num2 in pairs:
+            if k == 0:
+                break
+            if used1[num1] < k and used2[num2] < k:
+                result += prod
+                used1[num1] += 1
+                used2[num2] += 1
+                k -= 1
+        
+        return result

@@ -1,0 +1,38 @@
+class Solution:
+    def largestMagicSquare(self, grid):
+        m, n = len(grid), len(grid[0])
+        
+        # Precompute prefix sums for rows, columns, and diagonals
+        row_prefix = [[0] * (n + 1) for _ in range(m)]
+        col_prefix = [[0] * (n) for _ in range(m + 1)]
+        diag1_prefix = [[0] * (n + 1) for _ in range(m + 1)]
+        diag2_prefix = [[0] * (n + 1) for _ in range(m + 1)]
+        
+        for i in range(m):
+            for j in range(n):
+                row_prefix[i][j + 1] = row_prefix[i][j] + grid[i][j]
+                col_prefix[i + 1][j] = col_prefix[i][j] + grid[i][j]
+                diag1_prefix[i + 1][j + 1] = diag1_prefix[i][j] + grid[i][j]
+                diag2_prefix[i + 1][j] = diag2_prefix[i][j] + grid[i][j]
+        
+        # Check for all possible sizes
+        for k in range(min(m,n),0,-1):
+``class Solution:
+    def largestMagicSquare(self, grid):
+        m, n = len(grid), len(grid[0])
+        
+        # Precompute prefix sums for rows, columns, and diagonals
+        row_prefix = [[0] * (n + 1) for _ in range(m)]
+        col_prefix = [[0] * (n) for _ in range(m + 1)]
+        diag1_prefix = [[0] * (n + 1) for _ in range(m + 1)]
+        diag2_prefix = [[0] * (n + 1) for _ in range(m + 1)]
+        
+        for i in range(m):
+            for j in range(n):
+                row_prefix[i][j + 1] = row_prefix[i][j] + grid[i][j]
+                col_prefix[i + 1][j] = col_prefix[i][j] + grid[i][j]
+                diag1_prefix[i + 1][j + 1] = diag1_prefix[i][j] + grid[i][j]
+                diag2_prefix[i + 1][j] = diag2_prefix[i][j] + grid[i][j]
+        
+        # Check for all possible sizes
+        for k in range(min(m,n),0,-1):

@@ -1,0 +1,24 @@
+class Solution:
+    def lengthOfLIS(self, nums):
+        # Initialize an empty list to store the smallest ending elements of increasing subsequences
+        sub = []
+        
+        for num in nums:
+            # Perform binary search to find the position where 'num' can replace an element in 'sub'
+            left, right = 0, len(sub)
+            while left < right:
+                mid = (left + right) // 2
+                if sub[mid] < num:
+                    left = mid + 1
+                else:
+                    right = mid
+            
+            # If 'num' is larger than all elements in 'sub', append it
+            if left == len(sub):
+                sub.append(num)
+            else:
+                # Otherwise, replace the element at index 'left' with 'num'
+                sub[left] = num
+        
+        # The length of 'sub' represents the length of the longest increasing subsequence
+        return len(sub)

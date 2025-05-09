@@ -1,0 +1,19 @@
+class Solution:
+    def predictTheWinner(self, nums):
+        n = len(nums)
+        # Create a DP table initialized to 0
+        dp = [[0] * n for _ in range(n)]
+        
+        # Base case: when i == j, the score difference is the value of nums[i]
+        for i in range(n):
+            dp[i][i] = nums[i]
+        
+        # Fill the DP table for subarrays of increasing length
+        for length in range(2, n + 1):  # length of the subarray
+            for i in range(n - length + 1):
+                j = i + length - 1
+                # Calculate dp[i][j] based on the recursive relation
+                dp[i][j] = max(nums[i] - dp[i+1][j], nums[j] - dp[i][j-1])
+        
+        # If the score difference for the entire array is >= 0, Player 1 can win
+        return dp[0][n-1] >= 0

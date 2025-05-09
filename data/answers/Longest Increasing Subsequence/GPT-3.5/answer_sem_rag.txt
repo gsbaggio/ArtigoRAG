@@ -1,0 +1,21 @@
+class Solution:
+    def lengthOfLIS(self, nums):
+        if not nums:
+            return 0
+        
+        dp = [nums[0]]
+        
+        for num in nums[1:]:
+            if num > dp[-1]:
+                dp.append(num)
+            else:
+                left, right = 0, len(dp) - 1
+                while left < right:
+                    mid = left + (right - left) // 2
+                    if dp[mid] < num:
+                        left = mid + 1
+                    else:
+                        right = mid
+                dp[right] = num
+        
+        return len(dp)

@@ -1,0 +1,38 @@
+class Solution:
+    def maxScore(self, nums1, nums2, k):
+        """
+        Calculates the maximum possible score based on the given conditions.
+
+        Args:
+            nums1 (list of int): The first array of integers.
+            nums2 (list of int): The second array of integers.
+            k (int): The length of the subsequence to choose.
+
+        Returns:
+            int: The maximum possible score.
+        """
+
+        n = len(nums1)
+        pairs = []
+        for i in range(n):
+            pairs.append((nums2[i], nums1[i]))
+
+        # Sort pairs based on nums2 in descending order
+        pairs.sort(reverse=True)
+
+        import heapq
+        min_heap = []  # Stores the k largest nums1 values seen so far
+        current_sum = 0
+        max_score = 0
+
+        for i in range(n):
+            current_sum += pairs[i][1]
+            heapq.heappush(min_heap, pairs[i][1])
+
+            if len(min_heap) > k:
+                current_sum -= heapq.heappop(min_heap)
+
+            if len(min_heap) == k:
+                max_score = max(max_score, current_sum * pairs[i][0])
+
+        return max_score

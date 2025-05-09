@@ -1,0 +1,31 @@
+class Solution:
+    def lengthOfLongestSubsequence(self, nums, k):
+        # Coordinate compression
+        max_val = max(nums)
+        compressed_size = max_val + 1  # Since nums[i] <= 10^5
+        fenwick_tree = [0] * (compressed_size + 1)
+
+        def fenwick_update(index, value):
+            while index <= compressed_size:
+                fenwick_tree[index] = max(fenwick_tree[index], value)
+                index += index & -index
+
+        def fenwick_query(index):
+            max_value = 0
+            while index > 0:
+                max_value = max(max_value, fenwick_tree[index])
+                index -= index & -index
+            return max_value
+
+        # DP computation
+        dp = [0] * len(nums)
+        for num in nums:
+            # Query the Fenwick Tree for the maximum dp value in range [num - k, num - 1]
+            left = max(1, num - k)
+            right = num - 1
+            max_dp = fenwick_query(right) if right >= left else 0
+
+            # Compute dp[i]
+            dp[num] = max_dp + 1
+
+            # Update the Fenwick Tree with dp[i] at position num

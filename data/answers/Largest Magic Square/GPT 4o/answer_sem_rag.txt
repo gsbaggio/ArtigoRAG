@@ -1,0 +1,49 @@
+class Solution:
+    def largestMagicSquare(self, grid):
+        m, n = len(grid), len(grid[0])
+        
+        # Precompute prefix sums for rows and columns
+        row_prefix = [[0] * (n + 1) for _ in range(m)]
+        col_prefix = [[0] * (n) for _ in range(m + 1)]
+        
+        for i in range(m):
+            for j in range(n):
+                row_prefix[i][j + 1] = row_prefix[i][j] + grid[i][j]
+                col_prefix[i + 1][j] = col_prefix[i][j] + grid[i][j]
+        
+        # Function to check if a k x k subgrid is a magic square
+        def is_magic(x, y, k):
+            # Calculate the target sum (sum of the first row in the subgrid)
+            target_sum = sum(grid[x][y:y + k])
+            
+            # Check row sums
+            for i in range(x, x + k):
+                if sum(grid[i][y:y + k]) != target_sum:
+                    return False
+            
+            # Check column sums
+            for j in range(y, y + k):
+                col_sum = sum(grid[i][j] for i in range(x, x + k))
+                if col_sum != target_sum:
+                    return False
+            
+            # Check main diagonal sum
+            main_diag_sum = sum(grid[x + i][y + i] for i in range(k))
+            if main_diag_sum != target_sum:
+                return False
+            
+            # Check anti-diagonal sum
+            anti_diag_sum = sum(grid[x + i][y + k - 1 - i] for i in range(k))
+            if anti_diag_sum != target_sum:
+                return False
+            
+            return True
+        
+        # Iterate over all possible sizes of k
+        for k in range(min(m, n), 0, -1):  # Start from the largest possible size
+            for i in range(m - k + 1):
+                for j in range(n - k + 1):
+                    if is_magic(i, j, k):
+                        return k  # Return the largest size found
+        
+        return 1  # Every 1x1 grid is trivially a magic square

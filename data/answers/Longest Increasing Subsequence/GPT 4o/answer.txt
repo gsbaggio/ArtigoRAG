@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        // This vector will store the smallest ending value of increasing subsequences
+        // of various lengths.
+        vector<int> subseq;
+
+        for (int num : nums) {
+            // Find the position where 'num' can replace an element in 'subseq'
+            auto it = lower_bound(subseq.begin(), subseq.end(), num);
+
+            if (it == subseq.end()) {
+                // If 'num' is greater than all elements in 'subseq', extend the subsequence
+                subseq.push_back(num);
+            } else {
+                // Otherwise, replace the first element in 'subseq' that is >= 'num'
+                *it = num;
+            }
+        }
+
+        // The size of 'subseq' is the length of the longest increasing subsequence
+        return subseq.size();
+    }
+};

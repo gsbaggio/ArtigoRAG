@@ -1,0 +1,28 @@
+class Solution:
+    def longestSubsequence(self, nums, k):
+        """
+        Finds the length of the longest subsequence of nums that meets the following requirements:
+        - The subsequence is strictly increasing and
+        - The difference between adjacent elements in the subsequence is at most k.
+
+        Args:
+            nums (List[int]): The input list of integers.
+            k (int): The maximum difference between adjacent elements in the subsequence.
+
+        Returns:
+            int: The length of the longest subsequence that meets the requirements.
+        """
+
+        n = len(nums)
+        # dp[i] stores the length of the longest subsequence ending at nums[i]
+        dp = [1] * n
+
+        for i in range(1, n):
+            for j in range(i):
+                # Check if nums[i] can be added to the subsequence ending at nums[j]
+                if nums[i] > nums[j] and nums[i] - nums[j] <= k:
+                    # If it can, update dp[i] if adding nums[i] results in a longer subsequence
+                    dp[i] = max(dp[i], dp[j] + 1)
+
+        # The maximum value in dp is the length of the longest subsequence
+        return max(dp)

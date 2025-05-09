@@ -1,0 +1,34 @@
+class Solution:
+    def predictTheWinner(self, nums: list[int]) -> bool:
+        n = len(nums)
+        # Use memoization to avoid recalculating subproblems
+        memo = {}
+        
+        # This function returns the maximum score difference the current player can achieve
+        # (current player's score - opponent's score)
+        def maxDiff(left, right):
+            # Base case: only one element left
+            if left == right:
+                return nums[left]
+            
+            # Check if already calculated
+            if (left, right) in memo:
+                return memo[(left, right)]
+            
+            # Current player has two choices:
+            # 1. Take the left element
+            # 2. Take the right element
+            
+            # If current player takes left, opponent plays optimally on remaining array
+            score_left = nums[left] - maxDiff(left + 1, right)
+            
+            # If current player takes right, opponent plays optimally on remaining array
+            score_right = nums[right] - maxDiff(left, right - 1)
+            
+            # Current player chooses maximum possible score difference
+            result = max(score_left, score_right)
+            memo[(left, right)] = result
+            return result
+        
+        # If the final score difference ≥ 0, player 1 wins (or ties)
+        return maxDiff(0, n - 1) >= 0

@@ -1,0 +1,75 @@
+class Solution:
+    def predictTheWinner(self, nums: list[int]) -> bool:
+        """
+        Predicts whether Player 1 can win the game given an array of integers.
+
+        The game involves two players taking turns to pick numbers from either end of the array,
+        aiming to maximize their score. Player 1 wins if their score is greater than or equal
+        to Player 2's score.
+
+        Args:
+            nums (List[int]): The input array of integers.
+
+        Returns:
+            bool: True if Player 1 can win, False otherwise.
+
+        Time Complexity: O(n^2), where n is the length of the input array `nums`.
+                         This is due to the memoization table `memo` of size n x n.
+
+        Space Complexity: O(n^2), due to the memoization table `memo`.
+
+        Intuition:
+        The problem can be solved using dynamic programming with memoization. The core idea is to
+        calculate the maximum score Player 1 can achieve over Player 2, given a subarray of `nums`.
+        We use a top-down approach, where the state is defined by the start and end indices of the
+        subarray. The value at each state represents the maximum score Player 1 can obtain more than
+        Player 2.
+
+        The base case is when the subarray has only one element, in which case Player 1 takes that
+        element. For larger subarrays, Player 1 has two choices: take the leftmost element or the
+        rightmost element. We recursively calculate the score Player 1 can achieve in each case and
+        choose the option that maximizes Player 1's score.
+
+        The memoization table stores the results of the subproblems to avoid redundant calculations.
+        If the value for a particular state is already calculated, we simply return it from the table.
+
+        Important Considerations:
+        - The problem assumes that both players play optimally.
+        - The memoization table is indexed by the start and end indices of the subarray.
+        - The value at each state represents the difference between Player 1's and Player 2's scores.
+        - Player 1 wins if the maximum score they can achieve is greater than or equal to 0.
+        """
+        n = len(nums)
+        memo = {}  # Memoization table to store results of subproblems
+
+        def calculate_max_score(left, right):
+            """
+            Calculates the maximum score Player 1 can achieve more than Player 2
+            given the subarray nums[left:right+1].
+
+            Args:
+                left (int): The starting index of the subarray.
+                right (int): The ending index of the subarray.
+
+            Returns:
+                int: The maximum score Player 1 can achieve more than Player 2.
+            """
+            if (left, right) in memo:
+                return memo[(left, right)]
+
+            if left == right:
+                return nums[left]
+
+            # Player 1 chooses the leftmost element
+            score_left = nums[left] - calculate_max_score(left + 1, right)
+
+            # Player 1 chooses the rightmost element
+            score_right = nums[right] - calculate_max_score(left, right - 1)
+
+            # Player 1 chooses the option that maximizes their score
+            max_score = max(score_left, score_right)
+            memo[(left, right)] = max_score
+            return max_score
+
+        # Player 1 wins if the maximum score they can achieve is greater than or equal to 0
+        return calculate_max_score(0, n - 1) >= 0

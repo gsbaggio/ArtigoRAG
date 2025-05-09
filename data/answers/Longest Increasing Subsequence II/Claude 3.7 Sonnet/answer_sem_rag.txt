@@ -1,0 +1,29 @@
+class Solution:
+    def lengthOfLIS(self, nums, k):
+        if not nums:
+            return 0
+            
+        max_val = max(nums)
+        
+        # Using a list as our segment tree implementation
+        # tree[i] stores the maximum length of subsequence ending with value i
+        tree = [0] * (max_val + 1)
+        
+        def query_max(left, right):
+            result = 0
+            for i in range(left, right + 1):
+                result = max(result, tree[i])
+            return result
+        
+        result = 0
+        for num in nums:
+            # Find the maximum length of valid subsequences ending with values in range [num-k, num-1]
+            prev_max = query_max(max(1, num - k), num - 1)
+            
+            # Update the tree for the current value
+            tree[num] = max(tree[num], prev_max + 1)
+            
+            # Update the result
+            result = max(result, tree[num])
+        
+        return result

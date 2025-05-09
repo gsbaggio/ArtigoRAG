@@ -1,0 +1,34 @@
+class Solution:
+    def lengthOfLIS(self, nums: list[int]) -> int:
+        """
+        Finds the length of the longest strictly increasing subsequence.
+
+        The intuition is to use dynamic programming to store the smallest end element of an increasing subsequence of a given length.
+        We iterate through the input array and for each number, we try to extend an existing subsequence or start a new one.
+        If the number is greater than the largest end element of all existing subsequences, we can extend the longest subsequence by 1.
+        Otherwise, we find the smallest end element that is greater than or equal to the current number and replace it with the current number.
+        This ensures that we maintain the smallest end element for each subsequence length, which allows us to efficiently find the longest increasing subsequence.
+
+        Time Complexity: O(n log n), where n is the length of the input array. This is because we use binary search to find the smallest end element that is greater than or equal to the current number.
+        Space Complexity: O(n), where n is the length of the input array. This is because we store the end elements of the increasing subsequences in an array.
+
+        Important Considerations:
+        - The algorithm uses binary search to efficiently find the smallest end element that is greater than or equal to the current number.
+        - The algorithm maintains the smallest end element for each subsequence length, which allows us to efficiently find the longest increasing subsequence.
+        - The algorithm is optimized for both time and space complexity.
+        """
+        tails = []
+        for num in nums:
+            if not tails or num > tails[-1]:
+                tails.append(num)
+            else:
+                # Find the smallest tail that is greater than or equal to num
+                l, r = 0, len(tails) - 1
+                while l <= r:
+                    mid = (l + r) // 2
+                    if tails[mid] < num:
+                        l = mid + 1
+                    else:
+                        r = mid - 1
+                tails[l] = num
+        return len(tails)

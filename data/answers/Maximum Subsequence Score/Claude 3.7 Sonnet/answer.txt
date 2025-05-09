@@ -1,0 +1,45 @@
+class Solution {
+public:
+    long long maximumScore(vector<int>& nums1, vector<int>& nums2, int k) {
+        int n = nums1.size();
+        
+        // Create pairs of (nums2[i], nums1[i]) to sort by nums2 in descending order
+        vector<pair<int, int>> pairs;
+        for (int i = 0; i < n; i++) {
+            pairs.push_back({nums2[i], nums1[i]});
+        }
+        
+        // Sort pairs by nums2 values in descending order
+        sort(pairs.begin(), pairs.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
+            return a.first > b.first;
+        });
+        
+        // Min-heap to keep track of the k largest nums1 values seen so far
+        priority_queue<int, vector<int>, greater<int>> pq;
+        long long currentSum = 0;
+        
+        // Process the pairs in decreasing order of nums2 values
+        for (int i = 0; i < k; i++) {
+            currentSum += pairs[i].second;
+            pq.push(pairs[i].second);
+        }
+        
+        // Initialize the maximum score
+        long long maxScore = currentSum * pairs[k-1].first;
+        
+        // Continue processing the remaining elements
+        for (int i = k; i < n; i++) {
+            // If the current nums1 value is larger than the smallest in our heap
+            if (pairs[i].second > pq.top()) {
+                currentSum = currentSum - pq.top() + pairs[i].second;
+                pq.pop();
+                pq.push(pairs[i].second);
+                
+                // Update maximum score
+                maxScore = max(maxScore, currentSum * pairs[i].first);
+            }
+        }
+        
+        return maxScore;
+    }
+};

@@ -1,0 +1,23 @@
+class Solution:
+    def maxScore(self, nums1, nums2, k):
+        import heapq
+        
+        # Pair the elements and sort by nums2 in decreasing order
+        pairs = sorted(zip(nums1, nums2), key=lambda x: -x[1])
+        
+        # Use a min heap to track k largest nums1 values
+        min_heap = []
+        sum_vals = 0
+        max_score = 0
+        
+        for num1, num2 in pairs:
+            heapq.heappush(min_heap, num1)
+            sum_vals += num1
+            
+            if len(min_heap) > k:
+                sum_vals -= heapq.heappop(min_heap)
+                
+            if len(min_heap) == k:
+                max_score = max(max_score, sum_vals * num2)
+        
+        return max_score

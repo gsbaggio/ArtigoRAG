@@ -1,0 +1,17 @@
+class Solution:
+    def uniqueXorTriplets(self, nums):
+        # Use a set to store unique XOR triplet values
+        xor_values = set()
+        
+        n = len(nums)
+        
+        # Iterate through all possible (i,j,k) combinations where i <= j <= k
+        for i in range(n):
+            for j in range(i, n):
+                for k in range(j, n):
+                    # Calculate the XOR of the triplet
+                    xor_value = nums[i] ^ nums[j] ^ nums[k]
+                    xor_values.add(xor_value)
+        
+        # Return the count of unique values
+        return len(xor_values)
