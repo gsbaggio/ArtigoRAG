@@ -1,0 +1,20 @@
+class Solution:
+    def rob(self, nums):
+        # Edge case: if there's only one house
+        if len(nums) == 1:
+            return nums[0]
+        
+        # Initialize two variables to store the maximum money robbed so far
+        prev1 = 0  # Maximum money robbed up to the previous house
+        prev2 = 0  # Maximum money robbed up to the house before the previous house
+        
+        # Iterate through each house
+        for num in nums:
+            # Calculate the maximum money robbed if we rob the current house
+            current = max(prev1, prev2 + num)
+            # Update prev2 and prev1 for the next iteration
+            prev2 = prev1
+            prev1 = current
+        
+        # The final value of prev1 contains the maximum money robbed
+        return prev1

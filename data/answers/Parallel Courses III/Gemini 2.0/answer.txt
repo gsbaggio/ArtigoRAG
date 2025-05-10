@@ -1,0 +1,62 @@
+class Solution:
+    def minimumTime(self, n: int, relations: list[list[int]], time: list[int]) -> int:
+        """
+        Calculates the minimum number of months needed to complete all courses,
+        considering prerequisite relationships and course durations.
+
+        Args:
+            n (int): The number of courses, labeled from 1 to n.
+            relations (list[list[int]]): A 2D integer array where relations[j] = [prevCoursej, nextCoursej]
+                                         denotes that course prevCoursej must be completed before course nextCoursej.
+            time (list[int]): An integer array where time[i] denotes the number of months it takes to complete the (i+1)th course.
+
+        Returns:
+            int: The minimum number of months needed to complete all the courses.
+        """
+
+        # Intuition:
+        # The problem can be modeled as a directed acyclic graph (DAG). We need to find the longest path
+        # in the graph, where the weight of each node is the time it takes to complete the course.
+        # We can use dynamic programming to solve this problem. The idea is to calculate the earliest
+        # time each course can be finished.
+
+        # Time Complexity: O(n + m), where n is the number of courses and m is the number of relations.
+        # Space Complexity: O(n + m), where n is the number of courses and m is the number of relations.
+
+        # Important Considerations:
+        # 1. The graph is a DAG, so there are no cycles.
+        # 2. We can start taking a course at any time if the prerequisites are met.
+        # 3. Any number of courses can be taken at the same time.
+
+        # Create an adjacency list to represent the graph.
+        graph = [[] for _ in range(n)]
+        # Create an array to store the in-degree of each course.
+        in_degree = [0] * n
+        # Create an array to store the earliest time each course can be finished.
+        earliest_time = [0] * n
+
+        # Build the graph and calculate the in-degree of each course.
+        for prev_course, next_course in relations:
+            graph[prev_course - 1].append(next_course - 1)
+            in_degree[next_course - 1] += 1
+
+        # Create a queue to store the courses with in-degree 0.
+        queue = []
+        for i in range(n):
+            if in_degree[i] == 0:
+                queue.append(i)
+                earliest_time[i] = time[i]
+
+        # Process the courses in the queue.
+        while queue:
+            course = queue.pop(0)
+
+            # Update the earliest time of the neighbors.
+            for neighbor in graph[course]:
+                earliest_time[neighbor] = max(earliest_time[neighbor], earliest_time[course] + time[neighbor])
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+
+        # The minimum time needed to complete all the courses is the maximum value in the earliest_time array.
+        return max(earliest_time)

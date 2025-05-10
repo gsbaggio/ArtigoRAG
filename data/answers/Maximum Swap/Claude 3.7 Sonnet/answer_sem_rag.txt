@@ -1,0 +1,21 @@
+class Solution:
+    def maximumSwap(self, num):
+        # Convert to list of digits for easy manipulation
+        digits = list(str(num))
+        n = len(digits)
+        
+        # Keep track of the last occurrence of each digit
+        last_pos = {int(digit): i for i, digit in enumerate(digits)}
+        
+        # Check each position from left to right
+        for i in range(n):
+            current_digit = int(digits[i])
+            # Try to find a larger digit that appears later
+            for d in range(9, current_digit, -1):
+                if d in last_pos and last_pos[d] > i:
+                    # Swap and return
+                    digits[i], digits[last_pos[d]] = digits[last_pos[d]], digits[i]
+                    return int(''.join(digits))
+        
+        # No swap needed/possible
+        return num

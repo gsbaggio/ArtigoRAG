@@ -1,0 +1,22 @@
+class Solution:
+    def rearrangeArray(self, nums):
+        # Step 1: Sort the array
+        nums.sort()
+        
+        # Step 2: Split the array into two halves
+        n = len(nums)
+        smaller_half = nums[:n // 2]
+        larger_half = nums[n // 2:]
+        
+        # Step 3: Interleave the two halves
+        result = []
+        i, j = 0, 0
+        while i < len(smaller_half) or j < len(larger_half):
+            if j < len(larger_half):
+                result.append(larger_half[j])
+                j += 1
+            if i < len(smaller_half):
+                result.append(smaller_half[i])
+                i += 1
+        
+        return result

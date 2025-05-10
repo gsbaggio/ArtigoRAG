@@ -1,0 +1,24 @@
+class Solution:
+    def rearrangeArray(self, nums):
+        nums.sort()
+        n = len(nums)
+        res = [0] * n
+        
+        # Split array into two halves
+        mid = (n + 1) // 2
+        left = nums[:mid]     # smaller half
+        right = nums[mid:]    # larger half
+        
+        # Fill even indices with left half
+        i = 0
+        for x in left:
+            res[i] = x
+            i += 2
+        
+        # Fill odd indices with right half
+        i = 1
+        for x in right:
+            res[i] = x
+            i += 2
+            
+        return res

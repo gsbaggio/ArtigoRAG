@@ -1,0 +1,56 @@
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        """
+        You are given an integer num. You can swap two digits at most once to get the maximum valued number.
+
+        Return the maximum valued number you can get.
+
+        Example 1:
+
+        Input: num = 2736
+        Output: 7236
+        Explanation: Swap the number 2 and the number 7.
+        Example 2:
+
+        Input: num = 9973
+        Output: 9973
+        Explanation: No swap.
+
+        Constraints:
+
+        0 <= num <= 108
+        """
+        s = list(str(num))
+        n = len(s)
+        max_idx = n - 1
+
+        idx1 = -1
+        idx2 = -1
+
+        for i in range(n - 2, -1, -1):
+            if s[i] < s[max_idx]:
+                idx1 = i
+                idx2 = max_idx
+            elif s[i] > s[max_idx]:
+                max_idx = i
+
+        if idx1 == -1:
+            return num
+        
+        s[idx1], s[idx2] = s[idx2], s[idx1]
+        return int("".join(s))
+
+# Explanation:
+# The intuition behind the approach is to find the rightmost digit that is smaller than a digit to its right.
+# We iterate through the digits from right to left, keeping track of the index of the maximum digit seen so far.
+# If we find a digit that is smaller than the maximum digit seen so far, we update the indices of the digits to be swapped.
+# Finally, we swap the digits and return the resulting number.
+#
+# Time complexity: O(n), where n is the number of digits in the number.
+# Space complexity: O(n), where n is the number of digits in the number, due to the string conversion.
+#
+# Important considerations about the algorithm:
+# - The algorithm only performs one swap.
+# - The algorithm finds the rightmost digit that is smaller than a digit to its right.
+# - The algorithm swaps the digit with the rightmost maximum digit to its right.
+# - If no swap is necessary, the algorithm returns the original number.

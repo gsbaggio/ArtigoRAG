@@ -1,0 +1,23 @@
+class Solution:
+    def minCapability(self, nums, k):
+        left, right = min(nums), max(nums)
+        
+        while left < right:
+            mid = (left + right) // 2
+            
+            # Count how many houses can be robbed with capability 'mid'
+            taken = 0
+            i = 0
+            while i < len(nums):
+                if nums[i] <= mid:
+                    taken += 1
+                    i += 2  # Skip adjacent house
+                else:
+                    i += 1
+            
+            if taken >= k:
+                right = mid
+            else:
+                left = mid + 1
+        
+        return left

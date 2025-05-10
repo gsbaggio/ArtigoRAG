@@ -1,0 +1,46 @@
+class Solution:
+    def rearrangeArray(self, nums):
+        """
+        Rearranges the elements in the array such that every element in the rearranged array
+        is not equal to the average of its neighbors.
+
+        Args:
+            nums (List[int]): A list of distinct integers.
+
+        Returns:
+            List[int]: A rearrangement of nums that meets the requirements.
+        """
+
+        nums.sort()
+        n = len(nums)
+        result = [0] * n
+        left = 0
+        right = n - 1
+        for i in range(n):
+            if i % 2 == 0:
+                result[i] = nums[left]
+                left += 1
+            else:
+                result[i] = nums[right]
+                right -= 1
+        return result
+
+# Explanation:
+# 1. Intuition:
+#    The core idea is to sort the array and then interleave the smaller and larger elements.
+#    By placing smaller and larger elements next to each other, we ensure that the average
+#    of the neighbors will not be equal to the element in the middle.
+#    For example, if we have a sorted array [1, 2, 3, 4, 5], we can rearrange it as
+#    [1, 5, 2, 4, 3]. In this arrangement, each element is different from the average of its neighbors.
+#
+# 2. Time and Space Complexity:
+#    - Time Complexity: O(n log n) due to the sorting operation. The rest of the operations take O(n) time.
+#    - Space Complexity: O(n) because we create a new array `result` to store the rearranged elements.
+#
+# 3. Important Considerations:
+#    - The input array `nums` contains distinct integers. This is important because if there were duplicate
+#      numbers, this approach might not work.
+#    - The length of the array is at least 3. This is also important because the condition to check the average
+#      of neighbors requires at least 3 elements.
+#    - The problem asks for *any* rearrangement that meets the requirements. There might be multiple valid
+#      rearrangements, and this algorithm provides one such rearrangement.

@@ -1,0 +1,57 @@
+class Solution {
+    /**
+     * This method calculates the minimum capability of the robber to steal from at least k houses.
+     *
+     * @param nums An array representing the amount of money in each house.
+     * @param k The minimum number of houses to steal from.
+     * @return The minimum capability of the robber.
+     *
+     * Time Complexity: O(n log(max(nums))), where n is the number of houses. The binary search takes O(log(max(nums)))
+     *                  and the `canRob` function takes O(n).
+     * Space Complexity: O(1). The algorithm uses constant extra space.
+     */
+    public int minCapability(int[] nums, int k) {
+        int left = 1;
+        int right = 0;
+        for (int num : nums) {
+            right = Math.max(right, num);
+        }
+
+        int result = right;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (canRob(nums, k, mid)) {
+                result = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Helper function to check if it's possible to rob at least k houses with the given capability.
+     *
+     * @param nums The array of house values.
+     * @param k The minimum number of houses to rob.
+     * @param capability The maximum amount the robber is willing to steal from one house.
+     * @return True if it's possible to rob at least k houses with the given capability, false otherwise.
+     *
+     * Time Complexity: O(n), where n is the number of houses.
+     * Space Complexity: O(1).
+     */
+    private boolean canRob(int[] nums, int k, int capability) {
+        int count = 0;
+        boolean robbedPrevious = false;
+        for (int num : nums) {
+            if (num <= capability && !robbedPrevious) {
+                count++;
+                robbedPrevious = true;
+            } else {
+                robbedPrevious = false;
+            }
+        }
+        return count >= k;
+    }
+}

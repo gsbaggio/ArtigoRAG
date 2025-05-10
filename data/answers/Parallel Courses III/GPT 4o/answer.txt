@@ -1,0 +1,37 @@
+from collections import defaultdict, deque
+
+class Solution:
+    def minimumTime(self, n: int, relations: list[list[int]], time: list[int]) -> int:
+        # Step 1: Build the graph and calculate in-degrees
+        graph = defaultdict(list)
+        in_degree = [0] * n
+        
+        for prev, next in relations:
+            graph[prev - 1].append(next - 1)
+            in_degree[next - 1] += 1
+        
+        # Step 2: Initialize a queue with courses that have no prerequisites
+        queue = deque()
+        for i in range(n):
+            if in_degree[i] == 0:
+                queue.append(i)
+        
+        # Step 3: Perform a topological sort while calculating the minimum time
+        min_time = [0] * n  # Tracks the minimum time to complete each course
+        for i in range(n):
+            min_time[i] = time[i]  # Initialize with the time required for each course
+        
+        while queue:
+            current = queue.popleft()
+            
+            for neighbor in graph[current]:
+                # Update the minimum time for the dependent course
+                min_time[neighbor] = max(min_time[neighbor], min_time[current] + time[neighbor])
+                
+                # Decrease the in-degree and add to queue if it becomes 0
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+        
+        # Step 4: Return the maximum time across all courses
+        return max(min_time)

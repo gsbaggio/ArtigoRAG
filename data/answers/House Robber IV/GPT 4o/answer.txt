@@ -1,0 +1,25 @@
+class Solution:
+    def minCapability(self, nums, k):
+        def can_rob_with_capability(cap):
+            # Greedy check to see if we can rob at least k houses with capability `cap`
+            count = 0
+            i = 0
+            while i < len(nums):
+                if nums[i] <= cap:
+                    count += 1
+                    i += 2  # Skip the next house since adjacent houses can't be robbed
+                else:
+                    i += 1
+            return count >= k
+
+        # Binary search for the minimum capability
+        low, high = min(nums), max(nums)
+        result = high
+        while low <= high:
+            mid = (low + high) // 2
+            if can_rob_with_capability(mid):
+                result = mid  # Update result and try for a smaller capability
+                high = mid - 1
+            else:
+                low = mid + 1
+        return result

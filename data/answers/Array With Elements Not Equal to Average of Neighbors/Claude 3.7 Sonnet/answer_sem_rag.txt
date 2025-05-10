@@ -1,0 +1,21 @@
+class Solution:
+    def rearrangeArray(self, nums):
+        # Sort the array
+        nums.sort()
+        
+        # Create a new array to store the result
+        result = [0] * len(nums)
+        
+        # Place elements in alternating fashion
+        # Even positions get elements from the first half
+        # Odd positions get elements from the second half
+        left, right = 0, len(nums) // 2
+        for i in range(len(nums)):
+            if i % 2 == 0:
+                result[i] = nums[left]
+                left += 1
+            else:
+                result[i] = nums[right]
+                right += 1
+        
+        return result

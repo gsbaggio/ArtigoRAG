@@ -1,35 +1,45 @@
 CURRENT QUESTION:
-There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course ai first if you want to take course bi.
 
-For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
-Return true if you can finish all courses. Otherwise, return false.
+For example, the pair [0, 1] indicates that you have to take course 0 before you can take course 1.
+Prerequisites can also be indirect. If course a is a prerequisite of course b, and course b is a prerequisite of course c, then course a is a prerequisite of course c.
+
+You are also given an array queries where queries[j] = [uj, vj]. For the jth query, you should answer whether course uj is a prerequisite of course vj or not.
+
+Return a boolean array answer, where answer[j] is the answer to the jth query.
 
  
 
 Example 1:
-
-Input: numCourses = 2, prerequisites = [[1,0]]
-Output: true
-Explanation: There are a total of 2 courses to take. 
-To take course 1 you should have finished course 0. So it is possible.
+Input: numCourses = 2, prerequisites = [[1,0]], queries = [[0,1],[1,0]]
+Output: [false,true]
+Explanation: The pair [1, 0] indicates that you have to take course 1 before you can take course 0.
+Course 0 is not a prerequisite of course 1, but the opposite is true.
 Example 2:
 
-Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
-Output: false
-Explanation: There are a total of 2 courses to take. 
-To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.
+Input: numCourses = 2, prerequisites = [], queries = [[1,0],[0,1]]
+Output: [false,false]
+Explanation: There are no prerequisites, and each course is independent.
+Example 3:
+Input: numCourses = 3, prerequisites = [[1,2],[1,0],[2,0]], queries = [[1,0],[1,2]]
+Output: [true,true]
  
 
 Constraints:
 
-1 <= numCourses <= 2000
-0 <= prerequisites.length <= 5000
+2 <= numCourses <= 100
+0 <= prerequisites.length <= (numCourses * (numCourses - 1) / 2)
 prerequisites[i].length == 2
-0 <= ai, bi < numCourses
-All the pairs prerequisites[i] are unique.
+0 <= ai, bi <= numCourses - 1
+ai != bi
+All the pairs [ai, bi] are unique.
+The prerequisites graph has no cycles.
+1 <= queries.length <= 104
+0 <= ui, vi <= numCourses - 1
+ui != vi
 
 SIMILAR QUESTIONS:
-Similar question 1 (Similarity score: 0.90):
+Similar question 1 (Similarity score: 0.86):
 Title: Course Schedule II
 Categorys: Depth-First Search Breadth-First Search Graph Topological Sort
 Question text: There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
@@ -102,7 +112,7 @@ Complexity
 Time complexity: (O(V + E)), where V is the number of courses and E is the number of prerequisites
 Space complexity: (O(V + E)) for the graph and queue
 
-Similar question 2 (Similarity score: 0.72):
+Similar question 2 (Similarity score: 0.74):
 Title: Parallel Courses II
 Categorys: Dynamic Programming Bit Manipulation Graph Bitmask
 Question text: You are given an integer n, which indicates that there are n courses labeled from 1 to n. You are also given an array relations where relations[i] = [prevCoursei, nextCoursei], representing a prerequisite relationship between course prevCoursei and course nextCoursei: course prevCoursei has to be taken before course nextCoursei. Also, you are given the integer k.

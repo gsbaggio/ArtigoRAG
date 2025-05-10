@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int maximumSwap(int num) {
+        // Convert the number to a string for easier digit manipulation
+        string numStr = to_string(num);
+        int n = numStr.size();
+        
+        // Arrays to store the last position of each digit
+        vector<int> lastPos(10, -1);
+        
+        // Record the last position of each digit
+        for (int i = 0; i < n; i++) {
+            lastPos[numStr[i] - '0'] = i;
+        }
+        
+        // Find the first position where we can swap with a larger digit
+        for (int i = 0; i < n; i++) {
+            // Try to find the largest digit that appears later
+            for (int d = 9; d > numStr[i] - '0'; d--) {
+                if (lastPos[d] > i) {
+                    // Swap the current digit with the larger digit
+                    swap(numStr[i], numStr[lastPos[d]]);
+                    // Convert back to integer and return
+                    return stoi(numStr);
+                }
+            }
+        }
+        
+        // If no swap is beneficial, return the original number
+        return num;
+    }
+};

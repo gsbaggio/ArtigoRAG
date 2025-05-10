@@ -1,0 +1,20 @@
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        # Convert the number to a list of characters for easy manipulation
+        num_str = list(str(num))
+        
+        # Record the last occurrence of each digit (0-9)
+        last_occurrence = {int(digit): idx for idx, digit in enumerate(num_str)}
+        
+        # Traverse the number from left to right
+        for i, digit in enumerate(num_str):
+            # Check for a larger digit to swap with, starting from 9 down to the current digit + 1
+            for larger_digit in range(9, int(digit), -1):
+                if larger_digit in last_occurrence and last_occurrence[larger_digit] > i:
+                    # Swap the current digit with the larger digit
+                    num_str[i], num_str[last_occurrence[larger_digit]] = num_str[last_occurrence[larger_digit]], num_str[i]
+                    # Return the result as an integer
+                    return int("".join(num_str))
+        
+        # If no swap was performed, return the original number
+        return num

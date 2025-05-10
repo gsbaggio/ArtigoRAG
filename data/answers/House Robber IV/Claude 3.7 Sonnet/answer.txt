@@ -1,0 +1,34 @@
+class Solution {
+    public int minCapability(int[] nums, int k) {
+        int left = 1;
+        int right = (int)1e9;
+        
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (canStealAtLeastK(nums, mid, k)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        
+        return left;
+    }
+    
+    private boolean canStealAtLeastK(int[] nums, int capability, int k) {
+        // Use a greedy approach to count maximum houses that can be robbed
+        int count = 0;
+        int i = 0;
+        
+        while (i < nums.length) {
+            if (nums[i] <= capability) {
+                count++;
+                i += 2; // Skip adjacent house
+            } else {
+                i++; // Skip current house
+            }
+        }
+        
+        return count >= k;
+    }
+}

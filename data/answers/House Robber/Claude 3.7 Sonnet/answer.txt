@@ -1,0 +1,23 @@
+class Solution {
+    public int rob(int[] nums) {
+        // Handle edge cases
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        if (nums.length == 1) {
+            return nums[0];
+        }
+        
+        // Only need to track two values: the maximum money up to i-2 and i-1 houses
+        int prevMax = nums[0]; // max money if we rob up to i-2 houses
+        int currMax = Math.max(nums[0], nums[1]); // max money if we rob up to i-1 houses
+        
+        for (int i = 2; i < nums.length; i++) {
+            int temp = currMax;
+            currMax = Math.max(prevMax + nums[i], currMax);
+            prevMax = temp;
+        }
+        
+        return currMax;
+    }
+}

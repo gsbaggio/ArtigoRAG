@@ -1,0 +1,63 @@
+class Solution:
+    def minCapability(self, nums, k):
+        """
+        Finds the minimum capability of the robber out of all possible ways to steal at least k houses.
+
+        Args:
+            nums (List[int]): An integer array representing the amount of money in each house.
+            k (int): The minimum number of houses the robber will steal from.
+
+        Returns:
+            int: The minimum capability of the robber.
+        """
+
+        def is_possible(capability):
+            """
+            Checks if it is possible to steal from at least k houses with the given capability.
+
+            Args:
+                capability (int): The maximum amount of money the robber can steal from one house.
+
+            Returns:
+                bool: True if it is possible to steal from at least k houses with the given capability, False otherwise.
+            """
+            count = 0
+            i = 0
+            while i < len(nums):
+                if nums[i] <= capability:
+                    count += 1
+                    i += 2  # Skip the next house because the robber cannot steal from adjacent houses.
+                else:
+                    i += 1
+            return count >= k
+
+        # Binary search to find the minimum capability.
+        left, right = min(nums), max(nums)
+        ans = right
+        while left <= right:
+            mid = (left + right) // 2
+            if is_possible(mid):
+                ans = mid
+                right = mid - 1
+            else:
+                left = mid + 1
+
+        return ans
+
+# Explanation:
+# The problem asks us to find the minimum capability required to rob at least k houses.
+# The capability is defined as the maximum amount of money stolen from any of the robbed houses.
+# We can use binary search to find the minimum capability.
+# The lower bound of the binary search is the minimum amount of money in any house, and the upper bound is the maximum amount of money in any house.
+# For each capability value, we can check if it is possible to rob at least k houses with that capability.
+# If it is possible, we can try a smaller capability value. Otherwise, we need to try a larger capability value.
+# The time complexity of the binary search is O(log(max(nums) - min(nums))).
+# The time complexity of the is_possible function is O(n), where n is the number of houses.
+# Therefore, the overall time complexity is O(n * log(max(nums) - min(nums))).
+# The space complexity is O(1).
+#
+# Important considerations:
+# 1. The robber cannot steal from adjacent houses.
+# 2. The robber must steal from at least k houses.
+# 3. The capability is the maximum amount of money stolen from any of the robbed houses.
+# 4. We need to find the minimum capability.

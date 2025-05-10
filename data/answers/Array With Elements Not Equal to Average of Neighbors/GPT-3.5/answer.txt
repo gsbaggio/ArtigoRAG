@@ -1,0 +1,7 @@
+class Solution:
+    def rearrangeArray(self, nums):
+        nums.sort()
+        result = [None] * len(nums)
+        result[::2] = nums[:(len(nums)+1)//2]
+        result[1::2] = nums[(len(nums)+1)//2:]
+        return result

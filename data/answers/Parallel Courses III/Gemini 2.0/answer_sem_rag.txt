@@ -1,0 +1,50 @@
+class Solution:
+    def minimumTime(self, n: int, relations: list[list[int]], time: list[int]) -> int:
+        """
+        Calculates the minimum time needed to complete all courses given prerequisites and course durations.
+
+        Args:
+            n (int): The number of courses.
+            relations (list[list[int]]): A list of prerequisite relationships, where relations[i] = [prevCourse, nextCourse].
+            time (list[int]): A list of course durations, where time[i] is the time needed to complete course i+1.
+
+        Returns:
+            int: The minimum time needed to complete all courses.
+        """
+
+        # 1. Build the graph and in-degree array
+        graph = [[] for _ in range(n)]
+        in_degree = [0] * n
+        for prev_course, next_course in relations:
+            graph[prev_course - 1].append(next_course - 1)
+            in_degree[next_course - 1] += 1
+
+        # 2. Initialize the earliest start time for each course
+        start_time = [0] * n
+
+        # 3. Use a queue to process courses with no prerequisites
+        queue = []
+        for i in range(n):
+            if in_degree[i] == 0:
+                queue.append(i)
+                start_time[i] = 0  # Courses with no prerequisites can start at time 0
+
+        # 4. Process courses in topological order
+        while queue:
+            course = queue.pop(0)
+            
+            for next_course in graph[course]:
+                # Update the earliest start time for the next course
+                start_time[next_course] = max(start_time[next_course], start_time[course] + time[course])
+                in_degree[next_course] -= 1
+
+                # If all prerequisites for the next course are met, add it to the queue
+                if in_degree[next_course] == 0:
+                    queue.append(next_course)
+
+        # 5. Calculate the minimum time needed to complete all courses
+        min_time = 0
+        for i in range(n):
+            min_time = max(min_time, start_time[i] + time[i])
+
+        return min_time

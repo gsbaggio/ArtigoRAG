@@ -1,0 +1,20 @@
+class Solution {
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) return 0;
+        if (nums.length == 1) return nums[0];
+
+        // Initialize two variables to store the maximum money robbed up to the previous two houses
+        int prev2 = 0; // Maximum money robbed up to two houses before
+        int prev1 = 0; // Maximum money robbed up to the previous house
+
+        for (int num : nums) {
+            // Calculate the maximum money robbed if we rob the current house
+            int current = Math.max(prev1, prev2 + num);
+            // Update prev2 and prev1 for the next iteration
+            prev2 = prev1;
+            prev1 = current;
+        }
+
+        return prev1; // The maximum money robbed is stored in prev1
+    }
+}

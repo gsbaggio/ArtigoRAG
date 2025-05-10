@@ -1,0 +1,18 @@
+class Solution:
+    def rob(self, nums):
+        if not nums:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+
+        # Initialize two variables to store the maximum money robbed until the current house
+        prev_max = 0
+        curr_max = 0
+
+        for num in nums:
+            temp = curr_max
+            # Update the current maximum by choosing between robbing the current house or skipping it
+            curr_max = max(prev_max + num, curr_max)
+            prev_max = temp
+
+        return curr_max

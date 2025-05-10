@@ -1,0 +1,22 @@
+class Solution:
+    def rearrangeArray(self, nums):
+        n = len(nums)
+        
+        # Sort the array first
+        nums.sort()
+        
+        # Create result array
+        result = [0] * n
+        
+        # Place elements in alternating fashion from the sorted array
+        # Put smallest elements at even indices and largest at odd indices
+        left, right = 0, n - 1
+        for i in range(n):
+            if i % 2 == 0:
+                result[i] = nums[left]
+                left += 1
+            else:
+                result[i] = nums[right]
+                right -= 1
+        
+        return result

@@ -1,0 +1,28 @@
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        # Convert the number to a list of digits for easy manipulation
+        digits = list(str(num))
+        n = len(digits)
+        
+        # Create an array to store the index of the largest digit from the right
+        max_idx = [0] * n
+        max_idx[-1] = n - 1  # The last digit is the largest from itself to the end
+        
+        # Fill the max_idx array
+        for i in range(n - 2, -1, -1):
+            if digits[i] > digits[max_idx[i + 1]]:
+                max_idx[i] = i
+            else:
+                max_idx[i] = max_idx[i + 1]
+        
+        # Traverse the digits and find the first place to swap
+        for i in range(n):
+            # If the current digit is smaller than the largest digit to its right
+            if digits[i] < digits[max_idx[i]]:
+                # Swap the digits
+                digits[i], digits[max_idx[i]] = digits[max_idx[i]], digits[i]
+                # Convert back to integer and return
+                return int(''.join(digits))
+        
+        # If no swap is needed, return the original number
+        return num

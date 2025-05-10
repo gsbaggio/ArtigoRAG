@@ -1,0 +1,43 @@
+from collections import defaultdict, deque
+
+class Solution:
+    def minimumTime(self, n: int, relations: list[list[int]], time: list[int]) -> int:
+        # Create adjacency list representation of the graph
+        graph = defaultdict(list)
+        in_degree = [0] * (n + 1)  # 1-indexed courses
+        
+        # Build the graph
+        for prev, next_course in relations:
+            graph[prev].append(next_course)
+            in_degree[next_course] += 1
+            
+        # Keep track of earliest completion time for each course
+        earliest_completion = [0] * (n + 1)
+        
+        # Queue for topological sort, starting with courses that have no prerequisites
+        queue = deque()
+        for i in range(1, n + 1):
+            if in_degree[i] == 0:
+                queue.append(i)
+                earliest_completion[i] = time[i - 1]  # Time to complete this course
+        
+        # Process all courses in topological order
+        while queue:
+            current = queue.popleft()
+            
+            # Update all courses that depend on the current course
+            for next_course in graph[current]:
+                # The earliest we can complete next_course is after completing current
+                earliest_completion[next_course] = max(
+                    earliest_completion[next_course],
+                    earliest_completion[current]
+                )
+                
+                in_degree[next_course] -= 1
+                if in_degree[next_course] == 0:
+                    # When all prerequisites are met, add time to complete this course
+                    earliest_completion[next_course] += time[next_course - 1]
+                    queue.append(next_course)
+        
+        # The answer is the maximum completion time among all courses
+        return max(earliest_completion)
