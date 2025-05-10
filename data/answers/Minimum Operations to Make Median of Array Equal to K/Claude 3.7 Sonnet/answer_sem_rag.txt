@@ -1,0 +1,25 @@
+class Solution:
+    def minOperationsToMakeMedianK(self, nums, k):
+        # Sort the array to find the elements that would be at the median position
+        nums.sort()
+        n = len(nums)
+        
+        # Find the index of the median
+        median_idx = n // 2
+        
+        operations = 0
+        
+        # For elements before the median (which need to be <= k)
+        for i in range(median_idx):
+            if nums[i] > k:
+                operations += nums[i] - k
+        
+        # For the median element (must be exactly k)
+        operations += abs(nums[median_idx] - k)
+        
+        # For elements after the median (which need to be >= k)
+        for i in range(median_idx + 1, n):
+            if nums[i] < k:
+                operations += k - nums[i]
+        
+        return operations

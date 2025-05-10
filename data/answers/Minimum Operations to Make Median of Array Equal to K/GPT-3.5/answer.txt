@@ -1,0 +1,42 @@
+#include <vector>
+#include <algorithm>
+
+class Solution {
+public:
+    int minOperationsToMakeMedianK(std::vector<int>& nums, int k) {
+        int n = nums.size();
+        
+        // Sort the array to calculate the median
+        std::sort(nums.begin(), nums.end());
+        
+        // Find the position where k should be placed in the sorted array
+        int mid = n / 2;
+        
+        // Calculate the number of operations needed to make the median equal to k
+        int operations = 0;
+        for (int i = 0; i < n; ++i) {
+            operations += std::abs(nums[i] - k);
+        }
+        
+        // If the median is already equal to k, return 0
+        if (nums[mid] == k) {
+            return 0;
+        }
+        
+        // If the median is greater than k, decrease median until it reaches k
+        if (nums[mid] > k) {
+            for (int i = mid; i >= 0 && nums[i] > k; --i) {
+                operations += (nums[i] - k);
+            }
+        }
+        
+        // If the median is smaller than k, increase median until it reaches k
+        if (nums[mid] < k) {
+            for (int i = mid; i < n && nums[i] < k; ++i) {
+                operations += (k - nums[i]);
+            }
+        }
+        
+        return operations;
+    }
+};

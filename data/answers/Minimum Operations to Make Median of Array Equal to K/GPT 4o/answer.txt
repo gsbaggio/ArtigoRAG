@@ -1,0 +1,19 @@
+#include <vector>
+#include <algorithm>
+#include <cmath>
+using namespace std;
+
+class Solution {
+public:
+    int minOperationsToMakeMedianK(vector<int>& nums, int k) {
+        // Step 1: Sort the array
+        sort(nums.begin(), nums.end());
+        
+        // Step 2: Find the median
+        int n = nums.size();
+        int median = (n % 2 == 0) ? nums[n / 2] : nums[n / 2];
+        
+        // Step 3: Calculate the number of operations
+        return abs(median - k);
+    }
+};

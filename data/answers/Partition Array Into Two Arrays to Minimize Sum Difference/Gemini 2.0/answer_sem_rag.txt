@@ -1,0 +1,73 @@
+class Solution:
+    def minimumDifference(self, nums):
+        """
+        Partitions an array of 2*n integers into two arrays of length n to minimize the absolute difference of their sums.
+
+        Args:
+            nums (List[int]): An array of integers with length 2*n.
+
+        Returns:
+            int: The minimum possible absolute difference between the sums of the two arrays.
+        """
+
+        n = len(nums) // 2
+        total_sum = sum(nums)
+
+        # Generate all possible subset sums for the first n elements
+        left_sums = self.subset_sums(nums[:n])
+
+        # Generate all possible subset sums for the second n elements
+        right_sums = self.subset_sums(nums[n:])
+
+        # Sort the subset sums of the second half for binary search
+        for i in range(n + 1):
+            right_sums[i].sort()
+
+        min_diff = float('inf')
+        # Iterate through all possible subset sizes in the first half
+        for i in range(n + 1):
+            for left_sum in left_sums[i]:
+                # Calculate the target sum needed from the second half to balance the partition
+                remaining_sum = (total_sum - 2 * left_sum) / 2
+                
+                # Binary search for the closest sum in the second half
+                j = n - i  # Number of elements to pick from the second half
+                
+                right_arr = right_sums[j]
+                
+                l, r = 0, len(right_arr) - 1
+                while l <= r:
+                    mid = (l + r) // 2
+                    
+                    diff = abs(total_sum - 2 * (left_sum + right_arr[mid]))
+                    min_diff = min(min_diff, diff)
+                    
+                    if left_sum + right_arr[mid] < total_sum / 2:
+                        l = mid + 1
+                    else:
+                        r = mid - 1
+        return int(min_diff)
+
+    def subset_sums(self, nums):
+        """
+        Generates all possible subset sums for each possible subset size of the input array.
+
+        Args:
+            nums (List[int]): The input array.
+
+        Returns:
+            List[List[int]]: A list where each element at index i contains a list of all possible subset sums
+                            using i elements from the input array.
+        """
+        n = len(nums)
+        sums = [[] for _ in range(n + 1)]
+        
+        for mask in range(1 << n):
+            count = 0
+            subset_sum = 0
+            for i in range(n):
+                if (mask >> i) & 1:
+                    subset_sum += nums[i]
+                    count += 1
+            sums[count].append(subset_sum)
+        return sums

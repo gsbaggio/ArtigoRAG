@@ -1,0 +1,55 @@
+class Solution:
+    def minimumDifference(self, nums: list[int]) -> int:
+        n = len(nums) // 2
+        total_sum = sum(nums)
+        
+        # Generate all possible subset sums for the first half
+        left_subset_sums = [[] for _ in range(n + 1)]
+        
+        def generate_left_subsets(index, count, curr_sum):
+            if index == n:
+                left_subset_sums[count].append(curr_sum)
+                return
+            
+            generate_left_subsets(index + 1, count, curr_sum)  # Skip
+            generate_left_subsets(index + 1, count + 1, curr_sum + nums[index])  # Take
+            
+        generate_left_subsets(0, 0, 0)
+        
+        # Generate all possible subset sums for the second half
+        right_subset_sums = [[] for _ in range(n + 1)]
+        
+        def generate_right_subsets(index, count, curr_sum):
+            if index == len(nums):
+                right_subset_sums[count - n].append(curr_sum)
+                return
+            
+            generate_right_subsets(index + 1, count, curr_sum)  # Skip
+            generate_right_subsets(index + 1, count + 1, curr_sum + nums[index])  # Take
+            
+        generate_right_subsets(n, n, 0)
+        
+        # Sort right subset sums for binary search
+        for i in range(n + 1):
+            right_subset_sums[i].sort()
+            
+        min_diff = float('inf')
+        
+        # For each possible count k in the left half, we need n-k from the right half
+        for k in range(n + 1):
+            for left_sum in left_subset_sums[k]:
+                right_sums = right_subset_sums[n - k]
+                target = (total_sum / 2) - left_sum
+                
+                # Binary search for the closest value to target
+                idx = bisect_left(right_sums, target)
+                
+                if idx < len(right_sums):
+                    curr_sum = left_sum + right_sums[idx]
+                    min_diff = min(min_diff, abs(total_sum - 2 * curr_sum))
+                    
+                if idx > 0:
+                    curr_sum = left_sum + right_sums[idx - 1]
+                    min_diff = min(min_diff, abs(total_sum - 2 * curr_sum))
+                    
+        return min_diff

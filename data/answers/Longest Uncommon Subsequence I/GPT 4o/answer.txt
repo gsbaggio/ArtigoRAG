@@ -1,0 +1,7 @@
+class Solution:
+    def findLUSlength(self, a: str, b: str) -> int:
+        # If the strings are equal, there is no uncommon subsequence
+        if a == b:
+            return -1
+        # Otherwise, the longest uncommon subsequence is the longer string
+        return max(len(a), len(b))

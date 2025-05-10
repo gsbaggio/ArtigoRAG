@@ -1,0 +1,45 @@
+class Solution:
+    def searchMatrix(self, matrix, target):
+        """
+        Searches for a target value in a sorted matrix.
+
+        Args:
+            matrix (List[List[int]]): The sorted matrix.
+            target (int): The target value to search for.
+
+        Returns:
+            bool: True if the target is found, False otherwise.
+        """
+        if not matrix or not matrix[0]:
+            return False
+
+        m, n = len(matrix), len(matrix[0])
+        left, right = 0, m * n - 1
+
+        while left <= right:
+            mid = (left + right) // 2
+            row = mid // n
+            col = mid % n
+            
+            if matrix[row][col] == target:
+                return True
+            elif matrix[row][col] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+        return False
+
+# Explanation:
+# 1. Intuition:
+#    The matrix is sorted in a way that allows us to treat it as a single sorted array.
+#    We can apply binary search on this virtual sorted array to find the target value.
+# 2. Time and space complexity:
+#    - Time complexity: O(log(m * n)), where m is the number of rows and n is the number of columns.
+#      This is because we are performing binary search on the virtual sorted array of size m * n.
+#    - Space complexity: O(1), as we are only using a few constant extra variables.
+# 3. Important considerations:
+#    - The matrix must be sorted in non-decreasing order in each row, and the first integer of each row
+#      must be greater than the last integer of the previous row.
+#    - The code handles the case where the matrix is empty or has no columns.
+#    - The code calculates the row and column indices from the middle index using division and modulo operations.

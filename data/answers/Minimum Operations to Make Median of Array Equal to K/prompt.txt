@@ -1,0 +1,367 @@
+CURRENT QUESTION:
+You are given an integer array nums and a non-negative integer k. In one operation, you can increase or decrease any element by 1.
+
+Return the minimum number of operations needed to make the median of nums equal to k.
+
+The median of an array is defined as the middle element of the array when it is sorted in non-decreasing order. If there are two choices for a median, the larger of the two values is taken.
+
+ 
+
+Example 1:
+
+Input: nums = [2,5,6,8,5], k = 4
+
+Output: 2
+
+Explanation:
+
+We can subtract one from nums[1] and nums[4] to obtain [2, 4, 6, 8, 4]. The median of the resulting array is equal to k.
+
+Example 2:
+
+Input: nums = [2,5,6,8,5], k = 7
+
+Output: 3
+
+Explanation:
+
+We can add one to nums[1] twice and add one to nums[2] once to obtain [2, 7, 7, 8, 5].
+
+Example 3:
+
+Input: nums = [1,2,3,4,5,6], k = 4
+
+Output: 0
+
+Explanation:
+
+The median of the array is already equal to k.
+
+ 
+
+Constraints:
+
+1 <= nums.length <= 2 * 105
+1 <= nums[i] <= 109
+1 <= k <= 109
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.70):
+Title: Find Median from Data Stream
+Categorys: Two Pointers Design Sorting Heap (Priority Queue) Data Stream
+Question text: The median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value, and the median is the mean of the two middle values.
+
+For example, for arr = [2,3,4], the median is 3.
+For example, for arr = [2,3], the median is (2 + 3) / 2 = 2.5.
+Implement the MedianFinder class:
+
+MedianFinder() initializes the MedianFinder object.
+void addNum(int num) adds the integer num from the data stream to the data structure.
+double findMedian() returns the median of all elements so far. Answers within 10-5 of the actual answer will be accepted.
+ 
+
+Example 1:
+
+Input
+["MedianFinder", "addNum", "addNum", "findMedian", "addNum", "findMedian"]
+[[], [1], [2], [], [3], []]
+Output
+[null, null, null, 1.5, null, 2.0]
+
+Explanation
+MedianFinder medianFinder = new MedianFinder();
+medianFinder.addNum(1);    // arr = [1]
+medianFinder.addNum(2);    // arr = [1, 2]
+medianFinder.findMedian(); // return 1.5 (i.e., (1 + 2) / 2)
+medianFinder.addNum(3);    // arr[1, 2, 3]
+medianFinder.findMedian(); // return 2.0
+ 
+
+Constraints:
+
+-105 <= num <= 105
+There will be at least one element in the data structure before calling findMedian.
+At most 5 * 104 calls will be made to addNum and findMedian.
+ 
+
+Follow up:
+
+If all integer numbers from the stream are in the range [0, 100], how would you optimize your solution?
+If 99% of all integer numbers from the stream are in the range [0, 100], how would you optimize your solution?
+Solution: class MedianFinder {
+public:
+    priority_queue<int> maxHeap;
+    priority_queue<int, vector<int>, greater<int>> minHeap;
+    
+    MedianFinder() {
+    }
+    void addNum(int num) {
+        maxHeap.push(num);
+        minHeap.push(maxHeap.top());
+        maxHeap.pop();
+        if (minHeap.size() > maxHeap.size()) {
+            maxHeap.push(minHeap.top());
+            minHeap.pop();
+        }
+    }
+    double findMedian() {
+        if (maxHeap.size() > minHeap.size()) return maxHeap.top();
+        return (maxHeap.top() + minHeap.top()) / 2.0;
+    }
+};
+Explanation: MaxHeap to store a half of low numbers, MinHeap to store a half of high numbers
+
+The idea is to divide numbers into 2 balanced halves, one half low stores low numbers, the other half high stores high numbers. To access the median in O(1), we need a data structure that give us the maximum of low half and the minimum of high half in O(1). That's where maxHeap and minHeap come into play.
+We use maxHeap to store a half of low numbers, top of the maxHeap is the highest number among low numbers.
+We use minHeap to store a half of high numbers, top of the minHeap is the lowest number among high numbers.
+We need to balance the size between maxHeap and minHeap while processing. Hence after adding k elements,
+If k = 2 * i then maxHeap.size = minHeap.size = i
+If k = 2 * i + 1, let maxHeap store 1 element more than minHeap, then maxHeap.size = minHeap.size + 1.
+When adding a new number num into our MedianFinder:
+Firstly, add num to the maxHeap, now maxHeap may contain the big element (which should belong to minHeap). So we need to balance, by removing the highest element from maxHeap, and offer it to minHeap.
+Now, the minHeap might hold more elements than maxHeap, in that case, we need to balance the size, by removing the lowest element from minHeap and offer it back to maxHeap.
+When doing findMedian():
+If maxHeap.size > minHeap.size return top of the maxHeap, which is the highest number amongs low numbers.
+Else if maxHeap.size == minHeap return the (maxHeap.top() + minHeap.top()) / 2.
+
+Similar question 2 (Similarity score: 0.69):
+Title: Maximize Sum Of Array After K Negations
+Categorys: Array Greedy Sorting
+Question text: Given an integer array nums and an integer k, modify the array in the following way:
+
+choose an index i and replace nums[i] with -nums[i].
+You should apply this process exactly k times. You may choose the same index i multiple times.
+
+Return the largest possible sum of the array after modifying it in this way.
+
+ 
+
+Example 1:
+
+Input: nums = [4,2,3], k = 1
+Output: 5
+Explanation: Choose index 1 and nums becomes [4,-2,3].
+Example 2:
+
+Input: nums = [3,-1,0,2], k = 3
+Output: 6
+Explanation: Choose indices (1, 2, 2) and nums becomes [3,1,0,2].
+Example 3:
+
+Input: nums = [2,-3,-1,5,-4], k = 2
+Output: 13
+Explanation: Choose indices (1, 4) and nums becomes [2,3,-1,5,4].
+ 
+
+Constraints:
+
+1 <= nums.length <= 104
+-100 <= nums[i] <= 100
+1 <= k <= 104
+Solution: class Solution {
+public:
+long long getSum(vector<int> negate, vector<int>positive)
+{
+    long long sum =0;
+                for(int i=0;i<negate.size();i++)
+            {
+                sum+=negate[i];
+            }
+        for(int i=0;i<positive.size();i++)
+            {
+                sum+=positive[i];
+            }
+            return sum;
+}
+    int largestSumAfterKNegations(vector<int>& nums, int k) {
+   vector<int>negate;
+   vector<int>positive;
+    for(int i=0;i<nums.size();i++)
+    {
+        if(nums[i]>=0)
+        {
+            positive.push_back(nums[i]);
+        }
+        else{
+            negate.push_back(nums[i]);
+        }
+    }
+    if(negate.size()>k)
+    {
+        sort(negate.begin(), negate.end());
+        for(int i=0;i<k;i++)
+        {
+            negate[i] = abs(negate[i]);
+        }
+        return getSum(negate, positive);
+    } else {
+        for(int i=0;i<negate.size();i++)
+        {
+            negate[i] = abs(negate[i]);
+        }
+        int remainingcount = k-negate.size();
+        if(remainingcount%2==0)
+        {
+            return getSum(negate, positive);
+        } else {
+        int mini = INT_MAX;
+            for(int i=0;i<negate.size();i++)
+            {
+                mini = min(mini, negate[i]);
+            }
+        for(int i=0;i<positive.size();i++)
+            {
+                mini = min(mini, positive[i]);
+            }
+cout<<mini<<endl;
+cout<<getSum(negate, positive)<<endl;
+            return (getSum(negate, positive) - 2*mini);
+        }
+    }
+    }
+};
+Explanation: 1- sort the numbers in ascending order
+2- flip all the negative numbers, as long as k > 0
+3- find the sum of the new array (with flipped numbers if any) and keep track of the minimum number
+4- Now for the return statement
+
+Similar question 3 (Similarity score: 0.67):
+Title: Final Array State After K Multiplication Operations II
+Categorys: Array Heap (Priority Queue) Simulation
+Question text: You are given an integer array nums, an integer k, and an integer multiplier.
+
+You need to perform k operations on nums. In each operation:
+
+Find the minimum value x in nums. If there are multiple occurrences of the minimum value, select the one that appears first.
+Replace the selected minimum value x with x * multiplier.
+After the k operations, apply modulo 109 + 7 to every value in nums.
+
+Return an integer array denoting the final state of nums after performing all k operations and then applying the modulo.
+
+ 
+
+Example 1:
+
+Input: nums = [2,1,3,5,6], k = 5, multiplier = 2
+
+Output: [8,4,6,5,6]
+
+Explanation:
+
+Operation	Result
+After operation 1	[2, 2, 3, 5, 6]
+After operation 2	[4, 2, 3, 5, 6]
+After operation 3	[4, 4, 3, 5, 6]
+After operation 4	[4, 4, 6, 5, 6]
+After operation 5	[8, 4, 6, 5, 6]
+After applying modulo	[8, 4, 6, 5, 6]
+Example 2:
+
+Input: nums = [100000,2000], k = 2, multiplier = 1000000
+
+Output: [999999307,999999993]
+
+Explanation:
+
+Operation	Result
+After operation 1	[100000, 2000000000]
+After operation 2	[100000000000, 2000000000]
+After applying modulo	[999999307, 999999993]
+ 
+
+Constraints:
+
+1 <= nums.length <= 104
+1 <= nums[i] <= 109
+1 <= k <= 109
+1 <= multiplier <= 106
+Solution: const long long mod = 1000000007;
+
+class Solution {
+public:
+    long long power_mod(long long base, long long exp, long long mod) {
+    long long result = 1;
+    
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        base = (base * base) % mod;
+        exp = exp / 2;
+    }
+    // this function multiplies a number by itself n times in O(logn)
+    return result;
+}
+    vector<int> getFinalState(vector<int>& nums, int k, int multiplier) {
+        if (multiplier == 1) return nums; // do not miss this!!
+        priority_queue <pair<long long,long long>, vector<pair<long long,long long>>, greater<pair<long long,long long>>> pq;
+        int n = nums.size();
+        for (int i = 0; i < n; i++) pq.push({nums[i],i});
+        unordered_map<int,int> m,m1;
+        // m for storing number of operations at each index
+        //m1 to know if all elements have got an operation
+        while (1){
+            if ((int)m1.size() == n || k == 0) break; // no more operations or state achieved
+            long long x = pq.top().first, y = pq.top().second;
+            pq.pop();
+            x *= multiplier; pq.push({x,y});
+            m1[y]++; k--;
+        }
+        vector<long long> v(n); // to avoid integer overflow
+        // This vector will store the elements after ideal state is achieved
+        while (!pq.empty()){
+            long long x = pq.top().first, y = pq.top().second;
+            v[y] = x;
+            pq.pop();
+        }
+        int rep = k/n, md = k%n;
+        for (int i = 0; i < n; i++) pq.push({v[i],i});
+        // I had to push it again because I did not declare v initially due to contest pressure. Better to do that.
+        while (!pq.empty()){
+            int x = pq.top().second;
+            m[x] = rep;
+            if (md > 0)m[x]++,md--;
+            // index x has been assigned its number of operations
+            pq.pop();
+        }
+        // Now just compute every value while calling power_mod funtion
+        for (int i = 0; i < n; i++){
+            long long mlt = power_mod(multiplier, m[i],mod);
+            v[i] = ((v[i]%mod)*(mlt%mod))%mod;
+            nums[i] = v[i];
+        }
+        return nums;
+    }
+};
+Explanation: Intuition
+The general idea is to divide the operations greedily among all indexes.
+
+Every number after getting an operation should not remain as the smallest. So we will have to achieve that state first.
+
+BY OBSERVATION
+When all the elements get atleast an operation, we will achieve the above mentioned state. So we will first greedily assign them operation till all elements get atleast one operation.
+
+Use priority queue min heap or multiset for that.
+
+After this we can assign every index a number of operations through our initial general idea.
+
+What about such large value of k?
+The number of operations of each index may be huge due to this. The optimal approach is achieved in log(n) as the multiplier increases exponentially. Check out the function in the code. This is called Exponentiation by Squaring.
+
+Complexity
+Time complexity: O(nlogk)
+
+Space complexity: O(n)
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. Use the similar questions as references to improve the solution, but only if they are relevant.
+        5. Don't use any external libraries. Don't need to import any libraries.

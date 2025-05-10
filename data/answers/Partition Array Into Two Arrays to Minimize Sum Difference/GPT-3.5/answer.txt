@@ -1,0 +1,17 @@
+class Solution:
+    def minimumDifference(self, nums):
+        n = len(nums) // 2
+        total_sum = sum(nums)
+        dp = [[False] * (total_sum // 2 + 1) for _ in range(n + 1)]
+        dp[0][0] = True
+
+        for num in nums:
+            for i in range(n, 0, -1):
+                for j in range(total_sum // 2, num - 1, -1):
+                    dp[i][j] |= dp[i - 1][j - num]
+
+        target_sum = total_sum // 2
+        while not dp[n][target_sum]:
+            target_sum -= 1
+
+        return total_sum - 2 * target_sum

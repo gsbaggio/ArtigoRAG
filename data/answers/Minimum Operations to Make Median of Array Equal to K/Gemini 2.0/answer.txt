@@ -1,0 +1,33 @@
+class Solution:
+    def solve(self, nums, k):
+        """
+        Calculates the minimum number of operations needed to make the median of nums equal to k.
+
+        Args:
+            nums (List[int]): The input list of integers.
+            k (int): The target median value.
+
+        Returns:
+            int: The minimum number of operations needed.
+        """
+        nums.sort()
+        n = len(nums)
+        median_index = (n - 1) // 2  # Integer division to get the correct index
+        median = nums[median_index]
+        
+        operations = abs(median - k)
+        
+        return operations
+
+    def minimumOperationsToMakeMedianK(self, nums, k):
+        """
+        Calculates the minimum number of operations needed to make the median of nums equal to k.
+
+        Args:
+            nums (List[int]): The input list of integers.
+            k (int): The target median value.
+
+        Returns:
+            int: The minimum number of operations needed.
+        """
+        return self.solve(nums, k)

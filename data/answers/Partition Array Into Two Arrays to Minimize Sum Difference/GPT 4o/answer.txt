@@ -1,0 +1,52 @@
+class Solution:
+    def minimumDifference(self, nums):
+        from itertools import combinations
+        import bisect
+
+        n = len(nums) // 2
+        total_sum = sum(nums)
+
+        # Helper function to compute all subset sums for a given array
+        def get_subset_sums(arr):
+            subset_sums = {i: [] for i in range(len(arr) + 1)}
+            for size in range(len(arr) + 1):
+                for comb in combinations(arr, size):
+                    subset_sums[size].append(sum(comb))
+            return subset_sums
+
+        # Split nums into two halves
+        left, right = nums[:n], nums[n:]
+
+        # Get all subset sums for both halves
+        left_sums = get_subset_sums(left)
+        right_sums = get_subset_sums(right)
+
+        # Sort the subset sums for the right half for binary search
+        for size in right_sums:
+            right_sums[size].sort()
+
+        # Initialize the minimum difference
+        min_diff = float('inf')
+
+        # Iterate over all subset sizes for the left half
+        for size in range(n + 1):
+            for left_sum in left_sums[size]:
+                # Calculate the target sum for the right half
+                target = (total_sum // 2) - left_sum
+
+                # Find the closest sum in the right half using binary search
+                right_candidates = right_sums[n - size]
+                idx = bisect.bisect_left(right_candidates, target)
+
+                # Check the closest sums
+                if idx < len(right_candidates):
+                    right_sum = right_candidates[idx]
+                    current_diff = abs(total_sum - 2 * (left_sum + right_sum))
+                    min_diff = min(min_diff, current_diff)
+
+                if idx > 0:
+                    right_sum = right_candidates[idx - 1]
+                    current_diff = abs(total_sum - 2 * (left_sum + right_sum))
+                    min_diff = min(min_diff, current_diff)
+
+        return min_diff

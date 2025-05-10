@@ -1,0 +1,32 @@
+class Solution:
+    def nthUglyNumber(self, n: int) -> int:
+        # Array to store the first n ugly numbers
+        ugly_numbers = [0] * n
+        ugly_numbers[0] = 1  # The first ugly number is 1
+        
+        # Pointers for multiples of 2, 3, and 5
+        p2 = p3 = p5 = 0
+        
+        # Initial multiples of 2, 3, and 5
+        next_multiple_of_2 = 2
+        next_multiple_of_3 = 3
+        next_multiple_of_5 = 5
+        
+        for i in range(1, n):
+            # The next ugly number is the minimum of the next multiples
+            next_ugly = min(next_multiple_of_2, next_multiple_of_3, next_multiple_of_5)
+            ugly_numbers[i] = next_ugly
+            
+            # Increment the pointer(s) for the factor(s) that matched the minimum
+            if next_ugly == next_multiple_of_2:
+                p2 += 1
+                next_multiple_of_2 = ugly_numbers[p2] * 2
+            if next_ugly == next_multiple_of_3:
+                p3 += 1
+                next_multiple_of_3 = ugly_numbers[p3] * 3
+            if next_ugly == next_multiple_of_5:
+                p5 += 1
+                next_multiple_of_5 = ugly_numbers[p5] * 5
+        
+        # The nth ugly number is the last element in the array
+        return ugly_numbers[-1]

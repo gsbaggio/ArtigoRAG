@@ -1,0 +1,33 @@
+import heapq
+
+class Solution:
+    def minOperationsToMakeMedianK(self, nums, k):
+        n = len(nums)
+        median = self.findMedian(nums)
+        moves = 0
+
+        smaller_half = []  # Max heap
+        larger_half = []   # Min heap
+
+        for num in nums:
+            if num < median:
+                heapq.heappush(smaller_half, -num)
+            elif num > median:
+                heapq.heappush(larger_half, num)
+
+        while len(smaller_half) > len(larger_half):
+            diff = -heapq.heappop(smaller_half) - median
+            heapq.heappush(larger_half, diff)
+            moves += diff
+
+        while len(larger_half) > len(smaller_half):
+            diff = heapq.heappop(larger_half) - median
+            heapq.heappush(smaller_half, -diff)
+            moves += diff
+
+        return moves
+
+    def findMedian(self, nums):
+        nums.sort()
+        n = len(nums)
+        return nums[n // 2] if n % 2 != 0 else (nums[n // 2 - 1] + nums[n // 2]) // 2

@@ -1,0 +1,29 @@
+class Solution:
+    def nthUglyNumber(self, n: int) -> int:
+        # Initialize pointers for multiples of 2, 3, and 5
+        i2 = i3 = i5 = 0
+        
+        # Initialize the array to store ugly numbers
+        ugly_numbers = [1] * n
+        
+        # Generate ugly numbers up to the nth one
+        for i in range(1, n):
+            # Calculate the next multiples of 2, 3, and 5
+            next2 = ugly_numbers[i2] * 2
+            next3 = ugly_numbers[i3] * 3
+            next5 = ugly_numbers[i5] * 5
+            
+            # Choose the smallest of the three as the next ugly number
+            next_ugly = min(next2, next3, next5)
+            ugly_numbers[i] = next_ugly
+            
+            # Increment the pointer(s) that contributed to the next ugly number
+            if next_ugly == next2:
+                i2 += 1
+            if next_ugly == next3:
+                i3 += 1
+            if next_ugly == next5:
+                i5 += 1
+        
+        # Return the nth ugly number
+        return ugly_numbers[-1]

@@ -1,0 +1,12 @@
+class Solution {
+public:
+    int findLUSlength(string a, string b) {
+        // If the strings are identical, there can't be an uncommon subsequence
+        if (a == b) {
+            return -1;
+        }
+        
+        // If strings are different, the longer string itself is an uncommon subsequence
+        return max(a.length(), b.length());
+    }
+};

@@ -1,0 +1,16 @@
+class Solution:
+    def minOperationsToMakeMedianK(self, nums, k):
+        # Step 1: Sort the array
+        nums.sort()
+        
+        # Step 2: Find the median
+        n = len(nums)
+        if n % 2 == 1:
+            # Odd length: median is the middle element
+            median = nums[n // 2]
+        else:
+            # Even length: median is the larger of the two middle elements
+            median = nums[n // 2]
+        
+        # Step 3: Calculate the number of operations
+        return abs(median - k)

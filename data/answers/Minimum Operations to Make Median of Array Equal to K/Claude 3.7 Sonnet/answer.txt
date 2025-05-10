@@ -1,0 +1,19 @@
+class Solution:
+    def minOperationsToMakeMedianK(self, nums: list[int], k: int) -> int:
+        nums.sort()
+        n = len(nums)
+        median_index = n // 2  # Index of the median (for odd length arrays or larger of two middle elements)
+        
+        operations = 0
+        for i in range(n):
+            if i < median_index:
+                # Elements before median should be <= k
+                operations += max(0, nums[i] - k)
+            elif i > median_index:
+                # Elements after median should be >= k
+                operations += max(0, k - nums[i])
+            else:
+                # The median element must equal k
+                operations += abs(nums[i] - k)
+                
+        return operations

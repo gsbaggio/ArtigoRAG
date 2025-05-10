@@ -1,0 +1,20 @@
+class Solution:
+    def minimumDifference(self, nums):
+        n = len(nums) // 2
+        total = sum(nums)
+        dp = [set([0])]
+
+        for num in nums:
+            new_sums = []
+            for s in dp[-1]:
+                new_sums.append(s + num)
+            dp.append(set(new_sums))
+
+        half_total = total // 2
+        min_diff = float('inf')
+
+        for s in dp[-1]:
+            if s <= half_total:
+                min_diff = min(min_diff, half_total - s)
+        
+        return min_diff * 2

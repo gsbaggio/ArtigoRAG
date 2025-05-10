@@ -1,0 +1,168 @@
+CURRENT QUESTION:
+Given two strings a and b, return the length of the longest uncommon subsequence between a and b. If no such uncommon subsequence exists, return -1.
+
+An uncommon subsequence between two strings is a string that is a subsequence of exactly one of them.
+
+ 
+
+Example 1:
+
+Input: a = "aba", b = "cdc"
+Output: 3
+Explanation: One longest uncommon subsequence is "aba" because "aba" is a subsequence of "aba" but not "cdc".
+Note that "cdc" is also a longest uncommon subsequence.
+Example 2:
+
+Input: a = "aaa", b = "bbb"
+Output: 3
+Explanation: The longest uncommon subsequences are "aaa" and "bbb".
+Example 3:
+
+Input: a = "aaa", b = "aaa"
+Output: -1
+Explanation: Every subsequence of string a is also a subsequence of string b. Similarly, every subsequence of string b is also a subsequence of string a. So the answer would be -1.
+ 
+
+Constraints:
+
+1 <= a.length, b.length <= 100
+a and b consist of lower-case English letters.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.81):
+Title: Longest Uncommon Subsequence II
+Categorys: Array Hash Table Two Pointers String Sorting
+Question text: Given an array of strings strs, return the length of the longest uncommon subsequence between them. If the longest uncommon subsequence does not exist, return -1.
+
+An uncommon subsequence between an array of strings is a string that is a subsequence of one string but not the others.
+
+A subsequence of a string s is a string that can be obtained after deleting any number of characters from s.
+
+For example, "abc" is a subsequence of "aebdc" because you can delete the underlined characters in "aebdc" to get "abc". Other subsequences of "aebdc" include "aebdc", "aeb", and "" (empty string).
+ 
+
+Example 1:
+
+Input: strs = ["aba","cdc","eae"]
+Output: 3
+Example 2:
+
+Input: strs = ["aaa","aaa","aa"]
+Output: -1
+ 
+
+Constraints:
+
+2 <= strs.length <= 50
+1 <= strs[i].length <= 10
+strs[i] consists of lowercase English letters.
+Solution: class Solution {
+public:
+    int findLUSlength(vector<string>& strs) {
+        int maxi = -1;
+        // the longest string which is not a subsequence of other is the answer
+        for (int i = 0; i < strs.size(); i++) {
+            bool isSubsequence = false;
+            for (int j = 0; j < strs.size(); j++) {
+                if (i != j && subseq(strs[i], strs[j])) {
+                    isSubsequence = true;
+                    break;
+                }
+            }
+            if (!isSubsequence) maxi = max(maxi, (int)strs[i].length());
+        }
+        return maxi;
+    }
+
+    bool subseq(string a, string b) {
+    int i = 0;
+    for (char c : b) if (i < a.size() && a[i] == c) i++;
+    return i == a.size();
+    }
+};
+Explanation: Insights
+We need to find the longest string which is not a subsequence of other.
+This question is similar to the first version of it where we needed to simply return the longest string if both the strings were not equal.
+Similarly, here we need to find the longest such string from an array of strings, so it is as simple as the first question.
+Go through the strings one by one and check which string isn't a subsequence of another and has the longest length. We can simply pick that string as the LUS.
+
+Similar question 2 (Similarity score: 0.70):
+Title: Longest Substring Without Repeating Characters
+Categorys: Hash Table String Sliding Window
+Question text: Given a string s, find the length of the longest substring without duplicate characters.
+
+ 
+
+Example 1:
+
+Input: s = "abcabcbb"
+Output: 3
+Explanation: The answer is "abc", with the length of 3.
+Example 2:
+
+Input: s = "bbbbb"
+Output: 1
+Explanation: The answer is "b", with the length of 1.
+Example 3:
+
+Input: s = "pwwkew"
+Output: 3
+Explanation: The answer is "wke", with the length of 3.
+Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
+ 
+
+Constraints:
+
+0 <= s.length <= 5 * 104
+s consists of English letters, digits, symbols and spaces.
+Solution: class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int n = s.length();
+        int maxLength = 0;
+        unordered_set<char> charSet;
+        int left = 0;
+        
+        for (int right = 0; right < n; right++) {
+            if (charSet.count(s[right]) == 0) {
+                charSet.insert(s[right]);
+                maxLength = max(maxLength, right - left + 1);
+            } else {
+                while (charSet.count(s[right])) {
+                    charSet.erase(s[left]);
+                    left++;
+                }
+                charSet.insert(s[right]);
+            }
+        }
+        
+        return maxLength;
+    }
+};
+Explanation: Intuition
+The intuition behind the 3 solutions is to iteratively find the longest substring without repeating characters by maintaining a sliding window approach. We use two pointers (left and right) to represent the boundaries of the current substring. As we iterate through the string, we update the pointers and adjust the window to accommodate new unique characters and eliminate repeating characters.
+
+Approach 1 - Set
+We use a set (charSet) to keep track of unique characters in the current substring.
+We maintain two pointers, left and right, to represent the boundaries of the current substring.
+The maxLength variable keeps track of the length of the longest substring encountered so far.
+We iterate through the string using the right pointer.
+If the current character is not in the set (charSet), it means we have a new unique character.
+We insert the character into the set and update the maxLength if necessary.
+If the character is already present in the set, it indicates a repeating character within the current substring.
+In this case, we move the left pointer forward, removing characters from the set until the repeating character is no longer present.
+We insert the current character into the set and continue the iteration.
+Finally, we return the maxLength as the length of the longest substring without repeating characters.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. Use the similar questions as references to improve the solution, but only if they are relevant.
+        5. Don't use any external libraries. Don't need to import any libraries.

@@ -1,0 +1,17 @@
+class Solution:
+    def nthUglyNumber(self, n: int) -> int:
+        ugly_numbers = [1]
+        p2 = p3 = p5 = 0  # Pointers for 2, 3, and 5
+
+        while len(ugly_numbers) < n:
+            next_ugly = min(ugly_numbers[p2] * 2, ugly_numbers[p3] * 3, ugly_numbers[p5] * 5)
+            ugly_numbers.append(next_ugly)
+
+            if next_ugly == ugly_numbers[p2] * 2:
+                p2 += 1
+            if next_ugly == ugly_numbers[p3] * 3:
+                p3 += 1
+            if next_ugly == ugly_numbers[p5] * 5:
+                p5 += 1
+
+        return ugly_numbers[-1]

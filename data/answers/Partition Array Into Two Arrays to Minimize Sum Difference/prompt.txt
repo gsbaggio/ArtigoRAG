@@ -1,0 +1,261 @@
+CURRENT QUESTION:
+You are given an integer array nums of 2 * n integers. You need to partition nums into two arrays of length n to minimize the absolute difference of the sums of the arrays. To partition nums, put each element of nums into one of the two arrays.
+
+Return the minimum possible absolute difference.
+
+ 
+
+Example 1:
+Input: nums = [3,9,7,3]
+Output: 2
+Explanation: One optimal partition is: [3,9] and [7,3].
+The absolute difference between the sums of the arrays is abs((3 + 9) - (7 + 3)) = 2.
+Example 2:
+
+Input: nums = [-36,36]
+Output: 72
+Explanation: One optimal partition is: [-36] and [36].
+The absolute difference between the sums of the arrays is abs((-36) - (36)) = 72.
+Example 3:
+Input: nums = [2,-1,0,4,-2,-9]
+Output: 0
+Explanation: One optimal partition is: [2,4,-9] and [-1,0,-2].
+The absolute difference between the sums of the arrays is abs((2 + 4 + -9) - (-1 + 0 + -2)) = 0.
+ 
+
+Constraints:
+
+1 <= n <= 15
+nums.length == 2 * n
+-107 <= nums[i] <= 107
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.69):
+Title: Find Two Non-overlapping Sub-arrays Each With Target Sum
+Categorys: Array Hash Table Binary Search Dynamic Programming Sliding Windos
+Question text: You are given an array of integers arr and an integer target.
+
+You have to find two non-overlapping sub-arrays of arr each with a sum equal target. There can be multiple answers so you have to find an answer where the sum of the lengths of the two sub-arrays is minimum.
+
+Return the minimum sum of the lengths of the two required sub-arrays, or return -1 if you cannot find such two sub-arrays.
+
+ 
+
+Example 1:
+
+Input: arr = [3,2,2,4,3], target = 3
+Output: 2
+Explanation: Only two sub-arrays have sum = 3 ([3] and [3]). The sum of their lengths is 2.
+Example 2:
+
+Input: arr = [7,3,4,7], target = 7
+Output: 2
+Explanation: Although we have three non-overlapping sub-arrays of sum = 7 ([7], [3,4] and [7]), but we will choose the first and third sub-arrays as the sum of their lengths is 2.
+Example 3:
+
+Input: arr = [4,3,2,6,2,3,4], target = 6
+Output: -1
+Explanation: We have only one sub-array of sum = 6.
+ 
+
+Constraints:
+
+1 <= arr.length <= 105
+1 <= arr[i] <= 1000
+1 <= target <= 108
+Solution: class Solution {
+    public int minSumOfLengths(int[] arr, int target) {
+        HashMap<Integer,Integer> hmap=new HashMap<>();
+        int sum=0,lsize=Integer.MAX_VALUE,result=Integer.MAX_VALUE;
+        hmap.put(0,-1);
+        for(int i=0;i<arr.length;i++){
+            sum+=arr[i];
+            hmap.put(sum,i); // stores key as sum upto index i, and value as i.
+        }
+        sum=0;
+        for(int i=0;i<arr.length;i++){
+            sum+=arr[i];
+            if(hmap.get(sum-target)!=null){
+                lsize=Math.min(lsize,i-hmap.get(sum-target));      // stores minimum length of sub-array ending with index<= i with sum target. This ensures non- overlapping property.
+            }
+			//hmap.get(sum+target) searches for any sub-array starting with index i+1 with sum target.
+            if(hmap.get(sum+target)!=null&&lsize<Integer.MAX_VALUE){
+                result=Math.min(result,hmap.get(sum+target)-i+lsize); // updates the result only if both left and right sub-array exists.
+            }
+        }
+        return result==Integer.MAX_VALUE?-1:result;
+    }
+}
+Explanation: Concept: First traverse through the array once and store the (key,value) pair as (sum(arr[0:i+1]),i) for 0<=i<size of arr. Put, (0,-1) in hashmap as default. Now traverse through the array again, and for every i, find the minimum value of length of sub-array on the left or starting with i whose value is equal to target. Find another sub-array starting with i+1, whose sum is target. Update the result with the minimum value of the sum of both the sub-array. This is possible because all values are positive and the value of sum is strictly increasing.
+
+Similar question 2 (Similarity score: 0.68):
+Title: Count of Range Sum
+Categorys: Array Binary Search Divide and Conquer Binary Indexed Tree Segment Tree Merge Sort Ordered Set
+Question text: Given an integer array nums and two integers lower and upper, return the number of range sums that lie in [lower, upper] inclusive.
+
+Range sum S(i, j) is defined as the sum of the elements in nums between indices i and j inclusive, where i <= j.
+
+ 
+
+Example 1:
+
+Input: nums = [-2,5,-1], lower = -2, upper = 2
+Output: 3
+Explanation: The three ranges are: [0,0], [2,2], and [0,2] and their respective sums are: -2, -1, 2.
+Example 2:
+
+Input: nums = [0], lower = 0, upper = 0
+Output: 1
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+-231 <= nums[i] <= 231 - 1
+-105 <= lower <= upper <= 105
+The answer is guaranteed to fit in a 32-bit integer.
+Solution: public int countRangeSum(int[] nums, int lower, int upper) {
+    int n = nums.length;
+    long[] sums = new long[n + 1];
+    for (int i = 0; i < n; ++i)
+        sums[i + 1] = sums[i] + nums[i];
+    return countWhileMergeSort(sums, 0, n + 1, lower, upper);
+}
+
+private int countWhileMergeSort(long[] sums, int start, int end, int lower, int upper) {
+    if (end - start <= 1) return 0;
+    int mid = (start + end) / 2;
+    int count = countWhileMergeSort(sums, start, mid, lower, upper) 
+              + countWhileMergeSort(sums, mid, end, lower, upper);
+    int j = mid, k = mid, t = mid;
+    long[] cache = new long[end - start];
+    for (int i = start, r = 0; i < mid; ++i, ++r) {
+        while (k < end && sums[k] - sums[i] < lower) k++;
+        while (j < end && sums[j] - sums[i] <= upper) j++;
+        while (t < end && sums[t] < sums[i]) cache[r++] = sums[t++];
+        cache[r] = sums[i];
+        count += j - k;
+    }
+    System.arraycopy(cache, 0, sums, start, t - start);
+    return count;
+}
+Explanation: Recall count smaller number after self where we encountered the problem
+
+count[i] = count of nums[j] - nums[i] < 0 with j > i
+Here, after we did the preprocess, we need to solve the problem
+
+count[i] = count of a <= S[j] - S[i] <= b with j > i
+ans = sum(count[:])
+Therefore the two problems are almost the same. We can use the same technique used in that problem to solve this problem. One solution is merge sort based; another one is Balanced BST based. The time complexity are both O(n log n).
+
+The merge sort based solution counts the answer while doing the merge. During the merge stage, we have already sorted the left half [start, mid) and right half [mid, end). We then iterate through the left half with index i. For each i, we need to find two indices k and j in the right half where
+
+j is the first index satisfy sums[j] - sums[i] > upper and
+k is the first index satisfy sums[k] - sums[i] >= lower.
+Then the number of sums in [lower, upper] is j-k. We also use another index t to copy the elements satisfy sums[t] < sums[i] to a cache in order to complete the merge sort.
+
+Despite the nested loops, the time complexity of the "merge & count" stage is still linear. Because the indices k, j, t will only increase but not decrease, each of them will only traversal the right half once at most. The total time complexity of this divide and conquer solution is then O(n log n).
+
+One other concern is that the sums may overflow integer. So we use long instead.
+
+Similar question 3 (Similarity score: 0.65):
+Title: Split Array With Same Average
+Categorys: Array Math Dynamic Programming Bit Manipulation Bitmask
+Question text: You are given an integer array nums.
+
+You should move each element of nums into one of the two arrays A and B such that A and B are non-empty, and average(A) == average(B).
+
+Return true if it is possible to achieve that and false otherwise.
+
+Note that for an array arr, average(arr) is the sum of all the elements of arr over the length of arr.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,4,5,6,7,8]
+Output: true
+Explanation: We can split the array into [1,4,5,8] and [2,3,6,7], and both of them have an average of 4.5.
+Example 2:
+
+Input: nums = [3,1]
+Output: false
+ 
+
+Constraints:
+
+1 <= nums.length <= 30
+0 <= nums[i] <= 104
+Solution: class Solution(object):
+    def splitArraySameAverage(self, A):
+        from fractions import Fraction
+        N = len(A)
+        S = sum(A)
+        A = [z - Fraction(S, N) for z in A]
+
+        if N == 1: return False
+
+        #Want zero subset sum
+        left = {A[0]}
+        for i in xrange(1, N/2):
+            left = {z + A[i] for z in left} | left | {A[i]}
+        if 0 in left: return True
+
+        right = {A[-1]}
+        for i in xrange(N/2, N-1):
+            right = {z + A[i] for z in right} | right | {A[i]}
+        if 0 in right: return True
+
+        sleft = sum(A[i] for i in xrange(N/2))
+        sright = sum(A[i] for i in xrange(N/2, N))
+
+        return any(-ha in right and (ha, -ha) != (sleft, sright) for ha in left)
+Explanation: Intuition and Algorithm
+
+First, let's get a sense of the condition that average(B) = average(C), where B, C are defined in the problem statement.
+
+Say A (the input array) has N elements which sum to S, and B (one of the splitting sets) has K elements which sum to X. Then the equation for average(B) = average(C) becomes  
+K
+X
+​
+ = 
+N−K
+S−X
+​
+ . This reduces to X(N−K)=(S−X)K which is  
+K
+X
+​
+ = 
+N
+S
+​
+ . That is, average(B) = average(A).
+
+Now, we could delete average(A) from each element A[i] without changing our choice for B. (A[i] -= mu, where mu = average(A)). This means we just want to choose a set B that sums to 0.
+
+Trying all 2 
+N
+  sets is still too many choices, so we will create sets of sums left, right of the approximately 2 
+N/2
+  choices on the left and on the right separately. (That is, left is a set of sums of every powerset in the first half of A, and right is the set of sums of every powerset in the second half of A). Then, it is true if we find 0 in these powersets, or if two sums in different halves cancel out (-x in right for x in left), except for one minor detail below.
+
+Care must be taken that we do not specify sets that would make the original B or C empty. If sleft = A[0] + A[1] + ... + A[N/2 - 1], and sright = A[N/2] + ... + A[N-1], (where A[i] was transformed to the new A[i] - average(A)) then we cannot choose both (sleft, sright). This is correct because if for example sleft was a sum reached by a strictly smaller powerset than {A[0], A[1], ..., A[N/2 - 1]}, then the difference between these sets would be non-empty and have sum 0.
+Complexity Analysis
+
+Time Complexity: O(2 N/2 ), where N is the length of A.
+
+Space Complexity: O(2 N/2 ).
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. Use the similar questions as references to improve the solution, but only if they are relevant.
+        5. Don't use any external libraries. Don't need to import any libraries.

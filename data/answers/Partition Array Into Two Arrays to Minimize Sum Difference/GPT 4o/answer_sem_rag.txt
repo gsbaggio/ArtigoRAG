@@ -1,0 +1,50 @@
+class Solution:
+    def minimumDifference(self, nums):
+        n = len(nums) // 2
+        total_sum = sum(nums)
+        target = total_sum // 2
+
+        # Helper function to generate all subset sums for a given array
+        def generate_subset_sums(arr):
+            from itertools import combinations
+            subset_sums = [[] for _ in range(len(arr) + 1)]
+            for size in range(len(arr) + 1):
+                for subset in combinations(arr, size):
+                    subset_sums[size].append(sum(subset))
+            return subset_sums
+
+        # Split nums into two halves
+        left, right = nums[:n], nums[n:]
+
+        # Generate all subset sums for both halves
+        left_sums = generate_subset_sums(left)
+        right_sums = generate_subset_sums(right)
+
+        # Sort the subset sums for the right half for binary search
+        for size in range(len(right_sums)):
+            right_sums[size].sort()
+
+        # Initialize the minimum difference
+        min_diff = float('inf')
+
+        # Iterate over all subset sums of the left half
+        for size in range(len(left_sums)):
+            for left_sum in left_sums[size]:
+                # Find the closest sum in the right half to balance the partition
+                remaining_size = n - size
+                right_candidates = right_sums[remaining_size]
+                
+                # Binary search for the closest sum
+                low, high = 0, len(right_candidates) - 1
+                while low <= high:
+                    mid = (low + high) // 2
+                    current_sum = left_sum + right_candidates[mid]
+                    diff = abs(total_sum - 2 * current_sum)
+                    min_diff = min(min_diff, diff)
+                    
+                    if current_sum < target:
+                        low = mid + 1
+                    else:
+                        high = mid - 1
+
+        return min_diff
