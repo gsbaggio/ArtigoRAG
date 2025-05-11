@@ -1,0 +1,33 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def pathSum(self, root, targetSum):
+        def dfs(node, path, path_sum, res):
+            if not node:
+                return
+            
+            # Update the current path and sum
+            path.append(node.val)
+            path_sum += node.val
+            
+            # Check if it's a leaf node and if the sum matches the targetSum
+            if not node.left and not node.right and path_sum == targetSum:
+                res.append(path[:])
+            
+            # Recursive DFS for left and right subtrees
+            dfs(node.left, path, path_sum, res)
+            dfs(node.right, path, path_sum, res)
+            
+            # Backtrack - remove the last node after visiting both subtrees
+            path.pop()
+        
+        if not root:
+            return []
+        
+        result = []
+        dfs(root, [], 0, result)
+        return result

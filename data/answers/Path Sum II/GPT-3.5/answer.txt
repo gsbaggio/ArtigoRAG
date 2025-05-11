@@ -1,0 +1,24 @@
+from typing import List
+
+class Solution:
+    def pathSum(self, root: TreeNode, targetSum: int) -> List[List[int]]:
+        paths = []
+        
+        def dfs(node, curr_sum, path):
+            if not node:
+                return
+            
+            curr_sum += node.val
+            path.append(node.val)
+            
+            if not node.left and not node.right and curr_sum == targetSum:
+                paths.append(path[:])  # Append a copy of the path
+                
+            dfs(node.left, curr_sum, path)
+            dfs(node.right, curr_sum, path)
+            
+            path.pop()  # Backtrack
+            
+        dfs(root, 0, [])
+        
+        return paths

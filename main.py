@@ -23,7 +23,7 @@ class ProgrammingQuestionRAG:
         
         self._build_indices()
         
-        print(f"Sistema RAG inicializado com {len(self.questions_df)} questões.")
+        print(f"{len(self.questions_df)} questões no total carregadas.")
     
     def _build_indices(self):
         question_texts = self.questions_df['question_text'].tolist()
@@ -36,45 +36,31 @@ class ProgrammingQuestionRAG:
     def retrieve_similar_questions(self, query: str, top_k: int = 3, 
                                   min_threshold: float = 0.65,
                                   use_adaptive_threshold: bool = True) -> List[Dict[str, Any]]:
-        """
-        Recupera questões similares usando threshold dinâmico (Adaptive Retrieval Threshold)
-        para filtrar resultados irrelevantes
-        """
         query_embedding = self.embedding_model.encode([query])
         
-        # Recuperar mais candidatos do que precisamos para aplicar o threshold
         candidate_k = min(top_k * 3, len(self.questions_df))
         
         distances, indices = self.question_index.search(
             np.array(query_embedding).astype('float32'), candidate_k
         )
         
-        # Calcular scores de similaridade - corrigido para escala mais apropriada
-        # Para embeddings normalizados, a distância L2 máxima é ~2, então usamos 2 como escala
         similarities = [1 - (dist/2) for dist in distances[0]]
-        # Garante que os scores fiquem entre 0 e 1
         similarities = [max(0, min(s, 1)) for s in similarities]
         
-        # Determinar o threshold adaptativo
-        threshold = min_threshold  # valor padrão
+        threshold = min_threshold  
         if use_adaptive_threshold and similarities:
-            # Se o melhor resultado tem alta similaridade
             max_similarity = similarities[0]
             if max_similarity > 0.8:
-                # Threshold mais rígido para resultados de alta qualidade
                 threshold = max(min_threshold, 0.75 * max_similarity)
             elif max_similarity > 0.7:
-                # Threshold intermediário
                 threshold = max(min_threshold, 0.8 * max_similarity)
             else:
-                # Se a melhor correspondência não é forte, ser mais conservador
                 threshold = max(min_threshold, 0.85 * max_similarity)
         
         similar_questions = []
         for i, idx in enumerate(indices[0]):
             similarity_score = similarities[i]
             
-            # Só incluir questões acima do threshold
             if similarity_score >= threshold:
                 similar_questions.append({
                     'question_id': self.questions_df.iloc[idx]['question_id'],
@@ -87,7 +73,6 @@ class ProgrammingQuestionRAG:
                     'similarity_score': similarity_score
                 })
         
-        # Limitar ao top_k após a filtragem
         return similar_questions[:top_k]
 
     def save_context_to_file(self, context: str, output_path: str = "prompt.txt"):
@@ -101,7 +86,6 @@ class ProgrammingQuestionRAG:
     def _build_context_without_rag(self, question: str) -> str:
         context = f"CURRENT QUESTION:\n{question}\n\n"
         
-        # Adicionar instrução para o LLM
         context += """
         INSTRUCTIONS:
         Solve the current question.
@@ -131,8 +115,8 @@ class ProgrammingQuestionRAG:
         similar_questions = self.retrieve_similar_questions(
             question, 
             top_k=3, 
-            min_threshold=0.65,  # Changed from 0.65 to 0.01 to allow more questions
-            use_adaptive_threshold=True  # Disabled adaptive threshold to ensure we get results
+            min_threshold=0.65,  
+            use_adaptive_threshold=True 
         )
         
         context_with_rag = self._build_context(question, similar_questions)
@@ -187,16 +171,6 @@ class ProgrammingQuestionRAG:
         return context
 
     def process_problem(self, problem_path: str, output_dir: str = None) -> Dict[str, Any]:
-        """
-        Process a single problem file and generate RAG and non-RAG contexts.
-        
-        Args:
-            problem_path: Path to the problem.txt file
-            output_dir: Directory where prompt files should be saved (defaults to same dir as problem_path)
-        
-        Returns:
-            Dictionary with processing results
-        """
         try:
             with open(problem_path, "r", encoding="utf-8") as f:
                 question = f.read().strip()
@@ -204,15 +178,12 @@ class ProgrammingQuestionRAG:
             print(f"Erro: O arquivo '{problem_path}' não foi encontrado.")
             return None
         
-        # If no output directory specified, use the same directory as the problem file
         if output_dir is None:
             output_dir = os.path.dirname(problem_path)
             
-        # Generate output file paths
         prompt_with_rag_path = os.path.join(output_dir, "prompt.txt")
         prompt_without_rag_path = os.path.join(output_dir, "prompt_sem_rag.txt")
         
-        # Get similar questions
         similar_questions = self.retrieve_similar_questions(
             question, 
             top_k=3, 
@@ -220,11 +191,9 @@ class ProgrammingQuestionRAG:
             use_adaptive_threshold=True
         )
         
-        # Build and save RAG context
         context_with_rag = self._build_context(question, similar_questions)
         self.save_context_to_file(context_with_rag, prompt_with_rag_path)
         
-        # Build and save non-RAG context
         context_without_rag = self._build_context_without_rag(question)
         self.save_context_to_file(context_without_rag, prompt_without_rag_path)
         
@@ -238,23 +207,12 @@ class ProgrammingQuestionRAG:
         }
     
     def process_all_problems_in_answers(self, answers_dir: str = "data/answers") -> List[Dict[str, Any]]:
-        """
-        Process all problem.txt files found in subdirectories of data/answers/
-        
-        Args:
-            answers_dir: Path to the answers directory
-        
-        Returns:
-            List of dictionaries with processing results for each problem
-        """
         results = []
         
-        # Ensure the answers directory exists
         if not os.path.exists(answers_dir) or not os.path.isdir(answers_dir):
             print(f"Diretório '{answers_dir}' não existe ou não é um diretório.")
             return results
         
-        # Get all subdirectories within answers_dir
         subdirs = [d for d in os.listdir(answers_dir) if os.path.isdir(os.path.join(answers_dir, d))]
         
         for subdir in subdirs:
@@ -275,7 +233,6 @@ if __name__ == "__main__":
     questions_db = "data/programming_questions.json"
     rag_system = ProgrammingQuestionRAG(questions_db)
     
-    # Process the top-level problem.txt as before
     try:
         top_level_result = rag_system.process_problem("problem.txt")
         if top_level_result:
@@ -285,7 +242,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Erro ao processar problema de nível superior: {e}")
     
-    # Process all problems in data/answers subdirectories
     print("\nProcessando problemas em data/answers/...")
     answers_results = rag_system.process_all_problems_in_answers()
     print(f"\n{len(answers_results)} problemas processados em data/answers/")

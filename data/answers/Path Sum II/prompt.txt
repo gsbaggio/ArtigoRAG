@@ -1,0 +1,229 @@
+CURRENT QUESTION:
+Given the root of a binary tree and an integer targetSum, return all root-to-leaf paths where the sum of the node values in the path equals targetSum. Each path should be returned as a list of the node values, not node references.
+
+A root-to-leaf path is a path starting from the root and ending at any leaf node. A leaf is a node with no children.
+
+ 
+
+Example 1:
+Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+Output: [[5,4,11,2],[5,8,4,5]]
+Explanation: There are two paths whose sum equals targetSum:
+5 + 4 + 11 + 2 = 22
+5 + 8 + 4 + 5 = 22
+Example 2:
+Input: root = [1,2,3], targetSum = 5
+Output: []
+Example 3:
+
+Input: root = [1,2], targetSum = 0
+Output: []
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [0, 5000].
+-1000 <= Node.val <= 1000
+-1000 <= targetSum <= 1000
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.88):
+Title: Path Sum III
+Categorys: Tree Depth-First Search Binary Tree
+Question text: Given the root of a binary tree and an integer targetSum, return the number of paths where the sum of the values along the path equals targetSum.
+
+The path does not need to start or end at the root or a leaf, but it must go downwards (i.e., traveling only from parent nodes to child nodes).
+
+ 
+
+Example 1:
+Input: root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8
+Output: 3
+Explanation: The paths that sum to 8 are shown.
+Example 2:
+
+Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+Output: 3
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [0, 1000].
+-109 <= Node.val <= 109
+-1000 <= targetSum <= 1000
+Solution: class Solution(object):
+    def pathSum(self, root, target):
+        # define global result and path
+        self.result = 0
+        cache = {0:1}
+        
+        # recursive to get result
+        self.dfs(root, target, 0, cache)
+        
+        # return result
+        return self.result
+    
+    def dfs(self, root, target, currPathSum, cache):
+        # exit condition
+        if root is None:
+            return  
+        # calculate currPathSum and required oldPathSum
+        currPathSum += root.val
+        oldPathSum = currPathSum - target
+        # update result and cache
+        self.result += cache.get(oldPathSum, 0)
+        cache[currPathSum] = cache.get(currPathSum, 0) + 1
+        
+        # dfs breakdown
+        self.dfs(root.left, target, currPathSum, cache)
+        self.dfs(root.right, target, currPathSum, cache)
+        # when move to a different branch, the currPathSum is no longer available, hence remove one. 
+        cache[currPathSum] -= 1
+Explanation: Memorization of path sum: O(n)
+2.1 High level walk through
+In order to optimize from the brutal force solution, we will have to think of a clear way to memorize the intermediate result. Namely in the brutal force solution, we did a lot repeated calculation. For example 1->3->5, we calculated: 1, 1+3, 1+3+5, 3, 3+5, 5.
+This is a classical 'space and time tradeoff': we can create a dictionary (named cache) which saves all the path sum (from root to current node) and their frequency.
+Again, we traverse through the tree, at each node, we can get the currPathSum (from root to current node). If within this path, there is a valid solution, then there must be a oldPathSum such that currPathSum - oldPathSum = target.
+We just need to add the frequency of the oldPathSum to the result.
+During the DFS break down, we need to -1 in cache[currPathSum], because this path is not available in later traverse.
+Check the graph below for easy visualization.
+
+Similar question 2 (Similarity score: 0.79):
+Title: Binary Tree Paths
+Categorys: Math String Stack Recursion
+Question text: Given the root of a binary tree, return all root-to-leaf paths in any order.
+
+A leaf is a node with no children.
+
+ 
+
+Example 1:
+
+
+Input: root = [1,2,3,null,5]
+Output: ["1->2->5","1->3"]
+Example 2:
+
+Input: root = [1]
+Output: ["1"]
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [1, 100].
+-100 <= Node.val <= 100
+Solution: class Solution(object):
+    def binaryTreePaths(self, root):
+        res = []
+        if not root:
+            return res
+        stack = [(root, str(root.val))]
+        while stack:
+            node, path = stack.pop()
+            if not node.left and not node.right:
+                res.append(path)
+            if node.right:
+                stack.append((node.right, path + "->" + str(node.right.val)))
+            if node.left:
+                stack.append((node.left, path + "->" + str(node.left.val)))
+        return res
+Explanation: Intuition
+To collect all root-to-leaf paths in a binary tree, we use DFS traversal. At every node, we build a path string. Once we reach a leaf, we save the full path.
+Use a stack to simulate DFS. At each step, track both the node and the current path string. When a leaf is reached, push the path to the result array. If children exist, extend the path and continue traversing.
+
+Complexity
+Time complexity: (O(n)), where (n) is the number of nodes.
+Space complexity: (O(n)), for recursion stack or explicit stack and result storage.
+
+Similar question 3 (Similarity score: 0.77):
+Title: Sum Root to Leaf Numbers
+Categorys: Tree Depth-First Search Binary Tree
+Question text: You are given the root of a binary tree containing digits from 0 to 9 only.
+
+Each root-to-leaf path in the tree represents a number.
+
+For example, the root-to-leaf path 1 -> 2 -> 3 represents the number 123.
+Return the total sum of all root-to-leaf numbers. Test cases are generated so that the answer will fit in a 32-bit integer.
+
+A leaf node is a node with no children.
+
+ 
+
+Example 1:
+Input: root = [1,2,3]
+Output: 25
+Explanation:
+The root-to-leaf path 1->2 represents the number 12.
+The root-to-leaf path 1->3 represents the number 13.
+Therefore, sum = 12 + 13 = 25.
+Example 2:
+Input: root = [4,9,0,5,1]
+Output: 1026
+Explanation:
+The root-to-leaf path 4->9->5 represents the number 495.
+The root-to-leaf path 4->9->1 represents the number 491.
+The root-to-leaf path 4->0 represents the number 40.
+Therefore, sum = 495 + 491 + 40 = 1026.
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [1, 1000].
+0 <= Node.val <= 9
+The depth of the tree will not exceed 10.
+Solution: /**
+ * Go language
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func sumNumbers(root *TreeNode) int {
+    sum, num := 0, 0
+    calculateSum(root, &sum, &num)
+    return sum
+}
+
+func calculateSum(root *TreeNode, sum *int, num *int) {
+    // if root nil, return
+    if root == nil { return }
+
+    // else multiply num*10 and send to next level
+    *num = (*num * 10) + root.Val
+
+    // if both left and right nil then add this num in sum
+    if root.Left == nil && root.Right == nil {
+        *sum += *num
+    }
+
+    // else traverse tree left and right
+    calculateSum(root.Left, sum, num)
+    calculateSum(root.Right, sum, num)
+
+    // when the level ends, divide num by 10 before going to upper level
+    *num = *num / 10
+}
+Explanation: Approach
+Simplest DFS traversal
+
+Complexity
+Time complexity:
+0 ms Beats 100.00%
+
+Space complexity:
+4.20 MB Beats 84.73%
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. Use the similar questions as references to improve the solution, but only if they are relevant.
+        5. Don't use any external libraries. Don't need to import any libraries.

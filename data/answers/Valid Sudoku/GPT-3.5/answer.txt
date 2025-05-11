@@ -1,0 +1,23 @@
+class Solution:
+    def isValidSudoku(self, board: List[List[str]]) -> bool:
+        def is_valid(arr: List[str]) -> bool:
+            seen = set()
+            for num in arr:
+                if num != '.':
+                    if num in seen:
+                        return False
+                    seen.add(num)
+            return True
+
+        for i in range(9):
+            if not is_valid(board[i]):  # Check rows
+                return False
+            if not is_valid([board[j][i] for j in range(9)]):  # Check columns
+                return False
+
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                if not is_valid([board[m][n] for m in range(i, i+3) for n in range(j, j+3)]):  # Check 3x3 sub-boxes
+                    return False
+
+        return True

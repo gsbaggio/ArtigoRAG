@@ -1,0 +1,47 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def pathSum(self, root, targetSum):
+        result = []
+        self.dfs(root, targetSum, [], result)
+        return result
+
+    def dfs(self, node, targetSum, path, result):
+        if not node:
+            return
+
+        # Add the current node's value to the path
+        path.append(node.val)
+
+        # If the current node is a leaf node and the path sum equals the target sum,
+        # add the path to the result
+        if not node.left and not node.right and sum(path) == targetSum:
+            result.append(path.copy())  # Append a copy to avoid modification
+
+        # Recursively call the function for the left and right subtrees
+        self.dfs(node.left, targetSum, path, result)
+        self.dfs(node.right, targetSum, path, result)
+
+        # Backtrack: remove the current node's value from the path
+        path.pop()
+
+# Explanation:
+# The problem requires finding all root-to-leaf paths in a binary tree such that the sum of the node values equals a given target sum.
+# The approach used is Depth-First Search (DFS) with backtracking.
+#
+# Intuition:
+# The DFS algorithm explores each possible path from the root to the leaves.
+# The backtracking ensures that we explore all possible paths without carrying unnecessary information between different branches.
+#
+# Time Complexity: O(N), where N is the number of nodes in the tree. In the worst case, we might have to visit each node.
+# Space Complexity: O(H), where H is the height of the tree. This is due to the call stack during DFS. In the worst case (skewed tree), H can be N.
+#
+# Important Considerations:
+# 1. The path variable is passed by reference, so it's crucial to create a copy of the path before adding it to the result.
+# 2. Backtracking is essential to remove the current node from the path when returning from a recursive call, allowing exploration of other paths.
+# 3. The base case for the recursion is when the node is None, at which point we simply return.
+# 4. The condition for adding a path to the result is when we reach a leaf node (no left and right children) and the sum of the path equals the target sum.

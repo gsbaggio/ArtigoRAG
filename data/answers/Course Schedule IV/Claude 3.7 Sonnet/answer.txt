@@ -1,0 +1,24 @@
+class Solution:
+    def checkIfPrerequisite(self, numCourses, prerequisites, queries):
+        # Build the graph
+        graph = [[] for _ in range(numCourses)]
+        for prereq, course in prerequisites:
+            graph[prereq].append(course)
+        
+        # Use Floyd-Warshall algorithm to find all reachable nodes
+        # is_prerequisite[i][j] means i is a prerequisite for j
+        is_prerequisite = [[False for _ in range(numCourses)] for _ in range(numCourses)]
+        
+        # Initialize direct prerequisites
+        for prereq, course in prerequisites:
+            is_prerequisite[prereq][course] = True
+        
+        # Find all indirect prerequisites using transitive closure
+        for k in range(numCourses):
+            for i in range(numCourses):
+                for j in range(numCourses):
+                    if is_prerequisite[i][k] and is_prerequisite[k][j]:
+                        is_prerequisite[i][j] = True
+        
+        # Answer queries
+        return [is_prerequisite[u][v] for u, v in queries]

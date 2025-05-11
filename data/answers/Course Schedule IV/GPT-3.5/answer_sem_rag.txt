@@ -1,0 +1,24 @@
+from collections import defaultdict
+
+class Solution:
+    def checkIfPrerequisite(self, numCourses, prerequisites, queries):
+        # Construct the graph
+        graph = defaultdict(list)
+        for pre in prerequisites:
+            graph[pre[0]].append(pre[1])
+        
+        # Helper function for DFS traversal
+        def dfs(course, target):
+            if course == target:
+                return True
+            for neighbor in graph[course]:
+                if dfs(neighbor, target):
+                    return True
+            return False
+        
+        # Perform DFS for each query
+        result = []
+        for query in queries:
+            result.append(dfs(query[0], query[1]))
+        
+        return result

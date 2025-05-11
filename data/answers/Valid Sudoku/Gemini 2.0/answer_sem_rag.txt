@@ -1,0 +1,44 @@
+class Solution:
+    def isValidSudoku(self, board: list[list[str]]) -> bool:
+        """
+        Determines if a 9 x 9 Sudoku board is valid.
+
+        Args:
+            board (List[List[str]]): A 9 x 9 Sudoku board represented as a list of lists of strings.
+
+        Returns:
+            bool: True if the board is valid, False otherwise.
+        """
+
+        # Check rows
+        for row in board:
+            seen = set()
+            for cell in row:
+                if cell != '.':
+                    if cell in seen:
+                        return False
+                    seen.add(cell)
+
+        # Check columns
+        for col in range(9):
+            seen = set()
+            for row in range(9):
+                cell = board[row][col]
+                if cell != '.':
+                    if cell in seen:
+                        return False
+                    seen.add(cell)
+
+        # Check 3x3 sub-boxes
+        for box_row in range(3):
+            for box_col in range(3):
+                seen = set()
+                for row in range(box_row * 3, (box_row + 1) * 3):
+                    for col in range(box_col * 3, (box_col + 1) * 3):
+                        cell = board[row][col]
+                        if cell != '.':
+                            if cell in seen:
+                                return False
+                            seen.add(cell)
+
+        return True

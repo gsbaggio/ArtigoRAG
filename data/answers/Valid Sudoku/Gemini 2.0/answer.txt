@@ -1,0 +1,44 @@
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        // Check rows
+        for (int i = 0; i < 9; i++) {
+            vector<bool> seen(10, false);
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] != '.') {
+                    int num = board[i][j] - '0';
+                    if (seen[num]) return false;
+                    seen[num] = true;
+                }
+            }
+        }
+
+        // Check columns
+        for (int j = 0; j < 9; j++) {
+            vector<bool> seen(10, false);
+            for (int i = 0; i < 9; i++) {
+                if (board[i][j] != '.') {
+                    int num = board[i][j] - '0';
+                    if (seen[num]) return false;
+                    seen[num] = true;
+                }
+            }
+        }
+
+        // Check 3x3 sub-boxes
+        for (int block = 0; block < 9; block++) {
+            vector<bool> seen(10, false);
+            for (int i = block / 3 * 3; i < block / 3 * 3 + 3; i++) {
+                for (int j = block % 3 * 3; j < block % 3 * 3 + 3; j++) {
+                    if (board[i][j] != '.') {
+                        int num = board[i][j] - '0';
+                        if (seen[num]) return false;
+                        seen[num] = true;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+};

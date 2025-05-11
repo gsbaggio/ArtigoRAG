@@ -1,0 +1,45 @@
+class Solution:
+    def checkIfPrerequisite(self, numCourses: int, prerequisites: list[list[int]], queries: list[list[int]]) -> list[bool]:
+        """
+        Checks if a course is a prerequisite of another course, given a list of prerequisites and queries.
+
+        Args:
+            numCourses (int): The total number of courses.
+            prerequisites (list[list[int]]): A list of prerequisite pairs, where prerequisites[i] = [ai, bi] indicates that course ai must be taken before course bi.
+            queries (list[list[int]]): A list of query pairs, where queries[j] = [uj, vj].
+
+        Returns:
+            list[bool]: A boolean array answer, where answer[j] is True if course uj is a prerequisite of course vj, and False otherwise.
+        """
+
+        # 1. Build the adjacency list representing the graph of prerequisites.
+        adj_list = [[] for _ in range(numCourses)]
+        for course, pre in prerequisites:
+            adj_list[course].append(pre)
+
+        # 2. Use Depth First Search (DFS) to find all reachable nodes from each course.
+        is_prerequisite = [[False] * numCourses for _ in range(numCourses)]
+        
+        def dfs(course, target):
+            """
+            Performs DFS to find all courses reachable from a given course.
+
+            Args:
+                course (int): The starting course.
+                target (int): The target course to check for reachability.
+            """
+            
+            for neighbor in adj_list[course]:
+                is_prerequisite[target][neighbor] = True
+                dfs(neighbor, target)
+
+        # Iterate through each course and perform DFS to mark all its prerequisites.
+        for i in range(numCourses):
+            dfs(i, i)
+
+        # 3. Answer the queries based on the precomputed reachability information.
+        answer = []
+        for u, v in queries:
+            answer.append(is_prerequisite[v][u])
+
+        return answer

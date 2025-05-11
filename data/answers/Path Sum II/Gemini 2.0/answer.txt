@@ -1,0 +1,49 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def pathSum(self, root, targetSum):
+        """
+        Finds all root-to-leaf paths where the sum of the node values equals targetSum.
+
+        Args:
+            root (TreeNode): The root of the binary tree.
+            targetSum (int): The target sum.
+
+        Returns:
+            List[List[int]]: A list of paths, where each path is a list of node values.
+        """
+        result = []
+        self.dfs(root, targetSum, [], result)
+        return result
+
+    def dfs(self, node, targetSum, path, result):
+        """
+        Performs Depth-First Search to find paths that sum to targetSum.
+
+        Args:
+            node (TreeNode): The current node being visited.
+            targetSum (int): The remaining target sum.
+            path (List[int]): The current path being explored.
+            result (List[List[int]]): The list to store the resulting paths.
+        """
+        if not node:
+            return
+
+        # Add the current node's value to the path
+        path.append(node.val)
+
+        # If the current node is a leaf node and the path sum equals the targetSum,
+        # add the path to the result
+        if not node.left and not node.right and sum(path) == targetSum:
+            result.append(list(path))  # Append a copy of the path
+
+        # Recursively explore the left and right subtrees
+        self.dfs(node.left, targetSum, path, result)
+        self.dfs(node.right, targetSum, path, result)
+
+        # Backtrack: remove the current node's value from the path
+        path.pop()

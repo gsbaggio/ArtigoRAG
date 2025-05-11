@@ -1,0 +1,31 @@
+class Solution:
+    def pathSum(self, root, targetSum):
+        """
+        :type root: TreeNode
+        :type targetSum: int
+        :rtype: List[List[int]]
+        """
+        result = []
+        
+        def dfs(node, current_path, current_sum):
+            if not node:
+                return
+            
+            # Add current node to path and update sum
+            current_path.append(node.val)
+            current_sum += node.val
+            
+            # Check if it's a leaf node and sum matches target
+            if not node.left and not node.right and current_sum == targetSum:
+                # Add a copy of the current path to results
+                result.append(current_path[:])
+            
+            # Recursively check left and right subtrees
+            dfs(node.left, current_path, current_sum)
+            dfs(node.right, current_path, current_sum)
+            
+            # Backtrack by removing current node from path
+            current_path.pop()
+        
+        dfs(root, [], 0)
+        return result

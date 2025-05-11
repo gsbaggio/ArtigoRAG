@@ -1,0 +1,59 @@
+class Solution:
+    def is_prerequisite(self, numCourses: int, prerequisites: list[list[int]], course: int, pre: int, visited: set[int], memo: dict) -> bool:
+        """
+        Helper function to check if 'pre' is a prerequisite of 'course' using DFS.
+
+        Args:
+            numCourses: The total number of courses.
+            prerequisites: A list of prerequisite pairs.
+            course: The course to check for prerequisites.
+            pre: The potential prerequisite course.
+            visited: A set to keep track of visited nodes during DFS to avoid cycles.
+            memo: A dictionary to store the results of previous calculations (memoization).
+
+        Returns:
+            True if 'pre' is a prerequisite of 'course', False otherwise.
+        """
+        if (course, pre) in memo:
+            return memo[(course, pre)]
+
+        if course == pre:
+            return True
+
+        visited.add(course)
+
+        for neighbor in self.graph[course]:
+            if neighbor not in visited:
+                if self.is_prerequisite(numCourses, prerequisites, neighbor, pre, set(visited), memo):
+                    memo[(course, pre)] = True
+                    return True
+            elif neighbor == pre:
+                memo[(course, pre)] = True
+                return True
+
+        memo[(course, pre)] = False
+        return False
+
+    def checkIfPrerequisite(self, numCourses: int, prerequisites: list[list[int]], queries: list[list[int]]) -> list[bool]:
+        """
+        Checks for each query if the first course is a prerequisite of the second course.
+
+        Args:
+            numCourses: The total number of courses.
+            prerequisites: A list of prerequisite pairs.
+            queries: A list of query pairs.
+
+        Returns:
+            A list of boolean values indicating whether the first course in each query is a prerequisite of the second course.
+        """
+        self.graph = [[] for _ in range(numCourses)]
+        for course, pre in prerequisites:
+            self.graph[pre].append(course)
+
+        answer = []
+        memo = {}  # Use memoization to store results of subproblems
+
+        for u, v in queries:
+            answer.append(self.is_prerequisite(numCourses, prerequisites, v, u, set(), memo))
+
+        return answer

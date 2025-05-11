@@ -7,29 +7,16 @@ import argparse
 
 class RAGDatabaseManager:
     def __init__(self, questions_db_path: str, theory_db_path: str):
-        """
-        Inicializa o gerenciador de banco de dados para o sistema RAG.
-        
-        Args:
-            questions_db_path: Caminho para o banco de dados de questões
-            theory_db_path: Caminho para o banco de dados teórico
-        """
-        # Assegurar que as extensões dos arquivos são .json
         self.questions_db_path = questions_db_path.replace('.csv', '.json')
         self.theory_db_path = theory_db_path.replace('.csv', '.json')
         
-        # Carregar ou criar os DataFrames
         self._load_or_create_dataframes()
         
     def _load_or_create_dataframes(self):
-        """Carrega os DataFrames existentes ou cria novos se não existirem."""
-        # Estrutura para questões
         questions_columns = ['question_id', 'title', 'difficulty', 'category', 'question_text', 'solution', 'explanation']
         
-        # Estrutura para teoria
         theory_columns = ['theory_id', 'title', 'category', 'content']
         
-        # Carregar ou criar DataFrame de questões
         if os.path.exists(self.questions_db_path):
             with open(self.questions_db_path, 'r', encoding='utf-8') as f:
                 questions_data = json.load(f)
@@ -38,7 +25,6 @@ class RAGDatabaseManager:
             self.questions_df = pd.DataFrame(columns=questions_columns)
             os.makedirs(os.path.dirname(self.questions_db_path), exist_ok=True)
         
-        # Carregar ou criar DataFrame de teoria
         if os.path.exists(self.theory_db_path):
             with open(self.theory_db_path, 'r', encoding='utf-8') as f:
                 theory_data = json.load(f)
@@ -49,28 +35,11 @@ class RAGDatabaseManager:
     
     def add_question(self, title: str, difficulty: str, category: str, question_text: str, 
                      solution: str, explanation: str) -> str:
-        """
-        Adiciona uma nova questão ao banco de dados.
-        
-        Args:
-            title: Título da questão
-            difficulty: Dificuldade (e.g., "Easy", "Medium", "Hard")
-            category: Categorias/tags da questão (e.g., "Arrays, Recursão, Ordenação")
-            question_text: Texto completo da questão
-            solution: Solução em código
-            explanation: Explicação detalhada da solução
-            
-        Returns:
-            ID da questão adicionada
-        """
-        # Validar entradas
         if not all([title, difficulty, category, question_text, solution, explanation]):
             raise ValueError("Todos os campos são obrigatórios para adicionar uma questão")
         
-        # Gerar ID único
         question_id = str(uuid.uuid4())
         
-        # Criar novo registro
         new_question = {
             'question_id': question_id,
             'title': title,
@@ -81,10 +50,8 @@ class RAGDatabaseManager:
             'explanation': explanation
         }
         
-        # Adicionar ao DataFrame
         self.questions_df = pd.concat([self.questions_df, pd.DataFrame([new_question])], ignore_index=True)
         
-        # Salvar DataFrame atualizado como JSON
         with open(self.questions_db_path, 'w', encoding='utf-8') as f:
             json.dump(self.questions_df.to_dict('records'), f, ensure_ascii=False, indent=4)
         
@@ -92,25 +59,11 @@ class RAGDatabaseManager:
         return question_id
     
     def add_theory(self, title: str, category: str, content: str) -> str:
-        """
-        Adiciona um novo documento teórico ao banco de dados.
-        
-        Args:
-            title: Título do documento teórico
-            category: Categoria (e.g., "Algoritmos", "Estruturas de Dados")
-            content: Conteúdo completo do documento
-            
-        Returns:
-            ID do documento teórico adicionado
-        """
-        # Validar entradas
         if not all([title, category, content]):
             raise ValueError("Todos os campos são obrigatórios para adicionar um documento teórico")
         
-        # Gerar ID único
         theory_id = str(uuid.uuid4())
         
-        # Criar novo registro
         new_theory = {
             'theory_id': theory_id,
             'title': title,
@@ -118,10 +71,8 @@ class RAGDatabaseManager:
             'content': content
         }
         
-        # Adicionar ao DataFrame
         self.theory_df = pd.concat([self.theory_df, pd.DataFrame([new_theory])], ignore_index=True)
         
-        # Salvar DataFrame atualizado como JSON
         with open(self.theory_db_path, 'w', encoding='utf-8') as f:
             json.dump(self.theory_df.to_dict('records'), f, ensure_ascii=False, indent=4)
         
@@ -129,24 +80,20 @@ class RAGDatabaseManager:
         return theory_id
     
     def list_questions(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
-        """Lista as questões no banco de dados."""
         questions = self.questions_df.head(limit) if limit else self.questions_df
         return questions[['question_id', 'title', 'difficulty']].to_dict('records')
     
     def list_theory(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
-        """Lista os documentos teóricos no banco de dados."""
         theory = self.theory_df.head(limit) if limit else self.theory_df
         return theory[['theory_id', 'title', 'category']].to_dict('records')
     
     def get_question(self, question_id: str) -> Dict[str, Any]:
-        """Obtém os detalhes de uma questão específica."""
         question = self.questions_df[self.questions_df['question_id'] == question_id]
         if len(question) == 0:
             raise ValueError(f"Questão com ID {question_id} não encontrada")
         return question.iloc[0].to_dict()
     
     def get_theory(self, theory_id: str) -> Dict[str, Any]:
-        """Obtém os detalhes de um documento teórico específico."""
         theory = self.theory_df[self.theory_df['theory_id'] == theory_id]
         if len(theory) == 0:
             raise ValueError(f"Documento teórico com ID {theory_id} não encontrado")
@@ -154,7 +101,6 @@ class RAGDatabaseManager:
     
 
 def interactive_mode(db_manager: RAGDatabaseManager):
-    """Interface interativa para gerenciar o banco de dados."""
     while True:
         print("\n=== Sistema de Gerenciamento de Banco de Dados RAG ===")
         print("1. Adicionar nova questão")
@@ -280,38 +226,17 @@ def interactive_mode(db_manager: RAGDatabaseManager):
             print("Opção inválida, tente novamente.")
 
 def import_question_from_file(db_manager: RAGDatabaseManager, file_path: str):
-    """
-    Importa uma questão de um arquivo de texto.
-    
-    O arquivo deve estar no formato:
-    TITLE: [título da questão]
-    DIFFICULTY: [dificuldade]
-    CATEGORY: [categorias/tags]
-    QUESTION:
-    [texto da questão]
-    SOLUTION:
-    [solução em código]
-    EXPLANATION:
-    [explicação da solução]
-    
-    Args:
-        db_manager: Instância do gerenciador de banco de dados
-        file_path: Caminho para o arquivo de texto
-    """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Arquivo não encontrado: {file_path}")
     
     with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
     
-    # Extrair informações do arquivo
     try:
-        # Dividir o conteúdo em seções
         sections = {}
         current_section = None
         current_content = []
         
-        # Primeiro, encontrar o título e a dificuldade
         lines = content.split('\n')
         for i, line in enumerate(lines):
             if line.startswith('TITLE:'):
@@ -322,10 +247,9 @@ def import_question_from_file(db_manager: RAGDatabaseManager, file_path: str):
                 sections['category'] = line[9:].strip()
             elif line.startswith('QUESTION:'):
                 current_section = 'question_text'
-                lines = lines[i+1:]  # Continuar a partir da próxima linha
+                lines = lines[i+1:]  
                 break
         
-        # Agora processar o restante do texto
         for line in lines:
             if line.startswith('SOLUTION:'):
                 if current_section:
@@ -340,17 +264,14 @@ def import_question_from_file(db_manager: RAGDatabaseManager, file_path: str):
             else:
                 current_content.append(line)
         
-        # Adicionar a última seção
         if current_section:
             sections[current_section] = '\n'.join(current_content).strip()
         
-        # Verificar se todas as seções necessárias estão presentes
         required_fields = ['title', 'difficulty', 'category', 'question_text', 'solution', 'explanation']
         for field in required_fields:
             if field not in sections or not sections[field]:
                 raise ValueError(f"Campo obrigatório ausente ou vazio: {field}")
         
-        # Adicionar questão ao banco de dados
         db_manager.add_question(
             sections['title'],
             sections['difficulty'],
@@ -366,33 +287,17 @@ def import_question_from_file(db_manager: RAGDatabaseManager, file_path: str):
         raise ValueError(f"Erro ao processar o arquivo: {e}")
 
 def import_theory_from_file(db_manager: RAGDatabaseManager, file_path: str):
-    """
-    Importa um documento teórico de um arquivo de texto.
-    
-    O arquivo deve estar no formato:
-    TITLE: [título do documento]
-    CATEGORY: [categoria]
-    CONTENT:
-    [conteúdo do documento]
-    
-    Args:
-        db_manager: Instância do gerenciador de banco de dados
-        file_path: Caminho para o arquivo de texto
-    """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Arquivo não encontrado: {file_path}")
     
     with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
     
-    # Extrair informações do arquivo
     try:
-        # Dividir o conteúdo em seções
         sections = {}
         current_section = None
         current_content = []
         
-        # Primeiro, encontrar o título e a categoria
         lines = content.split('\n')
         for i, line in enumerate(lines):
             if line.startswith('TITLE:'):
@@ -401,24 +306,20 @@ def import_theory_from_file(db_manager: RAGDatabaseManager, file_path: str):
                 sections['category'] = line[9:].strip()
             elif line.startswith('CONTENT:'):
                 current_section = 'content'
-                lines = lines[i+1:]  # Continuar a partir da próxima linha
+                lines = lines[i+1:]  
                 break
         
-        # Processar o conteúdo
         for line in lines:
             current_content.append(line)
         
-        # Adicionar o conteúdo à seção
         if current_section:
             sections[current_section] = '\n'.join(current_content).strip()
         
-        # Verificar se todas as seções necessárias estão presentes
         required_fields = ['title', 'category', 'content']
         for field in required_fields:
             if field not in sections or not sections[field]:
                 raise ValueError(f"Campo obrigatório ausente ou vazio: {field}")
         
-        # Adicionar documento teórico ao banco de dados
         db_manager.add_theory(
             sections['title'],
             sections['category'],
@@ -431,7 +332,6 @@ def import_theory_from_file(db_manager: RAGDatabaseManager, file_path: str):
         raise ValueError(f"Erro ao processar o arquivo: {e}")
 
 def batch_mode(db_manager: RAGDatabaseManager, args):
-    """Modo em lote para adicionar entradas via linha de comando."""
     if args.add_question:
         with open(args.question_text, 'r', encoding='utf-8') as f:
             question_text = f.read()
@@ -453,16 +353,13 @@ def batch_mode(db_manager: RAGDatabaseManager, args):
 def main():
     parser = argparse.ArgumentParser(description='Gerenciador de Banco de Dados para sistema RAG')
     
-    # Caminhos para os bancos de dados
     parser.add_argument('--questions-db', type=str, default='data/programming_questions.json',
                         help='Caminho para o arquivo JSON de questões')
     parser.add_argument('--theory-db', type=str, default='data/programming_theory.json',
                         help='Caminho para o arquivo JSON de teoria')
     
-    # Subcomandos
     subparsers = parser.add_subparsers(dest='command')
     
-    # Para adicionar questões em lote
     question_parser = subparsers.add_parser('add-question', help='Adicionar uma nova questão')
     question_parser.add_argument('--title', required=True, help='Título da questão')
     question_parser.add_argument('--difficulty', required=True, choices=['Easy', 'Medium', 'Hard'], 
@@ -477,7 +374,6 @@ def main():
                                help='Arquivo contendo a explicação')
     question_parser.set_defaults(add_question=True, add_theory=False)
     
-    # Para adicionar teoria em lote
     theory_parser = subparsers.add_parser('add-theory', help='Adicionar um novo documento teórico')
     theory_parser.add_argument('--title', required=True, help='Título do documento teórico')
     theory_parser.add_argument('--category', required=True, 
@@ -488,10 +384,8 @@ def main():
     
     args = parser.parse_args()
     
-    # Inicializar o gerenciador de banco de dados
     db_manager = RAGDatabaseManager(args.questions_db, args.theory_db)
     
-    # Decidir modo de operação
     if args.command:
         batch_mode(db_manager, args)
     else:

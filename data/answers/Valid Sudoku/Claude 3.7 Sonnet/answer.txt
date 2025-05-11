@@ -1,0 +1,34 @@
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        // Arrays to track if a number has been seen in each row, column, and box
+        bool rowSeen[9][9] = {false};  // rowSeen[r][d] means digit d+1 in row r
+        bool colSeen[9][9] = {false};  // colSeen[c][d] means digit d+1 in column c
+        bool boxSeen[9][9] = {false};  // boxSeen[b][d] means digit d+1 in box b
+        
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                // Skip empty cells
+                if (board[r][c] == '.') continue;
+                
+                // Get the current digit (0-8)
+                int digit = board[r][c] - '1';
+                
+                // Calculate which 3x3 box we're in (0-8)
+                int boxIndex = (r / 3) * 3 + (c / 3);
+                
+                // Check if we've already seen this digit in the current row, column, or box
+                if (rowSeen[r][digit] || colSeen[c][digit] || boxSeen[boxIndex][digit]) {
+                    return false; // Violation found
+                }
+                
+                // Mark this digit as seen in its respective row, column, and box
+                rowSeen[r][digit] = true;
+                colSeen[c][digit] = true;
+                boxSeen[boxIndex][digit] = true;
+            }
+        }
+        
+        return true; // No violations found
+    }
+};

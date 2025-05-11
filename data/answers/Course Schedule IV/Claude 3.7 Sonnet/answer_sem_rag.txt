@@ -1,0 +1,17 @@
+class Solution:
+    def checkIfPrerequisite(self, numCourses: int, prerequisites: list[list[int]], queries: list[list[int]]) -> list[bool]:
+        # Initialize reachability matrix - initially, only direct prerequisites are marked
+        reachability = [[False] * numCourses for _ in range(numCourses)]
+        
+        # Mark direct prerequisites
+        for pre, course in prerequisites:
+            reachability[pre][course] = True
+        
+        # Floyd-Warshall algorithm to find transitive closure
+        for k in range(numCourses):
+            for i in range(numCourses):
+                for j in range(numCourses):
+                    reachability[i][j] = reachability[i][j] or (reachability[i][k] and reachability[k][j])
+        
+        # Answer queries
+        return [reachability[u][v] for u, v in queries]
