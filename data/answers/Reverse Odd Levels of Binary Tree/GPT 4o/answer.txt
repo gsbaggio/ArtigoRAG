@@ -1,0 +1,42 @@
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def reverseOddLevels(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return None
+        
+        # Initialize a queue for BFS
+        queue = [root]
+        level = 0  # Start at level 0 (even)
+        
+        while queue:
+            # Collect all nodes at the current level
+            level_size = len(queue)
+            current_level_nodes = []
+            
+            for _ in range(level_size):
+                node = queue.pop(0)
+                current_level_nodes.append(node)
+                
+                # Add children to the queue for the next level
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            
+            # If the current level is odd, reverse the node values
+            if level % 2 == 1:
+                values = [node.val for node in current_level_nodes]
+                values.reverse()
+                for i, node in enumerate(current_level_nodes):
+                    node.val = values[i]
+            
+            # Move to the next level
+            level += 1
+        
+        return root

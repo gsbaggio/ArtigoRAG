@@ -1,0 +1,78 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def reverseOddLevels(self, root: TreeNode) -> TreeNode:
+        """
+        Reverses the node values at each odd level of a perfect binary tree.
+
+        The approach uses a level-order traversal (BFS) to visit nodes level by level.
+        For each odd level, it collects the node values, reverses them, and then updates
+        the nodes with the reversed values.
+
+        Time Complexity: O(N), where N is the number of nodes in the tree, as we visit each node once.
+        Space Complexity: O(W), where W is the maximum width of the tree, to store nodes at each level.
+                          In a perfect binary tree, the maximum width is at the last level, which is O(N).
+                          However, on average, the space complexity is less than O(N) because we only
+                          store the nodes of one level at a time.
+
+        Important Considerations:
+        - The problem specifies a perfect binary tree, which simplifies the level-order traversal.
+        - The level is determined by the number of edges from the root (root is level 0).
+        - Reversal is only applied to odd levels.
+        """
+
+        if not root:
+            return None
+
+        queue = [root]
+        level = 0
+
+        while queue:
+            level_size = len(queue)
+            level_values = []
+
+            # Collect node values at the current level
+            for i in range(level_size):
+                node = queue.pop(0)
+                level_values.append(node.val)
+
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+
+            # Reverse values if the level is odd
+            if level % 2 != 0:
+                level_values.reverse()
+
+                # Update node values with reversed values
+                queue_index = 0
+                temp_queue = [root]
+                current_level_nodes = []
+                current_level = 0
+
+                while temp_queue and current_level <= level:
+                    current_level_size = len(temp_queue)
+                    
+                    for i in range(current_level_size):
+                        node = temp_queue.pop(0)
+                        if current_level == level:
+                            current_level_nodes.append(node)
+                        else:
+                            if node.left:
+                                temp_queue.append(node.left)
+                            if node.right:
+                                temp_queue.append(node.right)
+                    current_level += 1
+                
+                for node in current_level_nodes:
+                    node.val = level_values[queue_index]
+                    queue_index += 1
+
+            level += 1
+
+        return root

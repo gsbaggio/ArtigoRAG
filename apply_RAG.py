@@ -23,7 +23,7 @@ class ProgrammingQuestionRAG:
         
         self._build_indices()
         
-        print(f"{len(self.questions_df)} questões no total carregadas.")
+        print(f"{len(self.questions_df)} total questions.")
     
     def _build_indices(self):
         question_texts = self.questions_df['question_text'].tolist()
@@ -79,9 +79,9 @@ class ProgrammingQuestionRAG:
         try:
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(context)
-            print(f"Contexto RAG salvo em {output_path}")
+            print(f"Context saved {output_path}")
         except Exception as e:
-            print(f"Erro ao salvar o contexto RAG: {e}")
+            print(f"Error: {e}")
     
     def _build_context_without_rag(self, question: str) -> str:
         context = f"CURRENT QUESTION:\n{question}\n\n"
@@ -107,9 +107,9 @@ class ProgrammingQuestionRAG:
         try:
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(context)
-            print(f"Contexto sem RAG salvo em {output_path}")
+            print(f"Context saved {output_path}")
         except Exception as e:
-            print(f"Erro ao salvar o contexto sem RAG: {e}")
+            print(f"Error: {e}")
 
     def generate_solution(self, question: str) -> Dict[str, Any]:
         similar_questions = self.retrieve_similar_questions(
@@ -175,7 +175,7 @@ class ProgrammingQuestionRAG:
             with open(problem_path, "r", encoding="utf-8") as f:
                 question = f.read().strip()
         except FileNotFoundError:
-            print(f"Erro: O arquivo '{problem_path}' não foi encontrado.")
+            print(f"Erro: Non existing file '{problem_path}'.")
             return None
         
         if output_dir is None:
@@ -210,7 +210,7 @@ class ProgrammingQuestionRAG:
         results = []
         
         if not os.path.exists(answers_dir) or not os.path.isdir(answers_dir):
-            print(f"Diretório '{answers_dir}' não existe ou não é um diretório.")
+            print(f"'{answers_dir}' non existing folder.")
             return results
         
         subdirs = [d for d in os.listdir(answers_dir) if os.path.isdir(os.path.join(answers_dir, d))]
@@ -220,12 +220,12 @@ class ProgrammingQuestionRAG:
             problem_path = os.path.join(subdir_path, "problem.txt")
             
             if os.path.exists(problem_path):
-                print(f"Processando problema em: {subdir_path}")
+                print(f"Processing in: {subdir_path}")
                 result = self.process_problem(problem_path, subdir_path)
                 if result:
                     results.append(result)
             else:
-                print(f"Arquivo problem.txt não encontrado em: {subdir_path}")
+                print(f"problem.txt file not found in: {subdir_path}")
         
         return results
 
@@ -236,12 +236,12 @@ if __name__ == "__main__":
     try:
         top_level_result = rag_system.process_problem("problem.txt")
         if top_level_result:
-            print("Questão de nível superior processada:")
-            print(f"Com RAG: {top_level_result['context_with_rag_path']}")
-            print(f"Sem RAG: {top_level_result['context_without_rag_path']}")
+            print("Test question processed:")
+            print(f"RAG: {top_level_result['context_with_rag_path']}")
+            print(f"No RAG: {top_level_result['context_without_rag_path']}")
     except Exception as e:
-        print(f"Erro ao processar problema de nível superior: {e}")
+        print(f"Error: {e}")
     
-    print("\nProcessando problemas em data/answers/...")
+    print("\nProcessing questions in data/answers/...")
     answers_results = rag_system.process_all_problems_in_answers()
-    print(f"\n{len(answers_results)} problemas processados em data/answers/")
+    print(f"\n{len(answers_results)} questions processed in data/answers/")

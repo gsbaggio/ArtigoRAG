@@ -1,0 +1,59 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def reverseOddLevels(self, root: TreeNode) -> TreeNode:
+        """
+        Reverses the node values at each odd level of a perfect binary tree.
+
+        Args:
+            root: The root of the binary tree.
+
+        Returns:
+            The root of the reversed tree.
+        """
+
+        def reverse_level(nodes):
+            """Reverses the values of nodes at the same level."""
+            values = [node.val for node in nodes]
+            values.reverse()
+            for i, node in enumerate(nodes):
+                node.val = values[i]
+
+        level = 0
+        nodes = [root]
+        while nodes:
+            if level % 2 != 0:
+                reverse_level(nodes)
+
+            next_level_nodes = []
+            for node in nodes:
+                if node.left:
+                    next_level_nodes.append(node.left)
+                if node.right:
+                    next_level_nodes.append(node.right)
+
+            nodes = next_level_nodes
+            level += 1
+
+        return root
+
+"""
+Explanation:
+
+1. Intuition:
+The problem requires reversing the values of nodes at odd levels of a perfect binary tree. A level-order traversal approach is suitable for visiting nodes level by level. By keeping track of the current level, we can identify odd levels and reverse the values of nodes at those levels.
+
+2. Time and Space Complexity:
+- Time Complexity: O(N), where N is the number of nodes in the tree. We visit each node once during the level-order traversal. Reversing the values at each odd level takes O(K) time, where K is the number of nodes at that level.  Since we process each node once, the overall time complexity remains O(N).
+- Space Complexity: O(W), where W is the maximum width of the tree. In a perfect binary tree, the maximum width occurs at the last level and can be up to N/2. This space is used to store the nodes at each level during the level-order traversal. In the worst case, the space complexity can be considered O(N).
+
+3. Important Considerations:
+- The code assumes that the input tree is a perfect binary tree, as stated in the problem constraints.
+- The `reverse_level` helper function reverses the values of nodes at the same level.
+- The level-order traversal is implemented using a `while` loop and a list of nodes at the current level.
+- The level is incremented after processing each level.
+"""
