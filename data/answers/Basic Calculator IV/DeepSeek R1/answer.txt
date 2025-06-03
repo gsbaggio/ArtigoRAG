@@ -1,0 +1,137 @@
+from collections import defaultdict
+from typing import List, Tuple, Dict
+
+class Solution:
+    def basicCalculatorIV(self, expression: str, evalvars: List[str], evalints: List[int]) -> List[str]:
+        tokens = expression.split()
+        sub_map = {}
+        for i in range(len(evalvars)):
+            sub_map[evalvars[i]] = evalints[i]
+        
+        poly, _ = self.parse_expr(tokens, 0, sub_map)
+        return self.output_result(poly)
+    
+    def parse_expr(self, tokens: List[str], i: int, sub_map: Dict[str, int]) -> Tuple[Dict[Tuple[Tuple[str, int], ...], int], int]:
+        poly, i = self.parse_term(tokens, i, sub_map)
+        while i < len(tokens) and tokens[i] in ['+', '-']:
+            op = tokens[i]
+            i += 1
+            poly2, i = self.parse_term(tokens, i, sub_map)
+            if op == '+':
+                poly = self.add_poly(poly, poly2)
+            else:
+                poly = self.sub_poly(poly, poly2)
+        return poly, i
+
+    def parse_term(self, tokens: List[str], i: int, sub_map: Dict[str, int]) -> Tuple[Dict[Tuple[Tuple[str, int], ...], int], int]:
+        poly, i = self.parse_factor(tokens, i, sub_map)
+        while i < len(tokens) and tokens[i] == '*':
+            i += 1
+            poly2, i = self.parse_factor(tokens, i, sub_map)
+            poly = self.mul_poly(poly, poly2)
+        return poly, i
+
+    def parse_factor(self, tokens: List[str], i: int, sub_map: Dict[str, int]) -> Tuple[Dict[Tuple[Tuple[str, int], ...], int], int]:
+        sign = 1
+        if i < len(tokens) and tokens[i] in ['+', '-']:
+            if tokens[i] == '-':
+                sign = -1
+            i += 1
+        
+        if i < len(tokens) and tokens[i] == '(':
+            i += 1
+            poly, i = self.parse_expr(tokens, i, sub_map)
+            if i < len(tokens) and tokens[i] == ')':
+                i += 1
+        elif i < len(tokens):
+            token = tokens[i]
+            i += 1
+            if token.isdigit():
+                poly = {(): int(token)}
+            else:
+                if token in sub_map:
+                    poly = {(): sub_map[token]}
+                else:
+                    poly = {((token, 1),): 1}
+        else:
+            poly = {}
+        
+        if sign == -1:
+            poly = self.negate_poly(poly)
+        return poly, i
+
+    def add_poly(self, p1: Dict[Tuple[Tuple[str, int], ...], int], p2: Dict[Tuple[Tuple[str, int], ...], int]) -> Dict[Tuple[Tuple[str, int], ...], int]:
+        p = defaultdict(int)
+        for key, coeff in p1.items():
+            p[key] += coeff
+        for key, coeff in p2.items():
+            p[key] += coeff
+        return {key: coeff for key, coeff in p.items() if coeff != 0}
+
+    def sub_poly(self, p1: Dict[Tuple[Tuple[str, int], ...], int], p2: Dict[Tuple[Tuple[str, int], ...], int]) -> Dict[Tuple[Tuple[str, int], ...], int]:
+        p = defaultdict(int)
+        for key, coeff in p1.items():
+            p[key] += coeff
+        for key, coeff in p2.items():
+            p[key] -= coeff
+        return {key: coeff for key, coeff in p.items() if coeff != 0}
+
+    def mul_poly(self, p1: Dict[Tuple[Tuple[str, int], ...], int], p2: Dict[Tuple[Tuple[str, int], ...], int]) -> Dict[Tuple[Tuple[str, int], ...], int]:
+        p = defaultdict(int)
+        for key1, coeff1 in p1.items():
+            for key2, coeff2 in p2.items():
+                new_coeff = coeff1 * coeff2
+                new_key = self.merge_compact_keys(key1, key2)
+                p[new_key] += new_coeff
+        return {key: coeff for key, coeff in p.items() if coeff != 0}
+
+    def merge_compact_keys(self, key1: Tuple[Tuple[str, int], ...], key2: Tuple[Tuple[str, int], ...]) -> Tuple[Tuple[str, int], ...]:
+        i, j = 0, 0
+        new_key = []
+        while i < len(key1) and j < len(key2):
+            var1, exp1 = key1[i]
+            var2, exp2 = key2[j]
+            if var1 == var2:
+                new_exp = exp1 + exp2
+                if new_exp != 0:
+                    new_key.append((var1, new_exp))
+                i += 1
+                j += 1
+            elif var1 < var2:
+                new_key.append((var1, exp1))
+                i += 1
+            else:
+                new_key.append((var2, exp2))
+                j += 1
+        while i < len(key1):
+            new_key.append(key1[i])
+            i += 1
+        while j < len(key2):
+            new_key.append(key2[j])
+            j += 1
+        return tuple(new_key)
+
+    def negate_poly(self, p: Dict[Tuple[Tuple[str, int], ...], int]) -> Dict[Tuple[Tuple[str, int], ...], int]:
+        return {key: -coeff for key, coeff in p.items()}
+
+    def output_result(self, poly: Dict[Tuple[Tuple[str, int], ...], int]) -> List[str]:
+        terms = []
+        for key, coeff in poly.items():
+            if coeff == 0:
+                continue
+            expanded_list = []
+            for (var, exp) in key:
+                expanded_list.extend([var] * exp)
+            expanded_tuple = tuple(expanded_list)
+            degree = len(expanded_tuple)
+            terms.append((degree, expanded_tuple, coeff))
+        
+        terms.sort(key=lambda x: (-x[0], x[1]))
+        
+        res = []
+        for degree, expanded, coeff in terms:
+            if expanded:
+                res.append(str(coeff) + '*' + '*'.join(expanded))
+            else:
+                res.append(str(coeff))
+        return res

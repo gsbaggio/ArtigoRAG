@@ -1,0 +1,89 @@
+class Solution:
+    def basicCalculatorIV(self, expression: str, evalvars: List[str], evalints: List[int]) -> List[str]:
+        # Create a mapping of variables to their values
+        eval_map = {var: val for var, val in zip(evalvars, evalints)}
+        
+        # Helper function to multiply two dictionaries of terms
+        def multiply_terms(term1, term2):
+            result = {}
+            for vars1, coeff1 in term1.items():
+                for vars2, coeff2 in term2.items():
+                    combined_vars = tuple(sorted(vars1 + vars2))
+                    result[combined_vars] = result.get(combined_vars, 0) + coeff1 * coeff2
+            return result
+        
+        # Helper function to add/subtract two dictionaries of terms
+        def add_subtract_terms(term1, term2, sign):
+            for vars, coeff in term2.items():
+                term1[vars] = term1.get(vars, 0) + sign * coeff
+            return term1
+        
+        # Helper function to convert a dictionary of terms to the output format
+        def format_terms(terms):
+            result = []
+            for vars in sorted(terms.keys(), key=lambda x: (-len(x), x)):
+                if terms[vars] != 0:
+                    term_str = str(terms[vars])
+                    if vars:
+                        term_str += '*' + '*'.join(vars)
+                    result.append(term_str)
+            return result
+        
+        # Tokenize the expression
+        tokens = []
+        i = 0
+        while i < len(expression):
+            if expression[i] in '+-*/()':
+                tokens.append(expression[i])
+                i += 1
+            else:
+                j = i
+                while j < len(expression) and expression[j] not in '+-*/() ':
+                    j += 1
+                token = expression[i:j]
+                if token.isdigit():
+                    tokens.append(((), int(token)))
+                elif token in eval_map:
+                    tokens.append(((), eval_map[token]))
+                else:
+                    tokens.append(((token,), 1))
+                i = j
+        
+        # Evaluate the expression using stacks
+        num_stack = []
+        op_stack = []
+        i = 0
+        while i < len(tokens):
+            token = tokens[i]
+            if isinstance(token, tuple):
+                num_stack.append({token: 1})
+            elif token == '(':
+                op_stack.append(token)
+            elif token == ')':
+                while op_stack and op_stack[-1] != '(':
+                    self.apply_operation(num_stack, op_stack)
+                op_stack.pop()  # Remove the '('
+            elif token in '+-*':
+                while op_stack and op_stack[-1] in '*/':
+                    self.apply_operation(num_stack, op_stack)
+                op_stack.append(token)
+            i += 1
+        
+        # Apply remaining operations
+        while op_stack:
+            self.apply_operation(num_stack, op_stack)
+        
+        # Format the final result
+        return format_terms(num_stack[-1])
+    
+    def apply_operation(self, num_stack, op_stack):
+        right = num_stack.pop()
+        left = num_stack.pop()
+        op = op_stack.pop()
+        
+        if op == '+':
+            num_stack.append(add_subtract_terms(left, right, 1))
+        elif op == '-':
+            num_stack.append(add_subtract_terms(left, right, -1))
+        elif op == '*':
+            num_stack.append(multiply_terms(left, right))

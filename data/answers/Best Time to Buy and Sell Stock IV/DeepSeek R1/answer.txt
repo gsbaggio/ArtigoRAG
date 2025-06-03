@@ -1,0 +1,24 @@
+class Solution:
+    def maxProfit(self, k: int, prices: List[int]) -> int:
+        n = len(prices)
+        if k == 0 or n == 0:
+            return 0
+        
+        if k >= n // 2:
+            profit = 0
+            for i in range(1, n):
+                if prices[i] > prices[i-1]:
+                    profit += prices[i] - prices[i-1]
+            return profit
+        
+        dp_prev = [0] * n
+        
+        for trans in range(1, k+1):
+            dp_curr = [0] * n
+            tmp = -prices[0]
+            for j in range(1, n):
+                dp_curr[j] = max(dp_curr[j-1], tmp + prices[j])
+                tmp = max(tmp, dp_prev[j] - prices[j])
+            dp_prev = dp_curr
+        
+        return dp_prev[-1]

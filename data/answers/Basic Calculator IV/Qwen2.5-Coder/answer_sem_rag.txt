@@ -1,0 +1,118 @@
+class Solution:
+    def basicCalculatorIV(self, expression: str, evalvars: list[str], evalints: list[int]) -> list[str]:
+        # Create a dictionary for variable evaluations
+        eval_map = {var: val for var, val in zip(evalvars, evalints)}
+        
+        # Helper function to multiply two terms
+        def multiply(term1, term2):
+            result = {}
+            for key1, coeff1 in term1.items():
+                for key2, coeff2 in term2.items():
+                    keys = tuple(sorted(key1 + key2))
+                    result[keys] = result.get(keys, 0) + coeff1 * coeff2
+            return result
+        
+        # Helper function to add two terms
+        def add(term1, term2):
+            for key, coeff in term2.items():
+                term1[key] = term1.get(key, 0) + coeff
+            return term1
+        
+        # Helper function to subtract two terms
+        def subtract(term1, term2):
+            for key, coeff in term2.items():
+                term1[key] = term1.get(key, 0) - coeff
+            return term1
+        
+        # Helper function to convert a term dictionary to a list of strings
+        def term_to_string(term):
+            result = []
+            for keys, coeff in sorted(term.items(), key=lambda x: (-len(x[0]), x[0])):
+                if coeff != 0:
+                    if keys:
+                        result.append(f"{coeff}*{'*'.join(keys)}")
+                    else:
+                        result.append(str(coeff))
+            return result
+        
+        # Stack to hold terms and operators
+        stack = []
+        # Temporary stack to hold terms within parentheses
+        temp_stack = []
+        # Current term being processed
+        current_term = {}
+        # Current coefficient of the current term
+        current_coeff = 1
+        # Current sign (1 for positive, -1 for negative)
+        current_sign = 1
+        
+        # Tokenize the expression
+        tokens = expression.split()
+        
+        for token in tokens:
+            if token.isdigit():
+                # If the token is a digit, update the current coefficient
+                current_coeff *= int(token)
+            elif token.isalpha():
+                # If the token is a variable, update the current coefficient
+                if token in eval_map:
+                    current_coeff *= eval_map[token]
+                else:
+                    current_term[tuple([token])] = current_term.get(tuple([token]), 0) + current_coeff
+                    current_coeff = 1
+            elif token == '(':
+                # If the token is an opening parenthesis, push the current state onto the stack
+                stack.append((current_term, current_coeff, current_sign))
+                current_term = {}
+                current_coeff = 1
+                current_sign = 1
+            elif token == ')':
+                # If the token is a closing parenthesis, pop the state from the stack
+                prev_term, prev_coeff, prev_sign = stack.pop()
+                current_term = {k: v * current_coeff for k, v in current_term.items()}
+                if prev_sign == -1:
+                    current_term = {k: -v for k, v in current_term.items()}
+                current_term = add(prev_term, current_term)
+                current_coeff = prev_coeff
+                current_sign = 1
+            elif token == '+':
+                # If the token is a plus sign, push the current term onto the temp stack with the current sign
+                temp_stack.append((current_term, current_sign))
+                current_term = {}
+                current_coeff = 1
+                current_sign = 1
+            elif token == '-':
+                # If the token is a minus sign, push the current term onto the temp stack with the current sign
+                temp_stack.append((current_term, current_sign))
+                current_term = {}
+                current_coeff = 1
+                current_sign = -1
+            elif token == '*':
+                # If the token is a multiplication sign, multiply the current term with the next term
+                next_token = tokens[tokens.index(token) + 1]
+                next_coeff = 1
+                if next_token.isdigit():
+                    next_coeff = int(next_token)
+                    tokens[tokens.index(token) + 1] = ''  # Mark as processed
+                elif next_token.isalpha():
+                    if next_token in eval_map:
+                        next_coeff = eval_map[next_token]
+                        tokens[tokens.index(token) + 1] = ''  # Mark as processed
+                    else:
+                        next_term = {tuple([next_token]): 1}
+                        current_term = multiply(current_term, next_term)
+                        continue
+                current_term = {k: v * next_coeff for k, v in current_term.items()}
+                current_coeff = 1
+        
+        # Push the last term onto the temp stack with the current sign
+        temp_stack.append((current_term, current_sign))
+        
+        # Combine all terms in the temp stack
+        final_term = {}
+        for term, sign in temp_stack:
+            term = {k: v * sign for k, v in term.items()}
+            final_term = add(final_term, term)
+        
+        # Convert the final term dictionary to a list of strings
+        return term_to_string(final_term)

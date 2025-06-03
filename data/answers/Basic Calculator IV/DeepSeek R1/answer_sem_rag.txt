@@ -1,0 +1,109 @@
+from collections import defaultdict
+
+class Solution:
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        eval_map = {}
+        for i in range(len(evalvars)):
+            eval_map[evalvars[i]] = evalints[i]
+        
+        tokens = expression.split()
+        poly, _ = self.parse_expr(tokens, 0, eval_map)
+        
+        terms_list = []
+        for vars_tuple, coef in poly.items():
+            if coef == 0:
+                continue
+            degree = len(vars_tuple)
+            terms_list.append((degree, vars_tuple, coef))
+        
+        terms_list.sort(key=lambda x: (-x[0], x[1]))
+        
+        res = []
+        for degree, vars_tuple, coef in terms_list:
+            if degree == 0:
+                res.append(str(coef))
+            else:
+                s = str(coef) + '*' + '*'.join(vars_tuple)
+                res.append(s)
+                
+        return res
+
+    def parse_expr(self, tokens, start, eval_map):
+        poly, idx = self.parse_term(tokens, start, eval_map)
+        while idx < len(tokens) and tokens[idx] in ['+', '-']:
+            op = tokens[idx]
+            idx += 1
+            poly2, idx = self.parse_term(tokens, idx, eval_map)
+            if op == '+':
+                poly = self.add_poly(poly, poly2)
+            else:
+                poly = self.subtract_poly(poly, poly2)
+        return poly, idx
+
+    def parse_term(self, tokens, start, eval_map):
+        poly, idx = self.parse_factor(tokens, start, eval_map)
+        while idx < len(tokens) and tokens[idx] == '*':
+            idx += 1
+            poly2, idx = self.parse_factor(tokens, idx, eval_map)
+            poly = self.multiply_poly(poly, poly2)
+        return poly, idx
+
+    def parse_factor(self, tokens, start, eval_map):
+        if start >= len(tokens):
+            return {}, start
+        token = tokens[start]
+        if token == '(':
+            poly, idx = self.parse_expr(tokens, start+1, eval_map)
+            if idx < len(tokens) and tokens[idx] == ')':
+                idx += 1
+            return poly, idx
+        else:
+            if token in eval_map:
+                return {(): eval_map[token]}, start+1
+            elif token.isdigit():
+                return {(): int(token)}, start+1
+            else:
+                return {(token,): 1}, start+1
+
+    def add_poly(self, p1, p2):
+        p = defaultdict(int)
+        for t, c in p1.items():
+            p[t] += c
+        for t, c in p2.items():
+            p[t] += c
+        return {k: v for k, v in p.items() if v != 0}
+    
+    def subtract_poly(self, p1, p2):
+        p = defaultdict(int)
+        for t, c in p1.items():
+            p[t] += c
+        for t, c in p2.items():
+            p[t] -= c
+        return {k: v for k, v in p.items() if v != 0}
+    
+    def multiply_poly(self, p1, p2):
+        if not p1 or not p2:
+            return {}
+        if len(p1) == 1 and () in p1:
+            const_val = p1[()]
+            result = {}
+            for t, c in p2.items():
+                new_c = const_val * c
+                if new_c != 0:
+                    result[t] = result.get(t, 0) + new_c
+            return result
+        if len(p2) == 1 and () in p2:
+            const_val = p2[()]
+            result = {}
+            for t, c in p1.items():
+                new_c = const_val * c
+                if new_c != 0:
+                    result[t] = result.get(t, 0) + new_c
+            return result
+        
+        res = defaultdict(int)
+        for t1, c1 in p1.items():
+            for t2, c2 in p2.items():
+                new_t = tuple(sorted(t1 + t2))
+                res[new_t] += c1 * c2
+        return {k: v for k, v in res.items() if v != 0}

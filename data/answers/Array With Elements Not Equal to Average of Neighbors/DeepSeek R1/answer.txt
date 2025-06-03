@@ -1,0 +1,10 @@
+class Solution:
+    def rearrangeArray(self, nums: List[int]) -> List[int]:
+        nums.sort()
+        n = len(nums)
+        res = []
+        for i in range(0, n, 2):
+            if i + 1 < n:
+                res.append(nums[i + 1])
+            res.append(nums[i])
+        return res

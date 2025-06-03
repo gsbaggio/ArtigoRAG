@@ -1,0 +1,21 @@
+class Solution(object):
+    def rearrangeArray(self, nums):
+        # Step 1: Sort the array
+        nums.sort()
+        
+        # Step 2: Initialize pointers and result array
+        left = 0
+        right = len(nums) - 1
+        result = []
+        
+        # Step 3: Interleave elements from the sorted array
+        while left <= right:
+            if left == right:
+                result.append(nums[left])
+            else:
+                result.append(nums[left])
+                result.append(nums[right])
+            left += 1
+            right -= 1
+        
+        return result
