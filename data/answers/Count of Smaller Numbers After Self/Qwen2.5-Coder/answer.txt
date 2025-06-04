@@ -1,0 +1,86 @@
+class Solution:
+    def countSmaller(self, nums):
+        def merge_and_count(arr, indices, start, end):
+            if end - start <= 1:
+                return 0
+            
+            mid = (start + end) // 2
+            count = merge_and_count(arr, indices, start, mid) + merge_and_count(arr, indices, mid, end)
+            
+            # Two pointers to find the number of valid pairs
+            j = mid
+            for i in range(start, mid):
+                while j < end and arr[indices[i]] > arr[indices[j]]:
+                    j += 1
+                count += j - mid
+            
+            # Merge the two halves
+            merged_indices = []
+            i, j = start, mid
+            while i < mid and j < end:
+                if arr[indices[i]] <= arr[indices[j]]:
+                    merged_indices.append(indices[i])
+                    i += 1
+                else:
+                    merged_indices.append(indices[j])
+                    j += 1
+            
+            # Append remaining elements
+            merged_indices.extend(indices[i:mid])
+            merged_indices.extend(indices[j:end])
+            
+            # Copy back to original indices array
+            for i in range(start, end):
+                indices[i] = merged_indices[i - start]
+            
+            return count
+        
+        n = len(nums)
+        indices = list(range(n))
+        counts = [0] * n
+        temp_indices = [0] * n
+        
+        def merge_sort_and_count(arr, indices, start, end):
+            if end - start <= 1:
+                return
+            
+            mid = (start + end) // 2
+            merge_sort_and_count(arr, indices, start, mid)
+            merge_sort_and_count(arr, indices, mid, end)
+            
+            # Two pointers to find the number of valid pairs
+            j = mid
+            for i in range(start, mid):
+                while j < end and arr[indices[i]] > arr[indices[j]]:
+                    j += 1
+                counts[indices[i]] += j - mid
+            
+            # Merge the two halves
+            i, j = start, mid
+            k = start
+            while i < mid and j < end:
+                if arr[indices[i]] <= arr[indices[j]]:
+                    temp_indices[k] = indices[i]
+                    i += 1
+                else:
+                    temp_indices[k] = indices[j]
+                    j += 1
+                k += 1
+            
+            # Append remaining elements
+            while i < mid:
+                temp_indices[k] = indices[i]
+                i += 1
+                k += 1
+            
+            while j < end:
+                temp_indices[k] = indices[j]
+                j += 1
+                k += 1
+            
+            # Copy back to original indices array
+            for i in range(start, end):
+                indices[i] = temp_indices[i]
+        
+        merge_sort_and_count(nums, indices, 0, n)
+        return counts

@@ -1,0 +1,28 @@
+class Solution:
+    def checkIfPrerequisite(self, numCourses, prerequisites, queries):
+        # Step 1: Build the graph
+        graph = [[] for _ in range(numCourses)]
+        for pre, course in prerequisites:
+            graph[pre].append(course)
+        
+        # Step 2: Initialize a matrix to store the transitive closure
+        is_prerequisite = [[False] * numCourses for _ in range(numCourses)]
+        
+        # Step 3: Perform DFS for each course to fill the transitive closure matrix
+        def dfs(node, visited):
+            for neighbor in graph[node]:
+                if not visited[neighbor]:
+                    visited[neighbor] = True
+                    is_prerequisite[start][neighbor] = True
+                    dfs(neighbor, visited)
+        
+        for start in range(numCourses):
+            visited = [False] * numCourses
+            dfs(start, visited)
+        
+        # Step 4: Answer the queries using the precomputed matrix
+        answer = []
+        for u, v in queries:
+            answer.append(is_prerequisite[u][v])
+        
+        return answer

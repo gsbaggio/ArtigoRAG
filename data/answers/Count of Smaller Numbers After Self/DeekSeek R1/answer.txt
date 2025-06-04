@@ -1,0 +1,44 @@
+from typing import List
+
+class Solution:
+    def countSmaller(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        self.nums = nums
+        self.res = [0] * n
+        self.index = list(range(n))
+        self.merge_sort(0, n)
+        return self.res
+
+    def merge_sort(self, low: int, high: int) -> None:
+        if high - low <= 1:
+            return
+        mid = (low + high) // 2
+        self.merge_sort(low, mid)
+        self.merge_sort(mid, high)
+        self.merge(low, mid, high)
+    
+    def merge(self, low: int, mid: int, high: int) -> None:
+        i = low
+        j = mid
+        temp = []
+        
+        while i < mid and j < high:
+            if self.nums[self.index[j]] < self.nums[self.index[i]]:
+                temp.append(self.index[j])
+                j += 1
+            else:
+                temp.append(self.index[i])
+                self.res[self.index[i]] += j - mid
+                i += 1
+        
+        while i < mid:
+            temp.append(self.index[i])
+            self.res[self.index[i]] += j - mid
+            i += 1
+        
+        while j < high:
+            temp.append(self.index[j])
+            j += 1
+        
+        for idx in range(low, high):
+            self.index[idx] = temp[idx - low]

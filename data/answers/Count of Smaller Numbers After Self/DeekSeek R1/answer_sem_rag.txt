@@ -1,0 +1,35 @@
+class Solution:
+    def countSmaller(self, nums):
+        n = len(nums)
+        if n == 0:
+            return []
+        
+        unique_sorted = sorted(set(nums))
+        comp_map = {}
+        for idx, num in enumerate(unique_sorted):
+            comp_map[num] = idx + 1
+        
+        size = len(unique_sorted)
+        tree = [0] * (size + 1)
+        counts = [0] * n
+        
+        for i in range(n-1, -1, -1):
+            num = nums[i]
+            c_index = comp_map[num]
+            
+            if c_index > 1:
+                index_temp = c_index - 1
+                s = 0
+                while index_temp > 0:
+                    s += tree[index_temp]
+                    index_temp -= index_temp & -index_temp
+                counts[i] = s
+            else:
+                counts[i] = 0
+                
+            index_temp = c_index
+            while index_temp <= size:
+                tree[index_temp] += 1
+                index_temp += index_temp & -index_temp
+        
+        return counts

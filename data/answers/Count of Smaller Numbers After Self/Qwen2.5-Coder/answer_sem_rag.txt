@@ -1,0 +1,45 @@
+class Solution:
+    def countSmaller(self, nums):
+        def merge_and_count(arr, indices, start, end, result):
+            if start >= end:
+                return
+            
+            mid = (start + end) // 2
+            merge_and_count(arr, indices, start, mid, result)
+            merge_and_count(arr, indices, mid + 1, end, result)
+            
+            # Temporary arrays to hold the left and right halves
+            left_indices = indices[start:mid + 1]
+            right_indices = indices[mid + 1:end + 1]
+            
+            i, j, k = 0, 0, start
+            
+            # Count smaller elements during the merge step
+            while i < len(left_indices) and j < len(right_indices):
+                if arr[left_indices[i]] > arr[right_indices[j]]:
+                    result[left_indices[i]] += len(right_indices) - j
+                    indices[k] = right_indices[j]
+                    j += 1
+                else:
+                    indices[k] = left_indices[i]
+                    i += 1
+                k += 1
+            
+            # Copy remaining elements
+            while i < len(left_indices):
+                indices[k] = left_indices[i]
+                i += 1
+                k += 1
+            
+            while j < len(right_indices):
+                indices[k] = right_indices[j]
+                j += 1
+                k += 1
+        
+        n = len(nums)
+        result = [0] * n
+        indices = list(range(n))
+        
+        merge_and_count(nums, indices, 0, n - 1, result)
+        
+        return result

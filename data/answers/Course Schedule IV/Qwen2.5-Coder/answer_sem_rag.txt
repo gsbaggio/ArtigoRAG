@@ -1,0 +1,41 @@
+class Solution:
+    def checkIfPrerequisite(self, numCourses, prerequisites, queries):
+        # Step 1: Build the graph
+        graph = [[] for _ in range(numCourses)]
+        for a, b in prerequisites:
+            graph[a].append(b)
+        
+        # Step 2: Initialize the memoization table
+        is_prerequisite = [[False] * numCourses for _ in range(numCourses)]
+        
+        # Step 3: Define the DFS function with memoization
+        def dfs(source, target):
+            if is_prerequisite[source][target] is not None:
+                return is_prerequisite[source][target]
+            
+            # If source is the same as target, it's not a prerequisite
+            if source == target:
+                is_prerequisite[source][target] = False
+                return False
+            
+            # Check if there's a direct edge from source to target
+            if target in graph[source]:
+                is_prerequisite[source][target] = True
+                return True
+            
+            # Perform DFS for all neighbors of source
+            for neighbor in graph[source]:
+                if dfs(neighbor, target):
+                    is_prerequisite[source][target] = True
+                    return True
+            
+            # If no path found, set to False
+            is_prerequisite[source][target] = False
+            return False
+        
+        # Step 4: Answer each query using the DFS function
+        result = []
+        for uj, vj in queries:
+            result.append(dfs(uj, vj))
+        
+        return result
