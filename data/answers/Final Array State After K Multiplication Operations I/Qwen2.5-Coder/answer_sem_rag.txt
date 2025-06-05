@@ -1,0 +1,14 @@
+class Solution:
+    def getFinalState(self, nums, k, multiplier):
+        # Perform k operations
+        for _ in range(k):
+            # Find the index of the minimum value in nums
+            min_index = 0
+            for i in range(1, len(nums)):
+                if nums[i] < nums[min_index]:
+                    min_index = i
+            
+            # Replace the minimum value with its multiplied version
+            nums[min_index] *= multiplier
+        
+        return nums

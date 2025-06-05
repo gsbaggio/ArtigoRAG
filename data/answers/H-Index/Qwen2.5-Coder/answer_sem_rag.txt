@@ -1,0 +1,24 @@
+class Solution:
+    def hIndex(self, citations):
+        n = len(citations)
+        if n == 0:
+            return 0
+        
+        # Create a count array of size 1001 (since max citations is 1000)
+        count = [0] * 1001
+        
+        # Populate the count array
+        for c in citations:
+            if c > 1000:
+                count[1000] += 1
+            else:
+                count[c] += 1
+        
+        # Calculate the h-index
+        total_papers = 0
+        for i in range(1000, -1, -1):
+            total_papers += count[i]
+            if total_papers >= i:
+                return i
+        
+        return 0

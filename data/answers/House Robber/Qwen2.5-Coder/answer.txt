@@ -1,0 +1,18 @@
+class Solution {
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) return 0;
+        
+        int prevNotRobbed = 0; // Max money if the previous house was not robbed
+        int prevRobbed = 0;    // Max money if the previous house was robbed
+        
+        for (int num : nums) {
+            int currentNotRobbed = Math.max(prevNotRobbed, prevRobbed); // Max money if current house is not robbed
+            int currentRobbed = num + prevNotRobbed;                   // Max money if current house is robbed
+            
+            prevNotRobbed = currentNotRobbed; // Update prevNotRobbed for the next iteration
+            prevRobbed = currentRobbed;       // Update prevRobbed for the next iteration
+        }
+        
+        return Math.max(prevNotRobbed, prevRobbed); // Return the max money robbed from the last house
+    }
+}

@@ -1,0 +1,48 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def findMode(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+        
+        # Variables to keep track of the current value, its frequency,
+        # the maximum frequency, and the list of modes.
+        current_val = None
+        current_count = 0
+        max_count = 0
+        modes = []
+        
+        def inorder_traversal(node):
+            nonlocal current_val, current_count, max_count, modes
+            
+            if not node:
+                return
+            
+            # Traverse the left subtree
+            inorder_traversal(node.left)
+            
+            # Process the current node
+            if node.val == current_val:
+                current_count += 1
+            else:
+                current_val = node.val
+                current_count = 1
+            
+            # Update the modes list based on the current count
+            if current_count > max_count:
+                max_count = current_count
+                modes = [current_val]
+            elif current_count == max_count:
+                modes.append(current_val)
+            
+            # Traverse the right subtree
+            inorder_traversal(node.right)
+        
+        # Start the in-order traversal from the root
+        inorder_traversal(root)
+        
+        return modes

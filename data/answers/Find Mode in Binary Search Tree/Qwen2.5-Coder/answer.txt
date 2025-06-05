@@ -1,0 +1,38 @@
+class Solution {
+public:
+    vector<int> findMode(TreeNode* root) {
+        vector<int> modes;
+        int maxCount = 0;
+        int currentCount = 0;
+        int currentValue = INT_MIN;
+        
+        inorderTraversal(root, currentValue, currentCount, maxCount, modes);
+        
+        return modes;
+    }
+
+private:
+    void inorderTraversal(TreeNode* node, int& currentValue, int& currentCount, int& maxCount, vector<int>& modes) {
+        if (!node) return;
+        
+        inorderTraversal(node->left, currentValue, currentCount, maxCount, modes);
+        
+        // Process the current node
+        if (node->val == currentValue) {
+            currentCount++;
+        } else {
+            currentValue = node->val;
+            currentCount = 1;
+        }
+        
+        if (currentCount > maxCount) {
+            maxCount = currentCount;
+            modes.clear();
+            modes.push_back(currentValue);
+        } else if (currentCount == maxCount) {
+            modes.push_back(currentValue);
+        }
+        
+        inorderTraversal(node->right, currentValue, currentCount, maxCount, modes);
+    }
+};

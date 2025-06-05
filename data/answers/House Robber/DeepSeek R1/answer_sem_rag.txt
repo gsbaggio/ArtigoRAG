@@ -1,0 +1,9 @@
+class Solution:
+    def rob(self, nums):
+        include = 0
+        exclude = 0
+        for num in nums:
+            new_include = exclude + num
+            new_exclude = max(include, exclude)
+            include, exclude = new_include, new_exclude
+        return max(include, exclude)

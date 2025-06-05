@@ -1,0 +1,24 @@
+class Solution(object):
+    def hIndex(self, citations):
+        """
+        :type citations: List[int]
+        :rtype: int
+        """
+        n = len(citations)
+        count = [0] * (n + 1)
+        
+        # Count the number of papers with each citation count
+        for c in citations:
+            if c > n:
+                count[n] += 1
+            else:
+                count[c] += 1
+        
+        # Calculate the h-index
+        total = 0
+        for i in range(n, -1, -1):
+            total += count[i]
+            if total >= i:
+                return i
+        
+        return 0

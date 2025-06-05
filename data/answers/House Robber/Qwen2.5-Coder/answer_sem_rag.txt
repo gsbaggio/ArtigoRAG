@@ -1,0 +1,19 @@
+class Solution:
+    def rob(self, nums):
+        if not nums:
+            return 0
+        elif len(nums) == 1:
+            return nums[0]
+        
+        # Initialize the first two houses
+        prev1 = 0  # dp[i-2]
+        prev2 = 0  # dp[i-1]
+        
+        for num in nums:
+            # Calculate the maximum money that can be robbed up to the current house
+            current = max(prev2, num + prev1)
+            # Update the previous values for the next iteration
+            prev1 = prev2
+            prev2 = current
+        
+        return prev2

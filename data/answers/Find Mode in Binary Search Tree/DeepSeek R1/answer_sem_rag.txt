@@ -1,0 +1,60 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def findMode(self, root: TreeNode) -> list[int]:
+        prev_val = None
+        count = 0
+        max_count = 0
+        modes = []
+        current = root
+        
+        while current:
+            if current.left is None:
+                if prev_val is None:
+                    count = 1
+                else:
+                    if current.val == prev_val:
+                        count += 1
+                    else:
+                        count = 1
+                
+                if count > max_count:
+                    max_count = count
+                    modes = [current.val]
+                elif count == max_count:
+                    modes.append(current.val)
+                
+                prev_val = current.val
+                current = current.right
+            else:
+                pre = current.left
+                while pre.right and pre.right != current:
+                    pre = pre.right
+                
+                if pre.right is None:
+                    pre.right = current
+                    current = current.left
+                else:
+                    pre.right = None
+                    if prev_val is None:
+                        count = 1
+                    else:
+                        if current.val == prev_val:
+                            count += 1
+                        else:
+                            count = 1
+                    
+                    if count > max_count:
+                        max_count = count
+                        modes = [current.val]
+                    elif count == max_count:
+                        modes.append(current.val)
+                    
+                    prev_val = current.val
+                    current = current.right
+        
+        return modes
