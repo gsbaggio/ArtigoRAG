@@ -1,0 +1,27 @@
+class Solution:
+    def strongPasswordCheckerII(self, password: str) -> bool:
+        n = len(password)
+        if n < 8:
+            return False
+        
+        has_lower = False
+        has_upper = False
+        has_digit = False
+        has_special = False
+        specials = "!@#$%^&*()-+"
+        
+        for i in range(n):
+            if i < n - 1 and password[i] == password[i+1]:
+                return False
+            
+            char = password[i]
+            if char.islower():
+                has_lower = True
+            elif char.isupper():
+                has_upper = True
+            elif char.isdigit():
+                has_digit = True
+            elif char in specials:
+                has_special = True
+        
+        return has_lower and has_upper and has_digit and has_special
