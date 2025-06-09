@@ -1,0 +1,30 @@
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        s = list(str(num))
+        n = len(s)
+        if n == 1:
+            return num
+        
+        max_digit = [''] * n
+        max_index = [0] * n
+        max_digit[-1] = s[-1]
+        max_index[-1] = n - 1
+        
+        for i in range(n-2, -1, -1):
+            if s[i] > max_digit[i+1]:
+                max_digit[i] = s[i]
+                max_index[i] = i
+            elif s[i] < max_digit[i+1]:
+                max_digit[i] = max_digit[i+1]
+                max_index[i] = max_index[i+1]
+            else:
+                max_digit[i] = max_digit[i+1]
+                max_index[i] = max_index[i+1]
+        
+        for i in range(n):
+            if s[i] < max_digit[i]:
+                j = max_index[i]
+                s[i], s[j] = s[j], s[i]
+                break
+        
+        return int(''.join(s))

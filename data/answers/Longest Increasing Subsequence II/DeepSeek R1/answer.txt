@@ -1,0 +1,59 @@
+class SegmentTree:
+    def __init__(self, n):
+        self.n = n
+        self.size = 1
+        while self.size < n:
+            self.size *= 2
+        self.data = [0] * (2 * self.size)
+    
+    def update(self, idx, val):
+        pos = idx - 1
+        if pos >= self.n:
+            return
+        i = pos + self.size
+        if val > self.data[i]:
+            self.data[i] = val
+            i //= 2
+            while i:
+                self.data[i] = max(self.data[2*i], self.data[2*i+1])
+                i //= 2
+                
+    def query(self, l, r):
+        if l > r:
+            return 0
+        l0 = l - 1
+        r0 = r - 1
+        if l0 < 0:
+            l0 = 0
+        if r0 >= self.n:
+            r0 = self.n - 1
+        l0 += self.size
+        r0 += self.size
+        res = 0
+        while l0 <= r0:
+            if l0 % 2 == 1:
+                res = max(res, self.data[l0])
+                l0 += 1
+            if r0 % 2 == 0:
+                res = max(res, self.data[r0])
+                r0 -= 1
+            l0 //= 2
+            r0 //= 2
+        return res
+
+class Solution:
+    def lengthOfLIS(self, nums: list, k: int) -> int:
+        MAX_VAL = 100000
+        seg_tree = SegmentTree(MAX_VAL)
+        ans = 0
+        for x in nums:
+            low_bound = max(1, x - k)
+            high_bound = x - 1
+            best = 0
+            if low_bound <= high_bound:
+                best = seg_tree.query(low_bound, high_bound)
+            current_dp = best + 1
+            if current_dp > ans:
+                ans = current_dp
+            seg_tree.update(x, current_dp)
+        return ans

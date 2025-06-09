@@ -1,0 +1,39 @@
+from collections import defaultdict
+
+class Solution:
+    def minAreaFreeRect(self, points: List[List[int]]) -> float:
+        n = len(points)
+        if n < 4:
+            return 0.0
+        groups = defaultdict(list)
+        
+        for i in range(n):
+            x1, y1 = points[i]
+            for j in range(i+1, n):
+                x2, y2 = points[j]
+                center2x = x1 + x2
+                center2y = y1 + y2
+                dx = x1 - x2
+                dy = y1 - y2
+                diagonal_sq = dx * dx + dy * dy
+                rep = (x1, y1) if (x1, y1) < (x2, y2) else (x2, y2)
+                groups[(center2x, center2y, diagonal_sq)].append(rep)
+        
+        min_area = float('inf')
+        for key, reps in groups.items():
+            m = len(reps)
+            if m < 2:
+                continue
+            center2x, center2y, _ = key
+            for i in range(m):
+                x1, y1 = reps[i]
+                for j in range(i+1, m):
+                    x2, y2 = reps[j]
+                    v1 = (center2x - 2*x1, center2y - 2*y1)
+                    v2 = (center2x - 2*x2, center2y - 2*y2)
+                    cross = v1[0] * v2[1] - v1[1] * v2[0]
+                    area = abs(cross) / 2.0
+                    if area > 0:
+                        min_area = min(min_area, area)
+        
+        return min_area if min_area != float('inf') else 0.0

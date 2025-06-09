@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int maximumSwap(int num) {
+        // Convert the number to a string
+        string numStr = to_string(num);
+        int n = numStr.size();
+        
+        // Array to store the last occurrence of each digit (0-9)
+        int last[10] = {0};
+        
+        // Fill the last occurrence array
+        for (int i = 0; i < n; ++i) {
+            last[numStr[i] - '0'] = i;
+        }
+        
+        // Iterate through the digits of the number
+        for (int i = 0; i < n; ++i) {
+            // Check digits from 9 to the current digit + 1
+            for (int d = 9; d > numStr[i] - '0'; --d) {
+                // If a larger digit appears later, swap it with the current digit
+                if (last[d] > i) {
+                    swap(numStr[i], numStr[last[d]]);
+                    // Return the new number after the swap
+                    return stoi(numStr);
+                }
+            }
+        }
+        
+        // If no swap is possible, return the original number
+        return num;
+    }
+};

@@ -1,0 +1,48 @@
+class FenwickTree {
+private:
+    int n;
+    vector<int> tree;
+
+public:
+    FenwickTree(int size) : n(size), tree(size + 1, 0) {}
+
+    // Query the maximum value in the range [1, index]
+    int query(int index) {
+        int result = 0;
+        while (index > 0) {
+            result = max(result, tree[index]);
+            index -= index & (-index);
+        }
+        return result;
+    }
+
+    // Update the value at index to val
+    void update(int index, int val) {
+        while (index <= n) {
+            tree[index] = max(tree[index], val);
+            index += index & (-index);
+        }
+    }
+};
+
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums, int k) {
+        int max_val = *max_element(nums.begin(), nums.end());
+        FenwickTree ft(max_val);
+        int ans = 0;
+
+        for (int num : nums) {
+            // Find the maximum length of subsequences ending in the range [num - k, num - 1]
+            int max_len = ft.query(num - 1) - ft.query(num - k - 1);
+            // Update dp[num] to be 1 + max_len
+            int new_len = max_len + 1;
+            // Update the Fenwick Tree with the new length
+            ft.update(num, new_len);
+            // Update the answer
+            ans = max(ans, new_len);
+        }
+
+        return ans;
+    }
+};

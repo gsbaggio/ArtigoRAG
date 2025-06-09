@@ -12,7 +12,7 @@ def safe_float(s):
 
 root_dir = Path("data/answers")
 
-llms = ["Claude 3.7 Sonnet", "Gemini 2.0", "GPT 4o", "GPT-3.5"]
+llms = ["Claude 3.7 Sonnet", "Gemini 2.0", "GPT 4o", "GPT-3.5", "DeepSeek R1", "Qwen2.5-Coder"]
 
 images_dir = Path("images")
 os.makedirs(images_dir, exist_ok=True)
@@ -40,10 +40,11 @@ for problem in problems:
     for llm in llms:
         llm_dir = problem_dir / llm
         results_file = llm_dir / "results.txt"
+    
         
         if not results_file.exists():
             continue
-        
+
         try:
             with open(results_file, "r") as f:
                 lines = [line.strip() for line in f.readlines()]

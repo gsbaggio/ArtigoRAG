@@ -1,0 +1,44 @@
+class Solution {
+    public int minCapability(int[] nums, int k) {
+        int low = Integer.MAX_VALUE;
+        int high = Integer.MIN_VALUE;
+
+        // Determine the range for binary search
+        for (int num : nums) {
+            low = Math.min(low, num);
+            high = Math.max(high, num);
+        }
+
+        // Perform binary search
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (canRobAtLeastKHouses(nums, mid, k)) {
+                high = mid - 1; // Try for a smaller capability
+            } else {
+                low = mid + 1; // Increase the capability
+            }
+        }
+
+        return low; // The smallest capability that allows robbing at least k houses
+    }
+
+    private boolean canRobAtLeastKHouses(int[] nums, int capability, int k) {
+        int count = 0;
+        boolean can_rob = true;
+
+        for (int num : nums) {
+            if (can_rob && num <= capability) {
+                count++;
+                can_rob = false; // Cannot rob the next house
+            } else {
+                can_rob = true; // Can potentially rob the next house
+            }
+
+            if (count >= k) {
+                return true; // Found a valid way to rob at least k houses
+            }
+        }
+
+        return false; // Not possible to rob at least k houses with the given capability
+    }
+}

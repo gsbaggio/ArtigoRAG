@@ -1,0 +1,52 @@
+class Solution:
+    def lengthOfLIS(self, nums, k):
+        max_val = 100000
+        n_val = max_val
+        size = 1
+        while size < n_val:
+            size *= 2
+        data = [0] * (2 * size)
+        
+        def update(idx, val):
+            pos = idx + size
+            if val <= data[pos]:
+                return
+            data[pos] = val
+            pos //= 2
+            while pos:
+                left_child = data[2*pos]
+                right_child = data[2*pos+1]
+                data[pos] = max(left_child, right_child)
+                pos //= 2
+        
+        def query(l, r):
+            if l > r:
+                return 0
+            res = 0
+            l0 = l + size
+            r0 = r + size
+            while l0 <= r0:
+                if l0 % 2 == 1:
+                    res = max(res, data[l0])
+                    l0 += 1
+                if r0 % 2 == 0:
+                    res = max(res, data[r0])
+                    r0 -= 1
+                l0 //= 2
+                r0 //= 2
+            return res
+        
+        ans = 0
+        for num in nums:
+            l_val = max(1, num - k)
+            r_val = num - 1
+            if l_val <= r_val:
+                best = query(l_val-1, r_val-1)
+            else:
+                best = 0
+            current = best + 1
+            if current > ans:
+                ans = current
+            update(num-1, current)
+        
+        return ans

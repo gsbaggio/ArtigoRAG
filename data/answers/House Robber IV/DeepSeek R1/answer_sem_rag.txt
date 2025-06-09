@@ -1,0 +1,24 @@
+class Solution:
+    def minCapability(self, nums: List[int], k: int) -> int:
+        lo, hi = 1, max(nums)
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if self.check_feasible(nums, k, mid):
+                hi = mid
+            else:
+                lo = mid + 1
+        return lo
+    
+    def check_feasible(self, nums, k, x):
+        count = 0
+        i = 0
+        n = len(nums)
+        while i < n:
+            if nums[i] <= x:
+                count += 1
+                if count >= k:
+                    return True
+                i += 2
+            else:
+                i += 1
+        return False

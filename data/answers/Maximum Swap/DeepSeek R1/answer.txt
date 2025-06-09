@@ -1,0 +1,14 @@
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        digits = list(str(num))
+        n = len(digits)
+        for i in range(n):
+            candidate = -1
+            for j in range(n-1, i, -1):
+                if digits[j] > digits[i]:
+                    if candidate == -1 or digits[j] > digits[candidate]:
+                        candidate = j
+            if candidate != -1:
+                digits[i], digits[candidate] = digits[candidate], digits[i]
+                break
+        return int(''.join(digits))

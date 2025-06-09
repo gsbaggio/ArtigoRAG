@@ -1,0 +1,45 @@
+class Solution:
+    def lengthOfLIS(self, nums, k):
+        # Find the maximum value in nums to determine the size of the segment tree
+        max_val = max(nums)
+        # Initialize the segment tree with zeros
+        seg_tree = [0] * (4 * max_val)
+
+        def query(left, right, node, q_left, q_right):
+            # If the query range is outside the node range, return 0
+            if q_right < left or q_left > right:
+                return 0
+            # If the node range is completely inside the query range, return the node value
+            if q_left <= left and right <= q_right:
+                return seg_tree[node]
+            # Otherwise, query the left and right children and return the maximum
+            mid = (left + right) // 2
+            return max(query(left, mid, 2 * node + 1, q_left, q_right),
+                       query(mid + 1, right, 2 * node + 2, q_left, q_right))
+
+        def update(left, right, node, index, value):
+            # If the index is outside the node range, do nothing
+            if index < left or index > right:
+                return
+            # If the node range is a single element, update the node value
+            if left == right:
+                seg_tree[node] = value
+                return
+            # Otherwise, update the left and right children and the current node
+            mid = (left + right) // 2
+            update(left, mid, 2 * node + 1, index, value)
+            update(mid + 1, right, 2 * node + 2, index, value)
+            seg_tree[node] = max(seg_tree[2 * node + 1], seg_tree[2 * node + 2])
+
+        max_length = 0
+        for num in nums:
+            # Query the maximum length of increasing subsequences ending with numbers in the range [num-k, num-1]
+            max_len_ending_before_num = query(0, max_val, 0, max(0, num - k), num - 1)
+            # Update the dp value for the current number
+            current_max_len = max_len_ending_before_num + 1
+            # Update the segment tree with the new dp value
+            update(0, max_val, 0, num, current_max_len)
+            # Keep track of the maximum length found so far
+            max_length = max(max_length, current_max_len)
+
+        return max_length

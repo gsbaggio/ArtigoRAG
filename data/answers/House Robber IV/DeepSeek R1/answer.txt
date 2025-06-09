@@ -1,0 +1,23 @@
+class Solution:
+    def minCapability(self, nums: List[int], k: int) -> int:
+        lo, hi = min(nums), max(nums)
+        
+        def check(cap):
+            dp0 = dp1 = 0
+            for x in nums:
+                if x <= cap:
+                    current = max(dp1, dp0 + 1)
+                else:
+                    current = dp1
+                if current >= k:
+                    return True
+                dp0, dp1 = dp1, current
+            return False
+        
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if check(mid):
+                hi = mid
+            else:
+                lo = mid + 1
+        return lo

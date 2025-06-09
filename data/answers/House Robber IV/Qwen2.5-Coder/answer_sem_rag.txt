@@ -1,0 +1,27 @@
+class Solution:
+    def minCapability(self, nums, k):
+        def canRobWithCapability(cap):
+            count = 0
+            i = 0
+            while i < len(nums):
+                if nums[i] <= cap:
+                    count += 1
+                    if count >= k:
+                        return True
+                    i += 2  # Skip the next house since we can't rob adjacent houses
+                else:
+                    i += 1
+            return False
+        
+        low, high = min(nums), max(nums)
+        result = high
+        
+        while low <= high:
+            mid = (low + high) // 2
+            if canRobWithCapability(mid):
+                result = mid
+                high = mid - 1  # Try to find a smaller capability
+            else:
+                low = mid + 1  # Increase the capability
+        
+        return result

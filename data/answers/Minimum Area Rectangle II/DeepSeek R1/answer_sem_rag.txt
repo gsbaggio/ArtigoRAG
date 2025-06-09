@@ -1,0 +1,40 @@
+class Solution:
+    def minAreaFreeRect(self, points: List[points]) -> float:
+        n = len(points)
+        diag_dict = {}
+        for i in range(n):
+            for j in range(i+1, n):
+                xi, yi = points[i]
+                xj, yj = points[j]
+                sx = xi + xj
+                sy = yi + yj
+                diag_sq = (xi - xj)**2 + (yi - yj)**2
+                key = (sx, sy, diag_sq)
+                if key not in diag_dict:
+                    diag_dict[key] = []
+                diag_dict[key].append((i, j))
+        
+        min_area = float('inf')
+        for key, pairs in diag_dict.items():
+            m = len(pairs)
+            if m < 2:
+                continue
+            for a in range(m):
+                i1, j1 = pairs[a]
+                for b in range(a+1, m):
+                    i2, j2 = pairs[b]
+                    if i1 == i2 or i1 == j2 or j1 == i2 or j1 == j2:
+                        continue
+                    p0 = points[i1]
+                    p1 = points[i2]
+                    p2 = points[j2]
+                    v1x = p1[0] - p0[0]
+                    v1y = p1[1] - p0[1]
+                    v2x = p2[0] - p0[0]
+                    v2y = p2[1] - p0[1]
+                    area = abs(v1x * v2y - v1y * v2x)
+                    if area == 0:
+                        continue
+                    if area < min_area:
+                        min_area = area
+        return 0.0 if min_area == float('inf') else float(min_area)
