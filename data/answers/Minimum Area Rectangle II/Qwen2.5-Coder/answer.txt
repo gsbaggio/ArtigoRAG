@@ -1,0 +1,47 @@
+class Solution(object):
+    def minAreaFreeRect(self, points):
+        # Helper function to calculate squared distance between two points
+        def dist_sq(p1, p2):
+            return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
+        
+        # Helper function to calculate the area of the rectangle formed by four points
+        def area(p1, p2, p3):
+            # Vector p1p2
+            v1 = (p2[0] - p1[0], p2[1] - p1[1])
+            # Vector p1p3
+            v2 = (p3[0] - p1[0], p3[1] - p1[1])
+            # Cross product of v1 and v2 gives twice the area of the triangle p1p2p3
+            cross_product = v1[0] * v2[1] - v1[1] * v2[0]
+            return abs(cross_product)
+        
+        # Store points in a set for quick lookup
+        S = set(map(tuple, points))
+        min_area = float('inf')
+        
+        # Iterate over all pairs of points
+        n = len(points)
+        for i in range(n):
+            p1 = points[i]
+            for j in range(i + 1, n):
+                p2 = points[j]
+                # Calculate the midpoint and squared length of the diagonal
+                mid_x = (p1[0] + p2[0]) / 2.0
+                mid_y = (p1[1] + p2[1]) / 2.0
+                d_sq = dist_sq(p1, p2)
+                
+                # Check all other pairs of points
+                for k in range(j + 1, n):
+                    p3 = points[k]
+                    for l in range(k + 1, n):
+                        p4 = points[l]
+                        # Check if the other two points form the same diagonal
+                        if (mid_x == (p3[0] + p4[0]) / 2.0 and
+                            mid_y == (p3[1] + p4[1]) / 2.0 and
+                            d_sq == dist_sq(p3, p4) and
+                            (p3[0], p3[1]) in S and
+                            (p4[0], p4[1]) in S):
+                            # Calculate the area of the rectangle
+                            rect_area = area(p1, p3, p4)
+                            min_area = min(min_area, rect_area)
+        
+        return min_area if min_area < float('inf') else 0

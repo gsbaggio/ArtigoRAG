@@ -1,0 +1,29 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def pathSum(self, root: TreeNode, targetSum: int) -> list[list[int]]:
+        def dfs(node, remaining_sum, path):
+            if not node:
+                return
+            
+            # Add the current node to the path
+            path.append(node.val)
+            
+            # Check if it's a leaf node and the remaining sum is zero
+            if not node.left and not node.right and remaining_sum == node.val:
+                result.append(list(path))
+            
+            # Continue the search on the left and right children
+            dfs(node.left, remaining_sum - node.val, path)
+            dfs(node.right, remaining_sum - node.val, path)
+            
+            # Backtrack: remove the current node from the path
+            path.pop()
+        
+        result = []
+        dfs(root, targetSum, [])
+        return result

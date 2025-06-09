@@ -1,0 +1,67 @@
+class Solution:
+    def minimumDifference(self, nums: List[int]) -> int:
+        n_total = len(nums)
+        n = n_total // 2
+        total_sum = sum(nums)
+        A = nums[:n]
+        B = nums[n:]
+        
+        left = [[] for _ in range(n+1)]
+        total_masks = 1 << n
+        for mask in range(total_masks):
+            cnt = 0
+            s = 0
+            for i in range(n):
+                if mask & (1 << i):
+                    cnt += 1
+                    s += A[i]
+            left[cnt].append(s)
+        
+        right = [[] for _ in range(n+1)]
+        for mask in range(total_masks):
+            cnt = 0
+            s = 0
+            for i in range(n):
+                if mask & (1 << i):
+                    cnt += 1
+                    s += B[i]
+            right[cnt].append(s)
+        
+        right2 = []
+        for j in range(n+1):
+            lst = [2 * x for x in right[j]]
+            lst.sort()
+            right2.append(lst)
+        
+        ans = float('inf')
+        
+        def find_closest(arr, x):
+            lo, hi = 0, len(arr) - 1
+            if not arr:
+                return float('inf')
+            pos = len(arr)
+            while lo <= hi:
+                mid = (lo + hi) // 2
+                if arr[mid] < x:
+                    lo = mid + 1
+                else:
+                    pos = mid
+                    hi = mid - 1
+            res = float('inf')
+            if pos < len(arr):
+                res = min(res, abs(arr[pos] - x))
+            if pos - 1 >= 0:
+                res = min(res, abs(arr[pos - 1] - x))
+            return res
+        
+        for i in range(n + 1):
+            j = n - i
+            if j < 0 or j > n:
+                continue
+            for a in left[i]:
+                x = total_sum - 2 * a
+                candidate_diff = find_closest(right2[j], x)
+                if candidate_diff < ans:
+                    ans = candidate_diff
+        
+        return ans

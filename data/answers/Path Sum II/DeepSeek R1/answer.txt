@@ -1,0 +1,27 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def pathSum(self, root: TreeNode, targetSum: int) -> list[list[int]]:
+        result = []
+        self.dfs(root, targetSum, [], result)
+        return result
+    
+    def dfs(self, node: TreeNode, remaining: int, path: list[int], result: list[list[int]]) -> None:
+        if not node:
+            return
+        
+        path.append(node.val)
+        remaining -= node.val
+        
+        if not node.left and not node.right:
+            if remaining == 0:
+                result.append(path.copy())
+        
+        self.dfs(node.left, remaining, path, result)
+        self.dfs(node.right, remaining, path, result)
+        
+        path.pop()

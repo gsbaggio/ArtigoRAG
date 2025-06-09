@@ -1,0 +1,11 @@
+class Solution(object):
+    def predictTheWinner(self, nums):
+        n = len(nums)
+        dp = [0] * n
+        for i in range(n-1, -1, -1):
+            for j in range(i, n):
+                if i == j:
+                    dp[j] = nums[i]
+                else:
+                    dp[j] = max(nums[i] - dp[j], nums[j] - dp[j-1])
+        return dp[n-1] >= 0

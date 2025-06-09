@@ -1,0 +1,25 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+class Solution {
+    private Map<Integer, List<Integer>> map;
+    private Random rand;
+
+    public Solution(int[] nums) {
+        map = new HashMap<>();
+        rand = new Random();
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            map.computeIfAbsent(num, k -> new ArrayList<>()).add(i);
+        }
+    }
+    
+    public int pick(int target) {
+        List<Integer> indices = map.get(target);
+        int randomIndex = rand.nextInt(indices.size());
+        return indices.get(randomIndex);
+    }
+}

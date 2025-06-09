@@ -1,0 +1,63 @@
+class Solution:
+    def minimumDifference(self, nums):
+        n = len(nums) // 2
+        total_sum = sum(nums)
+        target = total_sum / 2
+        
+        # Generate all possible subset sums for the first half
+        left_sums = []
+        for i in range(1 << n):
+            subset_sum = 0
+            count = 0
+            for j in range(n):
+                if i & (1 << j):
+                    subset_sum += nums[j]
+                    count += 1
+            left_sums.append((subset_sum, count))
+        
+        # Generate all possible subset sums for the second half
+        right_sums = []
+        for i in range(1 << n):
+            subset_sum = 0
+            count = 0
+            for j in range(n):
+                if i & (1 << j):
+                    subset_sum += nums[n + j]
+                    count += 1
+            right_sums.append((subset_sum, count))
+        
+        # Sort the right sums by their subset sum values
+        right_sums.sort()
+        
+        min_diff = float('inf')
+        
+        # Iterate through each subset sum in the left sums
+        for left_sum, left_count in left_sums:
+            # We need to find a subset sum in the right sums such that the combined sum is closest to the target
+            # We need to find a subset sum in the right sums with count (n - left_count)
+            needed_count = n - left_count
+            
+            # Binary search to find the closest subset sum in the right sums
+            low, high = 0, len(right_sums) - 1
+            while low <= high:
+                mid = (low + high) // 2
+                right_sum, right_count = right_sums[mid]
+                
+                if right_count == needed_count:
+                    combined_sum = left_sum + right_sum
+                    min_diff = min(min_diff, abs(total_sum - 2 * combined_sum))
+                    break
+                
+                if right_count < needed_count:
+                    low = mid + 1
+                else:
+                    high = mid - 1
+            
+            # Check the closest sums around the found position
+            for mid in range(low - 1, low + 2):
+                if 0 <= mid < len(right_sums) and right_sums[mid][1] == needed_count:
+                    right_sum, _ = right_sums[mid]
+                    combined_sum = left_sum + right_sum
+                    min_diff = min(min_diff, abs(total_sum - 2 * combined_sum))
+        
+        return min_diff

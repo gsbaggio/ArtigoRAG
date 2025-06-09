@@ -1,0 +1,42 @@
+class Solution {
+public:
+    TreeNode* reverseOddLevels(TreeNode* root) {
+        if (!root) return nullptr;
+
+        std::queue<TreeNode*> q;
+        q.push(root);
+        int level = 0;
+
+        while (!q.empty()) {
+            int size = q.size();
+            std::vector<int> level_values;
+            std::vector<TreeNode*> level_nodes;
+
+            // Collect all nodes and their values at the current level
+            for (int i = 0; i < size; ++i) {
+                TreeNode* node = q.front();
+                q.pop();
+
+                if (level % 2 == 1) {
+                    level_values.push_back(node->val);
+                    level_nodes.push_back(node);
+                }
+
+                if (node->left) q.push(node->left);
+                if (node->right) q.push(node->right);
+            }
+
+            // Reverse the values at the odd level and update the nodes
+            if (level % 2 == 1) {
+                std::reverse(level_values.begin(), level_values.end());
+                for (int i = 0; i < level_nodes.size(); ++i) {
+                    level_nodes[i]->val = level_values[i];
+                }
+            }
+
+            level++;
+        }
+
+        return root;
+    }
+};

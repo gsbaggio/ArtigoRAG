@@ -1,0 +1,22 @@
+class Solution:
+    def predictTheWinner(self, nums):
+        n = len(nums)
+        memo = {}
+        
+        def dp(i, j):
+            if (i, j) in memo:
+                return memo[(i, j)]
+            
+            if i > j:
+                return 0
+            
+            # Player 1 picks nums[i], then Player 2 plays optimally on the remaining array
+            pick_left = nums[i] - dp(i + 1, j)
+            # Player 1 picks nums[j], then Player 2 plays optimally on the remaining array
+            pick_right = nums[j] - dp(i, j - 1)
+            
+            # Store the result in memo
+            memo[(i, j)] = max(pick_left, pick_right)
+            return memo[(i, j)]
+        
+        return dp(0, n - 1) >= 0

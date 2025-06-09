@@ -1,0 +1,41 @@
+class Solution:
+    def minAreaFreeRect(self, points):
+        from collections import defaultdict
+        
+        # Dictionary to store diagonals
+        diagonals = defaultdict(list)
+        
+        # Iterate over all pairs of points
+        for i in range(len(points)):
+            for j in range(i + 1, len(points)):
+                p1, p2 = points[i], points[j]
+                
+                # Calculate the midpoint and squared length of the vector
+                mid_x = (p1[0] + p2[0]) / 2.0
+                mid_y = (p1[1] + p2[1]) / 2.0
+                length_squared = (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
+                
+                # Store the pair in the dictionary
+                diagonals[(mid_x, mid_y, length_squared)].append((p1, p2))
+        
+        min_area = float('inf')
+        
+        # Check each entry in the dictionary
+        for pairs in diagonals.values():
+            if len(pairs) > 1:
+                for k in range(len(pairs)):
+                    for l in range(k + 1, len(pairs)):
+                        (p1, p2), (p3, p4) = pairs[k], pairs[l]
+                        
+                        # Calculate the area of the rectangle
+                        side1_squared = (p1[0] - p3[0]) ** 2 + (p1[1] - p3[1]) ** 2
+                        side2_squared = (p1[0] - p4[0]) ** 2 + (p1[1] - p4[1]) ** 2
+                        
+                        area_squared = side1_squared * side2_squared
+                        area = area_squared ** 0.5
+                        
+                        # Update the minimum area
+                        min_area = min(min_area, area)
+        
+        # Return the minimum area or 0 if no rectangle is found
+        return min_area if min_area < float('inf') else 0.0

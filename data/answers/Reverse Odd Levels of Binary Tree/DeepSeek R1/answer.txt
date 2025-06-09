@@ -1,0 +1,30 @@
+from typing import Optional, List
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def reverseOddLevels(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if root is None:
+            return None
+        current_level: List[TreeNode] = [root]
+        level = 0
+        while current_level:
+            next_level: List[TreeNode] = []
+            if level % 2 == 1:
+                left_index, right_index = 0, len(current_level) - 1
+                while left_index < right_index:
+                    current_level[left_index].val, current_level[right_index].val = current_level[right_index].val, current_level[left_index].val
+                    left_index += 1
+                    right_index -= 1
+            for node in current_level:
+                if node.left:
+                    next_level.append(node.left)
+                if node.right:
+                    next_level.append(node.right)
+            current_level = next_level
+            level += 1
+        return root

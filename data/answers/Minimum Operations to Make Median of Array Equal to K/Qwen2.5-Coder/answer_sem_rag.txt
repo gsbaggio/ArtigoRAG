@@ -1,0 +1,14 @@
+class Solution:
+    def minOperationsToMakeMedianK(self, nums, k):
+        # Step 1: Sort the array
+        nums.sort()
+        
+        # Step 2: Find the median index
+        n = len(nums)
+        median_index = n // 2
+        
+        # Step 3: Calculate the number of operations needed
+        median_value = nums[median_index]
+        operations = abs(median_value - k)
+        
+        return operations

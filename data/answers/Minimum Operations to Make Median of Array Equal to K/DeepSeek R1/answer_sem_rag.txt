@@ -1,0 +1,29 @@
+class Solution:
+    def minOperationsToMakeMedianK(self, nums, k):
+        n = len(nums)
+        mid = n // 2
+        left_penalties = []
+        right_penalties = []
+        countL = 0
+        countR = 0
+        
+        for a in nums:
+            if a < k:
+                countL += 1
+                left_penalties.append(k - a)
+            elif a > k:
+                countR += 1
+                right_penalties.append(a - k)
+        
+        adjust_left = max(0, countL - mid)
+        adjust_right = max(0, countR - (n - mid - 1))
+        
+        total_extra = 0
+        if adjust_left > 0:
+            left_penalties.sort()
+            total_extra += sum(left_penalties[:adjust_left])
+        if adjust_right > 0:
+            right_penalties.sort()
+            total_extra += sum(right_penalties[:adjust_right])
+        
+        return total_extra

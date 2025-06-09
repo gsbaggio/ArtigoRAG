@@ -1,0 +1,25 @@
+#include <vector>
+#include <set>
+
+class Solution {
+public:
+    int uniqueXorTriplets(std::vector<int>& nums) {
+        std::set<int> uniqueXorValues;
+        int n = nums.size();
+        
+        // Iterate through all possible triplets (i, j, k) with i <= j <= k
+        for(int i = 0; i < n; ++i) {
+            for(int j = i; j < n; ++j) {
+                for(int k = j; k < n; ++k) {
+                    // Compute the XOR of the triplet
+                    int xorValue = nums[i] ^ nums[j] ^ nums[k];
+                    // Insert the XOR value into the set
+                    uniqueXorValues.insert(xorValue);
+                }
+            }
+        }
+        
+        // Return the number of unique XOR values
+        return uniqueXorValues.size();
+    }
+};

@@ -1,0 +1,24 @@
+class Solution(object):
+    def pathSum(self, root, targetSum):
+        def dfs(node, current_sum, path):
+            if not node:
+                return
+            
+            # Add the current node value to the current path sum
+            current_sum += node.val
+            path.append(node.val)
+            
+            # Check if it's a leaf node and the current path sum equals targetSum
+            if not node.left and not node.right and current_sum == targetSum:
+                result.append(list(path))  # Append a copy of the current path to the result
+            
+            # Continue the DFS on the left and right children
+            dfs(node.left, current_sum, path)
+            dfs(node.right, current_sum, path)
+            
+            # Backtrack: remove the current node value from the path
+            path.pop()
+        
+        result = []
+        dfs(root, 0, [])
+        return result

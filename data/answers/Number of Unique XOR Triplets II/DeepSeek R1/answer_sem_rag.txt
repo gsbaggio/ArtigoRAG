@@ -1,0 +1,11 @@
+class Solution:
+    def uniqueXorTriplets(self, nums):
+        distinct = set()
+        S = set()
+        n = len(nums)
+        for i in range(n-1, -1, -1):
+            for k in range(i, n):
+                S.add(nums[i] ^ nums[k])
+            for x in S:
+                distinct.add(nums[i] ^ x)
+        return len(distinct)

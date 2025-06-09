@@ -1,0 +1,14 @@
+import random
+
+class Solution:
+
+    def __init__(self, nums):
+        self.index_map = {}
+        for idx, num in enumerate(nums):
+            if num not in self.index_map:
+                self.index_map[num] = []
+            self.index_map[num].append(idx)
+
+    def pick(self, target):
+        indices = self.index_map[target]
+        return random.choice(indices)

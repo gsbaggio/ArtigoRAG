@@ -1,0 +1,50 @@
+class Solution:
+    def minimumDifference(self, nums):
+        n = len(nums) // 2
+        total_sum = sum(nums)
+        min_diff = float('inf')
+        
+        # Function to generate all subset sums of a given list
+        def generate_subset_sums(arr):
+            subset_sums = []
+            for i in range(1 << len(arr)):
+                subset_sum = 0
+                for j in range(len(arr)):
+                    if i & (1 << j):
+                        subset_sum += arr[j]
+                subset_sums.append(subset_sum)
+            return subset_sums
+        
+        # Generate all subset sums for the left and right halves
+        left_sums = generate_subset_sums(nums[:n])
+        right_sums = generate_subset_sums(nums[n:])
+        
+        # Sort the right subset sums for binary search
+        right_sums.sort()
+        
+        # Iterate over all subset sums of the left half
+        for left_sum in left_sums:
+            # Calculate the target sum needed to balance the partition
+            target = total_sum / 2 - left_sum
+            
+            # Binary search to find the closest sum in the right subset sums
+            idx = self.binary_search(right_sums, target)
+            
+            # Check the closest sums around the found index
+            if idx < len(right_sums):
+                min_diff = min(min_diff, abs(total_sum - 2 * (left_sum + right_sums[idx])))
+            if idx > 0:
+                min_diff = min(min_diff, abs(total_sum - 2 * (left_sum + right_sums[idx - 1])))
+        
+        return int(min_diff)
+    
+    # Helper function to perform binary search
+    def binary_search(self, arr, target):
+        low, high = 0, len(arr) - 1
+        while low < high:
+            mid = (low + high) // 2
+            if arr[mid] < target:
+                low = mid + 1
+            else:
+                high = mid
+        return low

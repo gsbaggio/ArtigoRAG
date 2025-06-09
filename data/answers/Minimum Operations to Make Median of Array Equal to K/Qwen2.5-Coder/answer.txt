@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int minOperationsToMakeMedianK(vector<int>& nums, int k) {
+        // Step 1: Sort the array
+        sort(nums.begin(), nums.end());
+        
+        // Step 2: Identify the median
+        int n = nums.size();
+        int medianIndex = n / 2;
+        int median = nums[medianIndex];
+        
+        // Step 3: Adjust the median to k
+        int operations = 0;
+        if (median < k) {
+            // Increase the median to k
+            while (medianIndex < n && nums[medianIndex] < k) {
+                operations += k - nums[medianIndex];
+                medianIndex++;
+            }
+        } else if (median > k) {
+            // Decrease the median to k
+            while (medianIndex >= 0 && nums[medianIndex] > k) {
+                operations += nums[medianIndex] - k;
+                medianIndex--;
+            }
+        }
+        
+        // Step 4: Return the total number of operations
+        return operations;
+    }
+};

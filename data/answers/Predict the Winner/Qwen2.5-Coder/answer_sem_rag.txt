@@ -1,0 +1,14 @@
+class Solution:
+    def predictTheWinner(self, nums):
+        memo = {}
+        
+        def dp(i, j):
+            if i > j:
+                return 0
+            if (i, j) not in memo:
+                # Calculate the maximum score difference for the current subarray
+                memo[(i, j)] = max(nums[i] - dp(i + 1, j), nums[j] - dp(i, j - 1))
+            return memo[(i, j)]
+        
+        # Start the game with the full array
+        return dp(0, len(nums) - 1) >= 0

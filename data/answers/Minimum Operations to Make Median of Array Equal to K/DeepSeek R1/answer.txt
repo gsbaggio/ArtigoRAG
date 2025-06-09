@@ -1,0 +1,39 @@
+class Solution:
+    def minOperations(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        mid = n // 2
+        group1 = []
+        group2 = []
+        base_cost = 0
+        
+        for num in nums:
+            if num < k:
+                cost_group1 = 0
+                cost_group2 = k - num
+            elif num > k:
+                cost_group1 = num - k
+                cost_group2 = 0
+            else:
+                cost_group1 = 0
+                cost_group2 = 0
+            
+            if cost_group1 <= cost_group2:
+                base_cost += cost_group1
+                group1.append(cost_group2)
+            else:
+                base_cost += cost_group2
+                group2.append(cost_group1)
+        
+        count1 = len(group1)
+        count2 = len(group2)
+        deficit1 = max(0, mid + 1 - count1)
+        deficit2 = max(0, n - mid - count2)
+        
+        if deficit1 > 0:
+            group2.sort()
+            extra_cost = sum(group2[:deficit1])
+        else:
+            group1.sort()
+            extra_cost = sum(group1[:deficit2])
+        
+        return base_cost + extra_cost

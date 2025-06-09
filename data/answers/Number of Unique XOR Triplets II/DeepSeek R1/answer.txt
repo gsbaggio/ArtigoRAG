@@ -1,0 +1,12 @@
+class Solution:
+    def uniqueXorTriplets(self, nums: list) -> int:
+        unique_vals = set(nums)
+        two_xor = set()
+        n = len(nums)
+        for k in range(n):
+            for x in two_xor:
+                val = x ^ nums[k]
+                unique_vals.add(val)
+            for j in range(k):
+                two_xor.add(nums[j] ^ nums[k])
+        return len(unique_vals)

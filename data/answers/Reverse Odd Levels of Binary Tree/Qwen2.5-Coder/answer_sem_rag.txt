@@ -1,0 +1,40 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def reverseOddLevels(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return None
+        
+        queue = [root]
+        level = 0
+        
+        while queue:
+            # Process the current level
+            next_level = []
+            node_values = []
+            
+            for node in queue:
+                if node.left:
+                    next_level.append(node.left)
+                if node.right:
+                    next_level.append(node.right)
+                
+                # Collect values for odd levels
+                if level % 2 == 1:
+                    node_values.append(node.val)
+            
+            # Reverse the values for odd levels and update the nodes
+            if level % 2 == 1:
+                node_values.reverse()
+                for i, node in enumerate(queue):
+                    node.val = node_values[i]
+            
+            # Move to the next level
+            queue = next_level
+            level += 1
+        
+        return root

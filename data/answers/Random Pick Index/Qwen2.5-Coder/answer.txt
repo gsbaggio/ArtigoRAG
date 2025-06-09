@@ -1,0 +1,18 @@
+import random
+
+class Solution:
+    def __init__(self, nums):
+        self.nums = nums
+
+    def pick(self, target):
+        count = 0
+        res = None
+        
+        for i, num in enumerate(self.nums):
+            if num == target:
+                count += 1
+                # Reservoir Sampling: replace res with current index with probability 1/count
+                if random.randint(1, count) == 1:
+                    res = i
+        
+        return res
