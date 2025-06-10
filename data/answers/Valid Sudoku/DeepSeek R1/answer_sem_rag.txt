@@ -1,0 +1,23 @@
+class Solution:
+    def isValidSudoku(self, board: List[List[str]]) -> bool:
+        n = 9
+        rows = [[False] * 10 for _ in range(n)]
+        cols = [[False] * 10 for _ in range(n)]
+        boxes = [[False] * 10 for _ in range(n)]
+        
+        for i in range(n):
+            for j in range(n):
+                cell = board[i][j]
+                if cell == '.':
+                    continue
+                num = int(cell)
+                box_idx = (i // 3) * 3 + (j // 3)
+                
+                if rows[i][num] or cols[j][num] or boxes[box_idx][num]:
+                    return False
+                
+                rows[i][num] = True
+                cols[j][num] = True
+                boxes[box_idx][num] = True
+        
+        return True

@@ -1,0 +1,36 @@
+class Solution(object):
+    def strongPasswordCheckerII(self, password):
+        """
+        :type password: str
+        :rtype: bool
+        """
+        # Define the set of special characters
+        special_chars = set("!@#$%^&*()-+")
+        
+        # Initialize flags for each type of character
+        has_lower = False
+        has_upper = False
+        has_digit = False
+        has_special = False
+        
+        # Check if the password length is at least 8
+        if len(password) < 8:
+            return False
+        
+        # Iterate through the password to check for character types and adjacent characters
+        for i, c in enumerate(password):
+            if 'a' <= c <= 'z':
+                has_lower = True
+            elif 'A' <= c <= 'Z':
+                has_upper = True
+            elif c.isdigit():
+                has_digit = True
+            elif c in special_chars:
+                has_special = True
+            
+            # Check for adjacent characters
+            if i > 0 and password[i] == password[i - 1]:
+                return False
+        
+        # Return True if all conditions are met
+        return has_lower and has_upper and has_digit and has_special
