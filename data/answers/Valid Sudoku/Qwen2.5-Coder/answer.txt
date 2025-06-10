@@ -1,0 +1,36 @@
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        // Arrays to keep track of seen numbers in rows, columns, and 3x3 sub-boxes
+        bool row_seen[9][9] = {false};
+        bool col_seen[9][9] = {false};
+        bool box_seen[9][9] = {false};
+
+        // Traverse each cell in the board
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                // Check if the cell is filled
+                if (board[row][col] != '.') {
+                    // Convert the character to an integer index (0-8)
+                    int num = board[row][col] - '1';
+
+                    // Calculate the index of the 3x3 sub-box
+                    int box_index = (row / 3) * 3 + (col / 3);
+
+                    // Check if the number has already been seen in the current row, column, or 3x3 sub-box
+                    if (row_seen[row][num] || col_seen[col][num] || box_seen[box_index][num]) {
+                        return false;
+                    }
+
+                    // Mark the number as seen in the current row, column, and 3x3 sub-box
+                    row_seen[row][num] = true;
+                    col_seen[col][num] = true;
+                    box_seen[box_index][num] = true;
+                }
+            }
+        }
+
+        // If no conflicts were found, the board is valid
+        return true;
+    }
+};

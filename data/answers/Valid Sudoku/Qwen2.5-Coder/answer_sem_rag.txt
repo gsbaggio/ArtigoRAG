@@ -1,0 +1,22 @@
+class Solution:
+    def isValidSudoku(self, board):
+        # Initialize sets for rows, columns, and boxes
+        rows = [set() for _ in range(9)]
+        cols = [set() for _ in range(9)]
+        boxes = [[set() for _ in range(3)] for _ in range(3)]
+
+        # Traverse the board
+        for r in range(9):
+            for c in range(9):
+                num = board[r][c]
+                if num != '.':
+                    # Check if the number is already in the corresponding row, column, or box
+                    if num in rows[r] or num in cols[c] or num in boxes[r // 3][c // 3]:
+                        return False
+                    # Add the number to the corresponding sets
+                    rows[r].add(num)
+                    cols[c].add(num)
+                    boxes[r // 3][c // 3].add(num)
+
+        # If no duplicates were found, the board is valid
+        return True
