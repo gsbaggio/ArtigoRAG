@@ -183,3 +183,41 @@ plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=3)
 plt.tight_layout()
 plt.savefig(images_dir / 'llm_combined_metrics.png', dpi=300)
 plt.show()
+
+# Calculate average improvements with RAG
+speed_improvements = []
+memory_improvements = []
+
+print("\n" + "="*60)
+print("AVERAGE IMPROVEMENTS WITH RAG")
+print("="*60)
+
+for llm in llms:
+    without_rag_speed = statistics.mean(results[llm]["without_rag"]["speed"]) if results[llm]["without_rag"]["speed"] else 0
+    with_rag_speed = statistics.mean(results[llm]["with_rag"]["speed"]) if results[llm]["with_rag"]["speed"] else 0
+    
+    without_rag_memory = statistics.mean(results[llm]["without_rag"]["memory"]) if results[llm]["without_rag"]["memory"] else 0
+    with_rag_memory = statistics.mean(results[llm]["with_rag"]["memory"]) if results[llm]["with_rag"]["memory"] else 0
+    
+    # Calculate improvements (with RAG - without RAG)
+    speed_improvement = with_rag_speed - without_rag_speed
+    memory_improvement = with_rag_memory - without_rag_memory
+    
+    if with_rag_speed > 0 and without_rag_speed > 0:
+        speed_improvements.append(speed_improvement)
+    if with_rag_memory > 0 and without_rag_memory > 0:
+        memory_improvements.append(memory_improvement)
+    
+    print(f"{llm}:")
+    print(f"  Speed improvement: {speed_improvement:+.1f} percentage points")
+    print(f"  Memory improvement: {memory_improvement:+.1f} percentage points")
+
+# Calculate overall averages
+avg_speed_improvement = statistics.mean(speed_improvements) if speed_improvements else 0
+avg_memory_improvement = statistics.mean(memory_improvements) if memory_improvements else 0
+
+print("\n" + "-"*60)
+print("OVERALL AVERAGE IMPROVEMENTS:")
+print(f"Speed: {avg_speed_improvement:+.1f} percentage points")
+print(f"Memory: {avg_memory_improvement:+.1f} percentage points")
+print("-"*60)
