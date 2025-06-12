@@ -2,12 +2,8 @@ import json
 import os
 
 def count_difficulty_levels():
-    """
-    Counts and prints the number of programming questions for each difficulty level
-    from the 'data/programming_questions.json' file.
-    """
-    # Construct the path to the JSON file relative to this script
-    script_dir = os.path.dirname(__file__)  # Gets the directory where the script is located
+
+    script_dir = os.path.dirname(__file__) 
     file_path = os.path.join(script_dir, 'data', 'programming_questions.json')
 
     difficulty_counts = {
@@ -52,10 +48,6 @@ def count_difficulty_levels():
             print(f"- {level}: {count} ({percentage:.2f}%)")
 
 def analyze_test_dataset():
-    """
-    Analyzes the test dataset in 'data/answers/' by reading 'info.txt' from subdirectories.
-    Counts and prints questions by difficulty and release year.
-    """
     script_dir = os.path.dirname(__file__)
     answers_base_dir = os.path.join(script_dir, 'data', 'answers')
 
@@ -78,7 +70,6 @@ def analyze_test_dataset():
                 lines = [line.strip() for line in f.readlines()]
                 
                 if len(lines) >= 2:
-                    # Process difficulty
                     difficulty_code = lines[0]
                     difficulty = difficulty_map.get(difficulty_code)
                     if difficulty:
@@ -86,7 +77,6 @@ def analyze_test_dataset():
                     else:
                         print(f"Warning: Unknown difficulty code '{difficulty_code}' in {info_file_path}")
 
-                    # Process year
                     year_str = lines[1]
                     try:
                         year = int(year_str)
@@ -96,8 +86,7 @@ def analyze_test_dataset():
                             test_year_counts["2020-2022"] += 1
                         elif 2023 <= year <= 2025:
                             test_year_counts["2023-2025"] += 1
-                        # else:
-                        #     print(f"Warning: Year {year} in {info_file_path} is outside defined ranges.")
+                        
                     except ValueError:
                         print(f"Warning: Invalid year format '{year_str}' in {info_file_path}")
                 else:
@@ -109,7 +98,6 @@ def analyze_test_dataset():
 
     print("\nAnalysis for Test Dataset ('data/answers/'):")
     
-    # Print difficulty analysis
     total_test_questions_by_difficulty = sum(test_difficulty_counts.values())
     print("Number of test questions by difficulty:")
     if total_test_questions_by_difficulty == 0:
@@ -121,7 +109,6 @@ def analyze_test_dataset():
             percentage = (count / total_test_questions_by_difficulty) * 100
             print(f"- {level}: {count} ({percentage:.2f}%)")
 
-    # Print year analysis
     total_test_questions_by_year = sum(test_year_counts.values())
     print("\nNumber of test questions by release year:")
     if total_test_questions_by_year == 0:

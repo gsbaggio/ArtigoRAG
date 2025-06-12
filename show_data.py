@@ -32,16 +32,59 @@ results = {
     } for llm in llms
 }
 
+results_by_category = {
+    "Easy": {
+        "without_rag": {"correct": [], "speed": [], "memory": []},
+        "with_rag": {"correct": [], "speed": [], "memory": []}
+    },
+    "Medium": {
+        "without_rag": {"correct": [], "speed": [], "memory": []},
+        "with_rag": {"correct": [], "speed": [], "memory": []}
+    },
+    "Hard": {
+        "without_rag": {"correct": [], "speed": [], "memory": []},
+        "with_rag": {"correct": [], "speed": [], "memory": []}
+    },
+    "Before 2023": {
+        "without_rag": {"correct": [], "speed": [], "memory": []},
+        "with_rag": {"correct": [], "speed": [], "memory": []}
+    },
+    "2023-2025": {
+        "without_rag": {"correct": [], "speed": [], "memory": []},
+        "with_rag": {"correct": [], "speed": [], "memory": []}
+    }
+}
+
 problems = [d for d in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, d))]
 
 for problem in problems:
     problem_dir = root_dir / problem
     
+    info_file = problem_dir / "info.txt"
+    difficulty = None
+    year = None
+    
+    if info_file.exists():
+        try:
+            with open(info_file, "r") as f:
+                lines = [line.strip() for line in f.readlines()]
+                if len(lines) >= 2:
+                    difficulty = lines[0]  # E, M, or H
+                    year = int(lines[1])
+        except Exception as e:
+            print(f"Error reading {info_file}: {e}")
+    
+    difficulty_map = {"E": "Easy", "M": "Medium", "H": "Hard"}
+    difficulty_name = difficulty_map.get(difficulty, None)
+    
+    year_category = None
+    if year:
+        year_category = "Before 2023" if year < 2023 else "2023-2025"
+    
     for llm in llms:
         llm_dir = problem_dir / llm
         results_file = llm_dir / "results.txt"
     
-        
         if not results_file.exists():
             continue
 
@@ -50,21 +93,50 @@ for problem in problems:
                 lines = [line.strip() for line in f.readlines()]
                 
                 if len(lines) >= 6:
-                    results[llm]["without_rag"]["correct"].append(1 if lines[0] == "Y" else 0)
-                    speed = safe_float(lines[1])
-                    memory = safe_float(lines[2])
-                    if speed > 0:  
-                        results[llm]["without_rag"]["speed"].append(speed)
-                    if memory > 0:  
-                        results[llm]["without_rag"]["memory"].append(memory)
+                    without_correct = 1 if lines[0] == "Y" else 0
+                    without_speed = safe_float(lines[1])
+                    without_memory = safe_float(lines[2])
                     
-                    results[llm]["with_rag"]["correct"].append(1 if lines[3] == "Y" else 0)
-                    speed = safe_float(lines[4])
-                    memory = safe_float(lines[5])
-                    if speed > 0:  
-                        results[llm]["with_rag"]["speed"].append(speed)
-                    if memory > 0:
-                        results[llm]["with_rag"]["memory"].append(memory)
+                    with_correct = 1 if lines[3] == "Y" else 0
+                    with_speed = safe_float(lines[4])
+                    with_memory = safe_float(lines[5])
+                    
+                    results[llm]["without_rag"]["correct"].append(without_correct)
+                    if without_speed > 0:
+                        results[llm]["without_rag"]["speed"].append(without_speed)
+                    if without_memory > 0:
+                        results[llm]["without_rag"]["memory"].append(without_memory)
+                    
+                    results[llm]["with_rag"]["correct"].append(with_correct)
+                    if with_speed > 0:
+                        results[llm]["with_rag"]["speed"].append(with_speed)
+                    if with_memory > 0:
+                        results[llm]["with_rag"]["memory"].append(with_memory)
+                    
+                    if difficulty_name:
+                        results_by_category[difficulty_name]["without_rag"]["correct"].append(without_correct)
+                        results_by_category[difficulty_name]["with_rag"]["correct"].append(with_correct)
+                        if without_speed > 0:
+                            results_by_category[difficulty_name]["without_rag"]["speed"].append(without_speed)
+                        if with_speed > 0:
+                            results_by_category[difficulty_name]["with_rag"]["speed"].append(with_speed)
+                        if without_memory > 0:
+                            results_by_category[difficulty_name]["without_rag"]["memory"].append(without_memory)
+                        if with_memory > 0:
+                            results_by_category[difficulty_name]["with_rag"]["memory"].append(with_memory)
+                    
+                    if year_category:
+                        results_by_category[year_category]["without_rag"]["correct"].append(without_correct)
+                        results_by_category[year_category]["with_rag"]["correct"].append(with_correct)
+                        if without_speed > 0:
+                            results_by_category[year_category]["without_rag"]["speed"].append(without_speed)
+                        if with_speed > 0:
+                            results_by_category[year_category]["with_rag"]["speed"].append(with_speed)
+                        if without_memory > 0:
+                            results_by_category[year_category]["without_rag"]["memory"].append(without_memory)
+                        if with_memory > 0:
+                            results_by_category[year_category]["with_rag"]["memory"].append(with_memory)
+                    
         except Exception as e:
             print(f"Error processing {results_file}: {e}")
 
@@ -126,7 +198,6 @@ for llm in llms:
     print(f"{llm:<20} | {without_rag_correct:^10.1f}% ({len(results[llm]['without_rag']['correct'])}) | {without_rag_speed:^10.1f}% ({len(results[llm]['without_rag']['speed'])}) | {without_rag_memory:^10.1f}% ({len(results[llm]['without_rag']['memory'])}) | {with_rag_correct:^10.1f}% ({len(results[llm]['with_rag']['correct'])}) | {with_rag_speed:^10.1f}% ({len(results[llm]['with_rag']['speed'])}) | {with_rag_memory:^10.1f}% ({len(results[llm]['with_rag']['memory'])})")
 
 def create_grouped_bar_chart(data1, data2, title, ylabel):
-    """Create a grouped bar chart comparing two sets of data across LLMs"""
     plt.figure(figsize=(12, 6))
     
     x = np.arange(len(llms))
@@ -184,7 +255,6 @@ plt.tight_layout()
 plt.savefig(images_dir / 'llm_combined_metrics.png', dpi=300)
 plt.show()
 
-# Calculate average improvements with RAG
 speed_improvements = []
 memory_improvements = []
 
@@ -199,7 +269,6 @@ for llm in llms:
     without_rag_memory = statistics.mean(results[llm]["without_rag"]["memory"]) if results[llm]["without_rag"]["memory"] else 0
     with_rag_memory = statistics.mean(results[llm]["with_rag"]["memory"]) if results[llm]["with_rag"]["memory"] else 0
     
-    # Calculate improvements (with RAG - without RAG)
     speed_improvement = with_rag_speed - without_rag_speed
     memory_improvement = with_rag_memory - without_rag_memory
     
@@ -212,7 +281,6 @@ for llm in llms:
     print(f"  Speed improvement: {speed_improvement:+.1f} percentage points")
     print(f"  Memory improvement: {memory_improvement:+.1f} percentage points")
 
-# Calculate overall averages
 avg_speed_improvement = statistics.mean(speed_improvements) if speed_improvements else 0
 avg_memory_improvement = statistics.mean(memory_improvements) if memory_improvements else 0
 
@@ -221,3 +289,29 @@ print("OVERALL AVERAGE IMPROVEMENTS:")
 print(f"Speed: {avg_speed_improvement:+.1f} percentage points")
 print(f"Memory: {avg_memory_improvement:+.1f} percentage points")
 print("-"*60)
+
+print("\n" + "="*80)
+print("PERFORMANCE BY DIFFICULTY AND YEAR")
+print("="*80)
+
+print(f"{'Category':<15} | {'No RAG':^30} | {'With RAG':^30}")
+print(f"{'':<15} | {'Correct':^9} | {'Speed':^9} | {'Memory':^9} | {'Correct':^9} | {'Speed':^9} | {'Memory':^9}")
+print("-" * 80)
+
+categories = ["Easy", "Medium", "Hard", "Before 2023", "2023-2025"]
+
+for category in categories:
+    if category in results_by_category:
+        data = results_by_category[category]
+        
+        without_correct = statistics.mean(data["without_rag"]["correct"]) * 100 if data["without_rag"]["correct"] else 0
+        without_speed = statistics.mean(data["without_rag"]["speed"]) if data["without_rag"]["speed"] else 0
+        without_memory = statistics.mean(data["without_rag"]["memory"]) if data["without_rag"]["memory"] else 0
+        
+        with_correct = statistics.mean(data["with_rag"]["correct"]) * 100 if data["with_rag"]["correct"] else 0
+        with_speed = statistics.mean(data["with_rag"]["speed"]) if data["with_rag"]["speed"] else 0
+        with_memory = statistics.mean(data["with_rag"]["memory"]) if data["with_rag"]["memory"] else 0
+        
+        print(f"{category:<15} | {without_correct:^9.1f} | {without_speed:^9.1f} | {without_memory:^9.1f} | {with_correct:^9.1f} | {with_speed:^9.1f} | {with_memory:^9.1f}")
+
+print("-" * 80)
