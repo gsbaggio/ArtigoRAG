@@ -1,0 +1,98 @@
+CURRENT QUESTION:
+Given an integer array nums, return the length of the longest strictly increasing subsequence.
+
+ 
+
+Example 1:
+
+Input: nums = [10,9,2,5,3,7,101,18]
+Output: 4
+Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+Example 2:
+
+Input: nums = [0,1,0,3,2,3]
+Output: 4
+Example 3:
+
+Input: nums = [7,7,7,7,7,7,7]
+Output: 1
+ 
+
+Constraints:
+
+1 <= nums.length <= 2500
+-104 <= nums[i] <= 104
+ 
+
+Follow up: Can you come up with an algorithm that runs in O(n log(n)) time complexity?
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Longest Uncommon Subsequence II
+Categorys: Array Hash Table Two Pointers String Sorting
+Question text: Given an array of strings strs, return the length of the longest uncommon subsequence between them. If the longest uncommon subsequence does not exist, return -1.
+
+An uncommon subsequence between an array of strings is a string that is a subsequence of one string but not the others.
+
+A subsequence of a string s is a string that can be obtained after deleting any number of characters from s.
+
+For example, "abc" is a subsequence of "aebdc" because you can delete the underlined characters in "aebdc" to get "abc". Other subsequences of "aebdc" include "aebdc", "aeb", and "" (empty string).
+ 
+
+Example 1:
+
+Input: strs = ["aba","cdc","eae"]
+Output: 3
+Example 2:
+
+Input: strs = ["aaa","aaa","aa"]
+Output: -1
+ 
+
+Constraints:
+
+2 <= strs.length <= 50
+1 <= strs[i].length <= 10
+strs[i] consists of lowercase English letters.
+Solution: class Solution {
+public:
+    int findLUSlength(vector<string>& strs) {
+        int maxi = -1;
+        // the longest string which is not a subsequence of other is the answer
+        for (int i = 0; i < strs.size(); i++) {
+            bool isSubsequence = false;
+            for (int j = 0; j < strs.size(); j++) {
+                if (i != j && subseq(strs[i], strs[j])) {
+                    isSubsequence = true;
+                    break;
+                }
+            }
+            if (!isSubsequence) maxi = max(maxi, (int)strs[i].length());
+        }
+        return maxi;
+    }
+
+    bool subseq(string a, string b) {
+    int i = 0;
+    for (char c : b) if (i < a.size() && a[i] == c) i++;
+    return i == a.size();
+    }
+};
+Explanation: Insights
+We need to find the longest string which is not a subsequence of other.
+This question is similar to the first version of it where we needed to simply return the longest string if both the strings were not equal.
+Similarly, here we need to find the longest such string from an array of strings, so it is as simple as the first question.
+Go through the strings one by one and check which string isn't a subsequence of another and has the longest length. We can simply pick that string as the LUS.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

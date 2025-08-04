@@ -1,0 +1,220 @@
+CURRENT QUESTION:
+Implement the RandomizedSet class:
+
+RandomizedSet() Initializes the RandomizedSet object.
+bool insert(int val) Inserts an item val into the set if not present. Returns true if the item was not present, false otherwise.
+bool remove(int val) Removes an item val from the set if present. Returns true if the item was present, false otherwise.
+int getRandom() Returns a random element from the current set of elements (it's guaranteed that at least one element exists when this method is called). Each element must have the same probability of being returned.
+You must implement the functions of the class such that each function works in average O(1) time complexity.
+
+ 
+
+Example 1:
+
+Input
+["RandomizedSet", "insert", "remove", "insert", "getRandom", "remove", "insert", "getRandom"]
+[[], [1], [2], [2], [], [1], [2], []]
+Output
+[null, true, false, true, 2, true, false, 2]
+
+Explanation
+RandomizedSet randomizedSet = new RandomizedSet();
+randomizedSet.insert(1); // Inserts 1 to the set. Returns true as 1 was inserted successfully.
+randomizedSet.remove(2); // Returns false as 2 does not exist in the set.
+randomizedSet.insert(2); // Inserts 2 to the set, returns true. Set now contains [1,2].
+randomizedSet.getRandom(); // getRandom() should return either 1 or 2 randomly.
+randomizedSet.remove(1); // Removes 1 from the set, returns true. Set now contains [2].
+randomizedSet.insert(2); // 2 was already in the set, so return false.
+randomizedSet.getRandom(); // Since 2 is the only number in the set, getRandom() will always return 2.
+ 
+
+Constraints:
+
+-231 <= val <= 231 - 1
+At most 2 * 105 calls will be made to insert, remove, and getRandom.
+There will be at least one element in the data structure when getRandom is called.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Maximum Product of Subsequences With an Alternating Sum Equal to K
+Categorys: Array Hash Table Dynamic Programming
+Question text: You are given an integer array nums and two integers, k and limit. Your task is to find a non-empty subsequence of nums that:
+
+Has an alternating sum equal to k.
+Maximizes the product of all its numbers without the product exceeding limit.
+Return the product of the numbers in such a subsequence. If no subsequence satisfies the requirements, return -1.
+
+The alternating sum of a 0-indexed array is defined as the sum of the elements at even indices minus the sum of the elements at odd indices.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3], k = 2, limit = 10
+
+Output: 6
+
+Explanation:
+
+The subsequences with an alternating sum of 2 are:
+
+[1, 2, 3]
+Alternating Sum: 1 - 2 + 3 = 2
+Product: 1 * 2 * 3 = 6
+[2]
+Alternating Sum: 2
+Product: 2
+The maximum product within the limit is 6.
+
+Example 2:
+
+Input: nums = [0,2,3], k = -5, limit = 12
+
+Output: -1
+
+Explanation:
+
+A subsequence with an alternating sum of exactly -5 does not exist.
+
+Example 3:
+
+Input: nums = [2,2,3,3], k = 0, limit = 9
+
+Output: 9
+
+Explanation:
+
+The subsequences with an alternating sum of 0 are:
+
+[2, 2]
+Alternating Sum: 2 - 2 = 0
+Product: 2 * 2 = 4
+[3, 3]
+Alternating Sum: 3 - 3 = 0
+Product: 3 * 3 = 9
+[2, 2, 3, 3]
+Alternating Sum: 2 - 2 + 3 - 3 = 0
+Product: 2 * 2 * 3 * 3 = 36
+The subsequence [2, 2, 3, 3] has the greatest product with an alternating sum equal to k, but 36 > 9. The next greatest product is 9, which is within the limit.
+
+ 
+
+Constraints:
+
+1 <= nums.length <= 150
+0 <= nums[i] <= 12
+-105 <= k <= 105
+1 <= limit <= 5000
+Solution: const int MIN = -5000;
+
+class Solution {
+public:
+    unordered_map<int, unordered_map<int, unordered_map<int, unordered_map<int, int>>>> dp;
+    int recursion(int pos, int currSum, int product, int isOdd, int k, int n, vector<int> &nums, int limit) {
+        if(pos == n) {
+            return (currSum == k && isOdd != 0 && product <= limit ? product : MIN);
+        }
+        
+        if(dp.count(pos) && dp[pos].count(currSum) && dp[pos][currSum].count(product) && dp[pos][currSum][product].count(isOdd)) {
+            return dp[pos][currSum][product][isOdd];
+        }
+            
+        int ans = recursion(pos + 1, currSum, product, isOdd, k, n, nums, limit);
+        if(isOdd == 0) {
+            ans = max(ans, recursion(pos + 1, currSum + nums[pos], nums[pos], 2, k, n, nums, limit));
+        }
+        if(isOdd == 1) {
+            ans = max(ans, recursion(pos + 1, currSum + nums[pos], min(product * nums[pos], limit + 1), 2, k, n, nums, limit));
+        }
+        if(isOdd == 2) {
+            ans = max(ans, recursion(pos + 1, currSum - nums[pos], min(product * nums[pos], limit + 1), 1, k, n, nums, limit));
+        }
+        
+        return dp[pos][currSum][product][isOdd] = ans;
+    }
+    
+    int maxProduct(vector<int> &nums, int k, int limit) {
+        int n = nums.size();
+        
+        int sum = 0;
+        for(auto &x: nums) sum += x;
+        
+        if(k > sum || k < -sum) return -1;
+            
+        dp.clear();
+        int ans = recursion(0, 0, 0, 0, k, n, nums, limit);
+        return (ans == MIN) ? -1 : ans;
+    }
+};
+Explanation: Maximum Product of a Special Subsequence
+ Intuition
+The problem revolves around finding a special subsequence from a given array of positive integers nums, where we need to:
+
+Select elements in a specific pattern: odd-indexed terms are added, and even-indexed terms are subtracted to form a total sum k.
+The product of the elements in the subsequence should be maximum but not exceed a given limit.
+So essentially, it's a dynamic programming problem with multiple states:
+
+The current index (pos)
+The current sum (currSum)
+The product so far (product)
+The stage or parity (isOdd): whether we're at the start, first number to add, or number to subtract
+ Approach
+We use a recursive function with memoization (unordered_map-based DP) to avoid recalculating overlapping subproblems.
+
+Observation
+One interesting observation in this problem is sum doesn't exceeds 1800 because the max nums length is 150 and every element isn't greater than 12.
+State Definition
+We define a DP state as dp[pos][currSum][product][isOdd]:
+
+pos: Current index in nums
+currSum: Running total based on the subsequence pattern
+product: Product formed so far
+isOdd:
+0: Start of subsequence (no elements picked yet)
+1: Last operation was an addition (+a)
+2: Last operation was a subtraction (-b)
+Transition
+At every step, we either:
+
+Skip the current number and continue (pos + 1).
+Include the current number:
+If isOdd == 0: First element, add it and begin product
+If isOdd == 1: Subtract current number from sum and multiply in product
+If isOdd == 2: Add current number to sum and multiply in product
+Inclusion is only considered if the new product doesn't exceed the limit.
+
+At base case (pos == n), we check if:
+
+currSum == k
+At least one element should be considered (isOdd != 0)
+product <= limit
+If all these hold, we return the product, else a minimum placeholder value (MIN = -5000).
+
+Finally, we return the best product found or -1 if no valid sequence exists.
+
+ Complexity
+Time Complexity:
+O(n⋅sum⋅201⋅3)
+
+n for index
+2 * sum for possible values of currSum (including negatives)
+201 for possible unique product values (we prune above limit + 1)
+3 for possible values of isOdd
+Since we’re memoizing states using hash maps, pruning and skipping invalid states makes this faster than brute force.
+
+Space Complexity:
+O(n⋅sum⋅201⋅3)
+Due to recursive call stack and DP table (stored in unordered maps), though it's sparsely populated.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

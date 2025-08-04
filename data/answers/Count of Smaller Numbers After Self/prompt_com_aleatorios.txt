@@ -1,0 +1,95 @@
+CURRENT QUESTION:
+Given an integer array nums, return an integer array counts where counts[i] is the number of smaller elements to the right of nums[i].
+
+ 
+
+Example 1:
+
+Input: nums = [5,2,6,1]
+Output: [2,1,1,0]
+Explanation:
+To the right of 5 there are 2 smaller elements (2 and 1).
+To the right of 2 there is only 1 smaller element (1).
+To the right of 6 there is 1 smaller element (1).
+To the right of 1 there is 0 smaller element.
+Example 2:
+
+Input: nums = [-1]
+Output: [0]
+Example 3:
+
+Input: nums = [-1,-1]
+Output: [0,0]
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+-104 <= nums[i] <= 104
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Find Duplicate Subtrees
+Categorys: Hash Table Tree Depth-First Search Binary Tree
+Question text: For each kind of duplicate subtrees, you only need to return the root node of any one of them.
+
+Two trees are duplicate if they have the same structure with the same node values.
+
+ 
+
+Example 1:
+Input: root = [1,2,3,4,null,2,4,null,null,4]
+Output: [[2,4],[4]]
+Example 2:
+Input: root = [2,1,1]
+Output: [[1]]
+Example 3:
+Input: root = [2,2,2,3,null,3,null]
+Output: [[2,3],[3]]
+ 
+
+Constraints:
+
+The number of the nodes in the tree will be in the range [1, 5000]
+-200 <= Node.val <= 200
+Solution: class Solution {
+   int curId = 1;
+
+    public List<TreeNode> findDuplicateSubtrees(TreeNode root) {
+        Map<String, Integer> serialToId = new HashMap<>();
+        Map<Integer, Integer> idToCount = new HashMap<>();
+        List<TreeNode> res = new LinkedList<>();
+        postorder(root, serialToId, idToCount, res);
+        return res;
+    }
+    
+    private int postorder(TreeNode root, Map<String, Integer> serialToId, Map<Integer, Integer> idToCount, List<TreeNode> res) {
+        if (root == null) return 0;
+        int leftId = postorder(root.left, serialToId, idToCount, res);
+        int rightId = postorder(root.right, serialToId, idToCount, res);
+        String curSerial = leftId + "," + root.val + "," + rightId;
+        int serialId = serialToId.getOrDefault(curSerial, curId);
+        if (serialId == curId) curId++;
+        serialToId.put(curSerial, serialId);
+        idToCount.put(serialId, idToCount.getOrDefault(serialId, 0) + 1);
+        if (idToCount.get(serialId) == 2) res.add(root);
+        return serialId;
+    }
+    
+}
+Explanation: We perform postorder traversal, serializing and hashing the serials of subtrees in the process. We can recognize a duplicate subtree by its serialization.
+
+The above time complexity is O(n^2). We can improve this to O(n) by replacing full serializations with serial ids instead.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

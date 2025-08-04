@@ -1,0 +1,243 @@
+CURRENT QUESTION:
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+
+Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,1]
+Output: 4
+Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+Total amount you can rob = 1 + 3 = 4.
+Example 2:
+
+Input: nums = [2,7,9,3,1]
+Output: 12
+Explanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
+Total amount you can rob = 2 + 9 + 1 = 12.
+ 
+
+Constraints:
+
+1 <= nums.length <= 100
+0 <= nums[i] <= 400
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Roman to Integer
+Categorys: Hash Table Math String
+Question text: Roman numerals are represented by seven different symbols: I, V, X, L, C, D and M.
+
+Symbol       Value
+I             1
+V             5
+X             10
+L             50
+C             100
+D             500
+M             1000
+For example, 2 is written as II in Roman numeral, just two ones added together. 12 is written as XII, which is simply X + II. The number 27 is written as XXVII, which is XX + V + II.
+
+Roman numerals are usually written largest to smallest from left to right. However, the numeral for four is not IIII. Instead, the number four is written as IV. Because the one is before the five we subtract it making four. The same principle applies to the number nine, which is written as IX. There are six instances where subtraction is used:
+
+I can be placed before V (5) and X (10) to make 4 and 9. 
+X can be placed before L (50) and C (100) to make 40 and 90. 
+C can be placed before D (500) and M (1000) to make 400 and 900.
+Given a roman numeral, convert it to an integer.
+
+ 
+
+Example 1:
+
+Input: s = "III"
+Output: 3
+Explanation: III = 3.
+Example 2:
+
+Input: s = "LVIII"
+Output: 58
+Explanation: L = 50, V= 5, III = 3.
+Example 3:
+
+Input: s = "MCMXCIV"
+Output: 1994
+Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
+ 
+
+Constraints:
+
+1 <= s.length <= 15
+s contains only the characters ('I', 'V', 'X', 'L', 'C', 'D', 'M').
+It is guaranteed that s is a valid roman numeral in the range [1, 3999].
+Solution: class Solution {
+public:
+    int romanToInt(string s) {
+        int res = 0;
+        unordered_map<char, int> roman = {
+            {'I', 1},
+            {'V', 5},
+            {'X', 10}, 
+            {'L', 50},
+            {'C', 100},
+            {'D', 500},
+            {'M', 1000}
+        };
+
+        for (int i = 0; i < s.size() - 1; i++) {
+            if (roman[s[i]] < roman[s[i + 1]]) {
+                res -= roman[s[i]];
+            } else {
+                res += roman[s[i]];
+            }
+        }
+
+        return res + roman[s[s.size() - 1]];        
+    }
+};
+Explanation: Approach
+The description includes the example of 27. If the values are written from left to right in descending order, simply adding each number one by one will give the result.
+
+XXVII
+↓
+10(X) + 10(X) + 5(V) + 1(I) + 1(I) = 27
+LVIII
+↓
+50(L) + 5(V) + 1(I) + 1(I) + 1(I) = 58
+But numbers like 4 and 9 are represented as a single number using two Roman numerals.
+
+IV = 4
+IX = 9
+ Points
+
+Basically, you just need to convert either one or two characters into a number to get the answer.
+
+How do we determine if it’s one or two characters?
+Since a single number can use up to two Roman characters, we loop through the string two characters at a time, shifting by one each time.
+
+Let’s take a look at this example.
+
+Input: s = "XIV"
+In the first loop, we use X and I. In this case, the second character I is less than X. I is 1 and X is 10. That means we can simply add X to result variable, because 10 → 1 is a descending order. It's the same as 27 or 58 above.
+
+res = 10
+Next, we use I and V. In this case, the second character V is greater than I, because V is 5 and I is 1.
+
+The description says "there are six instances where subtraction is used."
+
+IV = 4
+IX = 9
+XL = 40
+XC = 90
+CD = 400
+CM = 900
+Look at all the first characters and the second characters. The first characters are less than the second characters.
+
+I(1) + V(5) = 4
+I(1) + X(10) = 9
+X(10) + L(50) = 40
+X(10) + C(100) = 90
+C(100) + D(500) = 400
+C(100) + M(1000) = 900
+The current first character is I and the second character is V, so we are using two Roman characters to form a single number.
+
+In this case, we subtract I(= 1) from result variable, because in the next loop, we will add V(= 5), so the total of I and V will be 4 in the end.
+
+res = 9
+The next two number is V and nothing(= out of bounds), so we stop iteration.
+
+The last point is that as I told you, we should add V before return the answer, because one of values was out of bounds, that's why we couldn't add the last Roman chartacter which is V.
+
+return res + 5
+Before we start looping, we have HashMap to combine Roman and Integer, so that we can convert Roman to Integer easily.
+
+In the solution code,
+
+return res + roman[s[-1]]
+
+s is input string
+roman is HashMap
+
+Example question 2:
+Title: Count of Range Sum
+Categorys: Array Binary Search Divide and Conquer Binary Indexed Tree Segment Tree Merge Sort Ordered Set
+Question text: Given an integer array nums and two integers lower and upper, return the number of range sums that lie in [lower, upper] inclusive.
+
+Range sum S(i, j) is defined as the sum of the elements in nums between indices i and j inclusive, where i <= j.
+
+ 
+
+Example 1:
+
+Input: nums = [-2,5,-1], lower = -2, upper = 2
+Output: 3
+Explanation: The three ranges are: [0,0], [2,2], and [0,2] and their respective sums are: -2, -1, 2.
+Example 2:
+
+Input: nums = [0], lower = 0, upper = 0
+Output: 1
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+-231 <= nums[i] <= 231 - 1
+-105 <= lower <= upper <= 105
+The answer is guaranteed to fit in a 32-bit integer.
+Solution: public int countRangeSum(int[] nums, int lower, int upper) {
+    int n = nums.length;
+    long[] sums = new long[n + 1];
+    for (int i = 0; i < n; ++i)
+        sums[i + 1] = sums[i] + nums[i];
+    return countWhileMergeSort(sums, 0, n + 1, lower, upper);
+}
+
+private int countWhileMergeSort(long[] sums, int start, int end, int lower, int upper) {
+    if (end - start <= 1) return 0;
+    int mid = (start + end) / 2;
+    int count = countWhileMergeSort(sums, start, mid, lower, upper) 
+              + countWhileMergeSort(sums, mid, end, lower, upper);
+    int j = mid, k = mid, t = mid;
+    long[] cache = new long[end - start];
+    for (int i = start, r = 0; i < mid; ++i, ++r) {
+        while (k < end && sums[k] - sums[i] < lower) k++;
+        while (j < end && sums[j] - sums[i] <= upper) j++;
+        while (t < end && sums[t] < sums[i]) cache[r++] = sums[t++];
+        cache[r] = sums[i];
+        count += j - k;
+    }
+    System.arraycopy(cache, 0, sums, start, t - start);
+    return count;
+}
+Explanation: Recall count smaller number after self where we encountered the problem
+
+count[i] = count of nums[j] - nums[i] < 0 with j > i
+Here, after we did the preprocess, we need to solve the problem
+
+count[i] = count of a <= S[j] - S[i] <= b with j > i
+ans = sum(count[:])
+Therefore the two problems are almost the same. We can use the same technique used in that problem to solve this problem. One solution is merge sort based; another one is Balanced BST based. The time complexity are both O(n log n).
+
+The merge sort based solution counts the answer while doing the merge. During the merge stage, we have already sorted the left half [start, mid) and right half [mid, end). We then iterate through the left half with index i. For each i, we need to find two indices k and j in the right half where
+
+j is the first index satisfy sums[j] - sums[i] > upper and
+k is the first index satisfy sums[k] - sums[i] >= lower.
+Then the number of sums in [lower, upper] is j-k. We also use another index t to copy the elements satisfy sums[t] < sums[i] to a cache in order to complete the merge sort.
+
+Despite the nested loops, the time complexity of the "merge & count" stage is still linear. Because the indices k, j, t will only increase but not decrease, each of them will only traversal the right half once at most. The total time complexity of this divide and conquer solution is then O(n log n).
+
+One other concern is that the sums may overflow integer. So we use long instead.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

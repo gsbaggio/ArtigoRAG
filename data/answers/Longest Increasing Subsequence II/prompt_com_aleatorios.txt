@@ -1,0 +1,268 @@
+CURRENT QUESTION:
+You are given an integer array nums and an integer k.
+
+Find the longest subsequence of nums that meets the following requirements:
+
+The subsequence is strictly increasing and
+The difference between adjacent elements in the subsequence is at most k.
+Return the length of the longest subsequence that meets the requirements.
+
+A subsequence is an array that can be derived from another array by deleting some or no elements without changing the order of the remaining elements.
+
+ 
+
+Example 1:
+
+Input: nums = [4,2,1,4,3,4,5,8,15], k = 3
+Output: 5
+Explanation:
+The longest subsequence that meets the requirements is [1,3,4,5,8].
+The subsequence has a length of 5, so we return 5.
+Note that the subsequence [1,3,4,5,8,15] does not meet the requirements because 15 - 8 = 7 is larger than 3.
+Example 2:
+
+Input: nums = [7,4,5,1,8,12,4,7], k = 5
+Output: 4
+Explanation:
+The longest subsequence that meets the requirements is [4,5,8,12].
+The subsequence has a length of 4, so we return 4.
+Example 3:
+
+Input: nums = [1,5], k = 1
+Output: 1
+Explanation:
+The longest subsequence that meets the requirements is [1].
+The subsequence has a length of 1, so we return 1.
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+1 <= nums[i], k <= 105
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Binary Tree Paths
+Categorys: Math String Stack Recursion
+Question text: Given the root of a binary tree, return all root-to-leaf paths in any order.
+
+A leaf is a node with no children.
+
+ 
+
+Example 1:
+
+
+Input: root = [1,2,3,null,5]
+Output: ["1->2->5","1->3"]
+Example 2:
+
+Input: root = [1]
+Output: ["1"]
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [1, 100].
+-100 <= Node.val <= 100
+Solution: class Solution(object):
+    def binaryTreePaths(self, root):
+        res = []
+        if not root:
+            return res
+        stack = [(root, str(root.val))]
+        while stack:
+            node, path = stack.pop()
+            if not node.left and not node.right:
+                res.append(path)
+            if node.right:
+                stack.append((node.right, path + "->" + str(node.right.val)))
+            if node.left:
+                stack.append((node.left, path + "->" + str(node.left.val)))
+        return res
+Explanation: Intuition
+To collect all root-to-leaf paths in a binary tree, we use DFS traversal. At every node, we build a path string. Once we reach a leaf, we save the full path.
+Use a stack to simulate DFS. At each step, track both the node and the current path string. When a leaf is reached, push the path to the result array. If children exist, extend the path and continue traversing.
+
+Complexity
+Time complexity: (O(n)), where (n) is the number of nodes.
+Space complexity: (O(n)), for recursion stack or explicit stack and result storage.
+
+Example question 2:
+Title: Cut Off Trees for Golf Event
+Categorys: Array Breadth-First Search Heap (Priority Queue) Matrix
+Question text: You are asked to cut off all the trees in a forest for a golf event. The forest is represented as an m x n matrix. In this matrix:
+
+0 means the cell cannot be walked through.
+1 represents an empty cell that can be walked through.
+A number greater than 1 represents a tree in a cell that can be walked through, and this number is the tree's height.
+In one step, you can walk in any of the four directions: north, east, south, and west. If you are standing in a cell with a tree, you can choose whether to cut it off.
+
+You must cut off the trees in order from shortest to tallest. When you cut off a tree, the value at its cell becomes 1 (an empty cell).
+
+Starting from the point (0, 0), return the minimum steps you need to walk to cut off all the trees. If you cannot cut off all the trees, return -1.
+
+Note: The input is generated such that no two trees have the same height, and there is at least one tree needs to be cut off.
+
+ 
+
+Example 1:
+Input: forest = [[1,2,3],[0,0,4],[7,6,5]]
+Output: 6
+Explanation: Following the path above allows you to cut off the trees from shortest to tallest in 6 steps.
+Example 2:
+Input: forest = [[1,2,3],[0,0,0],[7,6,5]]
+Output: -1
+Explanation: The trees in the bottom row cannot be accessed as the middle row is blocked.
+Example 3:
+
+Input: forest = [[2,3,4],[0,0,5],[8,7,6]]
+Output: 6
+Explanation: You can follow the same path as Example 1 to cut off all the trees.
+Note that you can cut off the first tree at (0, 0) before making any steps.
+ 
+
+Constraints:
+
+m == forest.length
+n == forest[i].length
+1 <= m, n <= 50
+0 <= forest[i][j] <= 109
+Heights of all trees are distinct.
+Solution: def astar(forest, sr, sc, tr, tc):
+    R, C = len(forest), len(forest[0])
+    heap = [(0, 0, sr, sc)]
+    cost = {(sr, sc): 0}
+    while heap:
+        f, g, r, c = heapq.heappop(heap)
+        if r == tr and c == tc: return g
+        for nr, nc in ((r-1,c), (r+1,c), (r,c-1), (r,c+1)):
+            if 0 <= nr < R and 0 <= nc < C and forest[nr][nc]:
+                ncost = g + 1 + abs(nr - tr) + abs(nc - tc)
+                if ncost < cost.get((nr, nc), 9999):
+                    cost[nr, nc] = ncost
+                    heapq.heappush(heap, (ncost, g+1, nr, nc))
+    return -1
+Explanation: A* Search [Accepted]
+Intuition and Algorithm
+
+The A* star algorithm is another path-finding algorithm. For every node at position (r, c), we have some estimated cost node.f = node.g + node.h, where node.g is the actual distance from (sr, sc) to (r, c), and node.h is our heuristic (guess) of the distance from (r, c) to (tr, tc). In this case, our guess will be the taxicab distance, node.h = abs(r-tr) + abs(c-tc).
+
+We keep a priority queue to decide what node to search in (expand) next. We can prove that if we find the target node, we must have traveled the lowest possible distance node.g. By considering the last time when two backward paths are the same, without loss of generality we could suppose the penultimate square of the two paths are different, and then in this case node.f = node.g + 1, showing the path with less actual distance travelled is expanded first as desired.
+
+It might be useful for solvers familiar with Dijkstra's Algorithm to know that Dijkstra's algorithm is a special case of A* Search with node.h = 0 always.
+
+Example question 3:
+Title: Contains Duplicate III
+Categorys: Array Sliding Window Sorting Bucket Sort Ordered Set
+Question text: You are given an integer array nums and two integers indexDiff and valueDiff.
+
+Find a pair of indices (i, j) such that:
+
+i != j,
+abs(i - j) <= indexDiff.
+abs(nums[i] - nums[j]) <= valueDiff, and
+Return true if such pair exists or false otherwise.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,1], indexDiff = 3, valueDiff = 0
+Output: true
+Explanation: We can choose (i, j) = (0, 3).
+We satisfy the three conditions:
+i != j --> 0 != 3
+abs(i - j) <= indexDiff --> abs(0 - 3) <= 3
+abs(nums[i] - nums[j]) <= valueDiff --> abs(1 - 1) <= 0
+Example 2:
+
+Input: nums = [1,5,9,1,5,9], indexDiff = 2, valueDiff = 3
+Output: false
+Explanation: After trying all the possible pairs (i, j), we cannot satisfy the three conditions, so we return false.
+ 
+
+Constraints:
+
+2 <= nums.length <= 105
+-109 <= nums[i] <= 109
+1 <= indexDiff <= nums.length
+0 <= valueDiff <= 109
+Solution: class Solution {
+public:
+    bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+        int n = nums.size();
+        
+        if(n == 0 || k < 0  || t < 0) return false;
+        
+        unordered_map<int,int> buckets;
+        
+        for(int i=0; i<n; ++i) {
+            int bucket = nums[i] / ((long)t + 1);
+            
+			// For negative numbers, we need to decrement bucket by 1
+			// to ensure floor division.
+			// For example, -1/2 = 0 but -1 should be put in Bucket[-1].
+			// Therefore, decrement by 1.
+            if(nums[i] < 0) --bucket;
+            
+            if(buckets.find(bucket) != buckets.end()) return true;
+            else {
+                buckets[bucket] = nums[i];
+                if(buckets.find(bucket-1) != buckets.end() && (long) nums[i] - buckets[bucket-1] <= t) return true;
+                if(buckets.find(bucket+1) != buckets.end() && (long) buckets[bucket+1] - nums[i] <= t) return true;
+                
+                if(buckets.size() > k) {
+                    int key_to_remove = nums[i-k] / ((long)t + 1);
+                    
+                    if(nums[i-k] < 0) --key_to_remove;
+                    
+                    buckets.erase(key_to_remove);
+                }
+            }
+        }
+        
+        return false;
+    }
+};
+Explanation: We use the concept of sliding window and buckets together to achieve an optimal solution with O(N) time complexity.
+
+Sliding window ensures only those indices are considered whose the absolute difference is at most k. We only consider k indices at a time. This fulfills the second condition.
+
+Buckets are used to ensure that the absolute difference between two numbers is at most t. Let's take a deeper look at them.
+We (floor) divide each number by t+1 and put it in a bucket with key as the quotient.
+For example,
+
+[1,5,2,4,3,9,1,5,9], k = 2, t = 3
+
+1 // (3+1) = 0
+5 // (3+1) = 1
+2 // (3+1) = 0
+4 // (3+1) = 1
+3 // (3+1) = 0
+9 // (3+1) = 2
+
+Here, Bucket[0] will contain numbers 0,1,2,3.
+Bucket[1] will contain numbers 4,5,6,7.
+Bucket[2] will contain numbers 8,9,10,11.
+
+On observing carefully, we can see that the absolute difference
+between any two numbers in any bucket is at most t, which is what we want.
+
+Also, there can be a case where the neighbouring bucket has some number
+whose absolute difference with a number in the current bucket is at most t.
+For instance, 2 lies in Bucket[0] and 4 lies in Bucket[1] and 4 - 2 = 2 < 3 (=t).
+This can only happen in neighbouring buckets. Therefore, we need to check for this too.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

@@ -1,0 +1,134 @@
+CURRENT QUESTION:
+There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course ai first if you want to take course bi.
+
+For example, the pair [0, 1] indicates that you have to take course 0 before you can take course 1.
+Prerequisites can also be indirect. If course a is a prerequisite of course b, and course b is a prerequisite of course c, then course a is a prerequisite of course c.
+
+You are also given an array queries where queries[j] = [uj, vj]. For the jth query, you should answer whether course uj is a prerequisite of course vj or not.
+
+Return a boolean array answer, where answer[j] is the answer to the jth query.
+
+ 
+
+Example 1:
+Input: numCourses = 2, prerequisites = [[1,0]], queries = [[0,1],[1,0]]
+Output: [false,true]
+Explanation: The pair [1, 0] indicates that you have to take course 1 before you can take course 0.
+Course 0 is not a prerequisite of course 1, but the opposite is true.
+Example 2:
+
+Input: numCourses = 2, prerequisites = [], queries = [[1,0],[0,1]]
+Output: [false,false]
+Explanation: There are no prerequisites, and each course is independent.
+Example 3:
+Input: numCourses = 3, prerequisites = [[1,2],[1,0],[2,0]], queries = [[1,0],[1,2]]
+Output: [true,true]
+ 
+
+Constraints:
+
+2 <= numCourses <= 100
+0 <= prerequisites.length <= (numCourses * (numCourses - 1) / 2)
+prerequisites[i].length == 2
+0 <= ai, bi <= numCourses - 1
+ai != bi
+All the pairs [ai, bi] are unique.
+The prerequisites graph has no cycles.
+1 <= queries.length <= 104
+0 <= ui, vi <= numCourses - 1
+ui != vi
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Shortest Path with Alternating Colors
+Categorys: Breadth-First Search Graph
+Question text: You are given an integer n, the number of nodes in a directed graph where the nodes are labeled from 0 to n - 1. Each edge is red or blue in this graph, and there could be self-edges and parallel edges.
+
+You are given two arrays redEdges and blueEdges where:
+
+redEdges[i] = [ai, bi] indicates that there is a directed red edge from node ai to node bi in the graph, and
+blueEdges[j] = [uj, vj] indicates that there is a directed blue edge from node uj to node vj in the graph.
+Return an array answer of length n, where each answer[x] is the length of the shortest path from node 0 to node x such that the edge colors alternate along the path, or -1 if such a path does not exist.
+
+ 
+
+Example 1:
+
+Input: n = 3, redEdges = [[0,1],[1,2]], blueEdges = []
+Output: [0,1,-1]
+Example 2:
+
+Input: n = 3, redEdges = [[0,1]], blueEdges = [[2,1]]
+Output: [0,1,-1]
+ 
+
+Constraints:
+
+1 <= n <= 100
+0 <= redEdges.length, blueEdges.length <= 400
+redEdges[i].length == blueEdges[j].length == 2
+0 <= ai, bi, uj, vj < n
+Solution: enum class Color { kInit, kRed, kBlue };
+
+class Solution {
+ public:
+  vector<int> shortestAlternatingPaths(int n, vector<vector<int>>& redEdges,
+                                       vector<vector<int>>& blueEdges) {
+    vector<int> ans(n, -1);
+    vector<vector<pair<int, Color>>> graph(n);  // graph[u] := [(v, edgeColor)]
+    queue<pair<int, Color>> q{{{0, Color::kInit}}};  // [(u, prevColor)]
+
+    for (const vector<int>& edge : redEdges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].emplace_back(v, Color::kRed);
+    }
+
+    for (const vector<int>& edge : blueEdges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].emplace_back(v, Color::kBlue);
+    }
+
+    for (int step = 0; !q.empty(); ++step)
+      for (int sz = q.size(); sz > 0; --sz) {
+        const auto [u, prevColor] = q.front();
+        q.pop();
+        ans[u] = ans[u] == -1 ? step : ans[u];
+        for (auto& [v, edgeColor] : graph[u]) {
+          if (v == -1 || edgeColor == prevColor)
+            continue;
+          q.emplace(v, edgeColor);
+          v = -1;  // Mark (u, v) as used.
+        }
+      }
+
+    return ans;
+  }
+};
+Explanation: Intuition :
+Here we are given a graph with two types of edges (red and blue), the goal is to find the shortest path from node 0 to every other node such that no two consecutive edges have the same color.
+Explanation to Approach :
+So we are using a breadth-first search (BFS) algorithm to traverse the graph, keeping track of the distance from node 0 to every other node and the previous edge color.
+The graph is represented as an adjacency list, where graph[u] is a list of pairs (v, edgeColor) representing an edge from node u to node v with color edgeColor.
+The BFS algorithm starts from node 0 and adds node v to the queue if it is not visited yet or if the color of the edge from u to v is different from the previous edge color.
+The distance from node 0 to node v is incremented in each step.
+The ans array is updated with the minimum distance found so far to each node. If a node is visited again, its distance in ans is not updated.
+The algorithm terminates when the queue is empty, meaning that all reachable nodes have been visited.
+If a node is not visited, its distance in ans remains -1, indicating that it is not reachable from node 0.
+Complexity :
+Time complexity : O(n)
+Space complexity : O(n)
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

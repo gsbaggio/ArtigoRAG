@@ -1,0 +1,272 @@
+CURRENT QUESTION:
+Given the root of a binary tree and an integer targetSum, return all root-to-leaf paths where the sum of the node values in the path equals targetSum. Each path should be returned as a list of the node values, not node references.
+
+A root-to-leaf path is a path starting from the root and ending at any leaf node. A leaf is a node with no children.
+
+ 
+
+Example 1:
+Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+Output: [[5,4,11,2],[5,8,4,5]]
+Explanation: There are two paths whose sum equals targetSum:
+5 + 4 + 11 + 2 = 22
+5 + 8 + 4 + 5 = 22
+Example 2:
+Input: root = [1,2,3], targetSum = 5
+Output: []
+Example 3:
+
+Input: root = [1,2], targetSum = 0
+Output: []
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [0, 5000].
+-1000 <= Node.val <= 1000
+-1000 <= targetSum <= 1000
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Two Sum
+Categorys: Array Hash Table
+Question text: Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+You can return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
+Example 2:
+
+Input: nums = [3,2,4], target = 6
+Output: [1,2]
+Example 3:
+
+Input: nums = [3,3], target = 6
+Output: [0,1]
+ 
+
+Constraints:
+
+2 <= nums.length <= 104
+-109 <= nums[i] <= 109
+-109 <= target <= 109
+Only one valid answer exists.
+ 
+
+Follow-up: Can you come up with an algorithm that is less than O(n2) time complexity?
+Solution: class Solution {
+public:
+    vector<int> twoSum(vector<int> &nums, int target) {
+        unordered_map<int, int> hash;
+        for (int i = 0; i < nums.size(); i++) {
+            hash[nums[i]] = i;
+        }
+        for (int i = 0; i < nums.size(); i++) {
+            int complement = target - nums[i];
+            if (hash.find(complement) != hash.end() && hash[complement] != i) {
+                return {i, hash[complement]};
+            }
+        }
+        // If no valid pair is found, return an empty vector
+        return {};
+    }
+};
+Explanation: Intuition
+
+To improve our runtime complexity, we need a more efficient way to check if the complement exists in the array. If the complement exists, we need to get its index. What is the best way to maintain a mapping of each element in the array to its index? A hash table.
+
+We can reduce the lookup time from O(n) to O(1) by trading space for speed. A hash table is well suited for this purpose because it supports fast lookup in near constant time. I say "near" because if a collision occurred, a lookup could degenerate to O(n) time. However, lookup in a hash table should be amortized O(1) time as long as the hash function was chosen carefully.
+
+Algorithm
+
+A simple implementation uses two iterations. In the first iteration, we add each element's value as a key and its index as a value to the hash table. Then, in the second iteration, we check if each element's complement (target−nums[i]) exists in the hash table. If it does exist, we return current element's index and its complement's index. Beware that the complement must not be nums[i] itself!
+Complexity Analysis
+
+Time complexity: O(n).
+We traverse the list containing n elements exactly twice. Since the hash table reduces the lookup time to O(1), the overall time complexity is O(n).
+
+Space complexity: O(n).
+The extra space required depends on the number of items stored in the hash table, which stores exactly n elements.
+
+Example question 2:
+Title: Booking Concert Tickets in Groups
+Categorys: Binary Search Design Binary Indexed Tree Segment Tree
+Question text: A concert hall has n rows numbered from 0 to n - 1, each with m seats, numbered from 0 to m - 1. You need to design a ticketing system that can allocate seats in the following cases:
+
+If a group of k spectators can sit together in a row.
+If every member of a group of k spectators can get a seat. They may or may not sit together.
+Note that the spectators are very picky. Hence:
+
+They will book seats only if each member of their group can get a seat with row number less than or equal to maxRow. maxRow can vary from group to group.
+In case there are multiple rows to choose from, the row with the smallest number is chosen. If there are multiple seats to choose in the same row, the seat with the smallest number is chosen.
+Implement the BookMyShow class:
+
+BookMyShow(int n, int m) Initializes the object with n as number of rows and m as number of seats per row.
+int[] gather(int k, int maxRow) Returns an array of length 2 denoting the row and seat number (respectively) of the first seat being allocated to the k members of the group, who must sit together. In other words, it returns the smallest possible r and c such that all [c, c + k - 1] seats are valid and empty in row r, and r <= maxRow. Returns [] in case it is not possible to allocate seats to the group.
+boolean scatter(int k, int maxRow) Returns true if all k members of the group can be allocated seats in rows 0 to maxRow, who may or may not sit together. If the seats can be allocated, it allocates k seats to the group with the smallest row numbers, and the smallest possible seat numbers in each row. Otherwise, returns false.
+ 
+
+Example 1:
+
+Input
+["BookMyShow", "gather", "gather", "scatter", "scatter"]
+[[2, 5], [4, 0], [2, 0], [5, 1], [5, 1]]
+Output
+[null, [0, 0], [], true, false]
+
+Explanation
+BookMyShow bms = new BookMyShow(2, 5); // There are 2 rows with 5 seats each 
+bms.gather(4, 0); // return [0, 0]
+                  // The group books seats [0, 3] of row 0. 
+bms.gather(2, 0); // return []
+                  // There is only 1 seat left in row 0,
+                  // so it is not possible to book 2 consecutive seats. 
+bms.scatter(5, 1); // return True
+                   // The group books seat 4 of row 0 and seats [0, 3] of row 1. 
+bms.scatter(5, 1); // return False
+                   // There is only one seat left in the hall.
+ 
+
+Constraints:
+
+1 <= n <= 5 * 104
+1 <= m, k <= 109
+0 <= maxRow <= n - 1
+At most 5 * 104 calls in total will be made to gather and scatter.
+Solution: class BookMyShow {
+    int n;
+    int m;
+    vector<array<long long, 2>> stree; // segment tree that tracks (max, sum) of each segment
+public:
+    void build(int i, int p, int q) {
+        if (p == q) {
+            stree[i] = {m, m};
+            return;
+        }
+        int r = (p + q) / 2;
+        stree[i] = {m, (long long)(q-p+1)*m};
+        build(2*i+1, p, r);
+        build(2*i+2, r+1, q);
+    }
+
+    vector<int> query_max(int i, int p, int q, int k, int maxRow) {
+        if (p > maxRow)
+            return {};
+        if (stree[i][0] < k)
+            return {};
+        if (p == q)
+            return {p, (int)(m - stree[i][0])};
+        int r = (p + q) / 2;
+        vector<int> ret = query_max(2*i+1, p, r, k, maxRow);
+        if (ret.size())
+            return ret;
+        return query_max(2*i+2, r+1, q, k, maxRow);
+    }
+
+    void update_max(int i, int p, int q, int row, int k) {
+        if (p > row || q < row)
+            return;
+        if (p == q) {
+            stree[i][0] -= k;
+            stree[i][1] -= k;
+            // cout << p << " " << stree[i][0] << endl;
+            return;
+        }
+        int r = (p + q) / 2;
+        stree[i][1] -= k;
+        update_max(2*i+1, p, r, row, k);
+        update_max(2*i+2, r+1, q, row, k);
+        stree[i][0] = max(stree[2*i+1][0], stree[2*i+2][0]);
+    }
+
+    long long query_sum(int i, int p, int q, int maxRow) {
+        if (p > maxRow)
+            return 0;
+        if (q <= maxRow)
+            return stree[i][1];
+        int r = (p + q) / 2;
+        return query_sum(2*i+1, p, r, maxRow) + query_sum(2*i+2, r+1, q, maxRow);
+    }
+
+    void update_sum(int i, int p, int q, int k, int maxRow) {
+        if (p > maxRow)
+            return;
+        if (p == q) {
+            stree[i][0] -= k;
+            stree[i][1] -= k;
+            // cout << p << " " << stree[i][0] << endl;
+            return;
+        }
+        int r = (p + q) / 2;
+        stree[i][1] -= k;
+        if (r+1 > maxRow || stree[2*i+1][1] >= k) {
+            update_sum(2*i+1, p, r, k, maxRow);
+        } else {
+            k -= stree[2*i+1][1];
+            update_sum(2*i+1, p, r, stree[2*i+1][1], maxRow);
+            // Be aware: stree[2*i+1][1] updates while updating the left tree
+            update_sum(2*i+2, r+1, q, k, maxRow);
+        }
+        stree[i][0] = max(stree[2*i+1][0], stree[2*i+2][0]);
+    }
+
+
+    BookMyShow(int n_in, int m_in) {
+        n = n_in;
+        m = m_in;
+
+        int sz = 1;
+        while (sz < n*2)
+            sz <<= 1;
+        stree.resize(sz);
+
+        build(0, 0, n-1);
+    }
+
+    vector<int> gather(int k, int maxRow) {
+        // cout << "gather " << k << " " << maxRow << endl;
+        vector<int> ret = query_max(0, 0, n-1, k, maxRow);
+        if (ret.size())
+            update_max(0, 0, n-1, ret[0], k);
+        return ret;
+    }
+
+    bool scatter(int k, int maxRow) {
+        // cout << "scatter " << k << " " << maxRow << endl;
+        long long cnt = query_sum(0, 0, n-1, maxRow);
+        bool ret = cnt >= k;
+        if (ret)
+            update_sum(0, 0, n-1, k, maxRow);
+        return ret;
+    }
+};
+Explanation: Gather: query & update minimum available row
+Scatter: query & update range of available rows
+
+Gather() should find and update the maximum remaining seats of rows
+Scatter() should find and update total remaining seats of rows
+To do these efficiently, segment tree can be used
+Setup a segment tree that tracks max and sum of remaining seats
+The query and update might be done simultaneously...
+but I did it separately because I was in hurry.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

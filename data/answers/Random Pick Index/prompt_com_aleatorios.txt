@@ -1,0 +1,290 @@
+CURRENT QUESTION:
+Given an integer array nums with possible duplicates, randomly output the index of a given target number. You can assume that the given target number must exist in the array.
+
+Implement the Solution class:
+
+Solution(int[] nums) Initializes the object with the array nums.
+int pick(int target) Picks a random index i from nums where nums[i] == target. If there are multiple valid i's, then each index should have an equal probability of returning.
+ 
+
+Example 1:
+
+Input
+["Solution", "pick", "pick", "pick"]
+[[[1, 2, 3, 3, 3]], [3], [1], [3]]
+Output
+[null, 4, 0, 2]
+
+Explanation
+Solution solution = new Solution([1, 2, 3, 3, 3]);
+solution.pick(3); // It should return either index 2, 3, or 4 randomly. Each index should have equal probability of returning.
+solution.pick(1); // It should return 0. Since in the array only nums[0] is equal to 1.
+solution.pick(3); // It should return either index 2, 3, or 4 randomly. Each index should have equal probability of returning.
+ 
+
+Constraints:
+
+1 <= nums.length <= 2 * 104
+-231 <= nums[i] <= 231 - 1
+target is an integer from nums.
+At most 104 calls will be made to pick.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Number of Unique XOR Triplets I
+Categorys: Array Math Bit Manipulation
+Question text: You are given an integer array nums of length n, where nums is a permutation of the numbers in the range [1, n].
+
+A XOR triplet is defined as the XOR of three elements nums[i] XOR nums[j] XOR nums[k] where i <= j <= k.
+
+Return the number of unique XOR triplet values from all possible triplets (i, j, k).
+
+ 
+
+Example 1:
+
+Input: nums = [1,2]
+
+Output: 2
+
+Explanation:
+
+The possible XOR triplet values are:
+
+(0, 0, 0) → 1 XOR 1 XOR 1 = 1
+(0, 0, 1) → 1 XOR 1 XOR 2 = 2
+(0, 1, 1) → 1 XOR 2 XOR 2 = 1
+(1, 1, 1) → 2 XOR 2 XOR 2 = 2
+The unique XOR values are {1, 2}, so the output is 2.
+
+Example 2:
+
+Input: nums = [3,1,2]
+
+Output: 4
+
+Explanation:
+
+The possible XOR triplet values include:
+
+(0, 0, 0) → 3 XOR 3 XOR 3 = 3
+(0, 0, 1) → 3 XOR 3 XOR 1 = 1
+(0, 0, 2) → 3 XOR 3 XOR 2 = 2
+(0, 1, 2) → 3 XOR 1 XOR 2 = 0
+The unique XOR values are {0, 1, 2, 3}, so the output is 4.
+
+ 
+
+Constraints:
+
+1 <= n == nums.length <= 105
+1 <= nums[i] <= n
+nums is a permutation of integers from 1 to n.
+Solution: class Solution {
+public:
+    int uniqueXorTriplets(vector<int>& nums) {
+        int n = nums.size();
+
+        if(n < 3) return n;
+
+        // Find the Most Significant Bit
+        int cnt = 0;
+        int temp = n;
+        while(temp > 0){
+            temp >>= 1;
+            cnt++;
+        }
+        
+        return pow(2, cnt);
+    }
+};
+Explanation: Problem Summary
+Given a permutation nums of numbers from 1 to n, you are to find the number of unique values you can get by doing XOR of all triplets (i, j, k) where i <= j <= k.
+
+Understanding the Solution
+For n < 3
+For n = 1, only one element → 1 unique value.
+For n = 2, only 2 combinations → 2 unique values.
+For n >= 3
+The number of possible XOR values between numbers from 1 to n is bounded by the number of bits required to represent n.
+Since any XOR operation between values in [1, n] gives a result between 0 to (2^cnt - 1), the maximum number of unique values is 2^cnt.
+Complexity
+Time complexity: O(log n)
+Space complexity: O(1)
+
+Example question 2:
+Title: Median of Two Sorted Arrays
+Categorys: Array Binary Search Divide and Conquer
+Question text: Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.
+
+The overall run time complexity should be O(log (m+n)).
+
+ 
+
+Example 1:
+
+Input: nums1 = [1,3], nums2 = [2]
+Output: 2.00000
+Explanation: merged array = [1,2,3] and median is 2.
+Example 2:
+
+Input: nums1 = [1,2], nums2 = [3,4]
+Output: 2.50000
+Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.
+ 
+
+Constraints:
+
+nums1.length == m
+nums2.length == n
+0 <= m <= 1000
+0 <= n <= 1000
+1 <= m + n <= 2000
+-106 <= nums1[i], nums2[i] <= 106
+Solution: class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        if (nums1.size() > nums2.size()) {
+            return findMedianSortedArrays(nums2, nums1);
+        }
+
+        int m = nums1.size(), n = nums2.size();
+        int left = 0, right = m;
+
+        while (left <= right) {
+            int partitionA = (left + right) / 2;
+            int partitionB = (m + n + 1) / 2 - partitionA;
+
+            int maxLeftA = (partitionA == 0) ? INT_MIN : nums1[partitionA - 1];
+            int minRightA = (partitionA == m) ? INT_MAX : nums1[partitionA];
+            int maxLeftB = (partitionB == 0) ? INT_MIN : nums2[partitionB - 1];
+            int minRightB = (partitionB == n) ? INT_MAX : nums2[partitionB];
+
+            if (maxLeftA <= minRightB && maxLeftB <= minRightA) {
+                if ((m + n) % 2 == 0) {
+                    return (max(maxLeftA, maxLeftB) +
+                            min(minRightA, minRightB)) /
+                           2.0;
+                } else {
+                    return max(maxLeftA, maxLeftB);
+                }
+            } else if (maxLeftA > minRightB) {
+                right = partitionA - 1;
+            } else {
+                left = partitionA + 1;
+            }
+        }
+
+        return 0.0;
+    }
+};
+Explanation: Intuition
+Recall the previous approach where we perform a binary search over the 'merged' array consisting of nums1 and nums2, resulting in a time complexity of O(log(m⋅n)). We could further improve the algorithm by performing the binary search only on the smaller array of nums1 and nums2, thus the time complexity is reduced to O(log(min(m,n))).
+
+The main idea is similar to approach 2, where we need to find a point of partition in both arrays such that the maximum of the smaller half is less than or equal to the minimum of the larger half.
+
+However, instead of partitioning over the merged arrays, we can only focus on partitioning the smaller array (let's call this array A). Suppose the partition index is partitionA, we specify that the smaller half contains (m + n + 1) / 2 elements, and we can use this feature to our advantage by directly making partitionB equal to (m + n + 1) / 2 - partitionA, thus the smaller halves of both arrays always contain a total of (m + n + 1) / 2 elements, as shown in the picture below.
+
+Algorithm
+Assuming nums1 to be the smaller array (If nums2 is smaller, we can swap them). Let m, n represent the size of nums1 and nums2, respectively.
+
+Define the search space for the partitioning index partitionA by setting boundaries as left = 0 and right = m.
+
+While left <= right holds, do the following.
+
+Compute the partition index of nums1 as partitionA = (left + right) / 2. Consequently, the partition index of nums2 is (m + n + 1) / 2 - partitionA.
+
+Obtain the edge elements:
+
+Determine the maximum value of the section A_left as maxLeftA = nums1[partitionA - 1]. If partitionA - 1 < 0, set it as maxLeftA = float(-inf).
+Determine the minimum value of the section A_right as minRightA = nums1[partitionA]. If partitionA >= m, set it as minRightA = float(inf).
+Determine the maximum value of the section B_left as maxLeftB = nums2[partitionB - 1]. If partitionB - 1 < 0, set it as maxLeftB = float(-inf).
+Determine the maximum value of the section B_right as minRightB = nums2[partitionB]. If partitionB >= n, set it as minRightB = float(inf).
+Compare and recalculate: Compare maxLeftA with minRightB and maxLeftB with minRightA.
+
+If maxLeftA > minRightB, it means the maxLeftA is too large to be in the smaller half, so we update right = partitionA - 1 to move to the left half of the search space.
+If maxLeftB > minRightA, it means that we are too far on the left side for partitionA and we need to go to the right half of the search space by updating left = partitionA + 1.
+Repeat step 4.
+
+When both maxLeftA <= minRightB and maxLeftB <= minRightA are true:
+
+If (m + n) % 2 = 0, the median value is the average of the maximum value of the smaller half and the minimum value of the larger half, given by answer = (max(maxLeftA, maxLeftB) + min(minRightA, minRightB)) / 2.
+Otherwise, the median value is the maximum value of the smaller half, given by answer = max(maxLeftA, maxLeftB).
+
+Example question 3:
+Title: Max Points on a Line
+Categorys: Array Hash Table Math Geometry
+Question text: Given an array of points where points[i] = [xi, yi] represents a point on the X-Y plane, return the maximum number of points that lie on the same straight line.
+Example 1:
+Input: points = [[1,1],[2,2],[3,3]]
+Output: 3
+Example 2:
+Input: points = [[1,1],[3,2],[5,3],[4,1],[2,3],[1,4]]
+Output: 4
+Constraints:
+
+1 <= points.length <= 300
+points[i].length == 2
+-104 <= xi, yi <= 104
+All the points are unique.
+Solution: class Solution {
+public:
+    int maxPoints(vector<vector<int>>& pt) {
+        int ans=1; 
+        int n=pt.size();
+       // slope of every point with selected point
+        for(int i=0;i<n-1;i++){
+            map<double,int> mp;
+            for(int j=i+1;j<n;j++){
+                //calculating the slope
+                double x = (double)(pt[j][1]-pt[i][1])/(double)(pt[j][0]-pt[i][0]);
+                if(pt[j][1]-pt[i][1]<0 &&(pt[j][0]-pt[i][0])==0 ) //infinite slop for Perpendicular line
+                mp[abs(x)]++; 
+                else
+               //storing the slop into map
+                    mp[x]++;
+            }
+            // same slope w.r.t.that selected point
+            int temp = 0;
+            for(auto it:mp)
+                temp = max(temp, it.second+1);    // +1 for the current point(point itself)
+            ans = max(temp, ans);
+        }
+        return ans;
+    }
+};
+Explanation: Intuition
+Here we will calculate the slope
+Approach
+Idea is very simple
+
+We will select point and for every selected point we will calculate the slope wr.t to another point and store into the map
+In map we will store <slope,that selected point>
+for example we have point :-[[1,1],[2,2],[3,3]......
+we pick point [1,1]and for that [1,1] we will calculate the slope
+w.r.t [2,2] ,[3,3]....... and store like this-
+for understanding purpose i'm writing
+mp[slope1,[1,1]]
+mp[slope2,[1,1]]
+mp[slope1,[1,1]].........
+This type we will store the slope for [2,2] , [3,3],....
+Ater storing the slope into map we will calculate the max point for that slope
+For example after storing the slope map can look like this
+[2/3,3]
+[INF,1]//for perpendicular case
+[1/3,2]...
+find the max number of points having the same slope w.r.t. that selected point :-means which slope have maximum point
+:- here 2/3 have 3 point so our answer will be 3+1(we are adding that point as well)
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

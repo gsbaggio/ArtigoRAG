@@ -1,0 +1,269 @@
+CURRENT QUESTION:
+An ugly number is a positive integer whose prime factors are limited to 2, 3, and 5.
+
+Given an integer n, return the nth ugly number.
+
+ 
+
+Example 1:
+
+Input: n = 10
+Output: 12
+Explanation: [1, 2, 3, 4, 5, 6, 8, 9, 10, 12] is the sequence of the first 10 ugly numbers.
+Example 2:
+
+Input: n = 1
+Output: 1
+Explanation: 1 has no prime factors, therefore all of its prime factors are limited to 2, 3, and 5.
+ 
+
+Constraints:
+
+1 <= n <= 1690
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Longest Uncommon Subsequence II
+Categorys: Array Hash Table Two Pointers String Sorting
+Question text: Given an array of strings strs, return the length of the longest uncommon subsequence between them. If the longest uncommon subsequence does not exist, return -1.
+
+An uncommon subsequence between an array of strings is a string that is a subsequence of one string but not the others.
+
+A subsequence of a string s is a string that can be obtained after deleting any number of characters from s.
+
+For example, "abc" is a subsequence of "aebdc" because you can delete the underlined characters in "aebdc" to get "abc". Other subsequences of "aebdc" include "aebdc", "aeb", and "" (empty string).
+ 
+
+Example 1:
+
+Input: strs = ["aba","cdc","eae"]
+Output: 3
+Example 2:
+
+Input: strs = ["aaa","aaa","aa"]
+Output: -1
+ 
+
+Constraints:
+
+2 <= strs.length <= 50
+1 <= strs[i].length <= 10
+strs[i] consists of lowercase English letters.
+Solution: class Solution {
+public:
+    int findLUSlength(vector<string>& strs) {
+        int maxi = -1;
+        // the longest string which is not a subsequence of other is the answer
+        for (int i = 0; i < strs.size(); i++) {
+            bool isSubsequence = false;
+            for (int j = 0; j < strs.size(); j++) {
+                if (i != j && subseq(strs[i], strs[j])) {
+                    isSubsequence = true;
+                    break;
+                }
+            }
+            if (!isSubsequence) maxi = max(maxi, (int)strs[i].length());
+        }
+        return maxi;
+    }
+
+    bool subseq(string a, string b) {
+    int i = 0;
+    for (char c : b) if (i < a.size() && a[i] == c) i++;
+    return i == a.size();
+    }
+};
+Explanation: Insights
+We need to find the longest string which is not a subsequence of other.
+This question is similar to the first version of it where we needed to simply return the longest string if both the strings were not equal.
+Similarly, here we need to find the longest such string from an array of strings, so it is as simple as the first question.
+Go through the strings one by one and check which string isn't a subsequence of another and has the longest length. We can simply pick that string as the LUS.
+
+Example question 2:
+Title: Largest Component Size by Common Factor
+Categorys: Array Hash Table Math Union Find Number Theory
+Question text: You are given an integer array of unique positive integers nums. Consider the following graph:
+
+There are nums.length nodes, labeled nums[0] to nums[nums.length - 1],
+There is an undirected edge between nums[i] and nums[j] if nums[i] and nums[j] share a common factor greater than 1.
+Return the size of the largest connected component in the graph.
+
+ 
+
+Example 1:
+Input: nums = [4,6,15,35]
+Output: 4
+Example 2:
+Input: nums = [20,50,9,63]
+Output: 2
+Example 3:
+Input: nums = [2,3,6,7,4,12,21,39]
+Output: 8
+ 
+
+Constraints:
+
+1 <= nums.length <= 2 * 104
+1 <= nums[i] <= 105
+All the values of nums are unique.
+Solution: class UnionFind {
+    public:
+    vector<int> par, sz;
+    UnionFind(int n) : par(n), sz(n,1) {
+        iota(begin(par), end(par), 0);
+    }
+    int find(int x) {
+        if(par[x] == x) return x;
+        return par[x] = find(par[x]);
+    }
+    bool Union(int x, int y) {
+        int xp = find(x), yp = find(y);
+        if(xp == yp) return false;
+        if(sz[xp] > sz[yp]) par[yp] = par[xp], sz[xp] += sz[yp];
+        else par[xp] = par[yp], sz[yp] += sz[xp];
+        return true;
+    }
+};
+class Solution {
+public:
+    int largestComponentSize(vector<int>& nums) {
+        int n = size(nums), ans = 1;
+        UnionFind uf(n + 1);
+        unordered_map<int, int> mp;                    // stores {p : 1st found index i such that nums[i] % p == 0}
+        auto putOrUnion = [&](int p, int i){           // puts 1st found index of element that p divides into hashmap
+            if(mp.count(p)) uf.Union(mp[p], i);        // and if already exists, directly union them
+            else mp[p] = i;
+        };
+        for(int i = 0; i < n; i++) {                   // prime factorize nums[i]
+            int cur = nums[i];
+            if(cur % 2 == 0) {                        
+                putOrUnion(2, i);
+                while(cur % 2 == 0) cur >>= 1;
+            }
+            for(int p = 3; p <= sqrt(cur); p += 2)   
+                if(cur % p == 0) {                 
+                    putOrUnion(p, i);
+                    while(cur % p == 0) cur /= p;
+                }
+            if(cur > 1) putOrUnion(cur, i);            // nums[i] itself is prime   
+        }
+        return *max_element(begin(uf.sz), end(uf.sz)); // return largest component
+    }
+};
+Explanation: (Union-Find w/ Prime Factorization)
+
+We can see that if two numbers belong to the same group due to some common factor, they should also have some common prime factor. This allows us to use slightly different approach where we find all prime factors of a number and union the elements based on the common prime factors amongst them. This can reduce the space used by DSU to O(N) down from O(M) by allowing us to perform union on indices of elements instead of elements & its factors, although we do incur a cost of storing primes and elements in nums that it divides.
+However, we can add another small optimization for space. Instead of storing all the primes as a vector in the hashmap and then performing union on the indices of element that each prime divides, we can just put the 1st index of element we find that a prime p divides and then for every subsequent indices, we just union them there itself. This saves space and also eliminate the last step of iterating over each prime and then unioning the indices.
+
+Example question 3:
+Title: Word Ladder II
+Categorys: Hash Table String Backtracking Breadth-First Search
+Question text: A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of words beginWord -> s1 -> s2 -> ... -> sk such that:
+
+Every adjacent pair of words differs by a single letter.
+Every si for 1 <= i <= k is in wordList. Note that beginWord does not need to be in wordList.
+sk == endWord
+Given two words, beginWord and endWord, and a dictionary wordList, return all the shortest transformation sequences from beginWord to endWord, or an empty list if no such sequence exists. Each sequence should be returned as a list of the words [beginWord, s1, s2, ..., sk].
+
+ 
+
+Example 1:
+
+Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+Output: [["hit","hot","dot","dog","cog"],["hit","hot","lot","log","cog"]]
+Explanation: There are 2 shortest transformation sequences:
+"hit" -> "hot" -> "dot" -> "dog" -> "cog"
+"hit" -> "hot" -> "lot" -> "log" -> "cog"
+Example 2:
+
+Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log"]
+Output: []
+Explanation: The endWord "cog" is not in wordList, therefore there is no valid transformation sequence.
+ 
+
+Constraints:
+
+1 <= beginWord.length <= 5
+endWord.length == beginWord.length
+1 <= wordList.length <= 500
+wordList[i].length == beginWord.length
+beginWord, endWord, and wordList[i] consist of lowercase English letters.
+beginWord != endWord
+All the words in wordList are unique.
+The sum of all shortest transformation sequences does not exceed 105.
+Solution: vector<vector<string>> findLadders(string beginWord, string endWord, unordered_set<string> &wordList) {
+        //very interesting problem
+        //It can be solved with standard BFS. The tricky idea is doing BFS of paths instead of words!
+        //Then the queue becomes a queue of paths.
+        vector<vector<string>> ans;
+        queue<vector<string>> paths;
+        wordList.insert(endWord);
+        paths.push({beginWord});
+        int level = 1;
+        int minLevel = INT_MAX;
+        
+        //"visited" records all the visited nodes on this level
+        //these words will never be visited again after this level 
+        //and should be removed from wordList. This is guaranteed
+        // by the shortest path.
+        unordered_set<string> visited; 
+        
+        while (!paths.empty()) {
+            vector<string> path = paths.front();
+            paths.pop();
+            if (path.size() > level) {
+                //reach a new level
+                for (string w : visited) wordList.erase(w);
+                visited.clear();
+                if (path.size() > minLevel)
+                    break;
+                else
+                    level = path.size();
+            }
+            string last = path.back();
+            //find next words in wordList by changing
+            //each element from 'a' to 'z'
+            for (int i = 0; i < last.size(); ++i) {
+                string news = last;
+                for (char c = 'a'; c <= 'z'; ++c) {
+                    news[i] = c;
+                    if (wordList.find(news) != wordList.end()) {
+                    //next word is in wordList
+                    //append this word to path
+                    //path will be reused in the loop
+                    //so copy a new path
+                        vector<string> newpath = path;
+                        newpath.push_back(news);
+                        visited.insert(news);
+                        if (news == endWord) {
+                            minLevel = level;
+                            ans.push_back(newpath);
+                        }
+                        else
+                            paths.push(newpath);
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+Explanation: I have struggled with this problem for a long time because nearly all the solution on the web is too long or too tricky and can hardly be remembered during the interview.
+
+In fact, this problem can be solved with a very standard BFS process, whose structure could haven been written by you for many many times (using while loop and a queue).
+The following code is written in a very standard BFS method, which is easy to memorize.
+
+The only tricky thing you need to remember is this is a BFS of paths not words!
+So the element is the queue is a vector. That's it.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

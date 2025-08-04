@@ -1,0 +1,332 @@
+CURRENT QUESTION:
+You are given an integer num. You can swap two digits at most once to get the maximum valued number.
+
+Return the maximum valued number you can get.
+
+ 
+
+Example 1:
+
+Input: num = 2736
+Output: 7236
+Explanation: Swap the number 2 and the number 7.
+Example 2:
+
+Input: num = 9973
+Output: 9973
+Explanation: No swap.
+ 
+
+Constraints:
+
+0 <= num <= 108
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Implement Router
+Categorys: Array Hash Table Binary Search Design Queue Ordered Set
+Question text: Design a data structure that can efficiently manage data packets in a network router. Each data packet consists of the following attributes:
+
+source: A unique identifier for the machine that generated the packet.
+destination: A unique identifier for the target machine.
+timestamp: The time at which the packet arrived at the router.
+Implement the Router class:
+
+Router(int memoryLimit): Initializes the Router object with a fixed memory limit.
+
+memoryLimit is the maximum number of packets the router can store at any given time.
+If adding a new packet would exceed this limit, the oldest packet must be removed to free up space.
+bool addPacket(int source, int destination, int timestamp): Adds a packet with the given attributes to the router.
+
+A packet is considered a duplicate if another packet with the same source, destination, and timestamp already exists in the router.
+Return true if the packet is successfully added (i.e., it is not a duplicate); otherwise return false.
+int[] forwardPacket(): Forwards the next packet in FIFO (First In First Out) order.
+
+Remove the packet from storage.
+Return the packet as an array [source, destination, timestamp].
+If there are no packets to forward, return an empty array.
+int getCount(int destination, int startTime, int endTime):
+
+Returns the number of packets currently stored in the router (i.e., not yet forwarded) that have the specified destination and have timestamps in the inclusive range [startTime, endTime].
+Note that queries for addPacket will be made in increasing order of timestamp.
+
+ 
+
+Example 1:
+
+Input:
+["Router", "addPacket", "addPacket", "addPacket", "addPacket", "addPacket", "forwardPacket", "addPacket", "getCount"]
+[[3], [1, 4, 90], [2, 5, 90], [1, 4, 90], [3, 5, 95], [4, 5, 105], [], [5, 2, 110], [5, 100, 110]]
+
+Output:
+[null, true, true, false, true, true, [2, 5, 90], true, 1]
+
+Explanation
+
+Router router = new Router(3); // Initialize Router with memoryLimit of 3.
+router.addPacket(1, 4, 90); // Packet is added. Return True.
+router.addPacket(2, 5, 90); // Packet is added. Return True.
+router.addPacket(1, 4, 90); // This is a duplicate packet. Return False.
+router.addPacket(3, 5, 95); // Packet is added. Return True
+router.addPacket(4, 5, 105); // Packet is added, [1, 4, 90] is removed as number of packets exceeds memoryLimit. Return True.
+router.forwardPacket(); // Return [2, 5, 90] and remove it from router.
+router.addPacket(5, 2, 110); // Packet is added. Return True.
+router.getCount(5, 100, 110); // The only packet with destination 5 and timestamp in the inclusive range [100, 110] is [4, 5, 105]. Return 1.
+Example 2:
+
+Input:
+["Router", "addPacket", "forwardPacket", "forwardPacket"]
+[[2], [7, 4, 90], [], []]
+
+Output:
+[null, true, [7, 4, 90], []]
+
+Explanation
+
+Router router = new Router(2); // Initialize Router with memoryLimit of 2.
+router.addPacket(7, 4, 90); // Return True.
+router.forwardPacket(); // Return [7, 4, 90].
+router.forwardPacket(); // There are no packets left, return [].
+ 
+
+Constraints:
+
+2 <= memoryLimit <= 105
+1 <= source, destination <= 2 * 105
+1 <= timestamp <= 109
+1 <= startTime <= endTime <= 109
+At most 105 calls will be made to addPacket, forwardPacket, and getCount methods altogether.
+queries for addPacket will be made in increasing order of timestamp.
+Solution: class Router {
+public:
+    map<vector<int>, int> mpp; // to track duplicates
+    queue<vector<int>> queue; // to store packets in FIFO order
+    unordered_map<int, vector<int>> timestamps; // for timestamps tracking
+    unordered_map<int, int> st; 
+    int maxSize = 0; // maxSize allowed
+
+    Router(int memoryLimit) { 
+        maxSize = memoryLimit; 
+    }
+
+    bool addPacket(int source, int destination, int timestamp) {
+        vector<int> packet = {source, destination, timestamp};
+        // checking for duplicate
+        if (mpp.count(packet))
+            return false;
+        if (queue.size() == maxSize) { // remove the first element if queue is full
+            vector<int> res = queue.front();
+            mpp.erase(res);
+            int temp = res[1];
+            st[temp]++;  
+            queue.pop();
+        }
+        queue.push(packet);
+        mpp[packet]++;
+        timestamps[destination].push_back(timestamp);
+        return true;
+    }
+
+    vector<int> forwardPacket() {
+        if(queue.empty()) return {};
+        vector<int> res = queue.front();
+        queue.pop();
+        mpp.erase(res);
+        int temp = res[1];
+        st[temp]++;
+        return res;
+    }
+
+    int getCount(int destination, int startTime, int endTime) {
+        if(timestamps.find(destination) == timestamps.end())
+            return 0;
+        auto &p = timestamps[destination];
+        int temp = st[destination];
+        auto right = lower_bound(p.begin() + temp, p.end(), startTime);
+        auto left = upper_bound(p.begin() + temp, p.end(), endTime);
+        return int(left - right);
+    }
+};
+Explanation: Approach
+Lets go over the data structures that we can use here to make our work simpler →
+Use a hashmap to track duplicates.
+Use a queue to store packets in FIFO order as mentioned in the question and pop when needed.
+Use a map of vector to track the timestamps and destinations.
+Use a map to track how many packets we have removed so far.
+Now lets go step by step through the functions,
+Router → Here we only store the maxSize allowed nothing else.
+addPacket → We firstly check if the packet has already been added, if yes then we simply return false. Else we add it in our ds's.
+forwardPacket → Simply remove the packet from our map and update it in our ds's.
+getCount → Use binary search functions lower bound and upper bound to return the range [left,right] which consists of elements in the range startTime and endTime.
+
+Example question 2:
+Title: Strong Password Checker
+Categorys: String Greedy Heap (Priority Queue)
+Question text: A password is considered strong if the below conditions are all met:
+
+It has at least 6 characters and at most 20 characters.
+It contains at least one lowercase letter, at least one uppercase letter, and at least one digit.
+It does not contain three repeating characters in a row (i.e., "Baaabb0" is weak, but "Baaba0" is strong).
+Given a string password, return the minimum number of steps required to make password strong. if password is already strong, return 0.
+
+In one step, you can:
+
+Insert one character to password,
+Delete one character from password, or
+Replace one character of password with another character.
+ 
+
+Example 1:
+
+Input: password = "a"
+Output: 5
+Example 2:
+
+Input: password = "aA1"
+Output: 3
+Example 3:
+
+Input: password = "1337C0d3"
+Output: 0
+ 
+
+Constraints:
+
+1 <= password.length <= 50
+password consists of letters, digits, dot '.' or exclamation mark '!'.
+Solution: class Solution(object):
+    def strongPasswordChecker(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        missing_type = 3
+        if any('a' <= c <= 'z' for c in s): missing_type -= 1
+        if any('A' <= c <= 'Z' for c in s): missing_type -= 1
+        if any(c.isdigit() for c in s): missing_type -= 1
+
+        change = 0
+        one = two = 0
+        p = 2
+        while p < len(s):
+            if s[p] == s[p-1] == s[p-2]:
+                length = 2
+                while p < len(s) and s[p] == s[p-1]:
+                    length += 1
+                    p += 1
+                    
+                change += length / 3
+                if length % 3 == 0: one += 1
+                elif length % 3 == 1: two += 1
+            else:
+                p += 1
+        
+        if len(s) < 6:
+            return max(missing_type, 6 - len(s))
+        elif len(s) <= 20:
+            return max(missing_type, change)
+        else:
+            delete = len(s) - 20
+            
+            change -= min(delete, one)
+            change -= min(max(delete - one, 0), two * 2) / 2
+            change -= max(delete - one - 2 * two, 0) / 3
+                
+            return delete + max(missing_type, change)
+Explanation: The len < 6 and 6 <= len <= 20 cases are easy. When len > 20, we need to do len - 20 times deletion. Also we need to do a change for every three repeating characters.
+
+For any repeating sequences with len % 3 == 0, we can reduce one replacement by deleting one character. For any repeating sequences with len % 3 == 1, we can reduce one replacement by deleting two character. For the remaining sequences, we can reduce every replacement by deleting three character.
+
+Example question 3:
+Title: Shortest Path with Alternating Colors
+Categorys: Breadth-First Search Graph
+Question text: You are given an integer n, the number of nodes in a directed graph where the nodes are labeled from 0 to n - 1. Each edge is red or blue in this graph, and there could be self-edges and parallel edges.
+
+You are given two arrays redEdges and blueEdges where:
+
+redEdges[i] = [ai, bi] indicates that there is a directed red edge from node ai to node bi in the graph, and
+blueEdges[j] = [uj, vj] indicates that there is a directed blue edge from node uj to node vj in the graph.
+Return an array answer of length n, where each answer[x] is the length of the shortest path from node 0 to node x such that the edge colors alternate along the path, or -1 if such a path does not exist.
+
+ 
+
+Example 1:
+
+Input: n = 3, redEdges = [[0,1],[1,2]], blueEdges = []
+Output: [0,1,-1]
+Example 2:
+
+Input: n = 3, redEdges = [[0,1]], blueEdges = [[2,1]]
+Output: [0,1,-1]
+ 
+
+Constraints:
+
+1 <= n <= 100
+0 <= redEdges.length, blueEdges.length <= 400
+redEdges[i].length == blueEdges[j].length == 2
+0 <= ai, bi, uj, vj < n
+Solution: enum class Color { kInit, kRed, kBlue };
+
+class Solution {
+ public:
+  vector<int> shortestAlternatingPaths(int n, vector<vector<int>>& redEdges,
+                                       vector<vector<int>>& blueEdges) {
+    vector<int> ans(n, -1);
+    vector<vector<pair<int, Color>>> graph(n);  // graph[u] := [(v, edgeColor)]
+    queue<pair<int, Color>> q{{{0, Color::kInit}}};  // [(u, prevColor)]
+
+    for (const vector<int>& edge : redEdges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].emplace_back(v, Color::kRed);
+    }
+
+    for (const vector<int>& edge : blueEdges) {
+      const int u = edge[0];
+      const int v = edge[1];
+      graph[u].emplace_back(v, Color::kBlue);
+    }
+
+    for (int step = 0; !q.empty(); ++step)
+      for (int sz = q.size(); sz > 0; --sz) {
+        const auto [u, prevColor] = q.front();
+        q.pop();
+        ans[u] = ans[u] == -1 ? step : ans[u];
+        for (auto& [v, edgeColor] : graph[u]) {
+          if (v == -1 || edgeColor == prevColor)
+            continue;
+          q.emplace(v, edgeColor);
+          v = -1;  // Mark (u, v) as used.
+        }
+      }
+
+    return ans;
+  }
+};
+Explanation: Intuition :
+Here we are given a graph with two types of edges (red and blue), the goal is to find the shortest path from node 0 to every other node such that no two consecutive edges have the same color.
+Explanation to Approach :
+So we are using a breadth-first search (BFS) algorithm to traverse the graph, keeping track of the distance from node 0 to every other node and the previous edge color.
+The graph is represented as an adjacency list, where graph[u] is a list of pairs (v, edgeColor) representing an edge from node u to node v with color edgeColor.
+The BFS algorithm starts from node 0 and adds node v to the queue if it is not visited yet or if the color of the edge from u to v is different from the previous edge color.
+The distance from node 0 to node v is incremented in each step.
+The ans array is updated with the minimum distance found so far to each node. If a node is visited again, its distance in ans is not updated.
+The algorithm terminates when the queue is empty, meaning that all reachable nodes have been visited.
+If a node is not visited, its distance in ans remains -1, indicating that it is not reachable from node 0.
+Complexity :
+Time complexity : O(n)
+Space complexity : O(n)
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

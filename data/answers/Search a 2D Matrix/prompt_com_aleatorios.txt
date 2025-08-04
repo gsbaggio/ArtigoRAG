@@ -1,0 +1,204 @@
+CURRENT QUESTION:
+You are given an m x n integer matrix matrix with the following two properties:
+
+Each row is sorted in non-decreasing order.
+The first integer of each row is greater than the last integer of the previous row.
+Given an integer target, return true if target is in matrix or false otherwise.
+
+You must write a solution in O(log(m * n)) time complexity.
+
+ 
+
+Example 1:
+Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3
+Output: true
+Example 2:
+
+Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13
+Output: false
+ 
+
+Constraints:
+
+m == matrix.length
+n == matrix[i].length
+1 <= m, n <= 100
+-104 <= matrix[i][j], target <= 104
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Candy
+Categorys: Array Greedy
+Question text: There are n children standing in a line. Each child is assigned a rating value given in the integer array ratings.
+
+You are giving candies to these children subjected to the following requirements:
+
+Each child must have at least one candy.
+Children with a higher rating get more candies than their neighbors.
+Return the minimum number of candies you need to have to distribute the candies to the children.
+
+ 
+
+Example 1:
+
+Input: ratings = [1,0,2]
+Output: 5
+Explanation: You can allocate to the first, second and third child with 2, 1, 2 candies respectively.
+Example 2:
+
+Input: ratings = [1,2,2]
+Output: 4
+Explanation: You can allocate to the first, second and third child with 1, 2, 1 candies respectively.
+The third child gets 1 candy because it satisfies the above two conditions.
+ 
+
+Constraints:
+
+n == ratings.length
+1 <= n <= 2 * 104
+0 <= ratings[i] <= 2 * 104
+Solution: class Solution {
+public:
+    int candy(vector<int>& ratings) {
+        int n = ratings.size();
+        int candy = n, i=1;
+        while(i<n){
+            if(ratings[i] == ratings[i-1]){
+                i++;
+                continue;
+            }
+            
+            //For increasing slope
+            int peak = 0;
+            while(ratings[i] > ratings [i-1]){
+                peak++;
+                candy += peak;
+                i++;
+                if(i == n) return candy;
+            }
+            
+            //For decreasing slope
+            int valley = 0;
+            while(i<n && ratings[i] < ratings[i-1]){
+                valley++;
+                candy += valley;
+                i++;
+            }
+            candy -= min(peak, valley); //Keep only the higher peak
+        }
+        return candy;
+    }
+};
+Explanation: Implementation :
+
+So we take initially n candy for n children. Then we start traversing the rating array from the second element. If we find equal elements we continue to next element as they already have 1 candy.
+
+If an increasing slop is found (ratings[i] > ratings [i-1]) we increase value of peak and and add the peak value to candy. After each iteration new peak is found and the value is added to candy. In this way we also get the value of minimum height of the peak at the end.
+
+If a decreasing slope is found (ratings[i] < ratings [i-1]) we calculate the depth of the valley which is in turn the minimum height of the previous peak. In each iteration we increse the valley by 1 and add it to the candy. You can visualise it as 1 candy is added to each of the previous members untill peak or the new peak value is interted at the previous peak and other values are shifted to right by 1 place. We also need to check if it is going out of array if so then return the number of candy.
+
+After this we can see we have added the peak value twice in candy once as peak and once as valley. But we need only the max value out of these two so we substract the min(peak, valley) from candy.
+
+After that return the candy.
+
+Note : We have considered the sequence increasing -> decreasing as peak should have the max value between the height of left (increasing) side and height of right (decreasing) side. In case of decresing -> increasing we dont need to give special attention as the vallley will always have 1 candy and in our code in this case peak will have 0 value so nothing will be substracted from the candy in the end of iteration.
+
+Example question 2:
+Title: Majority Element
+Categorys: Array Hash Table Divide and Conquer Sorting Counting
+Question text: The DNA sequence is composed of a series of nucleotides abbreviated as 'A', 'C', 'G', and 'T'.
+
+For example, "ACGAATTCCG" is a DNA sequence.
+When studying DNA, it is useful to identify repeated sequences within the DNA.
+
+Given a string s that represents a DNA sequence, return all the 10-letter-long sequences (substrings) that occur more than once in a DNA molecule. You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"
+Output: ["AAAAACCCCC","CCCCCAAAAA"]
+Example 2:
+
+Input: s = "AAAAAAAAAAAAA"
+Output: ["AAAAAAAAAA"]
+ 
+
+Constraints:
+
+1 <= s.length <= 105
+s[i] is either 'A', 'C', 'G', or 'T'.
+Solution: class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        int count = 0;
+        int candidate = 0;
+        
+        for (int num : nums) {
+            if (count == 0) {
+                candidate = num;
+            }
+            
+            if (num == candidate) {
+                count++;
+            } else {
+                count--;
+            }
+        }
+        
+        return candidate;
+    }
+};
+Explanation: Intuition:
+The intuition behind the Moore's Voting Algorithm is based on the fact that if there is a majority element in an array, it will always remain in the lead, even after encountering other elements.
+
+Explanation:
+Algorithm:
+
+Initialize two variables: count and candidate. Set count to 0 and candidate to an arbitrary value.
+Iterate through the array nums:
+a. If count is 0, assign the current element as the new candidate and increment count by 1.
+b. If the current element is the same as the candidate, increment count by 1.
+c. If the current element is different from the candidate, decrement count by 1.
+After the iteration, the candidate variable will hold the majority element.
+Explanation:
+
+The algorithm starts by assuming the first element as the majority candidate and sets the count to 1.
+As it iterates through the array, it compares each element with the candidate:
+a. If the current element matches the candidate, it suggests that it reinforces the majority element because it appears again. Therefore, the count is incremented by 1.
+b. If the current element is different from the candidate, it suggests that there might be an equal number of occurrences of the majority element and other elements. Therefore, the count is decremented by 1.
+Note that decrementing the count doesn't change the fact that the majority element occurs more than n/2 times.
+If the count becomes 0, it means that the current candidate is no longer a potential majority element. In this case, a new candidate is chosen from the remaining elements.
+The algorithm continues this process until it has traversed the entire array.
+The final value of the candidate variable will hold the majority element.
+Explanation of Correctness:
+The algorithm works on the basis of the assumption that the majority element occurs more than n/2 times in the array. This assumption guarantees that even if the count is reset to 0 by other elements, the majority element will eventually regain the lead.
+
+Let's consider two cases:
+
+If the majority element has more than n/2 occurrences:
+
+The algorithm will ensure that the count remains positive for the majority element throughout the traversal, guaranteeing that it will be selected as the final candidate.
+If the majority element has exactly n/2 occurrences:
+
+In this case, there will be an equal number of occurrences for the majority element and the remaining elements combined.
+However, the majority element will still be selected as the final candidate because it will always have a lead over any other element.
+In both cases, the algorithm will correctly identify the majority element.
+
+The time complexity of the Moore's Voting Algorithm is O(n) since it traverses the array once.
+
+This approach is efficient compared to sorting as it requires only a single pass through the array and does not change the original order of the elements.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

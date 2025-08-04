@@ -1,6 +1,7 @@
 from typing import List, Dict, Any, Tuple
 import os
 import json
+import random
 from datetime import datetime
 
 import pandas as pd
@@ -75,6 +76,27 @@ class ProgrammingQuestionRAG:
         
         return similar_questions[:top_k]
 
+    def retrieve_random_questions(self) -> List[Dict[str, Any]]:
+        num_examples = random.choice([1, 2, 3])
+        
+        max_examples = min(num_examples, len(self.questions_df))
+        
+        random_indices = random.sample(range(len(self.questions_df)), max_examples)
+        
+        random_questions = []
+        for idx in random_indices:
+            random_questions.append({
+                'question_id': self.questions_df.iloc[idx]['question_id'],
+                'title': self.questions_df.iloc[idx]['title'],
+                'difficulty': self.questions_df.iloc[idx]['difficulty'],
+                'category': self.questions_df.iloc[idx]['category'],
+                'question_text': self.questions_df.iloc[idx]['question_text'],
+                'solution': self.questions_df.iloc[idx]['solution'],
+                'explanation': self.questions_df.iloc[idx]['explanation']
+            })
+        
+        return random_questions
+
     def save_context_to_file(self, context: str, output_path: str = "prompt.txt"):
         try:
             with open(output_path, 'w', encoding='utf-8') as f:
@@ -119,18 +141,25 @@ class ProgrammingQuestionRAG:
             use_adaptive_threshold=True 
         )
         
+        random_questions = self.retrieve_random_questions()
+        
         context_with_rag = self._build_context(question, similar_questions)
         
         self.save_context_to_file(context_with_rag)
         
         self.save_context_without_rag(question)
         
+        context_with_random = self._build_context_with_random(question, random_questions)
+        self.save_context_to_file(context_with_random, "prompt_com_aleatorios.txt")
+        
         return {
             "question": question,
             "timestamp": datetime.now().isoformat(),
             "context_with_rag_path": "resposta.txt",
             "context_without_rag_path": "resposta_sem_rag.txt",
+            "context_with_random_path": "prompt_com_aleatorios.txt",
             "similar_questions_found": len(similar_questions),
+            "random_questions_found": len(random_questions),
             "similarity_scores": [q['similarity_score'] for q in similar_questions] if similar_questions else []
         }
     
@@ -170,6 +199,42 @@ class ProgrammingQuestionRAG:
         
         return context
 
+    def _build_context_with_random(self, question: str, random_questions: List[Dict]) -> str:
+        context = f"CURRENT QUESTION:\n{question}\n\n"
+        
+        if random_questions:
+            context += "EXAMPLE QUESTIONS:\n"
+            for i, q in enumerate(random_questions):
+                context += f"Example question {i+1}:\n"
+                context += f"Title: {q['title']}\n"
+                context += f"Categorys: {q['category']}\n"
+                context += f"Question text: {q['question_text']}\n"
+                context += f"Solution: {q['solution']}\n"
+                context += f"Explanation: {q['explanation']}\n\n"
+        else:
+            context += "No example questions available.\n\n"
+        
+        context += """
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        """
+        
+        if random_questions:
+            context += "4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.\n"
+        else:
+            context += "4. Solve the problem from first principles.\n"
+        
+        context += "        5. Don't use any external libraries. Don't need to import any libraries.\n"
+        
+        return context
+
     def process_problem(self, problem_path: str, output_dir: str = None) -> Dict[str, Any]:
         try:
             with open(problem_path, "r", encoding="utf-8") as f:
@@ -183,6 +248,7 @@ class ProgrammingQuestionRAG:
             
         prompt_with_rag_path = os.path.join(output_dir, "prompt.txt")
         prompt_without_rag_path = os.path.join(output_dir, "prompt_sem_rag.txt")
+        prompt_with_random_path = os.path.join(output_dir, "prompt_com_aleatorios.txt")
         
         similar_questions = self.retrieve_similar_questions(
             question, 
@@ -191,18 +257,25 @@ class ProgrammingQuestionRAG:
             use_adaptive_threshold=True
         )
         
+        random_questions = self.retrieve_random_questions()
+        
         context_with_rag = self._build_context(question, similar_questions)
         self.save_context_to_file(context_with_rag, prompt_with_rag_path)
         
         context_without_rag = self._build_context_without_rag(question)
         self.save_context_to_file(context_without_rag, prompt_without_rag_path)
         
+        context_with_random = self._build_context_with_random(question, random_questions)
+        self.save_context_to_file(context_with_random, prompt_with_random_path)
+        
         return {
             "question": question,
             "timestamp": datetime.now().isoformat(),
             "context_with_rag_path": prompt_with_rag_path,
             "context_without_rag_path": prompt_without_rag_path,
+            "context_with_random_path": prompt_with_random_path,
             "similar_questions_found": len(similar_questions),
+            "random_questions_found": len(random_questions),
             "similarity_scores": [q['similarity_score'] for q in similar_questions] if similar_questions else []
         }
     
@@ -239,6 +312,7 @@ if __name__ == "__main__":
             print("Test question processed:")
             print(f"RAG: {top_level_result['context_with_rag_path']}")
             print(f"No RAG: {top_level_result['context_without_rag_path']}")
+            print(f"Random Examples: {top_level_result['context_with_random_path']}")
     except Exception as e:
         print(f"Error: {e}")
     

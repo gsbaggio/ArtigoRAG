@@ -1,0 +1,143 @@
+CURRENT QUESTION:
+You are given an integer array prices where prices[i] is the price of a given stock on the ith day, and an integer k.
+
+Find the maximum profit you can achieve. You may complete at most k transactions: i.e. you may buy at most k times and sell at most k times.
+
+Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
+
+ 
+
+Example 1:
+
+Input: k = 2, prices = [2,4,1]
+Output: 2
+Explanation: Buy on day 1 (price = 2) and sell on day 2 (price = 4), profit = 4-2 = 2.
+Example 2:
+
+Input: k = 2, prices = [3,2,6,5,0,3]
+Output: 7
+Explanation: Buy on day 2 (price = 2) and sell on day 3 (price = 6), profit = 6-2 = 4. Then buy on day 5 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
+ 
+
+Constraints:
+
+1 <= k <= 100
+1 <= prices.length <= 1000
+0 <= prices[i] <= 1000
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Non-decreasing Array
+Categorys: Array
+Question text: Given an array nums with n integers, your task is to check if it could become non-decreasing by modifying at most one element.
+
+We define an array is non-decreasing if nums[i] <= nums[i + 1] holds for every i (0-based) such that (0 <= i <= n - 2).
+
+ 
+
+Example 1:
+
+Input: nums = [4,2,3]
+Output: true
+Explanation: You could modify the first 4 to 1 to get a non-decreasing array.
+Example 2:
+
+Input: nums = [4,2,1]
+Output: false
+Explanation: You cannot get a non-decreasing array by modifying at most one element.
+ 
+
+Constraints:
+
+n == nums.length
+1 <= n <= 104
+-105 <= nums[i] <= 105
+Solution: bool checkPossibility(vector<int>& nums) {
+        int cnt = 0;                                                                    //the number of changes
+        for(int i = 1; i < nums.size() && cnt<=1 ; i++){
+            if(nums[i-1] > nums[i]){
+                cnt++;
+                if(i-2<0 || nums[i-2] <= nums[i])nums[i-1] = nums[i];                    //modify nums[i-1] of a priority
+                else nums[i] = nums[i-1];                                                //have to modify nums[i]
+            }
+        }
+        return cnt<=1;
+    }
+Explanation: This problem is like a greedy problem. When you find nums[i-1] > nums[i] for some i, you will prefer to change nums[i-1]'s value, since a larger nums[i] will give you more risks that you get inversion errors after position i. But, if you also find nums[i-2] > nums[i], then you have to change nums[i]'s value instead, or else you need to change both of nums[i-2]'s and nums[i-1]'s values.
+
+Example question 2:
+Title: Cut Off Trees for Golf Event
+Categorys: Array Breadth-First Search Heap (Priority Queue) Matrix
+Question text: You are asked to cut off all the trees in a forest for a golf event. The forest is represented as an m x n matrix. In this matrix:
+
+0 means the cell cannot be walked through.
+1 represents an empty cell that can be walked through.
+A number greater than 1 represents a tree in a cell that can be walked through, and this number is the tree's height.
+In one step, you can walk in any of the four directions: north, east, south, and west. If you are standing in a cell with a tree, you can choose whether to cut it off.
+
+You must cut off the trees in order from shortest to tallest. When you cut off a tree, the value at its cell becomes 1 (an empty cell).
+
+Starting from the point (0, 0), return the minimum steps you need to walk to cut off all the trees. If you cannot cut off all the trees, return -1.
+
+Note: The input is generated such that no two trees have the same height, and there is at least one tree needs to be cut off.
+
+ 
+
+Example 1:
+Input: forest = [[1,2,3],[0,0,4],[7,6,5]]
+Output: 6
+Explanation: Following the path above allows you to cut off the trees from shortest to tallest in 6 steps.
+Example 2:
+Input: forest = [[1,2,3],[0,0,0],[7,6,5]]
+Output: -1
+Explanation: The trees in the bottom row cannot be accessed as the middle row is blocked.
+Example 3:
+
+Input: forest = [[2,3,4],[0,0,5],[8,7,6]]
+Output: 6
+Explanation: You can follow the same path as Example 1 to cut off all the trees.
+Note that you can cut off the first tree at (0, 0) before making any steps.
+ 
+
+Constraints:
+
+m == forest.length
+n == forest[i].length
+1 <= m, n <= 50
+0 <= forest[i][j] <= 109
+Heights of all trees are distinct.
+Solution: def astar(forest, sr, sc, tr, tc):
+    R, C = len(forest), len(forest[0])
+    heap = [(0, 0, sr, sc)]
+    cost = {(sr, sc): 0}
+    while heap:
+        f, g, r, c = heapq.heappop(heap)
+        if r == tr and c == tc: return g
+        for nr, nc in ((r-1,c), (r+1,c), (r,c-1), (r,c+1)):
+            if 0 <= nr < R and 0 <= nc < C and forest[nr][nc]:
+                ncost = g + 1 + abs(nr - tr) + abs(nc - tc)
+                if ncost < cost.get((nr, nc), 9999):
+                    cost[nr, nc] = ncost
+                    heapq.heappush(heap, (ncost, g+1, nr, nc))
+    return -1
+Explanation: A* Search [Accepted]
+Intuition and Algorithm
+
+The A* star algorithm is another path-finding algorithm. For every node at position (r, c), we have some estimated cost node.f = node.g + node.h, where node.g is the actual distance from (sr, sc) to (r, c), and node.h is our heuristic (guess) of the distance from (r, c) to (tr, tc). In this case, our guess will be the taxicab distance, node.h = abs(r-tr) + abs(c-tc).
+
+We keep a priority queue to decide what node to search in (expand) next. We can prove that if we find the target node, we must have traveled the lowest possible distance node.g. By considering the last time when two backward paths are the same, without loss of generality we could suppose the penultimate square of the two paths are different, and then in this case node.f = node.g + 1, showing the path with less actual distance travelled is expanded first as desired.
+
+It might be useful for solvers familiar with Dijkstra's Algorithm to know that Dijkstra's algorithm is a special case of A* Search with node.h = 0 always.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.

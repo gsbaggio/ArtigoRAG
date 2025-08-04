@@ -1,0 +1,220 @@
+CURRENT QUESTION:
+Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
+
+Each row must contain the digits 1-9 without repetition.
+Each column must contain the digits 1-9 without repetition.
+Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+Note:
+
+A Sudoku board (partially filled) could be valid but is not necessarily solvable.
+Only the filled cells need to be validated according to the mentioned rules.
+ 
+
+Example 1:
+Input: board = 
+[["5","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]
+Output: true
+Example 2:
+
+Input: board = 
+[["8","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]
+Output: false
+Explanation: Same as Example 1, except with the 5 in the top left corner being modified to 8. Since there are two 8's in the top left 3x3 sub-box, it is invalid.
+ 
+
+Constraints:
+
+board.length == 9
+board[i].length == 9
+board[i][j] is a digit 1-9 or '.'.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Title: Same Tree
+Categorys: Tree Depth-First Search Breadth-First Search Binary Tree
+Question text: Given the roots of two binary trees p and q, write a function to check if they are the same or not.
+
+Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
+
+ 
+
+Example 1:
+Input: p = [1,2,3], q = [1,2,3]
+Output: true
+Example 2:
+Input: p = [1,2], q = [1,null,2]
+Output: false
+Example 3:
+Input: p = [1,2,1], q = [1,1,2]
+Output: false
+ 
+
+Constraints:
+
+The number of nodes in both trees is in the range [0, 100].
+-104 <= Node.val <= 104
+Solution: class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        // If both nodes are NULL, they are identical
+        if (p == NULL && q == NULL) {
+            return true;
+        }
+        // If only one of the nodes is NULL, they are not identical
+        if (p == NULL || q == NULL) {
+            return false;
+        }
+        // Check if values are equal and recursively check left and right subtrees
+        if (p->val == q->val) {
+            return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+        }
+        // Values are not equal, they are not identical
+        return false;
+    }
+};
+Explanation: Intuition
+The intuition behind the solution is to recursively check if two binary trees are identical. If both trees are empty (null), they are considered identical. If only one tree is empty or the values of the current nodes are different, the trees are not identical. Otherwise, we recursively check if the left and right subtrees of both trees are identical.
+
+Approach
+Check the base case: if both trees are null, return true.
+Check if only one tree is null or the values of the current nodes are different, return false.
+Recursively check if the left subtrees of both trees are identical.
+Recursively check if the right subtrees of both trees are identical.
+Return the logical AND of the results from steps 3 and 4.
+Complexity
+
+Time complexity:
+The time complexity of the solution is O(min(N,M)), where N and M are the number of nodes in the two trees, respectively. This is because we need to visit each node once in order to compare their values. In the worst case, where both trees have the same number of nodes, the time complexity would be O(N).
+
+Space complexity:
+The space complexity of the solution isO(min(H1,H2)), where H1 and H2 are the heights of the two trees, respectively. This is because the space used by the recursive stack is determined by the height of the smaller tree. In the worst case, where one tree is significantly larger than the other, the space complexity would be closer to O(N) or O(M), depending on which tree is larger.
+
+Example question 2:
+Title: Arranging Coins
+Categorys: Math Binary Search
+Question text: You have n coins and you want to build a staircase with these coins. The staircase consists of k rows where the ith row has exactly i coins. The last row of the staircase may be incomplete.
+
+Given the integer n, return the number of complete rows of the staircase you will build.
+
+ 
+
+Example 1:
+Input: n = 5
+Output: 2
+Explanation: Because the 3rd row is incomplete, we return 2.
+Example 2:
+Input: n = 8
+Output: 3
+Explanation: Because the 4th row is incomplete, we return 3.
+ 
+
+Constraints:
+
+1 <= n <= 231 - 1
+Solution: import math
+
+class Solution(object):
+    def arrangeCoins(self, n):
+        return int((math.sqrt(8 * n + 1) - 1) // 2)
+Explanation: Intuition
+This is about forming full staircase rows with coins: row i needs i coins. The total coins used for k full rows is the sum of 1 + 2 + ... + k = k(k+1)/2. Solve this inequality for k.
+
+Approach
+Use the quadratic formula to solve:
+
+k(k + 1)/2 <= n
+=> k² + k - 2n <= 0
+Using the positive root of the quadratic equation, compute:
+
+k = (sqrt(8n + 1) - 1) / 2
+Then return the floor of k.
+
+Complexity
+Time Complexity: ( O(1) ) — single math operation.
+Space Complexity: ( O(1) ) — no extra space.
+
+Example question 3:
+Title: Longest Uncommon Subsequence II
+Categorys: Array Hash Table Two Pointers String Sorting
+Question text: Given an array of strings strs, return the length of the longest uncommon subsequence between them. If the longest uncommon subsequence does not exist, return -1.
+
+An uncommon subsequence between an array of strings is a string that is a subsequence of one string but not the others.
+
+A subsequence of a string s is a string that can be obtained after deleting any number of characters from s.
+
+For example, "abc" is a subsequence of "aebdc" because you can delete the underlined characters in "aebdc" to get "abc". Other subsequences of "aebdc" include "aebdc", "aeb", and "" (empty string).
+ 
+
+Example 1:
+
+Input: strs = ["aba","cdc","eae"]
+Output: 3
+Example 2:
+
+Input: strs = ["aaa","aaa","aa"]
+Output: -1
+ 
+
+Constraints:
+
+2 <= strs.length <= 50
+1 <= strs[i].length <= 10
+strs[i] consists of lowercase English letters.
+Solution: class Solution {
+public:
+    int findLUSlength(vector<string>& strs) {
+        int maxi = -1;
+        // the longest string which is not a subsequence of other is the answer
+        for (int i = 0; i < strs.size(); i++) {
+            bool isSubsequence = false;
+            for (int j = 0; j < strs.size(); j++) {
+                if (i != j && subseq(strs[i], strs[j])) {
+                    isSubsequence = true;
+                    break;
+                }
+            }
+            if (!isSubsequence) maxi = max(maxi, (int)strs[i].length());
+        }
+        return maxi;
+    }
+
+    bool subseq(string a, string b) {
+    int i = 0;
+    for (char c : b) if (i < a.size() && a[i] == c) i++;
+    return i == a.size();
+    }
+};
+Explanation: Insights
+We need to find the longest string which is not a subsequence of other.
+This question is similar to the first version of it where we needed to simply return the longest string if both the strings were not equal.
+Similarly, here we need to find the longest such string from an array of strings, so it is as simple as the first question.
+Go through the strings one by one and check which string isn't a subsequence of another and has the longest length. We can simply pick that string as the LUS.
+
+
+        INSTRUCTIONS:
+        Solve the current question.
+        Provide:
+        1. A complete and efficient code solution, optimized for both time and space complexity.
+        2. A detailed explanation of the solution, including:
+           - The intuition behind the approach;
+           - Time and space complexity;
+           - Important considerations about the algorithm.
+        3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+        4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+        5. Don't use any external libraries. Don't need to import any libraries.
