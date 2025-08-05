@@ -1,0 +1,42 @@
+#include <vector>
+#include <unordered_map>
+#include <cstdlib>
+
+using namespace std;
+
+class RandomizedSet {
+private:
+    vector<int> vec;
+    unordered_map<int, int> indexMap;
+
+public:
+    RandomizedSet() {
+    }
+    
+    bool insert(int val) {
+        if (indexMap.find(val) != indexMap.end()) {
+            return false;
+        }
+        vec.push_back(val);
+        indexMap[val] = vec.size() - 1;
+        return true;
+    }
+    
+    bool remove(int val) {
+        if (indexMap.find(val) == indexMap.end()) {
+            return false;
+        }
+        int idx = indexMap[val];
+        int lastElement = vec.back();
+        vec[idx] = lastElement;
+        indexMap[lastElement] = idx;
+        vec.pop_back();
+        indexMap.erase(val);
+        return true;
+    }
+    
+    int getRandom() {
+        int randomIndex = rand() % vec.size();
+        return vec[randomIndex];
+    }
+};

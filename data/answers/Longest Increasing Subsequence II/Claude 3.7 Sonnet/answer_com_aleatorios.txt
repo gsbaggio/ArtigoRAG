@@ -1,0 +1,13 @@
+class Solution:
+    def lengthOfLIS(self, nums, k):
+        n = len(nums)
+        # dp[i] represents the length of the longest valid subsequence ending at index i
+        dp = [1] * n
+        
+        for i in range(1, n):
+            for j in range(i):
+                # Check if we can add nums[i] after nums[j]
+                if nums[i] > nums[j] and nums[i] - nums[j] <= k:
+                    dp[i] = max(dp[i], dp[j] + 1)
+        
+        return max(dp)

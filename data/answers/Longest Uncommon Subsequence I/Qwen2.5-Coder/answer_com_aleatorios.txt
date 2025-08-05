@@ -1,0 +1,11 @@
+class Solution {
+    public int findLUSlength(String a, String b) {
+        // Check if the strings are identical
+        if (a.equals(b)) {
+            return -1;
+        }
+        
+        // Return the length of the longer string
+        return Math.max(a.length(), b.length());
+    }
+}

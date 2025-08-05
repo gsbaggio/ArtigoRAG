@@ -1,0 +1,32 @@
+class Solution:
+    def maxProfit(self, k: int, prices: list[int]) -> int:
+        n = len(prices)
+        
+        # Edge cases
+        if not prices or k == 0:
+            return 0
+            
+        # If k is large enough to cover all possible transactions
+        # (essentially unlimited transactions like Best Time to Buy and Sell Stock II)
+        if 2*k >= n:
+            profit = 0
+            for i in range(1, n):
+                if prices[i] > prices[i-1]:
+                    profit += prices[i] - prices[i-1]
+            return profit
+            
+        # dp[i][j] represents maximum profit using at most i transactions up to day j
+        # dp[i][j] = max(dp[i][j-1], max(dp[i-1][m] + prices[j] - prices[m])) for m in [0...j-1]
+        dp = [[0 for _ in range(n)] for _ in range(k+1)]
+        
+        for i in range(1, k+1):
+            # Maximum profit if we make i-1 transactions up to day m and then buy on day m and sell on day j
+            max_diff = -prices[0]  # Initialize with buying on first day
+            for j in range(1, n):
+                # Either don't do transaction on day j or sell on day j
+                dp[i][j] = max(dp[i][j-1], prices[j] + max_diff)
+                
+                # Update max_diff for next iteration
+                max_diff = max(max_diff, dp[i-1][j] - prices[j])
+                
+        return dp[k][n-1]

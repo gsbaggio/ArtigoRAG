@@ -1,0 +1,108 @@
+class Solution:
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        # Create evaluation map
+        eval_map = dict(zip(evalvars, evalints))
+        
+        # Define helper functions
+        def parse(s):
+            s = s.replace('(', ' ( ').replace(')', ' ) ')
+            return [token for token in s.split() if token]
+        
+        def combine_like_terms(poly):
+            result = {}
+            for c, mon in poly:
+                if c:  # Skip terms with coefficient 0
+                    result[mon] = result.get(mon, 0) + c
+            
+            return [(c, mon) for mon, c in result.items() if c]
+        
+        # Recursive descent parser
+        def evaluate(tokens):
+            def parse_expr():
+                nonlocal i
+                terms = []
+                
+                while i < len(tokens):
+                    if tokens[i] == '(':
+                        i += 1
+                        terms.append(parse_expr())
+                    elif tokens[i] == ')':
+                        i += 1
+                        break
+                    elif tokens[i] == '+':
+                        i += 1
+                        terms.append(parse_expr())
+                    elif tokens[i] == '-':
+                        i += 1
+                        negated = parse_factor()
+                        terms.append([(-c, mon) for c, mon in negated])
+                    else:
+                        terms.append(parse_term())
+                
+                # Combine all terms
+                result = []
+                for term in terms:
+                    result.extend(term)
+                
+                return combine_like_terms(result)
+            
+            def parse_term():
+                nonlocal i
+                factors = [parse_factor()]
+                
+                while i < len(tokens) and tokens[i] == '*':
+                    i += 1
+                    factors.append(parse_factor())
+                
+                # Multiply all factors
+                result = factors[0]
+                for factor in factors[1:]:
+                    new_result = []
+                    for c1, mon1 in result:
+                        for c2, mon2 in factor:
+                            # Merge and sort the monomials
+                            new_mon = tuple(sorted(mon1 + mon2))
+                            new_result.append((c1 * c2, new_mon))
+                    result = combine_like_terms(new_result)
+                
+                return result
+            
+            def parse_factor():
+                nonlocal i
+                if tokens[i] == '(':
+                    i += 1
+                    result = parse_expr()
+                    if i < len(tokens) and tokens[i] == ')':
+                        i += 1
+                    return result
+                
+                token = tokens[i]
+                i += 1
+                
+                if token.isdigit():
+                    return [(int(token), ())]
+                elif token in eval_map:
+                    return [(eval_map[token], ())]
+                else:
+                    return [(1, (token,))]
+            
+            i = 0
+            return parse_expr()
+        
+        # Format the output
+        def format_poly(poly):
+            # Sort by degree (highest first), then lexicographically
+            poly.sort(key=lambda x: (-len(x[1]), x[1]))
+            
+            result = []
+            for coef, mon in poly:
+                if not mon:
+                    result.append(str(coef))
+                else:
+                    result.append(f"{coef}*{'*'.join(mon)}")
+            
+            return result
+        
+        tokens = parse(expression)
+        poly = evaluate(tokens)
+        return format_poly(poly)

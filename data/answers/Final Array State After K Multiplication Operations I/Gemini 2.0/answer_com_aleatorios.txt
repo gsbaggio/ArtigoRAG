@@ -1,0 +1,41 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<int> getFinalState(vector<int>& nums, int k, int multiplier) {
+        // Intuition:
+        // The problem requires us to perform k operations on the input array nums.
+        // In each operation, we find the minimum element in the array, and replace its first occurrence with its value multiplied by the multiplier.
+        // We repeat this process k times and return the modified array.
+
+        // Time Complexity: O(k * n), where n is the size of the array nums.
+        // In the worst case, we iterate through the entire array in each of the k operations to find the minimum element.
+
+        // Space Complexity: O(1). We are modifying the input array in-place, so we don't use any extra space that scales with the input size.
+
+        // Important Considerations:
+        // 1. We need to find the minimum element and its index in each iteration.
+        // 2. We need to handle the case where there are multiple occurrences of the minimum element. We should select the first occurrence.
+        // 3. We need to perform the replacement operation in-place.
+
+        for (int i = 0; i < k; ++i) {
+            int min_val = nums[0];
+            int min_index = 0;
+
+            for (int j = 1; j < nums.size(); ++j) {
+                if (nums[j] < min_val) {
+                    min_val = nums[j];
+                    min_index = j;
+                }
+            }
+
+            nums[min_index] *= multiplier;
+        }
+
+        return nums;
+    }
+};

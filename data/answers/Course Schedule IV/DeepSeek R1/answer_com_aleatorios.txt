@@ -1,0 +1,15 @@
+class Solution:
+    def checkIfPrerequisite(self, numCourses: int, prerequisites: List[List[int]], queries: List[List[int]]) -> List[bool]:
+        closure = [[False] * numCourses for _ in range(numCourses)]
+        
+        for a, b in prerequisites:
+            closure[a][b] = True
+        
+        for k in range(numCourses):
+            for i in range(numCourses):
+                if closure[i][k]:
+                    for j in range(numCourses):
+                        if closure[k][j]:
+                            closure[i][j] = True
+        
+        return [closure[u][v] for u, v in queries]

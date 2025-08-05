@@ -1,0 +1,241 @@
+class Solution:
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        """
+        Evaluates and simplifies a given expression.
+
+        Args:
+            expression (str): The expression to evaluate.
+            evalvars (list[str]): A list of variable names to evaluate.
+            evalints (list[int]): A list of integer values corresponding to the variables in evalvars.
+
+        Returns:
+            list[str]: A list of tokens representing the simplified expression.
+        """
+
+        def tokenize(expression):
+            """
+            Tokenizes the expression string into a list of tokens.
+            """
+            return expression.split()
+
+        def evaluate(tokens, eval_map):
+            """
+            Evaluates the expression represented by the tokens.
+            Uses a stack-based approach to handle operator precedence and parentheses.
+            """
+
+            def apply_op(op, val2, val1):
+                """Applies an operator to two values."""
+                if op == '+':
+                    return val1 + val2
+                elif op == '-':
+                    return val1 - val2
+                elif op == '*':
+                    return val1 * val2
+                else:
+                    raise ValueError("Invalid operator")
+
+            values = []
+            ops = []
+
+            i = 0
+            while i < len(tokens):
+                token = tokens[i]
+
+                if token == '(':
+                    ops.append(token)
+                elif token.isdigit():
+                    values.append(int(token))
+                elif token in eval_map:
+                    values.append(eval_map[token])
+                elif token.isalpha():
+                    values.append(token)
+                elif token == ')':
+                    while ops and ops[-1] != '(':
+                        val2 = values.pop()
+                        val1 = values.pop()
+                        op = ops.pop()
+                        values.append(apply_op(op, val2, val1))
+                    ops.pop()  # Remove the '('
+                elif token in ['+', '-', '*']:
+                    while ops and self.precedence(token) <= self.precedence(ops[-1]):
+                        val2 = values.pop()
+                        val1 = values.pop()
+                        op = ops.pop()
+                        values.append(apply_op(op, val2, val1))
+                    ops.append(token)
+                i += 1
+
+            while ops:
+                val2 = values.pop()
+                val1 = values.pop()
+                op = ops.pop()
+                values.append(apply_op(op, val2, val1))
+
+            return values[0]
+
+        def simplify(result):
+            """
+            Simplifies the result into a list of tokens in the specified format.
+            Handles combining like terms, sorting variables, and formatting the output.
+            """
+            if isinstance(result, int):
+                if result == 0:
+                    return []
+                else:
+                    return [str(result)]
+            elif isinstance(result, str):
+                return ["1*" + result]
+            elif isinstance(result, list):
+                # Combine like terms
+                combined_terms = {}
+                for coeff, term_vars in result:
+                    term_vars_tuple = tuple(sorted(term_vars))  # Use tuple for hashability
+                    if term_vars_tuple in combined_terms:
+                        combined_terms[term_vars_tuple] += coeff
+                    else:
+                        combined_terms[term_vars_tuple] = coeff
+
+                # Format the output
+                formatted_terms = []
+                for term_vars_tuple, coeff in combined_terms.items():
+                    if coeff != 0:
+                        term_vars = sorted(list(term_vars_tuple))
+                        if term_vars:
+                            formatted_terms.append(str(coeff) + "*" + "*".join(term_vars))
+                        else:
+                            formatted_terms.append(str(coeff))
+
+                # Sort by degree and lexicographically
+                formatted_terms.sort(key=lambda x: (-x.count('*'), x.split('*')[-1] if '*' in x else ""), reverse=False)
+                formatted_terms.sort(key=lambda x: -x.count('*'))
+
+                return formatted_terms
+            else:
+                return []
+
+        def to_intermediate_representation(result):
+            """
+            Converts the result of evaluation to an intermediate representation suitable for simplification.
+            Integers remain as integers. Variables are converted to a list of tuples (coefficient, [variable names]).
+            """
+            if isinstance(result, int):
+                return result
+            elif isinstance(result, str):
+                return [(1, [result])]
+            else:
+                return result
+
+        def custom_evaluate(tokens, eval_map):
+            """
+            Evaluates the expression, handling variables and operations to produce an intermediate representation.
+            """
+            values = []
+            ops = []
+
+            i = 0
+            while i < len(tokens):
+                token = tokens[i]
+
+                if token == '(':
+                    ops.append(token)
+                elif token.isdigit():
+                    values.append(int(token))
+                elif token in eval_map:
+                    values.append(eval_map[token])
+                elif token.isalpha():
+                    values.append(token)
+                elif token == ')':
+                    while ops and ops[-1] != '(':
+                        val2 = values.pop()
+                        val1 = values.pop()
+                        op = ops.pop()
+                        values.append(custom_apply_op(op, val2, val1))
+                    ops.pop()  # Remove the '('
+                elif token in ['+', '-', '*']:
+                    while ops and self.precedence(token) <= self.precedence(ops[-1]):
+                        val2 = values.pop()
+                        val1 = values.pop()
+                        op = ops.pop()
+                        values.append(custom_apply_op(op, val2, val1))
+                    ops.append(token)
+                i += 1
+
+            while ops:
+                val2 = values.pop()
+                val1 = values.pop()
+                op = ops.pop()
+                values.append(custom_apply_op(op, val2, val1))
+
+            return values[0]
+
+        def custom_apply_op(op, val2, val1):
+            """
+            Applies an operator, handling both integers and variable terms.
+            """
+            if op == '+':
+                if isinstance(val1, int) and isinstance(val2, int):
+                    return val1 + val2
+                elif isinstance(val1, int):
+                    return [(val1, [])] + val2 if isinstance(val2, list) else [(val1, [])] + [val2]
+                elif isinstance(val2, int):
+                    return val1 + [(val2, [])] if isinstance(val1, list) else [val1] + [(val2, [])]
+                else:
+                    return val1 + val2 if isinstance(val1, list) and isinstance(val2, list) else val1 + [val2] if isinstance(val1, list) else [val1] + val2
+            elif op == '-':
+                if isinstance(val1, int) and isinstance(val2, int):
+                    return val1 - val2
+                elif isinstance(val1, int):
+                    if isinstance(val2, list):
+                        negated_val2 = [(-coeff, term_vars) for coeff, term_vars in val2]
+                        return [(val1, [])] + negated_val2
+                    else:
+                        return [(val1, [])] + [(-1, [val2])]
+                elif isinstance(val2, int):
+                    return val1 + [(-val2, [])] if isinstance(val1, list) else [val1] + [(-val2, [])]
+                else:
+                    if isinstance(val1, list) and isinstance(val2, list):
+                        negated_val2 = [(-coeff, term_vars) for coeff, term_vars in val2]
+                        return val1 + negated_val2
+                    elif isinstance(val1, list):
+                        return val1 + [(-1, [val2])]
+                    else:
+                        negated_val2 = [(-coeff, term_vars) for coeff, term_vars in val2]
+                        return [val1] + negated_val2
+            elif op == '*':
+                if isinstance(val1, int) and isinstance(val2, int):
+                    return val1 * val2
+                elif isinstance(val1, int):
+                    if isinstance(val2, list):
+                        multiplied_val2 = [(val1 * coeff, term_vars) for coeff, term_vars in val2]
+                        return multiplied_val2
+                    else:
+                        return [(val1, [val2])]
+                elif isinstance(val2, int):
+                    if isinstance(val1, list):
+                        multiplied_val1 = [(val2 * coeff, term_vars) for coeff, term_vars in val1]
+                        return multiplied_val1
+                    else:
+                        return [(val2, [val1])]
+                else:
+                    return [(1, [val1, val2])]
+
+            else:
+                raise ValueError("Invalid operator")
+
+        eval_map = {evalvars[i]: evalints[i] for i in range(len(evalvars))}
+        tokens = tokenize(expression)
+        intermediate_result = custom_evaluate(tokens, eval_map)
+        simplified_result = simplify(to_intermediate_representation(intermediate_result))
+        return simplified_result
+
+    def precedence(self, op):
+        """
+        Defines the precedence of operators.
+        """
+        if op == '*' :
+            return 2
+        elif op in ['+', '-']:
+            return 1
+        else:
+            return 0

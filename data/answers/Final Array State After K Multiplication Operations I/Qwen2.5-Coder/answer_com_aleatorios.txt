@@ -1,0 +1,26 @@
+class Solution:
+    def getFinalState(self, nums, k, multiplier):
+        import heapq
+        
+        # Initialize the min-heap with (value, index) pairs
+        min_heap = [(value, index) for index, value in enumerate(nums)]
+        heapq.heapify(min_heap)
+        
+        # Dictionary to keep track of the current index of each value in the heap
+        index_map = {value: index for index, value in enumerate(nums)}
+        
+        for _ in range(k):
+            # Extract the smallest element from the heap
+            min_value, min_index = heapq.heappop(min_heap)
+            
+            # Update the array with the new value
+            nums[min_index] *= multiplier
+            
+            # Update the heap with the new value
+            new_entry = (nums[min_index], min_index)
+            heapq.heappush(min_heap, new_entry)
+            
+            # Update the index map with the new entry
+            index_map[min_value] = min_index
+        
+        return nums

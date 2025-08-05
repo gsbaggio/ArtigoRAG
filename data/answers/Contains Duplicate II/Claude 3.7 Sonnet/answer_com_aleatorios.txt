@@ -1,0 +1,18 @@
+class Solution:
+    def containsNearbyDuplicate(self, nums, k):
+        # Create a window using a set
+        window = set()
+        
+        for i in range(len(nums)):
+            # If we've reached window size k+1, remove the leftmost element
+            if i > k:
+                window.remove(nums[i-k-1])
+            
+            # Check if current number is already in the window
+            if nums[i] in window:
+                return True
+            
+            # Add current number to window
+            window.add(nums[i])
+        
+        return False

@@ -1,0 +1,25 @@
+class Solution:
+    def checkIfPrerequisite(self, numCourses, prerequisites, queries):
+        # Build adjacency list representation of the graph
+        graph = [[] for _ in range(numCourses)]
+        for prereq, course in prerequisites:
+            graph[prereq].append(course)
+        
+        # Create a matrix to store if course i is a prerequisite of course j
+        # We'll use Floyd-Warshall algorithm to find all transitive prerequisites
+        is_prereq = [[False for _ in range(numCourses)] for _ in range(numCourses)]
+        
+        # Mark direct prerequisites
+        for prereq, course in prerequisites:
+            is_prereq[prereq][course] = True
+            
+        # Find all transitive prerequisites using Floyd-Warshall algorithm
+        for k in range(numCourses):
+            for i in range(numCourses):
+                for j in range(numCourses):
+                    # If i->k and k->j, then i->j (transitive relation)
+                    if is_prereq[i][k] and is_prereq[k][j]:
+                        is_prereq[i][j] = True
+        
+        # Answer the queries
+        return [is_prereq[u][v] for u, v in queries]

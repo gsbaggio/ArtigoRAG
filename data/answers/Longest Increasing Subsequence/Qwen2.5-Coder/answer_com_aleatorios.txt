@@ -1,0 +1,24 @@
+class Solution:
+    def lengthOfLIS(self, nums):
+        tails = []
+        for num in nums:
+            # Find the leftmost insertion point for num in tails
+            pos = self.bisect_left(tails, num)
+            if pos == len(tails):
+                # If num is greater than all elements in tails, extend the list
+                tails.append(num)
+            else:
+                # Otherwise, replace the element at pos with num
+                tails[pos] = num
+        # The length of tails is the length of the longest increasing subsequence
+        return len(tails)
+
+    def bisect_left(self, a, x):
+        lo, hi = 0, len(a)
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if a[mid] < x:
+                lo = mid + 1
+            else:
+                hi = mid
+        return lo

@@ -1,0 +1,57 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> findMode(TreeNode* root) {
+        vector<int> modes;
+        int currVal = 0;
+        int currCount = 0;
+        int maxCount = 0;
+        
+        // Perform in-order traversal
+        inorderTraversal(root, currVal, currCount, maxCount, modes);
+        
+        return modes;
+    }
+    
+private:
+    void inorderTraversal(TreeNode* root, int& currVal, int& currCount, int& maxCount, vector<int>& modes) {
+        if (!root) return;
+        
+        // Visit left subtree
+        inorderTraversal(root->left, currVal, currCount, maxCount, modes);
+        
+        // Process current node
+        if (currCount > 0 && root->val == currVal) {
+            // Continuing sequence of same value
+            currCount++;
+        } else {
+            // New value encountered
+            currVal = root->val;
+            currCount = 1;
+        }
+        
+        // Update modes
+        if (currCount > maxCount) {
+            // New maximum count found - clear previous modes
+            maxCount = currCount;
+            modes.clear();
+            modes.push_back(currVal);
+        } else if (currCount == maxCount) {
+            // Another mode with same count
+            modes.push_back(currVal);
+        }
+        
+        // Visit right subtree
+        inorderTraversal(root->right, currVal, currCount, maxCount, modes);
+    }
+};

@@ -1,0 +1,84 @@
+class Solution {
+    // Array to store the result counts
+    private int[] count;
+    // Arrays to track original indices during merge sort
+    private int[] indexes;
+    private int[] tempIndexes;
+
+    public List<Integer> countSmaller(int[] nums) {
+        int n = nums.length;
+        count = new int[n];
+        indexes = new int[n];
+        tempIndexes = new int[n];
+        
+        // Initialize indexes array with original positions
+        for (int i = 0; i < n; i++) {
+            indexes[i] = i;
+        }
+        
+        // Perform merge sort on the nums array
+        mergeSort(nums, 0, n - 1);
+        
+        // Convert result to List
+        List<Integer> result = new ArrayList<>();
+        for (int c : count) {
+            result.add(c);
+        }
+        
+        return result;
+    }
+    
+    private void mergeSort(int[] nums, int start, int end) {
+        if (start >= end) return;
+        
+        int mid = start + (end - start) / 2;
+        
+        mergeSort(nums, start, mid);
+        mergeSort(nums, mid + 1, end);
+        
+        merge(nums, start, mid, end);
+    }
+    
+    private void merge(int[] nums, int start, int mid, int end) {
+        // Copy the indices for the current range to our temp array
+        for (int i = start; i <= end; i++) {
+            tempIndexes[i] = indexes[i];
+        }
+        
+        int i = start;
+        int j = mid + 1;
+        int k = start;
+        
+        while (i <= mid && j <= end) {
+            if (nums[tempIndexes[i]] <= nums[tempIndexes[j]]) {
+                // When we place an element from the left subarray,
+                // update its count with the number of elements from the right subarray
+                // that have already been placed (these are smaller elements to its right)
+                indexes[k] = tempIndexes[i];
+                count[tempIndexes[i]] += j - (mid + 1);
+                i++;
+            } else {
+                // When we place an element from the right subarray, no count update needed
+                indexes[k] = tempIndexes[j];
+                j++;
+            }
+            k++;
+        }
+        
+        // Handle remaining elements in left subarray
+        while (i <= mid) {
+            indexes[k] = tempIndexes[i];
+            // All elements from right subarray are smaller than current element
+            count[tempIndexes[i]] += end - mid;
+            i++;
+            k++;
+        }
+        
+        // Handle remaining elements in right subarray
+        while (j <= end) {
+            indexes[k] = tempIndexes[j];
+            j++;
+            k++;
+        }
+    }
+}

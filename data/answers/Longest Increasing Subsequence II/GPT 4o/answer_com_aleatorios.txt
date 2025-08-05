@@ -1,0 +1,53 @@
+#include <vector>
+#include <algorithm>
+#include <climits>
+using namespace std;
+
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums, int k) {
+        int n = nums.size();
+        int maxVal = *max_element(nums.begin(), nums.end());
+        vector<int> dp(maxVal + 1, 0); // Fenwick Tree or Segment Tree equivalent
+        
+        int maxLength = 0;
+        
+        for (int num : nums) {
+            // Query the maximum length of subsequence ending with values in range [num-k, num-1]
+            int left = max(1, num - k);
+            int right = num - 1;
+            int maxPrevLength = query(dp, left, right);
+            
+            // Update the current number's subsequence length
+            int currLength = maxPrevLength + 1;
+            update(dp, num, currLength);
+            
+            // Track the global maximum length
+            maxLength = max(maxLength, currLength);
+        }
+        
+        return maxLength;
+    }
+    
+private:
+    // Fenwick Tree helper functions
+    void update(vector<int>& dp, int index, int value) {
+        while (index < dp.size()) {
+            dp[index] = max(dp[index], value);
+            index += index & -index;
+        }
+    }
+    
+    int query(vector<int>& dp, int left, int right) {
+        return query(dp, right) - query(dp, left - 1);
+    }
+    
+    int query(vector<int>& dp, int index) {
+        int maxVal = 0;
+        while (index > 0) {
+            maxVal = max(maxVal, dp[index]);
+            index -= index & -index;
+        }
+        return maxVal;
+    }
+};

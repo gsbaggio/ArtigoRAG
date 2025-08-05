@@ -1,0 +1,61 @@
+class Solution {
+public:
+    vector<int> findMode(TreeNode* root) {
+        vector<int> modes;
+        int maxCount = 0;
+        int currentCount = 0;
+        int currentValue = INT_MIN;
+
+        TreeNode* current = root;
+        while (current != nullptr) {
+            if (current->left == nullptr) {
+                // Process the current node
+                handleValue(current->val, currentValue, currentCount, maxCount, modes);
+                
+                // Move to the right child
+                current = current->right;
+            } else {
+                // Find the predecessor of the current node
+                TreeNode* predecessor = current->left;
+                while (predecessor->right != nullptr && predecessor->right != current) {
+                    predecessor = predecessor->right;
+                }
+
+                if (predecessor->right == nullptr) {
+                    // Create a temporary link back to the current node
+                    predecessor->right = current;
+                    current = current->left;
+                } else {
+                    // Remove the temporary link
+                    predecessor->right = nullptr;
+                    
+                    // Process the current node
+                    handleValue(current->val, currentValue, currentCount, maxCount, modes);
+                    
+                    // Move to the right child
+                    current = current->right;
+                }
+            }
+        }
+
+        return modes;
+    }
+
+private:
+    void handleValue(int val, int& currentValue, int& currentCount, int& maxCount, vector<int>& modes) {
+        if (val == currentValue) {
+            currentCount++;
+        } else {
+            currentValue = val;
+            currentCount = 1;
+        }
+
+        if (currentCount > maxCount) {
+            maxCount = currentCount;
+            modes.clear();
+            modes.push_back(currentValue);
+        } else if (currentCount == maxCount) {
+            modes.push_back(currentValue);
+        }
+    }
+};

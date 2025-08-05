@@ -1,0 +1,50 @@
+#include <unordered_map>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+
+class RandomizedSet {
+private:
+    std::unordered_map<int, int> valToIndex; // Maps value to its index in the array
+    std::vector<int> values;                // Stores the values for O(1) random access
+
+public:
+    // Constructor: Initializes the RandomizedSet object
+    RandomizedSet() {
+        std::srand(std::time(nullptr)); // Seed for random number generation
+    }
+
+    // Inserts an item into the set if not present
+    bool insert(int val) {
+        if (valToIndex.find(val) != valToIndex.end()) {
+            return false; // Value already exists
+        }
+        values.push_back(val);          // Add value to the array
+        valToIndex[val] = values.size() - 1; // Map value to its index
+        return true;
+    }
+
+    // Removes an item from the set if present
+    bool remove(int val) {
+        if (valToIndex.find(val) == valToIndex.end()) {
+            return false; // Value does not exist
+        }
+        int index = valToIndex[val];    // Get the index of the value
+        int lastValue = values.back(); // Get the last value in the array
+
+        // Swap the value to be removed with the last value
+        values[index] = lastValue;
+        valToIndex[lastValue] = index;
+
+        // Remove the last value from the array and the map
+        values.pop_back();
+        valToIndex.erase(val);
+        return true;
+    }
+
+    // Returns a random element from the set
+    int getRandom() {
+        int randomIndex = std::rand() % values.size(); // Generate random index
+        return values[randomIndex];
+    }
+};

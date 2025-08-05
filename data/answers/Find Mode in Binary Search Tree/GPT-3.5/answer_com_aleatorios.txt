@@ -1,0 +1,52 @@
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+
+// Definition for a binary tree node
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+class Solution {
+public:
+    vector<int> findMode(TreeNode* root) {
+        vector<int> modes;
+        int maxCount = 0, currCount = 0;
+        int prevValue = INT_MIN;
+
+        unordered_map<int, int> freqMap;
+
+        inOrderTraversal(root, freqMap, maxCount, currCount, prevValue);
+
+        for (const auto& pair : freqMap) {
+            if (pair.second == maxCount) {
+                modes.push_back(pair.first);
+            }
+        }
+
+        return modes;
+    }
+
+private:
+    void inOrderTraversal(TreeNode* node, unordered_map<int, int>& freqMap, int& maxCount, int& currCount, int& prevValue) {
+        if (!node) return;
+
+        inOrderTraversal(node->left, freqMap, maxCount, currCount, prevValue);
+
+        if (node->val == prevValue) {
+            currCount++;
+        } else {
+            currCount = 1;
+            prevValue = node->val;
+        }
+
+        freqMap[node->val] = max(freqMap[node->val], currCount);
+        maxCount = max(maxCount, freqMap[node->val]);
+
+        inOrderTraversal(node->right, freqMap, maxCount, currCount, prevValue);
+    }
+};

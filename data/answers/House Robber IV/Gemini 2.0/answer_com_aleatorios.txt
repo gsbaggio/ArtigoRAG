@@ -1,0 +1,35 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+class Solution {
+public:
+    int minCapability(std::vector<int>& nums, int k) {
+        int left = 1, right = *std::max_element(nums.begin(), nums.end());
+        int ans = right;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (isPossible(nums, k, mid)) {
+                ans = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        return ans;
+    }
+
+private:
+    bool isPossible(std::vector<int>& nums, int k, int capability) {
+        int count = 0;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums[i] <= capability) {
+                count++;
+                i++; 
+            }
+        }
+        return count >= k;
+    }
+};

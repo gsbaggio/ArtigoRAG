@@ -1,0 +1,33 @@
+#include <vector>
+#include <algorithm>
+
+class Solution {
+public:
+    int lengthOfLIS(std::vector<int>& nums) {
+        // tails[i] is the smallest tail of all increasing subsequences with length i+1.
+        std::vector<int> tails;
+        
+        // Iterate through each number in the input array.
+        for (int num : nums) {
+            // If we find a number in 'tails' that is greater than or equal to the current number,
+            // it means we can potentially extend an existing subsequence with 'num' to form a new
+            // subsequence with the same length but a smaller tail. This is beneficial because a smaller
+            // tail gives us a better chance to extend the subsequence further later on.
+            auto it = std::lower_bound(tails.begin(), tails.end(), num);
+            
+            // If 'num' is greater than all the tails in 'tails', it means we can extend the longest
+            // increasing subsequence found so far by 1.
+            if (it == tails.end()) {
+                tails.push_back(num);
+            } else {
+                // If we find a tail that is greater than or equal to 'num', we replace that tail with 'num'.
+                // This doesn't change the length of the longest increasing subsequence, but it allows us
+                // to potentially build a better subsequence later on.
+                *it = num;
+            }
+        }
+        
+        // The length of 'tails' is the length of the longest increasing subsequence.
+        return tails.size();
+    }
+};

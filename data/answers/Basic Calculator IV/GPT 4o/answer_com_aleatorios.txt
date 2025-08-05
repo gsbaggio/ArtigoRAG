@@ -1,0 +1,124 @@
+from collections import defaultdict
+from functools import reduce
+
+class Solution:
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        def parse(expression):
+            """Parse the expression into tokens."""
+            stack = []
+            tokens = []
+            i = 0
+            while i < len(expression):
+                if expression[i] == ' ':
+                    i += 1
+                    continue
+                elif expression[i] in '+-*()':
+                    tokens.append(expression[i])
+                    i += 1
+                elif expression[i].isdigit():
+                    j = i
+                    while j < len(expression) and expression[j].isdigit():
+                        j += 1
+                    tokens.append(int(expression[i:j]))
+                    i = j
+                elif expression[i].isalpha():
+                    j = i
+                    while j < len(expression) and expression[j].isalpha():
+                        j += 1
+                    tokens.append(expression[i:j])
+                    i = j
+            return tokens
+
+        def evaluate(tokens):
+            """Evaluate the parsed tokens."""
+            def apply_operator(op, left, right):
+                if op == '+':
+                    return left + right
+                elif op == '-':
+                    return left - right
+                elif op == '*':
+                    if isinstance(left, int) and isinstance(right, int):
+                        return left * right
+                    elif isinstance(left, int):
+                        return {k: v * left for k, v in right.items()}
+                    elif isinstance(right, int):
+                        return {k: v * right for k, v in left.items()}
+                    else:
+                        result = defaultdict(int)
+                        for k1, v1 in left.items():
+                            for k2, v2 in right.items():
+                                keys = tuple(sorted(k1 + k2))
+                                result[keys] += v1 * v2
+                        return result
+
+            def combine_terms(terms):
+                """Combine terms with the same variables."""
+                result = defaultdict(int)
+                for term, coeff in terms.items():
+                    if coeff != 0:
+                        result[term] += coeff
+                return result
+
+            stack = []
+            ops = []
+            for token in tokens:
+                if token == '(':
+                    ops.append(token)
+                elif token == ')':
+                    while ops[-1] != '(':
+                        right = stack.pop()
+                        left = stack.pop()
+                        op = ops.pop()
+                        stack.append(apply_operator(op, left, right))
+                    ops.pop()
+                elif token in '+-*':
+                    while ops and ops[-1] in '+-*' and (token != '*' or ops[-1] == '*'):
+                        right = stack.pop()
+                        left = stack.pop()
+                        op = ops.pop()
+                        stack.append(apply_operator(op, left, right))
+                    ops.append(token)
+                else:
+                    if isinstance(token, int):
+                        stack.append(token)
+                    else:
+                        stack.append({(token,): 1})
+            while ops:
+                right = stack.pop()
+                left = stack.pop()
+                op = ops.pop()
+                stack.append(apply_operator(op, left, right))
+            return combine_terms(stack.pop())
+
+        def substitute(terms, eval_map):
+            """Substitute variables with their values."""
+            result = defaultdict(int)
+            for term, coeff in terms.items():
+                new_term = []
+                value = coeff
+                for var in term:
+                    if var in eval_map:
+                        value *= eval_map[var]
+                    else:
+                        new_term.append(var)
+                result[tuple(sorted(new_term))] += value
+            return result
+
+        def format_output(terms):
+            """Format the output as a list of strings."""
+            sorted_terms = sorted(terms.items(), key=lambda x: (-len(x[0]), x[0]))
+            result = []
+            for term, coeff in sorted_terms:
+                if coeff == 0:
+                    continue
+                if term:
+                    result.append(f"{coeff}*{'*'.join(term)}")
+                else:
+                    result.append(str(coeff))
+            return result
+
+        eval_map = dict(zip(evalvars, evalints))
+        tokens = parse(expression)
+        terms = evaluate(tokens)
+        terms = substitute(terms, eval_map)
+        return format_output(terms)

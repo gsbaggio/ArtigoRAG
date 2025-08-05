@@ -1,0 +1,142 @@
+def merge_rle(rle1, rle2):
+    list1 = list(rle1)
+    list2 = list(rle2)
+    i, j = 0, 0
+    new_rle = []
+    while i < len(list1) and j < len(list2):
+        var1, count1 = list1[i]
+        var2, count2 = list2[j]
+        if var1 < var2:
+            new_rle.append((var1, count1))
+            i += 1
+        elif var1 > var2:
+            new_rle.append((var2, count2))
+            j += 1
+        else:
+            new_rle.append((var1, count1 + count2))
+            i += 1
+            j += 1
+    while i < len(list1):
+        new_rle.append(list1[i])
+        i += 1
+    while j < len(list2):
+        new_rle.append(list2[j])
+        j += 1
+    return tuple(new_rle)
+
+class Solution:
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        mapping = {}
+        for i in range(len(evalvars)):
+            mapping[evalvars[i]] = evalints[i]
+        
+        tokens = expression.split()
+        new_tokens = []
+        for i, token in enumerate(tokens):
+            if token in ['+', '*', '(', ')']:
+                new_tokens.append(token)
+            elif token == '-':
+                if i == 0 or tokens[i-1] in ['(', '+', '-', '*']:
+                    new_tokens.append('#')
+                else:
+                    new_tokens.append('-')
+            else:
+                if token.isdigit():
+                    new_tokens.append(int(token))
+                else:
+                    if token in mapping:
+                        new_tokens.append(mapping[token])
+                    else:
+                        new_tokens.append(token)
+        
+        precedence = {'#': 3, '*': 2, '+': 1, '-': 1}
+        associativity = {'#': 'right', '*': 'left', '+': 'left', '-': 'left'}
+        output = []
+        stack = []
+        for token in new_tokens:
+            if token == '(':
+                stack.append(token)
+            elif token == ')':
+                while stack and stack[-1] != '(':
+                    output.append(stack.pop())
+                if stack and stack[-1] == '(':
+                    stack.pop()
+            elif token in ['+', '-', '*', '#']:
+                while stack and stack[-1] != '(':
+                    top = stack[-1]
+                    if top == '(':
+                        break
+                    if precedence[top] > precedence[token] or \
+                       (precedence[top] == precedence[token] and associativity[token] == 'left'):
+                        output.append(stack.pop())
+                    else:
+                        break
+                stack.append(token)
+            else:
+                output.append(token)
+        while stack:
+            output.append(stack.pop())
+        
+        poly_stack = []
+        for token in output:
+            if isinstance(token, int):
+                poly_stack.append({(): token})
+            elif isinstance(token, str) and token not in ['+', '-', '*', '#']:
+                poly_stack.append({((token, 1),): 1})
+            else:
+                if token == '#':
+                    a = poly_stack.pop()
+                    res_poly = {}
+                    for rle, coef in a.items():
+                        res_poly[rle] = -coef
+                    poly_stack.append(res_poly)
+                elif token == '+':
+                    a = poly_stack.pop()
+                    b = poly_stack.pop()
+                    res_poly = {}
+                    for rle, coef in b.items():
+                        res_poly[rle] = coef
+                    for rle, coef in a.items():
+                        res_poly[rle] = res_poly.get(rle, 0) + coef
+                    poly_stack.append(res_poly)
+                elif token == '-':
+                    a = poly_stack.pop()
+                    b = poly_stack.pop()
+                    res_poly = {}
+                    for rle, coef in b.items():
+                        res_poly[rle] = coef
+                    for rle, coef in a.items():
+                        res_poly[rle] = res_poly.get(rle, 0) - coef
+                    poly_stack.append(res_poly)
+                elif token == '*':
+                    a = poly_stack.pop()
+                    b = poly_stack.pop()
+                    res_poly = {}
+                    for rle1, coef1 in b.items():
+                        for rle2, coef2 in a.items():
+                            new_rle = merge_rle(rle1, rle2)
+                            new_coef = coef1 * coef2
+                            res_poly[new_rle] = res_poly.get(new_rle, 0) + new_coef
+                    poly_stack.append(res_poly)
+        
+        final_poly = poly_stack[0]
+        term_list = []
+        for rle, coef in final_poly.items():
+            if coef == 0:
+                continue
+            expanded_list = []
+            total_degree = 0
+            for (var, count) in rle:
+                expanded_list.extend([var] * count)
+                total_degree += count
+            term_list.append((total_degree, expanded_list, coef))
+        
+        term_list.sort(key=lambda x: (-x[0], x[1]))
+        res_list = []
+        for degree, expanded, coef in term_list:
+            if degree == 0:
+                res_list.append(str(coef))
+            else:
+                s = str(coef) + '*' + '*'.join(expanded)
+                res_list.append(s)
+        return res_list

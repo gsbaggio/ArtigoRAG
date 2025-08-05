@@ -1,0 +1,29 @@
+class Solution {
+    public List<Integer> countSmaller(int[] nums) {
+        int n = nums.length;
+        Integer[] result = new Integer[n];
+        List<Integer> sortedList = new ArrayList<>();
+
+        for (int i = n - 1; i >= 0; i--) {
+            int count = findIndex(sortedList, nums[i]);
+            result[i] = count;
+            sortedList.add(count, nums[i]);
+        }
+
+        return Arrays.asList(result);
+    }
+
+    private int findIndex(List<Integer> sortedList, int target) {
+        int left = 0;
+        int right = sortedList.size(); // Corrected: right should be sortedList.size()
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (sortedList.get(mid) >= target) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}

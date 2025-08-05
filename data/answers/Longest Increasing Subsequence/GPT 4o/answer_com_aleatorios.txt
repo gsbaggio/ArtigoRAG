@@ -1,0 +1,27 @@
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        // List to store the smallest possible last elements of increasing subsequences
+        vector<int> subsequence;
+
+        for (int num : nums) {
+            // Use binary search to find the position of num in the subsequence list
+            auto it = lower_bound(subsequence.begin(), subsequence.end(), num);
+
+            if (it == subsequence.end()) {
+                // If num is greater than all elements, append it to the list
+                subsequence.push_back(num);
+            } else {
+                // Otherwise, replace the element at the found position
+                *it = num;
+            }
+        }
+
+        // The size of the subsequence list represents the length of the LIS
+        return subsequence.size();
+    }
+};

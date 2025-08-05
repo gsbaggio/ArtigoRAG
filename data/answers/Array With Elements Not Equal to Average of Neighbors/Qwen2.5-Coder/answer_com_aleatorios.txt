@@ -1,0 +1,23 @@
+class Solution:
+    def rearrangeArray(self, nums):
+        # Step 1: Sort the array
+        nums.sort()
+        
+        # Step 2: Create a new array to store the result
+        result = [0] * len(nums)
+        
+        # Step 3: Use two pointers to place elements alternately
+        left = 0
+        right = len(nums) - 1
+        index = 0
+        
+        while left <= right:
+            if index % 2 == 0:
+                result[index] = nums[left]
+                left += 1
+            else:
+                result[index] = nums[right]
+                right -= 1
+            index += 1
+        
+        return result

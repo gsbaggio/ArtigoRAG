@@ -1,0 +1,29 @@
+class Solution:
+    def lengthOfLIS(self, nums, k):
+        """
+        Finds the length of the longest subsequence of nums that is strictly increasing
+        and the difference between adjacent elements is at most k.
+
+        Args:
+            nums (List[int]): The input array of integers.
+            k (int): The maximum difference allowed between adjacent elements in the subsequence.
+
+        Returns:
+            int: The length of the longest subsequence that meets the requirements.
+        """
+
+        n = len(nums)
+        if n == 0:
+            return 0
+
+        # dp[i] stores the length of the longest subsequence ending at nums[i]
+        dp = [1] * n
+
+        for i in range(1, n):
+            for j in range(i):
+                # Check if nums[i] can be added to the subsequence ending at nums[j]
+                if nums[i] > nums[j] and nums[i] - nums[j] <= k:
+                    dp[i] = max(dp[i], dp[j] + 1)
+
+        # The maximum value in dp is the length of the longest subsequence
+        return max(dp)

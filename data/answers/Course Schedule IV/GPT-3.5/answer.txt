@@ -1,33 +1,27 @@
-from collections import defaultdict, deque
+from collections import defaultdict
 
 class Solution:
-    def checkIfPrerequisite(self, numCourses, prerequisites, queries):
+    def build_graph(self, numCourses, prerequisites):
         graph = defaultdict(list)
-        in_degree = [0] * numCourses
+        for prerequisite in prerequisites:
+            graph[prerequisite[1]].append(prerequisite[0])
+        return graph
 
-        for course, prereq in prerequisites:
-            graph[prereq].append(course)
-            in_degree[course] += 1
+    def dfs(self, graph, start, target, visited):
+        if start == target:
+            return True
+        visited[start] = True
+        for neighbor in graph[start]:
+            if not visited[neighbor] and self.dfs(graph, neighbor, target, visited):
+                return True
+        return False
 
-        def bfs(node):
-            visited = set()
-            queue = deque([node])
-
-            while queue:
-                current = queue.popleft()
-                visited.add(current)
-
-                for neighbor in graph[current]:
-                    if neighbor not in visited:
-                        queue.append(neighbor)
-
-            return visited
-
-        result = []
+    def checkIfPrerequisite(self, numCourses, prerequisites, queries):
+        graph = self.build_graph(numCourses, prerequisites)
+        answer = []
+        
         for query in queries:
-            if query[1] in bfs(query[0]):
-                result.append(True)
-            else:
-                result.append(False)
-
-        return result
+            visited = [False] * numCourses
+            answer.append(self.dfs(graph, query[0], query[1], visited))
+        
+        return answer

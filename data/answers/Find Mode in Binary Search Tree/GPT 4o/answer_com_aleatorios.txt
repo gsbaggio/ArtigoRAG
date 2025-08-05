@@ -1,0 +1,44 @@
+class Solution {
+private:
+    int currentCount = 0; // Count of the current value
+    int maxCount = 0;     // Maximum frequency observed
+    int currentVal = INT_MIN; // Current value being processed
+    vector<int> modes;    // Stores the modes
+
+    // Helper function for in-order traversal
+    void inorder(TreeNode* node) {
+        if (!node) return;
+
+        // Traverse the left subtree
+        inorder(node->left);
+
+        // Process the current node
+        handleValue(node->val);
+
+        // Traverse the right subtree
+        inorder(node->right);
+    }
+
+    // Function to handle the frequency of the current value
+    void handleValue(int val) {
+        if (val != currentVal) {
+            currentVal = val;
+            currentCount = 0; // Reset count for new value
+        }
+        currentCount++;
+
+        // Update modes if necessary
+        if (currentCount > maxCount) {
+            maxCount = currentCount;
+            modes = {val}; // Reset modes to the new max value
+        } else if (currentCount == maxCount) {
+            modes.push_back(val); // Add to modes if frequency matches max
+        }
+    }
+
+public:
+    vector<int> findMode(TreeNode* root) {
+        inorder(root); // Perform in-order traversal
+        return modes;  // Return the modes
+    }
+};

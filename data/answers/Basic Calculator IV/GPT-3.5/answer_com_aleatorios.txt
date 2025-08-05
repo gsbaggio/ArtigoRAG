@@ -1,0 +1,90 @@
+from collections import defaultdict
+
+class Solution:
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        def parse(s):
+            s = s.replace('(', '( ').replace(')', ' )').split()
+            res, i = [], 0
+            while i < len(s):
+                if s[i] == '(':
+                    pcount, j = 1, i + 1
+                    while pcount:
+                        if s[j] == '(': pcount += 1
+                        elif s[j] == ')': pcount -= 1
+                        j += 1
+                    res.append(parse(s[i + 1:j - 1]))
+                    i = j
+                else:
+                    res.append(s[i])
+                    i += 1
+            return res
+
+        def combine(terms):
+            c = defaultdict(int)
+            for term in terms:
+                if isinstance(term, list):
+                    term = combine(term)
+                    for k, v in term.items():
+                        c[k] += v
+                else:
+                    c[term] += 1
+            return c
+
+        def evaluate(expression, values):
+            if expression.isdigit() or all(c in '0123456789-' for c in expression):
+                return [(int(expression), [])]
+            if expression in values:
+                return [(values[expression], [])]
+            return [[1, [expression]]]
+
+        def multiply(a, b):
+            res = []
+            for c1, t1 in a:
+                for c2, t2 in b:
+                    term = combine([t1, t2])
+                    res.append((c1 * c2, term))
+            return res
+
+        def add(a, b):
+            terms = a + b
+            return combine(terms)
+
+        def sub(a, b):
+            terms = a + [(-c, t) for c, t in b]
+            return combine(terms)
+
+        def evaluate_expression(expression, values):
+            def helper(tokens):
+                stack = []
+                for token in tokens:
+                    if token == '*':
+                        b = stack.pop()
+                        a = stack.pop()
+                        stack.append(multiply(a, b))
+                    elif token == '+':
+                        b = stack.pop()
+                        a = stack.pop()
+                        stack.append(add(a, b))
+                    elif token == '-':
+                        b = stack.pop()
+                        a = stack.pop()
+                        stack.append(sub(a, b))
+                    else:
+                        stack.append(evaluate(token, values))
+                return stack[0]
+
+            tokens = parse(expression)
+            result = helper(tokens)
+            return result
+
+        values = dict(zip(evalvars, evalints))
+        simplified = evaluate_expression(expression, values)
+
+        res = []
+        for term, tokens in simplified.items():
+            if tokens:
+                res.append('*'.join([str(term)] + sorted(tokens)))
+            else:
+                res.append(str(term))
+
+        return res

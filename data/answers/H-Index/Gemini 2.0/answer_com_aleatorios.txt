@@ -1,0 +1,21 @@
+class Solution:
+    def hIndex(self, citations):
+        """
+        Calculates the h-index of a researcher given an array of citations.
+
+        The h-index is defined as the maximum value of h such that the given researcher has published at least h papers that have each been cited at least h times.
+
+        Args:
+            citations (list of int): A list of integers representing the number of citations for each paper.
+
+        Returns:
+            int: The h-index of the researcher.
+        """
+        citations.sort(reverse=True)
+        h_index = 0
+        for i, citation in enumerate(citations):
+            if citation >= i + 1:
+                h_index = i + 1
+            else:
+                break
+        return h_index

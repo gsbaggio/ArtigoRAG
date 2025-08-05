@@ -1,0 +1,26 @@
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        if not nums:
+            return 0
+            
+        # tails[i] stores the smallest tail of all increasing subsequences of length i+1
+        tails = []
+        
+        for num in nums:
+            # Binary search to find the position where num should be placed
+            left, right = 0, len(tails)
+            while left < right:
+                mid = (left + right) // 2
+                if tails[mid] < num:
+                    left = mid + 1
+                else:
+                    right = mid
+            
+            # If we're at the end, we found a new longest subsequence
+            if left == len(tails):
+                tails.append(num)
+            # Otherwise, replace the smallest value that is ≥ num
+            else:
+                tails[left] = num
+                
+        return len(tails)

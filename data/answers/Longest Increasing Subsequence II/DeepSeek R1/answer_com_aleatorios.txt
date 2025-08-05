@@ -1,0 +1,47 @@
+class Solution:
+    def lengthOfLIS(self, nums: List[int], k: int) -> int:
+        M = 100000
+        size_tree = 1
+        while size_tree < M:
+            size_tree *= 2
+        seg = [0] * (2 * size_tree)
+        
+        def update(i, val):
+            pos = size_tree + i
+            if val > seg[pos]:
+                seg[pos] = val
+                pos //= 2
+                while pos:
+                    seg[pos] = max(seg[2 * pos], seg[2 * pos + 1])
+                    pos //= 2
+        
+        def query(l, r):
+            res = 0
+            l0 = l + size_tree
+            r0 = r + size_tree
+            while l0 <= r0:
+                if l0 % 2 == 1:
+                    res = max(res, seg[l0])
+                    l0 += 1
+                if r0 % 2 == 0:
+                    res = max(res, seg[r0])
+                    r0 -= 1
+                l0 //= 2
+                r0 //= 2
+            return res
+        
+        ans = 0
+        for x in nums:
+            l_bound = max(1, x - k)
+            r_bound = x - 1
+            if l_bound <= r_bound:
+                l_idx = l_bound - 1
+                r_idx = r_bound - 1
+                best = query(l_idx, r_idx)
+            else:
+                best = 0
+            current = best + 1
+            if current > ans:
+                ans = current
+            update(x - 1, current)
+        return ans

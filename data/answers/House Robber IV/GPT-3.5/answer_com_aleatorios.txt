@@ -1,0 +1,27 @@
+#include <vector>
+#include <algorithm>
+
+class Solution {
+public:
+    int minCapability(std::vector<int>& nums, int k) {
+        int n = nums.size();
+        
+        // Dynamic programming array to store the minimum capability
+        std::vector<std::vector<int>> dp(n + 1, std::vector<int>(k + 1, 0));
+        
+        // Fill in the DP table
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 1; j <= k; ++j) {
+                int maxCapability = 0;
+                int maxMoney = 0;
+                for (int x = i - 1; x >= 0 && i - x <= j; --x) {
+                    maxMoney = std::max(maxMoney, nums[x]);
+                    maxCapability = std::max(maxCapability, dp[x][j - 1] + maxMoney);
+                }
+                dp[i][j] = maxCapability;
+            }
+        }
+        
+        return dp[n][k];
+    }
+};

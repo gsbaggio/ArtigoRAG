@@ -1,0 +1,23 @@
+class Solution:
+    def rob(self, nums):
+        """
+        Function to calculate the maximum amount of money that can be robbed without alerting the police.
+        :param nums: List[int] - List of integers representing money in each house.
+        :return: int - Maximum amount of money that can be robbed.
+        """
+        if not nums:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+
+        # Initialize variables to store the maximum money robbed up to two previous houses
+        prev1, prev2 = 0, 0
+
+        for num in nums:
+            # Calculate the maximum money robbed up to the current house
+            current = max(prev1, prev2 + num)
+            # Update the previous values for the next iteration
+            prev2 = prev1
+            prev1 = current
+
+        return prev1

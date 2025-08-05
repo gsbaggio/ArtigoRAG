@@ -1,0 +1,52 @@
+#include <vector>
+#include <unordered_map>
+#include <cstdlib>
+
+class RandomizedSet {
+private:
+    std::vector<int> values;  // Stores the values
+    std::unordered_map<int, int> valueIndexMap;  // Maps value to its index in the vector
+    
+public:
+    RandomizedSet() {
+        // Constructor initializes the RandomizedSet object
+    }
+    
+    bool insert(int val) {
+        // Inserts an item val into the set if not present
+        if (valueIndexMap.find(val) != valueIndexMap.end()) {
+            return false;  // Value already present
+        }
+        values.push_back(val);  // Add value to the end of the vector
+        valueIndexMap[val] = values.size() - 1;  // Store the index of the value in the map
+        return true;
+    }
+    
+    bool remove(int val) {
+        // Removes an item val from the set if present
+        if (valueIndexMap.find(val) == valueIndexMap.end()) {
+            return false;  // Value not present
+        }
+        int indexToRemove = valueIndexMap[val];  // Get the index of the value to be removed
+        int lastValue = values.back();  // Get the last value in the vector
+        
+        // Swap the value to be removed with the last value
+        values[indexToRemove] = lastValue;
+        valueIndexMap[lastValue] = indexToRemove;  // Update the index of the last value in the map
+        
+        // Remove the last value from the vector
+        values.pop_back();
+        valueIndexMap.erase(val);  // Erase the value from the map
+        
+        return true;
+    }
+    
+    int getRandom() {
+        // Returns a random element from the current set of elements
+        if (values.empty()) {
+            return -1;  // This should never happen as per constraints
+        }
+        int randomIndex = rand() % values.size();  // Generate a random index
+        return values[randomIndex];  // Return the element at the random index
+    }
+};

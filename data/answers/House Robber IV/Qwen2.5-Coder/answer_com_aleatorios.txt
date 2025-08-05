@@ -1,0 +1,37 @@
+class Solution {
+public:
+    int minCapability(vector<int>& nums, int k) {
+        int low = *min_element(nums.begin(), nums.end());
+        int high = *max_element(nums.begin(), nums.end());
+        
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (canRobAtLeastKHouses(nums, mid, k)) {
+                high = mid;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+
+private:
+    bool canRobAtLeastKHouses(const vector<int>& nums, int capability, int k) {
+        int count = 0;
+        bool prevRobbed = false;
+        
+        for (int money : nums) {
+            if (!prevRobbed && money <= capability) {
+                count++;
+                prevRobbed = true;
+            } else {
+                prevRobbed = false;
+            }
+            
+            if (count >= k) {
+                return true;
+            }
+        }
+        return false;
+    }
+};

@@ -1,0 +1,104 @@
+class Solution(object):
+    def basicCalculatorIV(self, expression, evalvars, evalints):
+        # Create a mapping of variables to their values
+        eval_map = dict(zip(evalvars, evalints))
+        
+        # Tokenize the expression
+        tokens = self.tokenize(expression)
+        
+        # Evaluate the expression
+        result_dict = self.evaluate(tokens, eval_map)
+        
+        # Construct the final result list
+        result = []
+        for term in sorted(result_dict.keys(), key=lambda x: (-len(x), x)):
+            coeff = result_dict[term]
+            if coeff != 0:
+                if term:
+                    result.append(f"{coeff}*{'*'.join(term)}")
+                else:
+                    result.append(str(coeff))
+        
+        return result
+    
+    def tokenize(self, expression):
+        tokens = []
+        i = 0
+        while i < len(expression):
+            if expression[i] in "+-*()":
+                tokens.append(expression[i])
+                i += 1
+            elif expression[i].isdigit():
+                num = 0
+                while i < len(expression) and expression[i].isdigit():
+                    num = num * 10 + int(expression[i])
+                    i += 1
+                tokens.append(num)
+            else:
+                var = ""
+                while i < len(expression) and expression[i].isalpha():
+                    var += expression[i]
+                    i += 1
+                tokens.append(var)
+        return tokens
+    
+    def evaluate(self, tokens, eval_map):
+        def multiply_terms(term1, term2):
+            new_term = tuple(sorted(term1 + term2))
+            return new_term
+        
+        def add_terms(dict1, dict2, sign=1):
+            for term, coeff in dict2.items():
+                dict1[term] = dict1.get(term, 0) + sign * coeff
+        
+        num_stack = []
+        op_stack = []
+        i = 0
+        while i < len(tokens):
+            token = tokens[i]
+            if isinstance(token, int):
+                num_stack.append({(): token})
+            elif token.isalpha():
+                if token in eval_map:
+                    num_stack.append({(): eval_map[token]})
+                else:
+                    num_stack.append({(token,): 1})
+            elif token in "+-":
+                while op_stack and op_stack[-1] in "*/":
+                    self.apply_operator(num_stack, op_stack)
+                op_stack.append(token)
+            elif token in "*/":
+                op_stack.append(token)
+            elif token == "(":
+                op_stack.append(token)
+            elif token == ")":
+                while op_stack and op_stack[-1] != "(":
+                    self.apply_operator(num_stack, op_stack)
+                op_stack.pop()  # Remove the '('
+                if op_stack and op_stack[-1] in "*/":
+                    self.apply_operator(num_stack, op_stack)
+            i += 1
+        
+        while op_stack:
+            self.apply_operator(num_stack, op_stack)
+        
+        return num_stack[0]
+    
+    def apply_operator(self, num_stack, op_stack):
+        right = num_stack.pop()
+        left = num_stack.pop()
+        op = op_stack.pop()
+        
+        if op == "+":
+            add_terms(left, right)
+        elif op == "-":
+            add_terms(left, right, -1)
+        elif op == "*":
+            new_dict = {}
+            for term1, coeff1 in left.items():
+                for term2, coeff2 in right.items():
+                    new_term = multiply_terms(term1, term2)
+                    new_dict[new_term] = new_dict.get(new_term, 0) + coeff1 * coeff2
+            num_stack.append(new_dict)
+        
+        num_stack.append(left)

@@ -1,0 +1,39 @@
+class Solution:
+    def lengthOfLIS(self, nums, k):
+        # Initialize the segment tree with size 2 * 10^5 + 1
+        # This is to handle the range [1, 10^5] and their parent nodes
+        N = 2 * 10**5 + 1
+        seg_tree = [0] * N
+        
+        def query(left, right, node, node_left, node_right):
+            if right < node_left or left > node_right:
+                return 0
+            if left <= node_left and node_right <= right:
+                return seg_tree[node]
+            mid = (node_left + node_right) // 2
+            return max(query(left, right, 2 * node, node_left, mid),
+                       query(left, right, 2 * node + 1, mid + 1, node_right))
+        
+        def update(index, value, node, node_left, node_right):
+            if index < node_left or index > node_right:
+                return
+            if node_left == node_right:
+                seg_tree[node] = value
+                return
+            mid = (node_left + node_right) // 2
+            update(index, value, 2 * node, node_left, mid)
+            update(index, value, 2 * node + 1, mid + 1, node_right)
+            seg_tree[node] = max(seg_tree[2 * node], seg_tree[2 * node + 1])
+        
+        max_length = 0
+        for num in nums:
+            # Query the maximum length of subsequences ending in the range [num - k, num - 1]
+            max_len_in_range = query(max(1, num - k), num - 1, 1, 1, N - 1)
+            # Update the dp value for the current number
+            current_length = max_len_in_range + 1
+            # Update the segment tree with the new length
+            update(num, current_length, 1, 1, N - 1)
+            # Keep track of the maximum length found so far
+            max_length = max(max_length, current_length)
+        
+        return max_length

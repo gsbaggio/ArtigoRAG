@@ -1,0 +1,53 @@
+from typing import List
+
+class Solution:
+    def countSmaller(self, nums: List[int]) -> List[int]:
+        def mergeSort(arr, indexes, counts, start, end):
+            if end - start <= 0:
+                return
+            
+            mid = start + (end - start) // 2
+            mergeSort(arr, indexes, counts, start, mid)
+            mergeSort(arr, indexes, counts, mid + 1, end)
+            
+            merge(arr, indexes, counts, start, mid, end)
+            
+        def merge(arr, indexes, counts, start, mid, end):
+            temp = []
+            tempIndexes = []
+            i, j = start, mid + 1
+            rightCount = 0
+            
+            while i <= mid and j <= end:
+                if arr[indexes[i]] > arr[indexes[j]]:
+                    rightCount += 1
+                    temp.append(indexes[j])
+                    tempIndexes.append(j)
+                    j += 1
+                else:
+                    counts[indexes[i]] += rightCount
+                    temp.append(indexes[i])
+                    tempIndexes.append(i)
+                    i += 1
+            
+            while i <= mid:
+                counts[indexes[i]] += rightCount
+                temp.append(indexes[i])
+                tempIndexes.append(i)
+                i += 1
+            
+            while j <= end:
+                temp.append(indexes[j])
+                tempIndexes.append(j)
+                j += 1
+            
+            for k in range(start, end + 1):
+                indexes[k] = temp[k - start]
+            
+        n = len(nums)
+        indexes = [i for i in range(n)]
+        counts = [0] * n
+        
+        mergeSort(nums, indexes, counts, 0, n - 1)
+        
+        return counts

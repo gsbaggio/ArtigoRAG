@@ -1,0 +1,41 @@
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    vector<bool> checkIfPrerequisite(int numCourses, vector<vector<int>>& prerequisites, vector<vector<int>>& queries) {
+        vector<vector<int>> graph(numCourses);
+        vector<vector<bool>> reachable(numCourses, vector<bool>(numCourses, false));
+        
+        // Build the graph
+        for (const auto& pre : prerequisites) {
+            graph[pre[0]].push_back(pre[1]);
+        }
+        
+        // Perform DFS for each course to fill the reachable matrix
+        for (int i = 0; i < numCourses; ++i) {
+            vector<bool> visited(numCourses, false);
+            dfs(graph, i, i, visited, reachable);
+        }
+        
+        // Process each query
+        vector<bool> result;
+        for (const auto& query : queries) {
+            result.push_back(reachable[query[0]][query[1]]);
+        }
+        
+        return result;
+    }
+    
+private:
+    void dfs(const vector<vector<int>>& graph, int start, int current, vector<bool>& visited, vector<vector<bool>>& reachable) {
+        visited[current] = true;
+        for (int neighbor : graph[current]) {
+            if (!visited[neighbor]) {
+                reachable[start][neighbor] = true;
+                dfs(graph, start, neighbor, visited, reachable);
+            }
+            reachable[start][neighbor] = true; // Mark indirect reachability
+        }
+    }
+};

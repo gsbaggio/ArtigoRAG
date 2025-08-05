@@ -1,0 +1,66 @@
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<bool> checkIfPrerequisite(int numCourses, vector<vector<int>>& prerequisites, vector<vector<int>>& queries) {
+        // 1. Build the graph: adj[i] stores the courses that depend on course i.
+        vector<vector<int>> adj(numCourses);
+        vector<int> inDegree(numCourses, 0); // inDegree[i] stores the in-degree of course i.
+
+        for (const auto& prerequisite : prerequisites) {
+            int course = prerequisite[0];
+            int pre = prerequisite[1];
+            adj[pre].push_back(course);
+            inDegree[course]++;
+        }
+
+        // 2. Topological sort to compute reachability:
+        //    For each course, determine all courses that can be reached from it.
+        vector<vector<bool>> reachable(numCourses, vector<bool>(numCourses, false));
+        queue<int> q;
+
+        // Initialize queue with courses that have no prerequisites (in-degree 0).
+        for (int i = 0; i < numCourses; ++i) {
+            if (inDegree[i] == 0) {
+                q.push(i);
+            }
+        }
+
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+
+            // For each neighbor v of u:
+            for (int v : adj[u]) {
+                // Course v is reachable from course u.
+                reachable[u][v] = true;
+
+                // Inherit reachability: If x can reach u, and u can reach v, then x can reach v.
+                for (int i = 0; i < numCourses; ++i) {
+                    if (reachable[i][u]) {
+                        reachable[i][v] = true;
+                    }
+                }
+
+                // Decrease in-degree of v. If it becomes 0, add it to the queue.
+                inDegree[v]--;
+                if (inDegree[v] == 0) {
+                    q.push(v);
+                }
+            }
+        }
+
+        // 3. Answer the queries:
+        vector<bool> answer(queries.size());
+        for (size_t i = 0; i < queries.size(); ++i) {
+            int u = queries[i][0];
+            int v = queries[i][1];
+            answer[i] = reachable[v][u]; // Check if u is reachable from v.
+        }
+
+        return answer;
+    }
+};
