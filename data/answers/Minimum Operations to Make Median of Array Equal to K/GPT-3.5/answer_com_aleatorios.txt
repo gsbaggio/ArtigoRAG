@@ -1,0 +1,18 @@
+class Solution:
+    def minOperationsToMakeMedianK(self, nums, k):
+        n = len(nums)
+        nums.sort()
+        
+        median_index = n // 2
+        median = nums[median_index]
+        
+        diff = abs(k - median)
+        
+        operations = 0
+        for i in range(n):
+            if nums[i] < k:
+                operations += k - nums[i]
+            else:
+                operations += nums[i] - k
+        
+        return operations

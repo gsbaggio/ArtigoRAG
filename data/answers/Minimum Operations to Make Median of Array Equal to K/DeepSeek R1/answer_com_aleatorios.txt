@@ -1,0 +1,33 @@
+class Solution:
+    def minOperationsToMakeMedianK(self, nums, k):
+        type1 = []   # a_i < k
+        type2 = []   # a_i > k
+        type3_count = 0   # a_i == k
+        
+        for a in nums:
+            if a < k:
+                type1.append(a)
+            elif a > k:
+                type2.append(a)
+            else:
+                type3_count += 1
+                
+        n = len(nums)
+        mid = n // 2
+        need1 = max(0, mid + 1 - (len(type1) + type3_count))
+        need2 = max(0, n - mid - (len(type2) + type3_count))
+        
+        type1.sort()
+        type2.sort()
+        
+        cost = 0
+        if need2 > 0:
+            start_index = len(type1) - need2
+            for i in range(start_index, len(type1)):
+                cost += k - type1[i]
+                
+        if need1 > 0:
+            for i in range(need1):
+                cost += type2[i] - k
+                
+        return cost

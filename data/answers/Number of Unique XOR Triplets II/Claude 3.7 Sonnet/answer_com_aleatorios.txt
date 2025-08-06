@@ -1,0 +1,13 @@
+class Solution:
+    def uniqueXorTriplets(self, nums: list[int]) -> int:
+        n = len(nums)
+        unique_xor_values = set()
+        
+        # Consider all possible triplets (i, j, k) where i <= j <= k
+        for i in range(n):
+            for j in range(i, n):
+                for k in range(j, n):
+                    xor_result = nums[i] ^ nums[j] ^ nums[k]
+                    unique_xor_values.add(xor_result)
+        
+        return len(unique_xor_values)

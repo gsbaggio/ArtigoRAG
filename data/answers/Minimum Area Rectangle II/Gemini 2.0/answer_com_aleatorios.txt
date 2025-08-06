@@ -1,0 +1,65 @@
+class Solution:
+    def minAreaFreeRect(self, points):
+        """
+        Finds the minimum area of any rectangle formed from the given points.
+
+        Args:
+            points: A list of lists of integers representing the coordinates of the points.
+
+        Returns:
+            The minimum area of any rectangle formed from the points, or 0 if no such rectangle exists.
+        """
+        n = len(points)
+        point_set = set((x, y) for x, y in points)
+        min_area = float('inf')
+
+        for i in range(n):
+            for j in range(i + 1, n):
+                # Consider points[i] and points[j] as two corners of a potential rectangle.
+                x1, y1 = points[i]
+                x2, y2 = points[j]
+
+                # Calculate the center of the potential rectangle.
+                mid_x = (x1 + x2) / 2.0
+                mid_y = (y1 + y2) / 2.0
+
+                # Calculate the length of the diagonal.
+                diag_len_sq = (x1 - x2)**2 + (y1 - y2)**2
+
+                for k in range(j + 1, n):
+                    # Consider points[k] as a third corner of the potential rectangle.
+                    x3, y3 = points[k]
+
+                    # Calculate the coordinates of the fourth corner.
+                    x4 = x1 + x2 - x3
+                    y4 = y1 + y2 - y3
+
+                    # Check if the fourth corner exists in the set of points.
+                    if (x4, y4) in point_set:
+                        # Check if the diagonals are equal in length (rectangle condition).
+                        if (x3 - x4)**2 + (y3 - y4)**2 == diag_len_sq:
+                            # Calculate the area of the rectangle.
+                            area = ((x1 - x3)**2 + (y1 - y3)**2)**0.5 * ((x1 - x4)**2 + (y1 - y4)**2)**0.5
+                            min_area = min(min_area, area)
+
+        if min_area == float('inf'):
+            return 0
+        else:
+            return min_area
+
+# Explanation:
+# 1. Intuition:
+#    - The algorithm iterates through all possible pairs of points, considering each pair as a diagonal of a potential rectangle.
+#    - For each diagonal, it iterates through the remaining points to find a third corner of the rectangle.
+#    - Using the properties of a rectangle (equal diagonals, opposite sides parallel and equal), it calculates the coordinates of the fourth corner.
+#    - If the fourth corner exists in the set of points and the diagonals are equal, it calculates the area of the rectangle and updates the minimum area found so far.
+
+# 2. Time and Space Complexity:
+#    - Time Complexity: O(n^3), where n is the number of points. This is because the algorithm iterates through all possible pairs of points (O(n^2)) and then iterates through the remaining points for each pair (O(n)).
+#    - Space Complexity: O(n), where n is the number of points. This is because the algorithm stores the points in a set, which takes O(n) space.
+
+# 3. Important Considerations:
+#    - The algorithm assumes that all the given points are unique.
+#    - The algorithm checks if the diagonals of the potential rectangle are equal in length to ensure that it is a rectangle.
+#    - The algorithm uses a set to efficiently check if the fourth corner exists in the set of points.
+#    - The algorithm initializes the minimum area to infinity to ensure that the first valid area found is always

@@ -1,0 +1,19 @@
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        digits = list(str(num))
+        n = len(digits)
+        max_idx = n - 1
+        left = right = -1
+        
+        for i in range(n - 1, -1, -1):
+            if digits[i] > digits[max_idx]:
+                max_idx = i
+            elif digits[i] < digits[max_idx]:
+                left = i
+                right = max_idx
+        
+        if left != -1:
+            digits[left], digits[right] = digits[right], digits[left]
+            return int(''.join(digits))
+        else:
+            return num

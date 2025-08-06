@@ -1,0 +1,11 @@
+class Solution:
+    def uniqueXorTriplets(self, nums: List[int]) -> int:
+        distinct_triplets = set()
+        distinct_pairs = set()
+        n = len(nums)
+        for k in range(n):
+            for j in range(k + 1):
+                distinct_pairs.add(nums[j] ^ nums[k])
+            for x in distinct_pairs:
+                distinct_triplets.add(x ^ nums[k])
+        return len(distinct_triplets)

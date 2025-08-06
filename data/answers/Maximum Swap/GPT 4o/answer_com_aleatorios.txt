@@ -1,0 +1,22 @@
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        # Convert the number to a list of digits for easy manipulation
+        digits = list(str(num))
+        n = len(digits)
+        
+        # Create a dictionary to store the last occurrence of each digit
+        last_occurrence = {int(d): i for i, d in enumerate(digits)}
+        
+        # Iterate through the digits
+        for i in range(n):
+            # Check if there exists a larger digit that can be swapped
+            for d in range(9, int(digits[i]), -1):
+                # If a larger digit exists and appears later in the number
+                if d in last_occurrence and last_occurrence[d] > i:
+                    # Swap the digits
+                    digits[i], digits[last_occurrence[d]] = digits[last_occurrence[d]], digits[i]
+                    # Return the resulting number after the swap
+                    return int("".join(digits))
+        
+        # If no swap is performed, return the original number
+        return num

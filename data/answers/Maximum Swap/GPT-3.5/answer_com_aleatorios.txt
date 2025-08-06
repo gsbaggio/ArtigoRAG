@@ -1,0 +1,16 @@
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        num_str = list(str(num))
+        n = len(num_str)
+        
+        # Create a dictionary to store the last index of each digit in the number
+        last_index = {int(val): i for i, val in enumerate(num_str)}
+        
+        # Iterate through the digits to find a swap opportunity
+        for i in range(n):
+            for d in range(9, int(num_str[i]), -1):
+                if d in last_index and last_index[d] > i:
+                    num_str[i], num_str[last_index[d]] = num_str[last_index[d]], num_str[i]
+                    return int("".join(num_str))
+        
+        return num  # If no swap is needed, return the original number

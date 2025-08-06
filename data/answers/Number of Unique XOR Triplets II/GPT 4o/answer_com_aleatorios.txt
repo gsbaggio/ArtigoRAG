@@ -1,0 +1,23 @@
+class Solution {
+    public int uniqueXorTriplets(int[] nums) {
+        // Use a HashSet to store unique XOR values
+        HashSet<Integer> uniqueXORValues = new HashSet<>();
+        
+        int n = nums.length;
+        
+        // Iterate through all possible triplets (i, j, k)
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                for (int k = j; k < n; k++) {
+                    // Compute XOR value for the triplet
+                    int xorValue = nums[i] ^ nums[j] ^ nums[k];
+                    // Add the XOR value to the set
+                    uniqueXORValues.add(xorValue);
+                }
+            }
+        }
+        
+        // Return the size of the set (number of unique XOR values)
+        return uniqueXORValues.size();
+    }
+}

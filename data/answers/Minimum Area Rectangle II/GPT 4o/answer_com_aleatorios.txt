@@ -1,0 +1,43 @@
+class Solution:
+    def minAreaFreeRect(self, points):
+        from collections import defaultdict
+        import math
+        
+        # Dictionary to store pairs of points grouped by their midpoint
+        midpoint_map = defaultdict(list)
+        
+        # Iterate through all pairs of points
+        n = len(points)
+        for i in range(n):
+            for j in range(i + 1, n):
+                # Calculate the midpoint of the pair
+                x1, y1 = points[i]
+                x2, y2 = points[j]
+                midpoint = ((x1 + x2) / 2, (y1 + y2) / 2)
+                
+                # Store the pair in the dictionary
+                midpoint_map[midpoint].append((points[i], points[j]))
+        
+        # Initialize the minimum area to infinity
+        min_area = float('inf')
+        
+        # Iterate through the midpoint map to find rectangles
+        for pairs in midpoint_map.values():
+            m = len(pairs)
+            for i in range(m):
+                for j in range(i + 1, m):
+                    # Extract the points from the pairs
+                    p1, p2 = pairs[i]
+                    p3, p4 = pairs[j]
+                    
+                    # Calculate the area of the rectangle
+                    # Using the formula: area = |p1p3| * |p1p4|
+                    d1 = math.dist(p1, p3)
+                    d2 = math.dist(p1, p4)
+                    area = d1 * d2
+                    
+                    # Update the minimum area
+                    min_area = min(min_area, area)
+        
+        # Return the minimum area, or 0 if no rectangle was found
+        return min_area if min_area < float('inf') else 0

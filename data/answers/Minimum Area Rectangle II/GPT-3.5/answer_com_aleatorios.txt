@@ -1,0 +1,18 @@
+from itertools import combinations
+
+class Solution:
+    def minAreaFreeRect(self, points: List[List[int]]) -> float:
+        def distance(p1, p2):
+            return (p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2
+        
+        min_area = float('inf')
+        points_set = set(map(tuple, points))
+        
+        for p1, p2, p3 in combinations(points, 3):
+            p4 = [p2[0] + p3[0] - p1[0], p2[1] + p3[1] - p1[1]]
+            
+            if tuple(p4) in points_set:
+                area = distance(p1, p2) * distance(p1, p3)
+                min_area = min(min_area, area)
+        
+        return 0 if min_area == float('inf') else min_area ** 0.5

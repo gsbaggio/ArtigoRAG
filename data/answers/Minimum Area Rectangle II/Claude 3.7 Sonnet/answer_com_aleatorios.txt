@@ -1,0 +1,38 @@
+class Solution:
+    def minAreaFreeRect(self, points: list[list[int]]) -> float:
+        # Convert points to tuples
+        points = [tuple(p) for p in points]
+        point_set = set(points)
+        n = len(points)
+        min_area = float('inf')
+        
+        # Check all possible triplets of points
+        for i in range(n):
+            for j in range(n):
+                if i == j:
+                    continue
+                    
+                for k in range(j+1, n):
+                    if i == k:
+                        continue
+                        
+                    # Get three points forming an L-shape potentially
+                    p1, p2, p3 = points[i], points[j], points[k]
+                    
+                    # Check if p2 and p3 form perpendicular vectors from p1
+                    v1 = (p2[0] - p1[0], p2[1] - p1[1])
+                    v2 = (p3[0] - p1[0], p3[1] - p1[1])
+                    
+                    # Check perpendicularity with dot product
+                    if v1[0] * v2[0] + v1[1] * v2[1] != 0:
+                        continue
+                    
+                    # Calculate fourth point
+                    p4 = (p2[0] + p3[0] - p1[0], p2[1] + p3[1] - p1[1])
+                    
+                    if p4 in point_set:
+                        # Calculate area
+                        area = ((v1[0]**2 + v1[1]**2)**0.5) * ((v2[0]**2 + v2[1]**2)**0.5)
+                        min_area = min(min_area, area)
+        
+        return min_area if min_area != float('inf') else 0

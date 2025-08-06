@@ -1,0 +1,28 @@
+class Solution:
+    def minOperationsToMakeMedianK(self, nums: list[int], k: int) -> int:
+        # Sort the array
+        nums.sort()
+        
+        # Find the middle element index
+        n = len(nums)
+        mid_idx = n // 2
+        
+        # If even length, we take the larger of the two middle elements
+        if n % 2 == 0:
+            mid_idx -= 1
+        
+        total_ops = 0
+        
+        # Calculate operations needed for each element
+        for i in range(n):
+            if i == mid_idx:
+                # This is the median element, must become k
+                total_ops += abs(nums[i] - k)
+            elif i < mid_idx and nums[i] > k:
+                # Elements before median that are greater than k need to decrease
+                total_ops += nums[i] - k
+            elif i > mid_idx and nums[i] < k:
+                # Elements after median that are less than k need to increase
+                total_ops += k - nums[i]
+        
+        return total_ops

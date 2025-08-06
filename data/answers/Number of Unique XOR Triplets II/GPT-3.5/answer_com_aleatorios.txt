@@ -1,0 +1,28 @@
+from collections import defaultdict
+
+class Solution:
+    def uniqueXorTriplets(self, nums: List[int]) -> int:
+        xor_counts = defaultdict(int)
+        unique_xor_values = set()
+        count = 0
+        n = len(nums)
+        
+        for i in range(n):
+            for j in range(i, n):
+                xor_val = 0
+                for k in range(i, j+1):
+                    xor_val ^= nums[k]
+                
+                if xor_val in unique_xor_values:
+                    continue
+                
+                unique_xor_values.add(xor_val)
+                
+                for val in xor_counts:
+                    count += xor_counts[val]
+                    if val ^ xor_val in unique_xor_values:
+                        count += xor_counts[val]
+                
+                xor_counts[xor_val] += 1
+        
+        return count

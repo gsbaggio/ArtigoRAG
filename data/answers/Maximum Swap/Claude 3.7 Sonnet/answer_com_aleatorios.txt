@@ -1,0 +1,23 @@
+class Solution:
+    def maximumSwap(self, num: int) -> int:
+        # Convert number to a list of digits for easier manipulation
+        digits = [int(d) for d in str(num)]
+        n = len(digits)
+        
+        # Store the last occurrence of each digit
+        last_position = {}
+        for i in range(n):
+            last_position[digits[i]] = i
+        
+        # Check each position from left to right
+        for i in range(n):
+            # Try to swap with the largest digit that comes after
+            for d in range(9, digits[i], -1):
+                if d in last_position and last_position[d] > i:
+                    # Swap the digits
+                    digits[i], digits[last_position[d]] = digits[last_position[d]], digits[i]
+                    # Return the new number
+                    return int(''.join(map(str, digits)))
+        
+        # No swap needed or possible
+        return num

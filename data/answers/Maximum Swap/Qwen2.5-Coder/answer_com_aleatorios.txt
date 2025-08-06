@@ -1,0 +1,29 @@
+class Solution:
+    def maximumSwap(self, num):
+        # Convert the number to a string to work with individual digits
+        num_str = list(str(num))
+        n = len(num_str)
+        
+        # max_index[i] will store the index of the maximum digit to the right of i
+        max_index = [-1] * n
+        max_digit = -1
+        max_digit_index = -1
+        
+        # Traverse the number from right to left to build the max_index array
+        for i in range(n - 1, -1, -1):
+            if int(num_str[i]) > max_digit:
+                max_digit = int(num_str[i])
+                max_digit_index = i
+            elif int(num_str[i]) < max_digit:
+                max_index[i] = max_digit_index
+        
+        # Traverse the number from left to right to find the optimal swap
+        for i in range(n):
+            if max_index[i] != -1:
+                # Perform the swap
+                num_str[i], num_str[max_index[i]] = num_str[max_index[i]], num_str[i]
+                # Convert the string back to an integer and return the result
+                return int("".join(num_str))
+        
+        # If no swap was performed, return the original number
+        return num
