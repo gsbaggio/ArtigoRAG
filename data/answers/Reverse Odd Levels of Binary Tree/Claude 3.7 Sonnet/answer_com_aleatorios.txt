@@ -1,0 +1,24 @@
+class Solution {
+public:
+    TreeNode* reverseOddLevels(TreeNode* root) {
+        if (!root) return nullptr;
+        
+        reverseOddLevelsDFS(root->left, root->right, 1);
+        return root;
+    }
+    
+private:
+    void reverseOddLevelsDFS(TreeNode* left, TreeNode* right, int level) {
+        // Base case
+        if (!left || !right) return;
+        
+        // If odd level, swap values
+        if (level % 2 == 1) {
+            swap(left->val, right->val);
+        }
+        
+        // Process next level - note the cross-pairing to get symmetrical nodes
+        reverseOddLevelsDFS(left->left, right->right, level + 1);
+        reverseOddLevelsDFS(left->right, right->left, level + 1);
+    }
+};

@@ -1,0 +1,85 @@
+class Solution {
+    public int minimumDifference(int[] nums) {
+        int n = nums.length / 2;
+        int totalSum = 0;
+        
+        for (int num : nums) {
+            totalSum += num;
+        }
+        
+        // If we only have two elements
+        if (n == 1) {
+            return Math.abs(nums[0] - nums[1]);
+        }
+        
+        // Generate all possible subset sums for the first half
+        List<Integer>[] firstHalfSums = new ArrayList[n + 1];
+        for (int i = 0; i <= n; i++) {
+            firstHalfSums[i] = new ArrayList<>();
+        }
+        
+        // Calculate all possible subset sums for the first half of the array
+        generateSubsetSums(nums, 0, n, 0, 0, firstHalfSums);
+        
+        // Generate all possible subset sums for the second half
+        List<Integer>[] secondHalfSums = new ArrayList[n + 1];
+        for (int i = 0; i <= n; i++) {
+            secondHalfSums[i] = new ArrayList<>();
+        }
+        
+        // Calculate all possible subset sums for the second half of the array
+        generateSubsetSums(nums, n, 2 * n, 0, 0, secondHalfSums);
+        
+        // Sort the second half sums for binary search
+        for (int i = 0; i <= n; i++) {
+            Collections.sort(secondHalfSums[i]);
+        }
+        
+        int minDiff = Integer.MAX_VALUE;
+        
+        // For each subset size i in first half, we need (n-i) elements from second half
+        for (int i = 0; i <= n; i++) {
+            List<Integer> firstList = firstHalfSums[i];
+            List<Integer> secondList = secondHalfSums[n - i];
+            
+            for (int firstSum : firstList) {
+                // Target sum for the second half to minimize difference
+                int target = (totalSum - 2 * firstSum) / 2;
+                
+                // Find closest value to target in second list
+                int idx = Collections.binarySearch(secondList, target);
+                if (idx >= 0) {
+                    // Exact match found
+                    return Math.abs(totalSum - 2 * (firstSum + secondList.get(idx)));
+                }
+                
+                // Insert position is -(insertion point) - 1
+                idx = -(idx + 1);
+                
+                // Check values on both sides of insertion point
+                if (idx > 0) {
+                    minDiff = Math.min(minDiff, Math.abs(totalSum - 2 * (firstSum + secondList.get(idx - 1))));
+                }
+                
+                if (idx < secondList.size()) {
+                    minDiff = Math.min(minDiff, Math.abs(totalSum - 2 * (firstSum + secondList.get(idx))));
+                }
+            }
+        }
+        
+        return minDiff;
+    }
+    
+    private void generateSubsetSums(int[] nums, int start, int end, int count, int sum, List<Integer>[] subsetSums) {
+        if (start == end) {
+            subsetSums[count].add(sum);
+            return;
+        }
+        
+        // Include current element
+        generateSubsetSums(nums, start + 1, end, count + 1, sum + nums[start], subsetSums);
+        
+        // Exclude current element
+        generateSubsetSums(nums, start + 1, end, count, sum, subsetSums);
+    }
+}

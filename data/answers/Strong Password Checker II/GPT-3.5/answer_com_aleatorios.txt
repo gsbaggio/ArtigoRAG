@@ -1,0 +1,15 @@
+class Solution:
+    def strongPasswordCheckerII(self, password: str) -> bool:
+        # Criteria flags
+        has_length = len(password) >= 8
+        has_lowercase = any(c.islower() for c in password)
+        has_uppercase = any(c.isupper() for c in password)
+        has_digit = any(c.isdigit() for c in password)
+        special_chars = set("!@#$%^&*()-+")
+        has_special = any(c in special_chars for c in password)
+        
+        # Check for adjacent characters
+        has_adjacent = all(password[i] != password[i+1] for i in range(len(password) - 1))
+        
+        # Return true if all criteria are met
+        return has_length and has_lowercase and has_uppercase and has_digit and has_special and has_adjacent

@@ -1,0 +1,27 @@
+class Solution {
+public:
+    bool predictTheWinner(vector<int>& nums) {
+        int n = nums.size();
+        // dp[i][j] stores the maximum score player 1 can achieve starting from subarray nums[i...j]
+        vector<vector<int>> dp(n, vector<int>(n, 0));
+
+        // Base case: when only one element is left, player 1 takes it
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = nums[i];
+        }
+
+        // Fill the dp table diagonally
+        for (int len = 2; len <= n; len++) {
+            for (int i = 0; i <= n - len; i++) {
+                int j = i + len - 1;
+                // Player 1 can either choose nums[i] or nums[j]
+                // If player 1 chooses nums[i], player 2 will choose optimally from nums[i+1...j]
+                // If player 1 chooses nums[j], player 2 will choose optimally from nums[i...j-1]
+                dp[i][j] = max(nums[i] - dp[i + 1][j], nums[j] - dp[i][j - 1]);
+            }
+        }
+
+        // If dp[0][n-1] >= 0, player 1 can win or tie
+        return dp[0][n - 1] >= 0;
+    }
+};

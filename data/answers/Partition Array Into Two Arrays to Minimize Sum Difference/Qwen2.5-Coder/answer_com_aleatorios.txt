@@ -1,0 +1,55 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class Solution {
+    public int minimumDifference(int[] nums) {
+        int n = nums.length / 2;
+        int totalSum = 0;
+        for (int num : nums) {
+            totalSum += num;
+        }
+        int target = totalSum / 2;
+        List<List<Integer>> leftSums = new ArrayList<>();
+        List<List<Integer>> rightSums = new ArrayList<>();
+        
+        // Generate all subset sums for the left half
+        generateSubsetSums(nums, 0, n - 1, 0, leftSums);
+        // Generate all subset sums for the right half
+        generateSubsetSums(nums, n, 2 * n - 1, 0, rightSums);
+        
+        int minDiff = Integer.MAX_VALUE;
+        for (int i = 0; i <= n; i++) {
+            Collections.sort(rightSums.get(i));
+            for (int leftSum : leftSums.get(i)) {
+                int complement = target - leftSum;
+                int j = Collections.binarySearch(rightSums.get(n - i), complement);
+                if (j >= 0) {
+                    // Exact match found
+                    return 0;
+                } else {
+                    // Find the insertion point
+                    j = -(j + 1);
+                    if (j < rightSums.get(n - i).size()) {
+                        minDiff = Math.min(minDiff, Math.abs(totalSum - 2 * (leftSum + rightSums.get(n - i).get(j))));
+                    }
+                    if (j > 0) {
+                        minDiff = Math.min(minDiff, Math.abs(totalSum - 2 * (leftSum + rightSums.get(n - i).get(j - 1))));
+                    }
+                }
+            }
+        }
+        return minDiff;
+    }
+    
+    private void generateSubsetSums(int[] nums, int start, int end, int currentSum, List<List<Integer>> sums) {
+        int size = end - start + 1;
+        if (sums.size() < size + 1) {
+            sums.add(new ArrayList<>());
+        }
+        sums.get(size).add(currentSum);
+        for (int i = start; i <= end; i++) {
+            generateSubsetSums(nums, i + 1, end, currentSum + nums[i], sums);
+        }
+    }
+}

@@ -1,0 +1,43 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def pathSum(self, root, targetSum):
+        def dfs(node, current_path, current_sum):
+            if not node:
+                return
+
+            current_path.append(node.val)
+            current_sum += node.val
+
+            if not node.left and not node.right and current_sum == targetSum:
+                result.append(current_path[:])
+
+            dfs(node.left, current_path, current_sum)
+            dfs(node.right, current_path, current_sum)
+
+            current_path.pop()
+
+        result = []
+        dfs(root, [], 0)
+        return result
+
+# Example usage
+# root = TreeNode(5)
+# root.left = TreeNode(4)
+# root.right = TreeNode(8)
+# root.left.left = TreeNode(11)
+# root.left.left.left = TreeNode(7)
+# root.left.left.right = TreeNode(2)
+# root.right.left = TreeNode(13)
+# root.right.right = TreeNode(4)
+# root.right.right.left = TreeNode(5)
+# root.right.right.right = TreeNode(1)
+# targetSum = 22
+
+# solution = Solution()
+# paths = solution.pathSum(root, targetSum)
+# print(paths)

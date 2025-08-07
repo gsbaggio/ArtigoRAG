@@ -1,0 +1,24 @@
+class Solution:
+    def searchMatrix(self, matrix: list[list[int]], target: int) -> bool:
+        # Get dimensions of the matrix
+        m, n = len(matrix), len(matrix[0])
+        
+        # Define the search space in terms of indices
+        left, right = 0, m * n - 1
+        
+        # Perform binary search
+        while left <= right:
+            mid = (left + right) // 2
+            # Convert the 1D index to 2D matrix coordinates
+            row, col = divmod(mid, n)
+            mid_value = matrix[row][col]
+            
+            if mid_value == target:
+                return True
+            elif mid_value < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        
+        # If not found, return False
+        return False

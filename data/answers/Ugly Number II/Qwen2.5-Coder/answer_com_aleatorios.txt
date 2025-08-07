@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        // Array to store the first n ugly numbers
+        int ugly[n];
+        ugly[0] = 1; // The first ugly number is 1
+        
+        // Pointers for multiples of 2, 3, and 5
+        int i2 = 0, i3 = 0, i5 = 0;
+        
+        // Generate the next n-1 ugly numbers
+        for (int i = 1; i < n; i++) {
+            // Calculate the next multiple of 2, 3, and 5
+            int nextMultipleOf2 = ugly[i2] * 2;
+            int nextMultipleOf3 = ugly[i3] * 3;
+            int nextMultipleOf5 = ugly[i5] * 5;
+            
+            // Choose the smallest multiple
+            int nextUglyNumber = min(nextMultipleOf2, min(nextMultipleOf3, nextMultipleOf5));
+            ugly[i] = nextUglyNumber;
+            
+            // Move the pointer(s) forward if the chosen multiple matches
+            if (nextUglyNumber == nextMultipleOf2) i2++;
+            if (nextUglyNumber == nextMultipleOf3) i3++;
+            if (nextUglyNumber == nextMultipleOf5) i5++;
+        }
+        
+        // Return the nth ugly number
+        return ugly[n - 1];
+    }
+};

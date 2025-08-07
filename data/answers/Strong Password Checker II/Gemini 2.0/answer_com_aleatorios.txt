@@ -1,0 +1,35 @@
+class Solution:
+    def strongPasswordCheckerII(self, password: str) -> bool:
+        """
+        Checks if a password is strong based on the given criteria.
+
+        Args:
+            password (str): The password string to check.
+
+        Returns:
+            bool: True if the password is strong, False otherwise.
+        """
+
+        if len(password) < 8:
+            return False
+
+        has_lower = False
+        has_upper = False
+        has_digit = False
+        has_special = False
+        special_chars = "!@#$%^&*()-+"
+
+        for i, char in enumerate(password):
+            if 'a' <= char <= 'z':
+                has_lower = True
+            elif 'A' <= char <= 'Z':
+                has_upper = True
+            elif '0' <= char <= '9':
+                has_digit = True
+            elif char in special_chars:
+                has_special = True
+
+            if i > 0 and char == password[i - 1]:
+                return False
+
+        return has_lower and has_upper and has_digit and has_special

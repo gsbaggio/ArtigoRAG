@@ -1,0 +1,38 @@
+#include <queue>
+#include <unordered_set>
+#include <vector>
+
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        // Min-heap to store the ugly numbers
+        std::priority_queue<long, std::vector<long>, std::greater<long>> minHeap;
+        // Set to avoid duplicates
+        std::unordered_set<long> seen;
+
+        // Prime factors for ugly numbers
+        std::vector<int> primes = {2, 3, 5};
+
+        // Start with the first ugly number
+        minHeap.push(1);
+        seen.insert(1);
+
+        long ugly = 1;
+        // Generate ugly numbers until we reach the nth
+        for (int i = 0; i < n; ++i) {
+            ugly = minHeap.top();
+            minHeap.pop();
+
+            // Generate the next ugly numbers by multiplying with primes
+            for (int prime : primes) {
+                long nextUgly = ugly * prime;
+                if (!seen.count(nextUgly)) {
+                    seen.insert(nextUgly);
+                    minHeap.push(nextUgly);
+                }
+            }
+        }
+
+        return (int)ugly;
+    }
+};

@@ -1,0 +1,38 @@
+class Solution:
+    def minimumDifference(self, nums):
+        from bisect import bisect_left
+
+        n = len(nums) // 2
+        left, right = nums[:n], nums[n:]
+        total = sum(nums)
+
+        # Generate all subset sums for each half, grouped by subset size
+        def get_sums(arr):
+            from itertools import combinations
+            sums = [[] for _ in range(n+1)]
+            for k in range(n+1):
+                for comb in combinations(arr, k):
+                    sums[k].append(sum(comb))
+            for k in range(n+1):
+                sums[k].sort()
+            return sums
+
+        left_sums = get_sums(left)
+        right_sums = get_sums(right)
+
+        res = float('inf')
+        for k in range(n+1):
+            l_list = left_sums[k]
+            r_list = right_sums[n-k]
+            for l in l_list:
+                # We want sum1 = l + r as close as possible to total//2
+                target = total // 2 - l
+                idx = bisect_left(r_list, target)
+                # Try r_list[idx]
+                for j in [idx-1, idx]:
+                    if 0 <= j < len(r_list):
+                        r = r_list[j]
+                        sum1 = l + r
+                        sum2 = total - sum1
+                        res = min(res, abs(sum1 - sum2))
+        return res

@@ -1,0 +1,21 @@
+import java.util.*;
+
+class Solution {
+
+    private Map<Integer, List<Integer>> indexMap;
+
+    // Constructor to initialize the object with the array nums
+    public Solution(int[] nums) {
+        indexMap = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            indexMap.computeIfAbsent(nums[i], k -> new ArrayList<>()).add(i);
+        }
+    }
+
+    // Method to randomly pick an index for the given target
+    public int pick(int target) {
+        List<Integer> indices = indexMap.get(target);
+        int randomIndex = (int) (Math.random() * indices.size());
+        return indices.get(randomIndex);
+    }
+}
