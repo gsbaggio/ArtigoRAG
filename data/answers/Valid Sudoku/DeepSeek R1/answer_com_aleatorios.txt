@@ -1,0 +1,21 @@
+class Solution:
+    def isValidSudoku(self, board: List[List[str]]) -> bool:
+        row_used = [[False] * 10 for _ in range(9)]
+        col_used = [[False] * 10 for _ in range(9)]
+        box_used = [[False] * 10 for _ in range(9)]
+        
+        for i in range(9):
+            for j in range(9):
+                if board[i][j] == '.':
+                    continue
+                num = int(board[i][j])
+                box_index = (i // 3) * 3 + (j // 3)
+                
+                if row_used[i][num] or col_used[j][num] or box_used[box_index][num]:
+                    return False
+                
+                row_used[i][num] = True
+                col_used[j][num] = True
+                box_used[box_index][num] = True
+        
+        return True

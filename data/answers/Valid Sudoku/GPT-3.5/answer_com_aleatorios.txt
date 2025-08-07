@@ -1,0 +1,26 @@
+from typing import List
+
+class Solution:
+    def isValidSudoku(self, board: List[List[str]]) -> bool:
+        def is_valid(row, col, num):
+            for i in range(9):
+                if board[i][col] == num or board[row][i] == num:
+                    return False
+
+            start_row, start_col = 3 * (row // 3), 3 * (col // 3)
+            for i in range(3):
+                for j in range(3):
+                    if board[start_row + i][start_col + j] == num:
+                        return False
+            return True
+
+        for i in range(9):
+            for j in range(9):
+                if board[i][j] != '.':
+                    num = board[i][j]
+                    board[i][j] = '.'
+                    if not is_valid(i, j, num):
+                        return False
+                    board[i][j] = num
+
+        return True
