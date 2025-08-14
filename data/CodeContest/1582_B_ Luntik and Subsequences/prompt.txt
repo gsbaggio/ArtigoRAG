@@ -1,0 +1,447 @@
+CURRENT QUESTION:
+Luntik came out for a morning stroll and found an array a of length n. He calculated the sum s of the elements of the array (s= ∑_{i=1}^{n} a_i). Luntik calls a subsequence of the array a nearly full if the sum of the numbers in that subsequence is equal to s-1.
+
+Luntik really wants to know the number of nearly full subsequences of the array a. But he needs to come home so he asks you to solve that problem!
+
+A sequence x is a subsequence of a sequence y if x can be obtained from y by deletion of several (possibly, zero or all) elements.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of test cases. The next 2 ⋅ t lines contain descriptions of test cases. The description of each test case consists of two lines.
+
+The first line of each test case contains a single integer n (1 ≤ n ≤ 60) — the length of the array.
+
+The second line contains n integers a_1, a_2, …, a_n (0 ≤ a_i ≤ 10^9) — the elements of the array a.
+
+Output
+
+For each test case print the number of nearly full subsequences of the array.
+
+Example
+
+Input
+
+
+5
+5
+1 2 3 4 5
+2
+1000 1000
+2
+1 0
+5
+3 0 2 1 1
+5
+2 1 0 3 0
+
+
+Output
+
+
+1
+0
+2
+4
+4
+
+Note
+
+In the first test case, s=1+2+3+4+5=15, only (2,3,4,5) is a nearly full subsequence among all subsequences, the sum in it is equal to 2+3+4+5=14=15-1.
+
+In the second test case, there are no nearly full subsequences.
+
+In the third test case, s=1+0=1, the nearly full subsequences are (0) and () (the sum of an empty subsequence is 0).
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.73):
+Name: 1365_E. Maximum Subsequence Value
+Tags: ['brute force', 'constructive algorithms']
+Description: Ridhiman challenged Ashish to find the maximum valued subsequence of an array a of size n consisting of positive integers. 
+
+The value of a non-empty subsequence of k elements of a is defined as ∑ 2^i over all integers i ≥ 0 such that at least max(1, k - 2) elements of the subsequence have the i-th bit set in their binary representation (value x has the i-th bit set in its binary representation if ⌊ (x)/(2^i) ⌋ mod 2 is equal to 1). 
+
+Recall that b is a subsequence of a, if b can be obtained by deleting some(possibly zero) elements from a.
+
+Help Ashish find the maximum value he can get by choosing some subsequence of a.
+
+Input
+
+The first line of the input consists of a single integer n (1 ≤ n ≤ 500) — the size of a.
+
+The next line consists of n space-separated integers — the elements of the array (1 ≤ a_i ≤ 10^{18}).
+
+Output
+
+Print a single integer — the maximum value Ashish can get by choosing some subsequence of a.
+
+Examples
+
+Input
+
+
+3
+2 1 3
+
+
+Output
+
+
+3
+
+Input
+
+
+3
+3 1 4
+
+
+Output
+
+
+7
+
+Input
+
+
+1
+1
+
+
+Output
+
+
+1
+
+Input
+
+
+4
+7 7 1 1
+
+
+Output
+
+
+7
+
+Note
+
+For the first test case, Ashish can pick the subsequence \{{2, 3}\} of size 2. The binary representation of 2 is 10 and that of 3 is 11. Since max(k - 2, 1) is equal to 1, the value of the subsequence is 2^0 + 2^1 (both 2 and 3 have 1-st bit set in their binary representation and 3 has 0-th bit set in its binary representation). Note that he could also pick the subsequence \{{3\}} or \{{2, 1, 3\}}.
+
+For the second test case, Ashish can pick the subsequence \{{3, 4\}} with value 7.
+
+For the third test case, Ashish can pick the subsequence \{{1\}} with value 1.
+
+For the fourth test case, Ashish can pick the subsequence \{{7, 7\}} with value 7.
+Difficulty: 11
+Solutions: import java.io.*;
+import java.util.*;
+import java.math.*;
+
+public class E {
+    static final boolean RUN_TIMING = false;
+    static char[] inputBuffer = new char[1024];
+    static PushbackReader in = new PushbackReader(new BufferedReader(new InputStreamReader(System.in)), 1024);
+    static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+
+    public void go() throws IOException {
+        // in = new PushbackReader(new BufferedReader(new FileReader(new File("test.txt"))), 1024);
+        // out = new PrintWriter(new FileWriter(new File("output.txt")));
+        int n = ipar();
+        long[] arr = lapar(n);
+        // int max = 0;
+        // for (int x : arr) {
+        //     max = Math.max(max, Integer.highestOneBit(x));
+        // }
+        // ArrayList<Integer> listHigh = new ArrayList<>();
+        // ArrayList<Integer> listLow = new ArrayList<>();
+        // for (int x : arr) {
+        //     if (Integer.highestOneBit(x) == max) {
+        //         listHigh.add(x);
+        //     } else {
+        //         listLow.add(x);
+        //     }
+        // }
+        // Collections.sort(listHigh);
+        // Collections.sort(listLow);
+        // max = 0;
+        // HashSet<Integer> take = new HashSet<>();
+        // int one = 0, two = 0, three = 0;
+        // for (int i = 0; i < listHigh.size(); i++) {
+        //     for (int e = 0; e <= i; e++) {
+        //         three |= two & listHigh.get(e);
+        //         two |= one & listHigh.get(e);
+        //         one |= listHigh.get(e);
+        //     }
+        // }
+        long max = 0;
+        for (int i = 0; i < n; i++) {
+            max = Math.max(max, arr[i]);
+            for (int e = i+1; e < n; e++) {
+                max = Math.max(max, arr[i] | arr[e]);
+                for (int w = e+1; w < n; w++) {
+                    max = Math.max(arr[i] | arr[e] | arr[w], max);
+                }
+            }
+        }
+        out.println(max);
+    }
+
+    public int ipar() throws IOException {
+        return Integer.parseInt(spar());
+    }
+
+    public int[] iapar(int n) throws IOException {
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = ipar();
+        }
+        return arr;
+    }
+
+    public long lpar() throws IOException {
+        return Long.parseLong(spar());
+    }
+
+    public long[] lapar(int n) throws IOException {
+        long[] arr = new long[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = lpar();
+        }
+        return arr;
+    }
+
+    public double dpar() throws IOException {
+        return Double.parseDouble(spar());
+    }
+
+    public String spar() throws IOException {
+        int len = 0;
+        int c;
+        do {
+            c = in.read();
+        } while (Character.isWhitespace(c) && c != -1);
+        if (c == -1) {
+            throw new NoSuchElementException("Reached EOF");
+        }
+        do {
+            inputBuffer[len] = (char)c;
+            len++;
+            c = in.read();
+        } while (!Character.isWhitespace(c) && c != -1);
+        while (c != '\n' && Character.isWhitespace(c) && c != -1) {
+            c = in.read();
+        }
+        if (c != -1 && c != '\n') {
+            in.unread(c);
+        }
+        return new String(inputBuffer, 0, len);
+    }
+
+    public String linepar() throws IOException {
+        int len = 0;
+        int c;
+        while ((c = in.read()) != '\n' && c != -1) {
+            if (c == '\r') {
+                continue;
+            }
+            inputBuffer[len] = (char)c;
+            len++;
+        }
+        return new String(inputBuffer, 0, len);
+    }
+
+    public boolean haspar() throws IOException {
+        String line = linepar();
+        if (line.isEmpty()) {
+            return false;
+        }
+        in.unread('\n');
+        in.unread(line.toCharArray());
+        return true;
+    }
+
+    public static void main(String[] args) throws IOException {
+        long time = 0;
+        time -= System.nanoTime();
+        new E().go();
+        time += System.nanoTime();
+        if (RUN_TIMING) {
+            System.out.printf("%.3f ms%n", time / 1000000.0);
+        }
+        out.flush();
+        in.close();
+    }
+}
+
+
+Similar question 2 (Similarity score: 0.73):
+Name: 1382_A. Common Subsequence
+Tags: ['brute force']
+Description: You are given two arrays of integers a_1,…,a_n and b_1,…,b_m.
+
+Your task is to find a non-empty array c_1,…,c_k that is a subsequence of a_1,…,a_n, and also a subsequence of b_1,…,b_m. If there are multiple answers, find one of the smallest possible length. If there are still multiple of the smallest possible length, find any. If there are no such arrays, you should report about it.
+
+A sequence a is a subsequence of a sequence b if a can be obtained from b by deletion of several (possibly, zero) elements. For example, [3,1] is a subsequence of [3,2,1] and [4,3,1], but not a subsequence of [1,3,3,7] and [3,10,4].
+
+Input
+
+The first line contains a single integer t (1≤ t≤ 1000) — the number of test cases. Next 3t lines contain descriptions of test cases.
+
+The first line of each test case contains two integers n and m (1≤ n,m≤ 1000) — the lengths of the two arrays.
+
+The second line of each test case contains n integers a_1,…,a_n (1≤ a_i≤ 1000) — the elements of the first array.
+
+The third line of each test case contains m integers b_1,…,b_m (1≤ b_i≤ 1000) — the elements of the second array.
+
+It is guaranteed that the sum of n and the sum of m across all test cases does not exceed 1000 (∑_{i=1}^t n_i, ∑_{i=1}^t m_i≤ 1000).
+
+Output
+
+For each test case, output "YES" if a solution exists, or "NO" otherwise.
+
+If the answer is "YES", on the next line output an integer k (1≤ k≤ 1000) — the length of the array, followed by k integers c_1,…,c_k (1≤ c_i≤ 1000) — the elements of the array.
+
+If there are multiple solutions with the smallest possible k, output any.
+
+Example
+
+Input
+
+
+5
+4 5
+10 8 6 4
+1 2 3 4 5
+1 1
+3
+3
+1 1
+3
+2
+5 3
+1000 2 2 2 3
+3 1 5
+5 5
+1 2 3 4 5
+1 2 3 4 5
+
+
+Output
+
+
+YES
+1 4
+YES
+1 3
+NO
+YES
+1 3
+YES
+1 2
+
+Note
+
+In the first test case, [4] is a subsequence of [10, 8, 6, 4] and [1, 2, 3, 4, 5]. This array has length 1, it is the smallest possible length of a subsequence of both a and b.
+
+In the third test case, no non-empty subsequences of both [3] and [2] exist, so the answer is "NO".
+Difficulty: 7
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int main() {
+  int t;
+  cin >> t;
+  while (t--) {
+    int n, m;
+    cin >> n >> m;
+    int arr[n];
+    int arr1[m];
+    for (int i = 0; i < n; i++) {
+      cin >> arr[i];
+    }
+    for (int i = 0; i < m; i++) {
+      cin >> arr1[i];
+    }
+    int num = -1;
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        if (arr[i] == arr1[j]) {
+          num = arr[i];
+          break;
+        }
+      }
+    }
+    if (num != -1) {
+      cout << "YES" << endl;
+      cout << "1 " << num << endl;
+    } else
+      cout << "NO" << endl;
+  }
+}
+
+
+Similar question 3 (Similarity score: 0.72):
+Name: 1325_B. CopyCopyCopyCopyCopy
+Tags: ['greedy', 'implementation']
+Description: Ehab has an array a of length n. He has just enough free time to make a new array consisting of n copies of the old array, written back-to-back. What will be the length of the new array's longest increasing subsequence?
+
+A sequence a is a subsequence of an array b if a can be obtained from b by deletion of several (possibly, zero or all) elements. The longest increasing subsequence of an array is the longest subsequence such that its elements are ordered in strictly increasing order.
+
+Input
+
+The first line contains an integer t — the number of test cases you need to solve. The description of the test cases follows.
+
+The first line of each test case contains an integer n (1 ≤ n ≤ 10^5) — the number of elements in the array a.
+
+The second line contains n space-separated integers a_1, a_2, …, a_{n} (1 ≤ a_i ≤ 10^9) — the elements of the array a.
+
+The sum of n across the test cases doesn't exceed 10^5.
+
+Output
+
+For each testcase, output the length of the longest increasing subsequence of a if you concatenate it to itself n times.
+
+Example
+
+Input
+
+
+2
+3
+3 2 1
+6
+3 1 4 1 5 9
+
+
+Output
+
+
+3
+5
+
+Note
+
+In the first sample, the new array is [3,2,1,3,2,1,3,2,1]. The longest increasing subsequence is marked in bold.
+
+In the second sample, the longest increasing subsequence will be [1,3,4,5,9].
+Difficulty: 8
+Solutions: t = int(input())
+for i in range(t):
+    n = int(input())
+    a = input().split()
+    s_a = set(a)
+    print(f"{len(s_a)}\n")
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

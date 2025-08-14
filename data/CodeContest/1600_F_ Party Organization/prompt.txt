@@ -1,0 +1,349 @@
+CURRENT QUESTION:
+On the great island of Baltia, there live N people, numbered from 1 to N. There are exactly M pairs of people that are friends with each other. The people of Baltia want to organize a successful party, but they have very strict rules on what a party is and when the party is successful. On the island of Baltia, a party is a gathering of exactly 5 people. The party is considered to be successful if either all the people at the party are friends with each other (so that they can all talk to each other without having to worry about talking to someone they are not friends with) or no two people at the party are friends with each other (so that everyone can just be on their phones without anyone else bothering them). Please help the people of Baltia organize a successful party or tell them that it's impossible to do so.
+
+Input
+
+The first line contains two integer numbers, N (5 ≤ N ≤ 2*10^5) and M (0 ≤ M ≤ 2*10^5) – the number of people that live in Baltia, and the number of friendships. The next M lines each contains two integers U_i and V_i (1 ≤ U_i,V_i ≤ N) – meaning that person U_i is friends with person V_i. Two friends can not be in the list of friends twice (no pairs are repeated) and a person can be friends with themselves (U_i ≠ V_i).
+
+Output
+
+If it's possible to organize a successful party, print 5 numbers indicating which 5 people should be invited to the party. If it's not possible to organize a successful party, print -1 instead. If there are multiple successful parties possible, print any.
+
+Examples
+
+Input
+
+
+6 3
+1 4
+4 2
+5 4
+
+
+Output
+
+
+1 2 3 5 6
+
+
+Input
+
+
+5 4
+1 2
+2 3
+3 4
+4 5
+
+
+Output
+
+
+-1
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.73):
+Name: 1167_C. News Distribution
+Tags: ['dfs and similar', 'dsu', 'graphs']
+Description: In some social network, there are n users communicating with each other in m groups of friends. Let's analyze the process of distributing some news between users.
+
+Initially, some user x receives the news from some source. Then he or she sends the news to his or her friends (two users are friends if there is at least one group such that both of them belong to this group). Friends continue sending the news to their friends, and so on. The process ends when there is no pair of friends such that one of them knows the news, and another one doesn't know.
+
+For each user x you have to determine what is the number of users that will know the news if initially only user x starts distributing it. 
+
+Input
+
+The first line contains two integers n and m (1 ≤ n, m ≤ 5 ⋅ 10^5) — the number of users and the number of groups of friends, respectively.
+
+Then m lines follow, each describing a group of friends. The i-th line begins with integer k_i (0 ≤ k_i ≤ n) — the number of users in the i-th group. Then k_i distinct integers follow, denoting the users belonging to the i-th group.
+
+It is guaranteed that ∑ _{i = 1}^{m} k_i ≤ 5 ⋅ 10^5.
+
+Output
+
+Print n integers. The i-th integer should be equal to the number of users that will know the news if user i starts distributing it.
+
+Example
+
+Input
+
+
+7 5
+3 2 5 4
+0
+2 1 2
+1 1
+2 6 7
+
+
+Output
+
+
+4 4 1 4 4 2 2 
+Difficulty: 9
+Solutions: import sys
+
+n, m = map(int, input().split())
+par = [0] * (n + 1)
+cnt = [0] * (n + 1)
+for i in range(n + 1):
+  par[i] = i
+
+
+def find(a):
+  if par[a] == a:
+    return a
+  par[a] = find(par[a])
+  return par[a]
+
+
+for i in sys.stdin.readlines():
+  x = list(map(int, i[:-1].split()))
+  if x[0]:
+    ta = find(x[1])
+    for i in x[2:]:
+      tb = find(i)
+      if ta != tb:
+        par[tb] = ta
+
+for i in range(n + 1):
+  cnt[find(i)] += 1
+
+ans = []
+for i in range(1, n + 1):
+      print(cnt[par[i]],end=" ")
+
+
+Similar question 2 (Similarity score: 0.72):
+Name: 906_C. Party
+Tags: ['bitmasks', 'brute force', 'dp', 'graphs']
+Description: Arseny likes to organize parties and invite people to it. However, not only friends come to his parties, but friends of his friends, friends of friends of his friends and so on. That's why some of Arseny's guests can be unknown to him. He decided to fix this issue using the following procedure.
+
+At each step he selects one of his guests A, who pairwise introduces all of his friends to each other. After this action any two friends of A become friends. This process is run until all pairs of guests are friends.
+
+Arseny doesn't want to spend much time doing it, so he wants to finish this process using the minimum number of steps. Help Arseny to do it.
+
+Input
+
+The first line contains two integers n and m (1 ≤ n ≤ 22; <image>) — the number of guests at the party (including Arseny) and the number of pairs of people which are friends.
+
+Each of the next m lines contains two integers u and v (1 ≤ u, v ≤ n; u ≠ v), which means that people with numbers u and v are friends initially. It's guaranteed that each pair of friends is described not more than once and the graph of friendship is connected.
+
+Output
+
+In the first line print the minimum number of steps required to make all pairs of guests friends.
+
+In the second line print the ids of guests, who are selected at each step.
+
+If there are multiple solutions, you can output any of them.
+
+Examples
+
+Input
+
+5 6
+1 2
+1 3
+2 3
+2 5
+3 4
+4 5
+
+
+Output
+
+2
+2 3 
+
+Input
+
+4 4
+1 2
+1 3
+1 4
+3 4
+
+
+Output
+
+1
+1 
+
+Note
+
+In the first test case there is no guest who is friend of all other guests, so at least two steps are required to perform the task. After second guest pairwise introduces all his friends, only pairs of guests (4, 1) and (4, 2) are not friends. Guest 3 or 5 can introduce them.
+
+In the second test case guest number 1 is a friend of all guests, so he can pairwise introduce all guests in one step.
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const long long INF = 1e9, MOD = INF + 7;
+const int N = 22, M = (1 << N);
+int adj[N], neigh[M];
+int main() {
+  ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+  int n, m;
+  cin >> n >> m;
+  for (int i = 0; i < m; i++) {
+    int v, u;
+    cin >> v >> u;
+    v--, u--;
+    adj[v] += 1 << u;
+    adj[u] += 1 << v;
+  }
+  if (2 * m == n * n - n) return cout << 0 << "\n", 0;
+  for (int i = 0; i < n; i++) adj[i] += 1 << i, neigh[1 << i] = adj[i];
+  for (int mask = 0; mask < (1 << n); mask++)
+    for (int i = 0; i < n; i++) {
+      if (!(mask & (1 << i)) && (neigh[mask] & (1 << i))) {
+        neigh[mask | (1 << i)] |= (neigh[mask] | adj[i]);
+      }
+    }
+  int ans = (1 << n) - 1;
+  for (int mask = 0; mask < (1 << n); mask++) {
+    if (neigh[mask] == (1 << n) - 1 &&
+        __builtin_popcount(mask) < __builtin_popcount(ans)) {
+      ans = mask;
+    }
+  }
+  cout << __builtin_popcount(ans) << "\n";
+  for (int i = 0; i < n; i++)
+    if (ans & (1 << i)) cout << i + 1 << ' ';
+  cout << "\n";
+  return 0;
+}
+
+
+Similar question 3 (Similarity score: 0.72):
+Name: 907_E. Party
+Tags: ['bitmasks', 'brute force', 'dp', 'graphs']
+Description: Arseny likes to organize parties and invite people to it. However, not only friends come to his parties, but friends of his friends, friends of friends of his friends and so on. That's why some of Arseny's guests can be unknown to him. He decided to fix this issue using the following procedure.
+
+At each step he selects one of his guests A, who pairwise introduces all of his friends to each other. After this action any two friends of A become friends. This process is run until all pairs of guests are friends.
+
+Arseny doesn't want to spend much time doing it, so he wants to finish this process using the minimum number of steps. Help Arseny to do it.
+
+Input
+
+The first line contains two integers n and m (1 ≤ n ≤ 22; <image>) — the number of guests at the party (including Arseny) and the number of pairs of people which are friends.
+
+Each of the next m lines contains two integers u and v (1 ≤ u, v ≤ n; u ≠ v), which means that people with numbers u and v are friends initially. It's guaranteed that each pair of friends is described not more than once and the graph of friendship is connected.
+
+Output
+
+In the first line print the minimum number of steps required to make all pairs of guests friends.
+
+In the second line print the ids of guests, who are selected at each step.
+
+If there are multiple solutions, you can output any of them.
+
+Examples
+
+Input
+
+5 6
+1 2
+1 3
+2 3
+2 5
+3 4
+4 5
+
+
+Output
+
+2
+2 3 
+
+Input
+
+4 4
+1 2
+1 3
+1 4
+3 4
+
+
+Output
+
+1
+1 
+
+Note
+
+In the first test case there is no guest who is friend of all other guests, so at least two steps are required to perform the task. After second guest pairwise introduces all his friends, only pairs of guests (4, 1) and (4, 2) are not friends. Guest 3 or 5 can introduce them.
+
+In the second test case guest number 1 is a friend of all guests, so he can pairwise introduce all guests in one step.
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int MAXN = 22;
+int N, M, aim_state, min_steps, min_pset, edges[MAXN], vis[1 << MAXN];
+void DFS(int state, int pset, int steps) {
+  if (steps >= min_steps) return;
+  if (vis[pset]) return;
+  vis[pset] = true;
+  if (state == aim_state) {
+    min_steps = steps;
+    min_pset = pset;
+    return;
+  }
+  for (int i = 0; i < N; ++i) {
+    if ((1 << i) & (state ^ pset)) {
+      if ((state | edges[i]) > state)
+        DFS(state | edges[i], pset | (1 << i), steps + 1);
+    }
+  }
+}
+inline void init() {
+  scanf("%d%d", &N, &M);
+  for (int i = 0, u, v; i < M; ++i) {
+    scanf("%d%d", &u, &v);
+    --u;
+    --v;
+    edges[u] |= 1 << v;
+    edges[v] |= 1 << u;
+  }
+  for (int i = 0; i < N; ++i) edges[i] |= 1 << i;
+}
+inline int solve() {
+  if (M == N * (N - 1) / 2) return 0;
+  aim_state = (1 << N) - 1;
+  min_steps = N + 1;
+  min_pset = aim_state;
+  for (int i = 0; i < N; ++i) DFS(edges[i], 1 << i, 1);
+  return min_steps;
+}
+int main() {
+  init();
+  int steps = solve();
+  if (steps) {
+    printf("%d\n", steps);
+    bool first = true;
+    for (int i = 0; i < N; ++i)
+      if (min_pset & (1 << i)) {
+        if (first)
+          first = false;
+        else
+          printf(" ");
+        printf("%d", i + 1);
+      }
+    printf("\n");
+  } else
+    printf("0\n");
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

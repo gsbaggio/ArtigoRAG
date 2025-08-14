@@ -1,0 +1,186 @@
+CURRENT QUESTION:
+For two positive integers l and r (l ≤ r) let c(l, r) denote the number of integer pairs (i, j) such that l ≤ i ≤ j ≤ r and \operatorname{gcd}(i, j) ≥ l. Here, \operatorname{gcd}(i, j) is the [greatest common divisor (GCD)](https://en.wikipedia.org/wiki/Greatest_common_divisor) of integers i and j.
+
+YouKn0wWho has two integers n and k where 1 ≤ k ≤ n. Let f(n, k) denote the minimum of ∑_{i=1}^{k}{c(x_i+1,x_{i+1})} over all integer sequences 0=x_1 < x_2 < … < x_{k} < x_{k+1}=n.
+
+Help YouKn0wWho find f(n, k). 
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 3 ⋅ 10^5) — the number of test cases.
+
+The first and only line of each test case contains two integers n and k (1 ≤ k ≤ n ≤ 10^5). 
+
+Output
+
+For each test case, print a single integer — f(n, k).
+
+Example
+
+Input
+
+
+4
+6 2
+4 4
+3 1
+10 3
+
+
+Output
+
+
+8
+4
+6
+11
+
+Note
+
+In the first test case, YouKn0wWho can select the sequence [0, 2, 6]. So f(6, 2) = c(1, 2) + c(3, 6) = 3 + 5 = 8 which is the minimum possible.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: p01333 Summer of KMC
+Tags: ['']
+Description: Description
+
+KMC sells CDs every year at a coterie spot sale called Comic Market. F was supposed to sell CDs at the comic market, but due to the popularity of F, the KMC sales floor was flooded with people, and the calculation of change could not keep up. So F decided to write a program that would output the change as soon as he entered the amount.
+
+KMC prepares only 100-yen coins, 500-yen coins, and 1000-yen coins as change. You can think of these coins and bills as infinite. Choose change so that the number of coins and bills is minimized. Also, the price of CDs sold by KMC is a multiple of 100, and the amount paid by the purchaser is also a multiple of 100.
+
+
+
+Input
+
+The input consists of multiple test cases.
+
+Each test case consists of two positive integers A and B. A is the price of the CD and B is the amount paid by the purchaser. A and B are multiples of 100 and do not exceed 100000000. Also, A ≤ B.
+
+The input ends with 0 0.
+
+Output
+
+For each test case, the number and number of 100-yen coins, 500-yen coins, and 1000-yen coins that should be presented as change are output in this order in one line. Insert a space between each number.
+
+Example
+
+Input
+
+500 1000
+100 10000
+400 700
+600 5000
+10000 10000
+0 0
+
+
+Output
+
+0 1 0
+4 1 9
+3 0 0
+4 0 4
+0 0 0
+Difficulty: 0
+Solutions: #include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+#include<set>
+using namespace std;
+int main() {
+	int a, b;
+	while(cin>>a>>b&&a!=0&&b!=0){
+		int h = 0, g = 0, s = 0,o=b-a;
+		while (o >= 1000) {
+			s++;
+			o -= 1000;
+		}
+		while (o >= 500) {
+			g++;
+			o -= 500;
+		}
+		while (o >= 100) {
+			h++;
+			o -= 100;
+		}
+		cout << h << " " << g << " " << s << endl;
+	}
+}
+
+Example question 2:
+Name: dj-boy-and-phone
+Tags: []
+Description: DJ Boy is a new generation child he has never seen numeric keypad of mobile. So one day when Prem showed him his mobile, DJ boy started laughing on him. Prem being smart gave him a problem to solve with some condition. Your task is to help DJ boy to solve this problem:
+
+Given a number N, DJ boy has to tell how many numbers of length N are possible.
+
+Conditions:
+
+1)He can only press digit that are adjacent i.e. to the left, right, up or bottom to current digit.
+
+2)He may press the same key again i.e. numbers like 000 & 080 are possible for length 3.
+
+3)He cannot press * and # keys.
+
+Constraints:
+
+1 ≤ t ≤ 100
+
+0 ≤ N ≤ 10000
+
+MOD: 10^9 + 9
+
+Input:
+
+First line contains T,the number of test cases.
+Next t lines contain a number N.
+
+Output:
+
+Print the required number modulo MOD.
+
+SAMPLE INPUT
+2
+1
+2
+
+SAMPLE OUTPUT
+10
+36
+Difficulty: 0
+Solutions: maxn=10000
+mod=10**9+9
+d=[]
+for i in xrange(0,10):
+	d.append([0]*(maxn+1))
+	d[i][0]=0
+	d[i][1]=1
+for z in xrange(2,(maxn+1)):
+	d[0][z] = d[0][z-1] + d[8][z-1]
+	d[1][z] = d[1][z-1] + d[2][z-1] + d[4][z-1]
+	d[2][z] = d[2][z-1] + d[1][z-1] + d[5][z-1] + d[3][z-1]
+	d[3][z] = d[3][z-1] + d[2][z-1] + d[6][z-1]
+	d[4][z] = d[4][z-1] + d[1][z-1] + d[5][z-1] + d[7][z-1]
+	d[5][z] = d[5][z-1] + d[2][z-1] + d[4][z-1] + d[6][z-1] + d[8][z-1]
+	d[6][z] = d[6][z-1] + d[3][z-1] + d[5][z-1] + d[9][z-1]
+	d[7][z] = d[7][z-1] + d[4][z-1] + d[8][z-1]
+	d[8][z] = d[8][z-1] + d[5][z-1] + d[7][z-1] + d[9][z-1] + d[0][z-1]
+	d[9][z] = d[9][z-1] + d[6][z-1] + d[8][z-1]
+for _ in xrange(input()):
+	n=input()
+	print sum([d[i][n] for i in xrange(0,10)])%mod
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

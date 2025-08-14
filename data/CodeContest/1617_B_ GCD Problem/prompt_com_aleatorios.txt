@@ -1,0 +1,204 @@
+CURRENT QUESTION:
+Given a positive integer n. Find three distinct positive integers a, b, c such that a + b + c = n and \operatorname{gcd}(a, b) = c, where \operatorname{gcd}(x, y) denotes the [greatest common divisor (GCD)](https://en.wikipedia.org/wiki/Greatest_common_divisor) of integers x and y.
+
+Input
+
+The input consists of multiple test cases. The first line contains a single integer t (1 ≤ t ≤ 10^5) — the number of test cases. Description of the test cases follows.
+
+The first and only line of each test case contains a single integer n (10 ≤ n ≤ 10^9).
+
+Output
+
+For each test case, output three distinct positive integers a, b, c satisfying the requirements. If there are multiple solutions, you can print any. We can show that an answer always exists.
+
+Example
+
+Input
+
+
+6
+18
+63
+73
+91
+438
+122690412
+
+
+Output
+
+
+6 9 3
+21 39 3
+29 43 1
+49 35 7
+146 219 73
+28622 122661788 2
+
+Note
+
+In the first test case, 6 + 9 + 3 = 18 and \operatorname{gcd}(6, 9) = 3.
+
+In the second test case, 21 + 39 + 3 = 63 and \operatorname{gcd}(21, 39) = 3.
+
+In the third test case, 29 + 43 + 1 = 73 and \operatorname{gcd}(29, 43) = 1.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: tkconvex
+Tags: []
+Description: Given n sticks' lengths, determine whether there is a solution to choose 2k out of them and use these 2k sticks to form two k-convex polygons (non-degenerated), namely, two convex polygons each has exactly k sticks as its sides, and every adjacent sticks are not parallel.
+
+
+Input
+The first line contains two space-separated integers n and k, denoting the number of sticks and the size of convex polygon we needed.
+The second line contains n positive integers, denoting the lengths of sticks.
+
+Output
+Print "Yes" (without quotes) in the first line if exists a solution. Otherwise print "No" (without quotes) instead.
+If such solution exists, you should output a plan in the second line. Print 2k indexes (indexes start from 1) of the sticks you chosen. First k sticks compose the first k-convex polygon. And the later k sticks form the second. If there are more than one solution, output any.
+
+Constraints
+
+2k ≤ n ≤ 1000
+3 ≤ k ≤ 10
+1 ≤ length of each stick ≤ 10^9
+
+
+Example
+
+Input 1:
+6 3
+1 1 1 2 2 2
+
+Output 1:
+Yes
+1 2 3 4 5 6
+
+
+Input 2:
+6 3
+1 2 3 100 200 300
+
+Output 2:
+No
+
+Explanation
+Example case 1: 1 1 1 and 2 2 2 form two triangles.
+Example case 2: Please be careful that convex polygons must be non-degenerated.
+Difficulty: 4
+Solutions: from itertools import combinations
+from collections import defaultdict
+ 
+ 
+def small_j(sticks, cum, k):
+    for j in range(k - 1, len(sticks)):
+        i = j - k + 1
+        hyp = sticks[j]
+        rest = cum[j - 1] - cum[i] + sticks[i]
+        if rest > hyp:
+            return i, j
+    return None, None
+ 
+def small_ii(sticks, cum, k):
+    for jj in range(-1, k - len(sticks) - 1, -1):
+        ii = jj - k + 1
+        hyp = sticks[jj]
+        rest = cum[jj - 1] - cum[ii] + sticks[ii]
+        if rest > hyp:
+            return len(sticks) + ii, len(sticks) + jj
+    assert False
+ 
+ 
+ 
+ 
+ 
+ 
+def solve(n, k, sticks):
+    len_pos = defaultdict(list)
+    for pos, len_ in enumerate(sticks):
+        len_pos[len_].append(str(pos + 1))
+ 
+    sticks.sort()
+    tot = 0
+    cum = []
+    for s in sticks:
+        tot += s
+        cum.append(tot)
+ 
+    i, j = small_j(sticks, cum, k)
+    if j is None:
+        return "No"
+ 
+    ii, jj = small_ii(sticks, cum, k)
+ 
+    if ii > j:
+        ans = sticks[i:j+1] + sticks[ii:jj+1]
+        ans_i = []
+        for len_ in ans:
+            ans_i.append(len_pos[len_].pop())
+        return "Yes\n" + " ".join(ans_i)
+ 
+    if jj < 2*k - 1:
+        return "No"
+ 
+    chosen_sticks = list(enumerate(sticks[jj - 2*k + 1: jj+1]))
+    assert len(chosen_sticks) == 2*k
+ 
+    positions = range(len(chosen_sticks))
+ 
+    solution = None
+    for poly1 in combinations(positions, r=k):
+        poly1 = list(poly1)
+        i1 = 0
+        sum1 = 0
+        sum2 = 0
+        hyp1 = 0
+        hyp2 = 0
+        for pos, cs in chosen_sticks:
+            if i1 < k and pos == poly1[i1]:
+                sum1 += cs
+                i1 += 1
+                hyp1 = cs
+            else:
+                sum2 += cs
+                hyp2 = cs
+        sum1 -= hyp1
+        sum2 -= hyp2
+        if sum1 > hyp1 and sum2 > hyp2:
+            solution = poly1
+            break
+ 
+    if solution is None:
+        return "No"
+    else:
+        chosen_sticks = [v for _, v in chosen_sticks]
+        poly1 = [chosen_sticks[i] for i in solution]
+        for v in poly1:
+            chosen_sticks.remove(v)
+        poly2 = chosen_sticks
+        ans = poly1 + poly2
+        ans_i = []
+        for len_ in ans:
+            ans_i.append(len_pos[len_].pop())
+        return "Yes\n" + " ".join(ans_i)
+ 
+ 
+
+ 
+n, k = map(int, raw_input().split())
+sticks = map(int, raw_input().split())
+print solve(n, k, sticks)
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

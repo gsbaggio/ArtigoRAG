@@ -1,0 +1,2 @@
+800
+['brute force', 'implementation', 'math']

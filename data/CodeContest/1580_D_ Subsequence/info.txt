@@ -1,0 +1,2 @@
+2900
+['brute force', 'divide and conquer', 'dp', 'greedy', 'trees']

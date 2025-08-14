@@ -1,0 +1,886 @@
+CURRENT QUESTION:
+You are given a rooted tree consisting of n vertices numbered from 1 to n. The root of the tree is the vertex 1.
+
+You have to color all vertices of the tree into n colors (also numbered from 1 to n) so that there is exactly one vertex for each color. Let c_i be the color of vertex i, and p_i be the parent of vertex i in the rooted tree. The coloring is considered beautiful if there is no vertex k (k > 1) such that c_k = c_{p_k} - 1, i. e. no vertex such that its color is less than the color of its parent by exactly 1.
+
+Calculate the number of beautiful colorings, and print it modulo 998244353.
+
+Input
+
+The first line contains one integer n (2 ≤ n ≤ 250000) — the number of vertices in the tree.
+
+Then n-1 lines follow, the i-th line contains two integers x_i and y_i (1 ≤ x_i, y_i ≤ n; x_i ≠ y_i) denoting an edge between the vertex x_i and the vertex y_i. These edges form a tree.
+
+Output
+
+Print one integer — the number of beautiful colorings, taken modulo 998244353.
+
+Examples
+
+Input
+
+
+5
+1 2
+3 2
+4 2
+2 5
+
+
+Output
+
+
+42
+
+
+Input
+
+
+5
+1 2
+2 3
+3 4
+4 5
+
+
+Output
+
+
+53
+
+
+Input
+
+
+20
+20 19
+20 4
+12 4
+5 8
+1 2
+20 7
+3 10
+7 18
+11 8
+9 10
+17 10
+1 15
+11 16
+14 11
+18 10
+10 1
+14 2
+13 17
+20 6
+
+
+Output
+
+
+955085064
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.77):
+Name: 1118_F2. Tree Cutting (Hard Version)
+Tags: ['combinatorics', 'dfs and similar', 'dp', 'trees']
+Description: You are given an undirected tree of n vertices. 
+
+Some vertices are colored one of the k colors, some are uncolored. It is guaranteed that the tree contains at least one vertex of each of the k colors. There might be no uncolored vertices.
+
+You choose a subset of exactly k - 1 edges and remove it from the tree. Tree falls apart into k connected components. Let's call this subset of edges nice if none of the resulting components contain vertices of different colors.
+
+How many nice subsets of edges are there in the given tree? Two subsets are considered different if there is some edge that is present in one subset and absent in the other.
+
+The answer may be large, so print it modulo 998244353.
+
+Input
+
+The first line contains two integers n and k (2 ≤ n ≤ 3 ⋅ 10^5, 2 ≤ k ≤ n) — the number of vertices in the tree and the number of colors, respectively.
+
+The second line contains n integers a_1, a_2, ..., a_n (0 ≤ a_i ≤ k) — the colors of the vertices. a_i = 0 means that vertex i is uncolored, any other value means the vertex i is colored that color.
+
+The i-th of the next n - 1 lines contains two integers v_i and u_i (1 ≤ v_i, u_i ≤ n, v_i ≠ u_i) — the edges of the tree. It is guaranteed that the given edges form a tree. It is guaranteed that the tree contains at least one vertex of each of the k colors. There might be no uncolored vertices.
+
+Output
+
+Print a single integer — the number of nice subsets of edges in the given tree. Two subsets are considered different if there is some edge that is present in one subset and absent in the other.
+
+The answer may be large, so print it modulo 998244353.
+
+Examples
+
+Input
+
+
+5 2
+2 0 0 1 2
+1 2
+2 3
+2 4
+2 5
+
+
+Output
+
+
+1
+
+
+Input
+
+
+7 3
+0 1 0 2 2 3 0
+1 3
+1 4
+1 5
+2 7
+3 6
+4 7
+
+
+Output
+
+
+4
+
+Note
+
+Here is the tree from the first example:
+
+<image>
+
+The only nice subset is edge (2, 4). Removing it makes the tree fall apart into components \{4\} and \{1, 2, 3, 5\}. The first component only includes a vertex of color 1 and the second component includes only vertices of color 2 and uncolored vertices.
+
+Here is the tree from the second example:
+
+<image>
+
+The nice subsets are \{(1, 3), (4, 7)\}, \{(1, 3), (7, 2)\}, \{(3, 6), (4, 7)\} and \{(3, 6), (7, 2)\}.
+Difficulty: 12
+Solutions: #include <bits/stdc++.h>
+#pragma GCC optimize("O2")
+#pragma GCC optimize("unroll-loops")
+using namespace std;
+const long double eps = 1e-7;
+const int inf = 1000000010;
+const long long INF = 10000000000000010LL;
+const int mod = 998244353;
+const int MAXN = 300010, LOG = 18;
+struct DSU {
+  int par[MAXN];
+  DSU() {
+    for (int i = 1; i < MAXN; i++) par[i] = i;
+  }
+  int get(int x) {
+    if (par[x] == x) return x;
+    return par[x] = get(par[x]);
+  }
+  void join(int x, int y) { par[get(x)] = get(y); }
+} dsu;
+int n, m, k, u, v, x, y, t, a, b;
+int A[MAXN], B[MAXN];
+int h[MAXN];
+int par[MAXN][LOG];
+long long dp[MAXN][2];
+vector<int> G[MAXN], vec[MAXN];
+void dfs1(int node, int p) {
+  h[node] = h[p] + 1;
+  par[node][0] = p;
+  for (int i = 1; i < LOG; i++) par[node][i] = par[par[node][i - 1]][i - 1];
+  for (int v : G[node])
+    if (v != p) dfs1(v, node);
+}
+int Lca(int x, int y) {
+  if (h[x] > h[y]) swap(x, y);
+  for (int i = 0; i < LOG; i++)
+    if ((h[y] - h[x]) & (1 << i)) y = par[y][i];
+  if (x == y) return x;
+  for (int i = LOG - 1; i >= 0; i--)
+    if (par[x][i] != par[y][i]) {
+      x = par[x][i];
+      y = par[y][i];
+    }
+  return par[x][0];
+}
+int dfs2(int node, int p) {
+  for (int v : G[node])
+    if (v != p) B[node] += dfs2(v, node);
+  return B[node];
+}
+long long powmod(long long a, long long b) {
+  if (!b) return 1;
+  if (b & 1) return a * powmod(a * a % mod, b >> 1) % mod;
+  return powmod(a * a % mod, b >> 1);
+}
+long long inv(long long x) { return powmod(x, mod - 2); }
+void dfs3(int node) {
+  for (int v : G[node]) dfs3(v);
+  dp[node][0] = 1;
+  for (int v : G[node]) dp[node][0] = dp[node][0] * (dp[v][0] + dp[v][1]) % mod;
+  if (vec[node].empty()) {
+    for (int v : G[node])
+      dp[node][1] = (dp[node][1] + dp[v][1] * inv(dp[v][0] + dp[v][1])) % mod;
+    dp[node][1] = dp[node][1] * dp[node][0] % mod;
+    return;
+  }
+  swap(dp[node][0], dp[node][1]);
+}
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+  cout.tie(0);
+  cin >> n >> k;
+  for (int i = 1; i <= n; i++) {
+    cin >> A[i];
+    if (A[i]) B[i]++;
+    vec[A[i]].push_back(i);
+  }
+  for (int i = 1; i < n; i++) {
+    cin >> u >> v;
+    G[u].push_back(v);
+    G[v].push_back(u);
+  }
+  dfs1(1, 1);
+  for (int i = 1; i <= k; i++)
+    if (vec[i].size() > 0) {
+      int v = vec[i][0];
+      for (int j = 1; j < vec[i].size(); j++) v = Lca(v, vec[i][j]);
+      B[v] -= vec[i].size();
+    }
+  dfs2(1, 1);
+  for (int i = 1; i <= n; i++) G[i].clear(), vec[i].clear();
+  for (int i = 2; i <= n; i++)
+    if (B[i]) dsu.join(i, par[i][0]);
+  for (int i = 1; i <= n; i++)
+    if (A[i]) vec[dsu.get(i)].push_back(A[i]);
+  for (int i = 1; i <= n; i++)
+    if (vec[i].size()) {
+      int shit = vec[i][0];
+      for (int j : vec[i])
+        if (j != shit) return cout << 0 << '\n', 0;
+    }
+  for (int i = 2; i <= n; i++)
+    if (!B[i]) G[dsu.get(par[i][0])].push_back(dsu.get(i));
+  dfs3(1);
+  cout << dp[1][1] << '\n';
+  return 0;
+}
+
+
+Similar question 2 (Similarity score: 0.76):
+Name: p03348 AtCoder Grand Contest 024 - Isomorphism Freak
+Tags: ['']
+Description: Coloring of the vertices of a tree G is called a good coloring when, for every pair of two vertices u and v painted in the same color, picking u as the root and picking v as the root would result in isomorphic rooted trees.
+
+Also, the colorfulness of G is defined as the minimum possible number of different colors used in a good coloring of G.
+
+You are given a tree with N vertices. The vertices are numbered 1 through N, and the i-th edge connects Vertex a_i and Vertex b_i. We will construct a new tree T by repeating the following operation on this tree some number of times:
+
+* Add a new vertex to the tree by connecting it to one of the vertices in the current tree with an edge.
+
+
+
+Find the minimum possible colorfulness of T. Additionally, print the minimum number of leaves (vertices with degree 1) in a tree T that achieves the minimum colorfulness.
+
+Constraints
+
+* 2 \leq N \leq 100
+* 1 \leq a_i,b_i \leq N(1\leq i\leq N-1)
+* The given graph is a tree.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N
+a_1 b_1
+:
+a_{N-1} b_{N-1}
+
+
+Output
+
+Print two integers with a space in between. First, print the minimum possible colorfulness of a tree T that can be constructed. Second, print the minimum number of leaves in a tree that achieves it.
+
+It can be shown that, under the constraints of this problem, the values that should be printed fit into 64-bit signed integers.
+
+Examples
+
+Input
+
+5
+1 2
+2 3
+3 4
+3 5
+
+
+Output
+
+2 4
+
+
+Input
+
+8
+1 2
+2 3
+4 3
+5 4
+6 7
+6 8
+3 6
+
+
+Output
+
+3 4
+
+
+Input
+
+10
+1 2
+2 3
+3 4
+4 5
+5 6
+6 7
+3 8
+5 9
+3 10
+
+
+Output
+
+4 6
+
+
+Input
+
+13
+5 6
+6 4
+2 8
+4 7
+8 9
+3 2
+10 4
+11 10
+2 4
+13 10
+1 8
+12 1
+
+
+Output
+
+4 12
+Difficulty: 0
+Solutions: 
+import java.util.Arrays;
+
+public class Main {
+
+  private static void solve() {
+    int n = ni();
+    int[] from = new int[n - 1];
+    int[] to = new int[n - 1];
+    for (int i = 0; i < n - 1; i++) {
+      from[i] = ni() - 1;
+      to[i] = ni() - 1;
+    }
+    int[][] g = packU(n, from, to);
+    int[] center = centerNoRec(g);
+
+    if (center.length == 2) {
+      long[] ret = f2(center[0], center[1], g);
+      System.out.println(ret[0] + " " + ret[1]);
+    } else {
+      long[] ret = f1(center[0], g);
+      for (int v : g[center[0]]) {
+        long[] now = f2(center[0], v, g);
+        if (now[1] < ret[1]) {
+          ret = now;
+        }
+      }
+      System.out.println(ret[0] + " " + ret[1]);
+    }
+
+  }
+
+  private static long[] f1(int c1, int[][] g) {
+    int n = g.length;
+    int[] dep1 = new int[n];
+    Arrays.fill(dep1, -1);
+    dfs(c1, -1, g, 0, dep1);
+    int depth = Arrays.stream(dep1).max().getAsInt();
+    int[] max = new int[depth + 1];
+    for (int i = 0; i < n; i++) {
+      int v1 = dep1[i];
+      if (v1 >= 0)
+        max[v1] = Math.max(max[v1], g[i].length - 1);
+    }
+    max[0]++;
+    max[depth] = 1;
+    long ret = 1;
+    for (int v : max) {
+      ret *= v;
+    }
+    return new long[] {depth + 1, ret};
+  }
+
+  private static long[] f2(int c1, int c2, int[][] g) {
+    int n = g.length;
+    int[] dep1 = new int[n];
+    int[] dep2 = new int[n];
+    Arrays.fill(dep1, -1);
+    Arrays.fill(dep2, -1);
+
+    dfs(c1, c2, g, 0, dep1);
+    dfs(c2, c1, g, 0, dep2);
+
+    int depth =
+        Math.max(Arrays.stream(dep1).max().getAsInt(), Arrays.stream(dep2).max().getAsInt());
+    int[] max = new int[depth + 1];
+    for (int i = 0; i < n; i++) {
+      int v1 = dep1[i];
+      int v2 = dep2[i];
+      if (v1 >= 0)
+        max[v1] = Math.max(max[v1], g[i].length - 1);
+      if (v2 >= 0)
+        max[v2] = Math.max(max[v2], g[i].length - 1);
+    }
+    max[depth] = 1;
+    long ret = 1;
+    for (int v : max) {
+      ret *= v;
+    }
+    ret *= 2;
+    return new long[] {depth + 1, ret};
+  }
+
+  public static int[][] parents(int[][] g, int root) {
+    int n = g.length;
+    int[] par = new int[n];
+    Arrays.fill(par, -1);
+
+    int[] depth = new int[n];
+    depth[0] = 0;
+
+    int[] q = new int[n];
+    q[0] = root;
+    for (int p = 0, r = 1; p < r; p++) {
+      int cur = q[p];
+      for (int nex : g[cur]) {
+        if (par[cur] != nex) {
+          q[r++] = nex;
+          par[nex] = cur;
+          depth[nex] = depth[cur] + 1;
+        }
+      }
+    }
+    return new int[][] {par, q, depth};
+  }
+
+  private static void dfs(int cur, int pre, int[][] g, int d, int[] dep) {
+    dep[cur] = d;
+    for (int nex : g[cur]) {
+      if (nex == pre) {
+        continue;
+      }
+      dfs(nex, cur, g, d + 1, dep);
+    }
+  }
+
+  public static int[] centerNoRec(int[][] g) {
+    int n = g.length;
+    if (n == 1)
+      return new int[] {0};
+    if (n == 2)
+      return new int[] {0, 1};
+    int root = -1;
+    for (int i = 0; i < n; i++) {
+      if (g[i].length >= 2) {
+        root = i;
+        break;
+      }
+    }
+    int[][] pars = parents(g, root);
+    int[] par = pars[0], ord = pars[1];
+    int[] up = new int[n];
+    int[] up2 = new int[n];
+    Arrays.fill(up, -9999999);
+    Arrays.fill(up2, -9999999);
+    for (int i = n - 1; i >= 0; i--) {
+      int cur = ord[i];
+      if (g[cur].length == 1) {
+        up[cur] = 0;
+      } else {
+        for (int e : g[cur]) {
+          if (par[cur] != e) {
+            if (up[e] + 1 > up[cur]) {
+              up2[cur] = up[cur];
+              up[cur] = up[e] + 1;
+            } else if (up[e] + 1 > up2[cur]) {
+              up2[cur] = up[e] + 1;
+            }
+          }
+        }
+      }
+    }
+    for (int i = 1; i < n; i++) {
+      int cur = ord[i];
+      int v = up[par[cur]] == up[cur] + 1 ? up2[par[cur]] + 1 : up[par[cur]] + 1;
+      if (v > up[cur]) {
+        up2[cur] = up[cur];
+        up[cur] = v;
+      } else if (v > up2[cur]) {
+        up2[cur] = v;
+      }
+    }
+
+    int min = 9999999;
+    for (int i = 0; i < n; i++)
+      min = Math.min(min, up[i]);
+
+    int[] cen = new int[2];
+    Arrays.fill(cen, -1);
+    int p = 0;
+    for (int i = 0; i < n; i++) {
+      if (up[i] == min) {
+        cen[p++] = i;
+      }
+    }
+    return Arrays.copyOf(cen, p);
+  }
+
+  static int[][] packU(int n, int[] from, int[] to) {
+    int[][] g = new int[n][];
+    int[] p = new int[n];
+    for (int f : from)
+      p[f]++;
+    for (int t : to)
+      p[t]++;
+    for (int i = 0; i < n; i++)
+      g[i] = new int[p[i]];
+    for (int i = 0; i < from.length; i++) {
+      g[from[i]][--p[from[i]]] = to[i];
+      g[to[i]][--p[to[i]]] = from[i];
+    }
+    return g;
+  }
+
+  public static void main(String[] args) {
+    new Thread(null, new Runnable() {
+      @Override
+      public void run() {
+        long start = System.currentTimeMillis();
+        String debug = args.length > 0 ? args[0] : null;
+        if (debug != null) {
+          try {
+            is = java.nio.file.Files.newInputStream(java.nio.file.Paths.get(debug));
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        }
+        reader = new java.io.BufferedReader(new java.io.InputStreamReader(is), 32768);
+        solve();
+        out.flush();
+        tr((System.currentTimeMillis() - start) + "ms");
+      }
+    }, "", 64000000).start();
+  }
+
+  private static java.io.InputStream is = System.in;
+  private static java.io.PrintWriter out = new java.io.PrintWriter(System.out);
+  private static java.util.StringTokenizer tokenizer = null;
+  private static java.io.BufferedReader reader;
+
+  public static String next() {
+    while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+      try {
+        tokenizer = new java.util.StringTokenizer(reader.readLine());
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return tokenizer.nextToken();
+  }
+
+  private static double nd() {
+    return Double.parseDouble(next());
+  }
+
+  private static long nl() {
+    return Long.parseLong(next());
+  }
+
+  private static int[] na(int n) {
+    int[] a = new int[n];
+    for (int i = 0; i < n; i++)
+      a[i] = ni();
+    return a;
+  }
+
+  private static char[] ns() {
+    return next().toCharArray();
+  }
+
+  private static long[] nal(int n) {
+    long[] a = new long[n];
+    for (int i = 0; i < n; i++)
+      a[i] = nl();
+    return a;
+  }
+
+  private static int[][] ntable(int n, int m) {
+    int[][] table = new int[n][m];
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        table[i][j] = ni();
+      }
+    }
+    return table;
+  }
+
+  private static int[][] nlist(int n, int m) {
+    int[][] table = new int[m][n];
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        table[j][i] = ni();
+      }
+    }
+    return table;
+  }
+
+  private static int ni() {
+    return Integer.parseInt(next());
+  }
+
+  private static void tr(Object... o) {
+    if (is != System.in)
+      System.out.println(java.util.Arrays.deepToString(o));
+  }
+}
+
+
+
+Similar question 3 (Similarity score: 0.76):
+Name: 375_D. Tree and Queries
+Tags: ['data structures', 'dfs and similar', 'trees']
+Description: You have a rooted tree consisting of n vertices. Each vertex of the tree has some color. We will assume that the tree vertices are numbered by integers from 1 to n. Then we represent the color of vertex v as cv. The tree root is a vertex with number 1.
+
+In this problem you need to answer to m queries. Each query is described by two integers vj, kj. The answer to query vj, kj is the number of such colors of vertices x, that the subtree of vertex vj contains at least kj vertices of color x.
+
+You can find the definition of a rooted tree by the following link: http://en.wikipedia.org/wiki/Tree_(graph_theory).
+
+Input
+
+The first line contains two integers n and m (2 ≤ n ≤ 105; 1 ≤ m ≤ 105). The next line contains a sequence of integers c1, c2, ..., cn (1 ≤ ci ≤ 105). The next n - 1 lines contain the edges of the tree. The i-th line contains the numbers ai, bi (1 ≤ ai, bi ≤ n; ai ≠ bi) — the vertices connected by an edge of the tree.
+
+Next m lines contain the queries. The j-th line contains two integers vj, kj (1 ≤ vj ≤ n; 1 ≤ kj ≤ 105).
+
+Output
+
+Print m integers — the answers to the queries in the order the queries appear in the input.
+
+Examples
+
+Input
+
+8 5
+1 2 2 3 3 2 3 3
+1 2
+1 5
+2 3
+2 4
+5 6
+5 7
+5 8
+1 2
+1 3
+1 4
+2 3
+5 3
+
+
+Output
+
+2
+2
+1
+0
+1
+
+
+Input
+
+4 1
+1 2 3 4
+1 2
+2 3
+3 4
+1 1
+
+
+Output
+
+4
+
+Note
+
+A subtree of vertex v in a rooted tree with root r is a set of vertices {u : dist(r, v) + dist(v, u) = dist(r, u)}. Where dist(x, y) is the length (in edges) of the shortest path between vertices x and y.
+Difficulty: 10
+Solutions: 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.StringTokenizer;
+
+public class TreeAndQueries {
+
+	static class Query {
+		int L, R, k, idx;
+
+		Query(int l, int r, int k, int i) {
+			L = l;
+			R = r;
+			this.k = k;
+			idx = i;
+		}
+	}
+
+	static final int MAX = (int) 1e5 + 1;
+	static ArrayList<Integer>[] graph;
+	static int[] color, tin, tout, euler, ans, count;
+	static int idx;
+
+	static void dfs(int u, int p) {
+		euler[idx] = color[u];
+		tin[u] = idx++;
+		for (int v : graph[u]) {
+			if(p != v)
+				dfs(v, u);
+		}
+		tout[u] = idx - 1;
+	}
+
+	static void add(int val) {
+		ans[++count[val]]++;
+	}
+
+	static void remove(int val) {
+		ans[count[val]--]--;
+	}
+
+	public static void main(String[] args) throws IOException {
+		MyScanner sc = new MyScanner(System.in);
+		PrintWriter out = new PrintWriter(System.out);
+		int n = sc.nextInt(), m = sc.nextInt();
+		color = new int[n];
+		for (int i = 0; i < n; i++)
+			color[i] = sc.nextInt();
+		graph = new ArrayList[n];
+		for (int i = 0; i < n; i++)
+			graph[i] = new ArrayList<>();
+		for (int i = 1; i < n; i++) {
+			int u = sc.nextInt() - 1, v = sc.nextInt() - 1;
+			graph[u].add(v);
+			graph[v].add(u);
+		}
+		idx = 0;
+		euler = new int[n];
+		tin = new int[n];
+		tout = new int[n];
+		dfs(0, -1);
+		final int BLOCK_SIZE = (int) Math.sqrt(n);
+		Query[] queries = new Query[m];
+		for (int i = 0; i < m; i++) {
+			int u = sc.nextInt();
+			queries[i] = new Query(tin[u - 1], tout[u - 1], sc.nextInt(), i);
+		}
+		Arrays.sort(queries, new Comparator<Query>() {
+			@Override
+			public int compare(Query q1, Query q2) {
+				int x = q1.L / BLOCK_SIZE, y = q2.L / BLOCK_SIZE;
+				if (x != y)
+					return x - y;
+				else
+					return q1.R - q2.R;
+			}
+		});
+		count = new int[MAX];
+		ans = new int[MAX];
+		int[] answer = new int[m];
+		int MOL = 0, MOR = -1;
+		for (int i = 0; i < m; i++) {
+			Query q = queries[i];
+			int L = q.L, R = q.R, k = q.k;
+			while (MOR < R) {
+				MOR++;
+				add(euler[MOR]);
+			}
+			while (MOR > R) {
+				remove(euler[MOR]);
+				MOR--;
+			}
+			while (MOL < L) {
+				remove(euler[MOL]);
+				MOL++;
+			}
+			while (MOL > L) {
+				MOL--;
+				add(euler[MOL]);
+			}
+			answer[q.idx] = ans[q.k];
+		}
+		for(int x : answer)
+			out.println(x);
+		out.close();
+	}
+
+	static class MyScanner {
+		BufferedReader br;
+		StringTokenizer st;
+
+		public MyScanner(InputStream is) {
+			br = new BufferedReader(new InputStreamReader(is));
+		}
+
+		public String next() throws IOException {
+			while (st == null || !st.hasMoreTokens())
+				st = new StringTokenizer(br.readLine());
+			return st.nextToken();
+		}
+
+		public boolean ready() throws IOException {
+			return br.ready();
+		}
+
+		public int nextInt() throws IOException {
+			return Integer.parseInt(next());
+		}
+	}
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

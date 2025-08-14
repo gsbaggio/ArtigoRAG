@@ -1,0 +1,2 @@
+900
+['brute force', 'constructive algorithms', 'math', 'number theory']

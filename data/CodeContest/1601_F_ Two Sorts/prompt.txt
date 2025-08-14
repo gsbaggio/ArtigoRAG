@@ -1,0 +1,403 @@
+CURRENT QUESTION:
+Integers from 1 to n (inclusive) were sorted lexicographically (considering integers as strings). As a result, array a_1, a_2, ..., a_n was obtained.
+
+Calculate value of (∑_{i = 1}^n ((i - a_i) mod 998244353)) mod 10^9 + 7.
+
+x mod y here means the remainder after division x by y. This remainder is always non-negative and doesn't exceed y - 1. For example, 5 mod 3 = 2, (-1) mod 6 = 5. 
+
+Input
+
+The first line contains the single integer n (1 ≤ n ≤ 10^{12}).
+
+Output
+
+Print one integer — the required sum.
+
+Examples
+
+Input
+
+
+3
+
+
+Output
+
+
+0
+
+
+Input
+
+
+12
+
+
+Output
+
+
+994733045
+
+
+Input
+
+
+21
+
+
+Output
+
+
+978932159
+
+
+Input
+
+
+1000000000000
+
+
+Output
+
+
+289817887
+
+Note
+
+A string a is lexicographically smaller than a string b if and only if one of the following holds:
+
+  * a is a prefix of b, but a ≠ b; 
+  * in the first position where a and b differ, the string a has a letter that appears earlier in the alphabet than the corresponding letter in b. 
+
+
+
+For example, 42 is lexicographically smaller than 6, because they differ in the first digit, and 4 < 6; 42 < 420, because 42 is a prefix of 420.
+
+Let's denote 998244353 as M.
+
+In the first example, array a is equal to [1, 2, 3]. 
+
+  * (1 - 1) mod M = 0 mod M = 0 
+  * (2 - 2) mod M = 0 mod M = 0 
+  * (3 - 3) mod M = 0 mod M = 0 
+
+
+
+As a result, (0 + 0 + 0) mod 10^9 + 7 = 0
+
+In the second example, array a is equal to [1, 10, 11, 12, 2, 3, 4, 5, 6, 7, 8, 9]. 
+
+  * (1 - 1) mod M = 0 mod M = 0 
+  * (2 - 10) mod M = (-8) mod M = 998244345 
+  * (3 - 11) mod M = (-8) mod M = 998244345 
+  * (4 - 12) mod M = (-8) mod M = 998244345 
+  * (5 - 2) mod M = 3 mod M = 3 
+  * (6 - 3) mod M = 3 mod M = 3 
+  * (7 - 4) mod M = 3 mod M = 3 
+  * (8 - 5) mod M = 3 mod M = 3 
+  * (9 - 6) mod M = 3 mod M = 3 
+  * (10 - 7) mod M = 3 mod M = 3 
+  * (11 - 8) mod M = 3 mod M = 3 
+  * (12 - 9) mod M = 3 mod M = 3 
+
+
+
+As a result, (0 + 998244345 + 998244345 + 998244345 + 3 + 3 + 3 + 3 + 3 + 3 + 3 + 3) mod 10^9 + 7 = 2994733059 mod 10^9 + 7 = 994733045
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.74):
+Name: 908_G. New Year and Original Order
+Tags: ['dp', 'math']
+Description: Let S(n) denote the number that represents the digits of n in sorted order. For example, S(1) = 1, S(5) = 5, S(50394) = 3459, S(353535) = 333555.
+
+Given a number X, compute <image> modulo 109 + 7.
+
+Input
+
+The first line of input will contain the integer X (1 ≤ X ≤ 10700).
+
+Output
+
+Print a single integer, the answer to the question.
+
+Examples
+
+Input
+
+21
+
+
+Output
+
+195
+
+
+Input
+
+345342
+
+
+Output
+
+390548434
+
+Note
+
+The first few values of S are 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 11, 12, 13, 14, 15, 16, 17, 18, 19, 2, 12. The sum of these values is 195. 
+Difficulty: 13
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+void getre() {
+  int x = 0;
+  printf("%d\n", 1 / x);
+}
+void gettle() {
+  int res = 1;
+  while (1) res <<= 1;
+  printf("%d\n", res);
+}
+template <typename T, typename S>
+inline bool upmin(T &a, const S &b) {
+  return a > b ? a = b, 1 : 0;
+}
+template <typename T, typename S>
+inline bool upmax(T &a, const S &b) {
+  return a < b ? a = b, 1 : 0;
+}
+template <typename N, typename PN>
+inline N flo(N a, PN b) {
+  return a >= 0 ? a / b : -((-a - 1) / b) - 1;
+}
+template <typename N, typename PN>
+inline N cei(N a, PN b) {
+  return a > 0 ? (a - 1) / b + 1 : -(-a / b);
+}
+template <typename N>
+N gcd(N a, N b) {
+  return b ? gcd(b, a % b) : a;
+}
+template <typename N>
+inline int sgn(N a) {
+  return a > 0 ? 1 : (a < 0 ? -1 : 0);
+}
+inline void gn(long long &x) {
+  int sg = 1;
+  char c;
+  while (((c = getchar()) < '0' || c > '9') && c != '-')
+    ;
+  c == '-' ? (sg = -1, x = 0) : (x = c - '0');
+  while ((c = getchar()) >= '0' && c <= '9') x = x * 10 + c - '0';
+  x *= sg;
+}
+inline void gn(int &x) {
+  long long t;
+  gn(t);
+  x = t;
+}
+inline void gn(unsigned long long &x) {
+  long long t;
+  gn(t);
+  x = t;
+}
+inline void gn(double &x) {
+  double t;
+  scanf("%lf", &t);
+  x = t;
+}
+inline void gn(long double &x) {
+  double t;
+  scanf("%lf", &t);
+  x = t;
+}
+inline void gs(char *s) { scanf("%s", s); }
+inline void gc(char &c) {
+  while ((c = getchar()) > 126 || c < 33)
+    ;
+}
+inline void pc(char c) { putchar(c); }
+inline long long sqr(long long a) { return a * a; }
+inline double sqrf(double a) { return a * a; }
+const int inf = 0x3f3f3f3f;
+const double pi = 3.14159265358979323846264338327950288L;
+const double eps = 1e-6;
+const int mo = 1e9 + 7;
+int qp(int a, long long b) {
+  int n = 1;
+  do {
+    if (b & 1) n = 1ll * n * a % mo;
+    a = 1ll * a * a % mo;
+  } while (b >>= 1);
+  return n;
+}
+int memo[777][10];
+int memo2[777][10];
+int fac[4444];
+int ifac[4444];
+char s[777];
+int po[11][777];
+int invpo[11][777];
+int n;
+int main() {
+  for (int d = (0), _ed = (11); d < _ed; d++) {
+    po[d][0] = 1;
+    for (int i = (1), _ed = (777); i < _ed; i++)
+      po[d][i] = 1ll * po[d][i - 1] * d % mo;
+    for (int i = (0), _ed = (777); i < _ed; i++)
+      invpo[d][i] = qp(po[d][i], mo - 2);
+  }
+  gs(s + 1);
+  n = strlen(s + 1);
+  fac[0] = 1;
+  for (int i = (1), _ed = (4444); i < _ed; i++)
+    fac[i] = 1ll * fac[i - 1] * i % mo;
+  for (int i = (0), _ed = (4444); i < _ed; i++) ifac[i] = qp(fac[i], mo - 2);
+  for (int d = (0), _ed = (10); d < _ed; d++)
+    for (int a = (0), _ed = (n + 1); a < _ed; a++)
+      for (int b = 0; b + a <= n; b++) {
+        (((memo[a + b][d]) = ((memo[a + b][d]) +
+                              (1ll * ifac[a] * ifac[b] % mo * invpo[d][a + b] %
+                               mo * po[9 - d][b] % mo * po[10][b] % mo *
+                               (po[10][a]) % mo * invpo[9][1] % mo * d % mo)) %
+                             mo) < 0
+             ? (memo[a + b][d]) += mo
+             : (memo[a + b][d]));
+        (((memo2[a + b][d]) = ((memo2[a + b][d]) +
+                               (1ll * ifac[a] * ifac[b] % mo * invpo[d][a + b] %
+                                mo * po[9 - d][b] % mo * po[10][b] % mo * (-1) %
+                                mo * invpo[9][1] % mo * d % mo)) %
+                              mo) < 0
+             ? (memo2[a + b][d]) += mo
+             : (memo2[a + b][d]));
+      }
+  int tot = 0;
+  for (int t = 1; t <= n; t++) {
+    int nex = s[t] - '0';
+    if (t != n) nex--;
+    for (int da = 0; da <= nex; da++) {
+      int num[10] = {0};
+      for (int j = 1; j <= t - 1; j++) num[s[j] - '0']++;
+      num[da]++;
+      for (int d = 1; d <= 9; d++) {
+        int L = n - t;
+        int p = num[d];
+        int q = 0;
+        for (int tt = d + 1; tt <= 9; tt++) q += num[tt];
+        for (int ab = 0; ab <= L; ab++) {
+          int temp = (1ll * memo[ab][d] * po[10][p] + memo2[ab][d]) % mo;
+          (((temp) = 1ll * (temp) * (po[d][L]) % mo) < 0 ? (temp) += mo
+                                                         : (temp));
+          (((temp) = 1ll * (temp) * (fac[L]) % mo) < 0 ? (temp) += mo : (temp));
+          (((temp) = 1ll * (temp) * (ifac[L - ab]) % mo) < 0 ? (temp) += mo
+                                                             : (temp));
+          (((temp) = 1ll * (temp) * (po[10][q]) % mo) < 0 ? (temp) += mo
+                                                          : (temp));
+          (((tot) = ((tot) + (temp)) % mo) < 0 ? (tot) += mo : (tot));
+        }
+      }
+    }
+  }
+  printf("%d\n", tot);
+  return 0;
+}
+
+
+Similar question 2 (Similarity score: 0.73):
+Name: p02960 AtCoder Beginner Contest 135 - Digits Parade
+Tags: ['']
+Description: Given is a string S. Each character in S is either a digit (`0`, ..., `9`) or `?`.
+
+Among the integers obtained by replacing each occurrence of `?` with a digit, how many have a remainder of 5 when divided by 13? An integer may begin with 0.
+
+Since the answer can be enormous, print the count modulo 10^9+7.
+
+Constraints
+
+* S is a string consisting of digits (`0`, ..., `9`) and `?`.
+* 1 \leq |S| \leq 10^5
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+S
+
+
+Output
+
+Print the number of integers satisfying the condition, modulo 10^9+7.
+
+Examples
+
+Input
+
+??2??5
+
+
+Output
+
+768
+
+
+Input
+
+?44
+
+
+Output
+
+1
+
+
+Input
+
+7?4
+
+
+Output
+
+0
+
+
+Input
+
+?6?42???8??2??06243????9??3???7258??5??7???????774????4?1??17???9?5?70???76???
+
+
+Output
+
+153716888
+Difficulty: 0
+Solutions: #include<bits/stdc++.h>
+using namespace std;
+const int mod=1e9+7;
+int dp[100001][13];
+int main(){
+	string s;
+	cin>>s;
+	dp[0][0]=1;
+	for(int i=0;i<s.size();i++){
+		for(int j=0;j<13;j++){
+			if(s[i]=='?')
+				for(int k=0;k<=9;k++)
+					(dp[i+1][(j*10+k)%13]+=dp[i][j])%=mod;
+			else
+				(dp[i+1][(j*10+s[i]-'0')%13]+=dp[i][j])%=mod;
+		}
+	}
+	cout<<dp[s.size()][5]<<endl;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

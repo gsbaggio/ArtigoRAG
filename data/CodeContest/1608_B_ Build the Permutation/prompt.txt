@@ -1,0 +1,341 @@
+CURRENT QUESTION:
+You are given three integers n, a, b. Determine if there exists a permutation p_1, p_2, …, p_n of integers from 1 to n, such that:
+
+  * There are exactly a integers i with 2 ≤ i ≤ n-1 such that p_{i-1} < p_i > p_{i+1} (in other words, there are exactly a local maximums).
+
+  * There are exactly b integers i with 2 ≤ i ≤ n-1 such that p_{i-1} > p_i < p_{i+1} (in other words, there are exactly b local minimums).
+
+
+
+
+If such permutations exist, find any such permutation.
+
+Input
+
+The first line of the input contains a single integer t (1 ≤ t ≤ 10^4) — the number of test cases. The description of test cases follows.
+
+The only line of each test case contains three integers n, a and b (2 ≤ n ≤ 10^5, 0 ≤ a,b ≤ n).
+
+The sum of n over all test cases doesn't exceed 10^5.
+
+Output
+
+For each test case, if there is no permutation with the requested properties, output -1.
+
+Otherwise, print the permutation that you are found. If there are several such permutations, you may print any of them.
+
+Example
+
+Input
+
+
+3
+4 1 1
+6 1 2
+6 4 0
+
+
+Output
+
+
+1 3 2 4
+4 2 3 1 5 6
+-1
+
+Note
+
+In the first test case, one example of such permutations is [1, 3, 2, 4]. In it p_1 < p_2 > p_3, and 2 is the only such index, and p_2> p_3 < p_4, and 3 the only such index.
+
+One can show that there is no such permutation for the third test case.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.77):
+Name: 1364_B. Most socially-distanced subsequence
+Tags: ['greedy', 'two pointers']
+Description: Given a permutation p of length n, find its subsequence s_1, s_2, …, s_k of length at least 2 such that:
+
+  * |s_1-s_2|+|s_2-s_3|+…+|s_{k-1}-s_k| is as big as possible over all subsequences of p with length at least 2. 
+  * Among all such subsequences, choose the one whose length, k, is as small as possible. 
+
+
+
+If multiple subsequences satisfy these conditions, you are allowed to find any of them.
+
+A sequence a is a subsequence of an array b if a can be obtained from b by deleting some (possibly, zero or all) elements.
+
+A permutation of length n is an array of length n in which every element from 1 to n occurs exactly once.
+
+Input
+
+The first line contains an integer t (1 ≤ t ≤ 2 ⋅ 10^4) — the number of test cases. The description of the test cases follows.
+
+The first line of each test case contains an integer n (2 ≤ n ≤ 10^5) — the length of the permutation p.
+
+The second line of each test case contains n integers p_1, p_2, …, p_{n} (1 ≤ p_i ≤ n, p_i are distinct) — the elements of the permutation p.
+
+The sum of n across the test cases doesn't exceed 10^5.
+
+Output
+
+For each test case, the first line should contain the length of the found subsequence, k. The second line should contain s_1, s_2, …, s_k — its elements.
+
+If multiple subsequences satisfy these conditions, you are allowed to find any of them.
+
+Example
+
+Input
+
+
+2
+3
+3 2 1
+4
+1 3 4 2
+
+
+Output
+
+
+2
+3 1 
+3
+1 4 2 
+
+Note
+
+In the first test case, there are 4 subsequences of length at least 2:
+
+  * [3,2] which gives us |3-2|=1. 
+  * [3,1] which gives us |3-1|=2. 
+  * [2,1] which gives us |2-1|=1. 
+  * [3,2,1] which gives us |3-2|+|2-1|=2. 
+
+
+
+So the answer is either [3,1] or [3,2,1]. Since we want the subsequence to be as short as possible, the answer is [3,1].
+Difficulty: 8
+Solutions: import math,sys,bisect
+from collections import defaultdict,Counter,deque
+from itertools import groupby,accumulate
+#sys.setrecursionlimit(1000000)
+input = iter(sys.stdin.buffer.read().decode().splitlines()).__next__
+ilele = lambda: map(int,input().split())
+alele = lambda: list(map(int, input().split()))
+#def list2d(a, b, c): return [[c] * b for i in range(a)]
+#def list3d(a, b, c, d): return [[[d] * c for j in range(b)] for i in range(a)]
+#MOD = 1000000000 + 7
+def Y(c):  print(["NO","YES"][c])
+def y(c):  print(["no","yes"][c])
+def Yy(c):  print(["No","Yes"][c])
+    
+def groupSequence(lst): 
+    res = [[lst[0]]] 
+    for i in range(1, len(lst)): 
+        if lst[i-1] < lst[i]: 
+            res[-1].append(lst[i]) 
+        else: 
+            res.append([lst[i]]) 
+    return res 
+	
+    
+for _ in range(int(input())):
+    n = int(input())
+    A = alele()
+    if n==2:
+        print(n)
+        print(*A)
+    else:
+        i = 0
+        x =  groupSequence(A)
+        #print(x)
+        Ans = []
+        m = len(x)
+        for i in range(m):
+            if len(x[i]) == 1:
+                if i == 0 or i == m-1:
+                    Ans.append(x[i][0])
+            else:
+                Ans.append(x[i][0])
+                Ans.append(x[i][-1])
+        print(len(Ans))
+        print(*Ans)
+
+Similar question 2 (Similarity score: 0.77):
+Name: 1454_A. Special Permutation
+Tags: ['constructive algorithms', 'probabilities']
+Description: You are given one integer n (n > 1).
+
+Recall that a permutation of length n is an array consisting of n distinct integers from 1 to n in arbitrary order. For example, [2, 3, 1, 5, 4] is a permutation of length 5, but [1, 2, 2] is not a permutation (2 appears twice in the array) and [1, 3, 4] is also not a permutation (n = 3 but there is 4 in the array).
+
+Your task is to find a permutation p of length n that there is no index i (1 ≤ i ≤ n) such that p_i = i (so, for all i from 1 to n the condition p_i ≠ i should be satisfied).
+
+You have to answer t independent test cases.
+
+If there are several answers, you can print any. It can be proven that the answer exists for each n > 1.
+
+Input
+
+The first line of the input contains one integer t (1 ≤ t ≤ 100) — the number of test cases. Then t test cases follow.
+
+The only line of the test case contains one integer n (2 ≤ n ≤ 100) — the length of the permutation you have to find.
+
+Output
+
+For each test case, print n distinct integers p_1, p_2, …, p_n — a permutation that there is no index i (1 ≤ i ≤ n) such that p_i = i (so, for all i from 1 to n the condition p_i ≠ i should be satisfied).
+
+If there are several answers, you can print any. It can be proven that the answer exists for each n > 1.
+
+Example
+
+Input
+
+
+2
+2
+5
+
+
+Output
+
+
+2 1
+2 1 5 3 4
+Difficulty: 7
+Solutions: def lip(): return list(map(int,input().split()))
+def splip(): return map(int,input().split())
+def intip(): return int(input())
+
+
+for _ in range(intip()):
+    n = intip()
+    l = [i for i in range(1,n+1)]
+    l = l[::-1]
+    mid = n//2
+    if n==2:
+        print(*l)
+    elif n%2!=0:
+        l[mid] , l[mid-1] = l[mid-1],l[mid]
+        print(*l)
+    else:
+        l[mid+1] , l[mid] = l[mid],l[mid+1]
+        print(*l)
+
+Similar question 3 (Similarity score: 0.76):
+Name: 1315_C. Restoring Permutation
+Tags: ['greedy']
+Description: You are given a sequence b_1, b_2, …, b_n. Find the lexicographically minimal permutation a_1, a_2, …, a_{2n} such that b_i = min(a_{2i-1}, a_{2i}), or determine that it is impossible.
+
+Input
+
+Each test contains one or more test cases. The first line contains the number of test cases t (1 ≤ t ≤ 100).
+
+The first line of each test case consists of one integer n — the number of elements in the sequence b (1 ≤ n ≤ 100).
+
+The second line of each test case consists of n different integers b_1, …, b_n — elements of the sequence b (1 ≤ b_i ≤ 2n).
+
+It is guaranteed that the sum of n by all test cases doesn't exceed 100.
+
+Output
+
+For each test case, if there is no appropriate permutation, print one number -1.
+
+Otherwise, print 2n integers a_1, …, a_{2n} — required lexicographically minimal permutation of numbers from 1 to 2n.
+
+Example
+
+Input
+
+
+5
+1
+1
+2
+4 1
+3
+4 1 3
+4
+2 3 4 5
+5
+1 5 7 2 8
+
+
+Output
+
+
+1 2 
+-1
+4 5 1 2 3 6 
+-1
+1 3 5 6 7 9 2 4 8 10 
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+void err() { cout << endl; }
+template <class T, class... Ts>
+void err(const T& arg, const Ts&... args) {
+  cout << arg << ' ';
+  err(args...);
+}
+using ll = long long;
+using db = double;
+using pII = pair<int, int>;
+const int INF = 0x3f3f3f3f;
+const ll INFLL = 0x3f3f3f3f3f3f3f3f;
+const int N = 2e2 + 10;
+int n;
+int a[N], b[N];
+int vis[N];
+void RUN() {
+  memset(vis, 0, sizeof vis);
+  cin >> n;
+  for (int i = 1; i <= n; ++i) {
+    cin >> b[i];
+  }
+  for (int i = 1, j = 1; i <= n; ++i, j += 2) {
+    a[j] = b[i];
+    vis[b[i]] = 1;
+  }
+  for (int i = 2; i <= 2 * n; i += 2) {
+    int lst = -1;
+    for (int j = a[i - 1] + 1; j <= 2 * n; ++j) {
+      if (!vis[j]) {
+        vis[j] = 1;
+        lst = j;
+        break;
+      }
+    }
+    if (lst == -1) {
+      cout << -1 << "\n";
+      return;
+    }
+    a[i] = lst;
+  }
+  for (int i = 1; i <= 2 * n; ++i) {
+    cout << a[i] << " \n"[i == 2 * n];
+  }
+}
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr), cout.tie(nullptr);
+  cout << fixed << setprecision(20);
+  int T;
+  cin >> T;
+  for (int cas = 1; cas <= T; ++cas) {
+    RUN();
+  }
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

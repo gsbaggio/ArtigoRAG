@@ -1,0 +1,2 @@
+2000
+['combinatorics', 'math', 'two pointers']

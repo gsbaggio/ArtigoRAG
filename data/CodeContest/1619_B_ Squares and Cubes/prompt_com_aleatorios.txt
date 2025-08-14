@@ -1,0 +1,548 @@
+CURRENT QUESTION:
+Polycarp likes squares and cubes of positive integers. Here is the beginning of the sequence of numbers he likes: 1, 4, 8, 9, ....
+
+For a given number n, count the number of integers from 1 to n that Polycarp likes. In other words, find the number of such x that x is a square of a positive integer number or a cube of a positive integer number (or both a square and a cube simultaneously).
+
+Input
+
+The first line contains an integer t (1 ≤ t ≤ 20) — the number of test cases.
+
+Then t lines contain the test cases, one per line. Each of the lines contains one integer n (1 ≤ n ≤ 10^9).
+
+Output
+
+For each test case, print the answer you are looking for — the number of integers from 1 to n that Polycarp likes.
+
+Example
+
+Input
+
+
+6
+10
+1
+25
+1000000000
+999999999
+500000000
+
+
+Output
+
+
+4
+1
+6
+32591
+32590
+23125
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 805_C. Find Amir
+Tags: ['constructive algorithms', 'greedy', 'math']
+Description: A few years ago Sajjad left his school and register to another one due to security reasons. Now he wishes to find Amir, one of his schoolmates and good friends.
+
+There are n schools numerated from 1 to n. One can travel between each pair of them, to do so, he needs to buy a ticket. The ticker between schools i and j costs <image> and can be used multiple times. Help Sajjad to find the minimum cost he needs to pay for tickets to visit all schools. He can start and finish in any school.
+
+Input
+
+The first line contains a single integer n (1 ≤ n ≤ 105) — the number of schools.
+
+Output
+
+Print single integer: the minimum cost of tickets needed to visit all schools.
+
+Examples
+
+Input
+
+2
+
+
+Output
+
+0
+
+
+Input
+
+10
+
+
+Output
+
+4
+
+Note
+
+In the first example we can buy a ticket between the schools that costs <image>.
+Difficulty: 9
+Solutions: 
+import java.io.*;
+import java.util.*;
+
+public class Problems1 {
+
+    public static void main(String[] args) throws IOException {
+
+       FastScanner sc=new FastScanner(System.in);
+        
+       int n=sc.nextInt();
+       if(n<3){
+           System.out.println(0);
+           return;
+       }
+        System.out.println((n/2)+n%2-1);
+    
+    
+    }
+    public static void dis(int a[]){
+        StringBuilder s=new StringBuilder();
+        for(int i=0;i<a.length;i++){
+            s.append(a[i]+" ");
+        }
+        System.out.println(s.toString());
+    }
+    //__________________________________________________________
+    static class FastScanner {
+	    BufferedReader br;
+	    StringTokenizer st;
+		
+	    public FastScanner(InputStream i) {
+	        br = new BufferedReader(new InputStreamReader(i));
+	        st = new StringTokenizer("");
+	    }
+				
+	    public String next() throws IOException {
+	        if(st.hasMoreTokens())
+	            return st.nextToken();
+	        else
+	            st = new StringTokenizer(br.readLine());
+	        return next();
+	    }
+
+	    public int nextInt() throws IOException {
+	        return Integer.parseInt(next());
+	    }
+	    //#
+	    public long nextLong() throws IOException {
+	        return Long.parseLong(next());
+	    }
+	    public double nextDouble() throws IOException {
+	        return Double.parseDouble(next());
+	    }
+	    //$
+	}
+}
+
+
+Example question 2:
+Name: 1137_F. Matches Are Not a Child's Play 
+Tags: ['data structures', 'trees']
+Description: Lena is playing with matches. The natural question arising in the head of any child playing with matches is whether it's possible to set a tree on fire with a matches, or not.
+
+Let's say, that the tree is a connected graph without cycles and the vertices are labeled with integers 1, 2, …, n. Also every vertex v has some integer priority p_v associated with it. All priorities are distinct.
+
+It turns out, that if you set a tree on fire, it will burn to nothing. However, this process doesn't happen instantly. At the beginning, burns out the leaf (a vertex is called to be a leaf if it has only one adjacent vertex) of the tree of the minimum priority. Then burns out the leaf of the minimal priority of the remaining tree, and so on. This way, the vertices turn into the leaves and burn out until only one vertex remains. Then this vertex burns out as well.
+
+Lena has prepared a tree of n vertices and every vertex in it has a priority p_v = v. Lena is very curious about burning out this tree. However, she understands, that if she will burn the tree now, then it will disappear completely. Lena is a kind girl and she will feel bad for the burned tree, so she wants to study the process of burning the tree only in her mind. Lena wants to process q queries, each of them is one of three following types:
+
+  * "up v", assign the vertex v priority 1 + max\\{p_1, p_2, …, p_n\}; 
+  * "when v", find the step at which the vertex v will burn out, if the tree would be set on fire now; 
+  * "compare v u", find out which of the vertices v and u will burn out first, if the tree would be set on fire now. 
+
+
+
+Notice, that if all priorities would be distinct, then after the "up" query they will stay distinct as well. Initially all priorities are distinct, hence during any (purely hypothetical of course) burning of the tree, all leafs would have distinct priorities.
+
+Input
+
+The first line contains two integers n and q (2 ≤ n ≤ 200 000, 1 ≤ q ≤ 200 000) — the number of vertices in the tree and the number of queries.
+
+The i-th of the following n - 1 lines contains two integers v_i, u_i (1 ≤ v_i, u_i ≤ n), denoting the endpoints of the i-th edge.
+
+Each of the remaining q lines contains a query of one of the following three types:
+
+  * "up v" (1 ≤ v ≤ n) — change the priority of vertex v; 
+  * "when v" (1 ≤ v ≤ n) — determine the step at which the vertex v will burn out; 
+  * "compare v u" (1 ≤ v, u ≤ n, v ≠ u) — determine which of vertices v and u will burn out earlier in the current tree. 
+
+
+
+It's guaranteed, that there is at least one query of type "when" or "compare".
+
+Output
+
+For every query of type "when" print one integer in range from 1 to n — the step at which the vertex v will burn out.
+
+For every query of type "compare" print either v or u, depending on which one will burn out earlier.
+
+Examples
+
+Input
+
+
+5 7
+1 5
+1 2
+1 3
+4 3
+when 1
+when 2
+when 3
+when 4
+when 5
+compare 2 3
+compare 3 4
+
+
+Output
+
+
+4
+1
+3
+2
+5
+2
+4
+
+
+Input
+
+
+5 5
+1 5
+1 2
+1 3
+4 3
+up 1
+compare 2 4
+compare 4 3
+compare 3 1
+compare 1 5
+
+
+Output
+
+
+2
+4
+3
+5
+
+Note
+
+In the first example, the process of burning of the tree is illustrated on the following picture:
+
+<image>
+
+In particular, the vertices of the tree will burn out in the following order: [2, 4, 3, 1, 5].
+
+In the second example, after applying the "up" operation, the order of vertices will change to: [2, 4, 3, 5, 1].
+Difficulty: 12
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+inline void read(int &tar) {
+  tar = 0;
+  char ch = getchar();
+  while ((ch < '0' || ch > '9') && (ch < 'a' || ch > 'z')) ch = getchar();
+  while (ch >= 'a' && ch <= 'z') {
+    if (ch == 'u') tar = 1;
+    if (ch == 'w') tar = 2;
+    if (ch == 'c') tar = 3;
+    ch = getchar();
+  }
+  while (ch >= '0' && ch <= '9') {
+    tar = tar * 10 + ch - '0';
+    ch = getchar();
+  }
+}
+namespace LarjaIX {
+const int N = 200011;
+struct sumireko {
+  int to, ne;
+} e[N << 1];
+int he[N], ecnt;
+void addline(int f, int t) {
+  e[++ecnt].to = t, e[ecnt].ne = he[f], he[f] = ecnt;
+}
+int n, qaq, id[N], cnt;
+int tr[N << 1];
+void add(int x, int v) {
+  for (int i = x; i <= n + qaq; i += i & -i) tr[i] += v;
+}
+int query(int x) {
+  int ret = 0;
+  for (int i = x; i; i -= i & -i) ret += tr[i];
+  return ret;
+}
+int fa[N], son[N][2], size[N], rev[N];
+void dfs(int x) {
+  for (int i = he[x], t = e[i].to; i; i = e[i].ne, t = e[i].to)
+    if (t != fa[x]) {
+      fa[t] = x, dfs(t);
+      if (id[t] > id[x]) id[x] = id[t], son[x][1] = t, size[x] = size[t] + 1;
+    }
+  add(id[x], 1);
+}
+int isroot(int x) { return son[fa[x]][0] != x && son[fa[x]][1] != x; }
+void fuckup(int x) { size[x] = 1 + size[son[x][0]] + size[son[x][1]]; }
+void fuckdown(int x) {
+  if (rev[x])
+    swap(son[x][0], son[x][1]), rev[son[x][0]] ^= 1, rev[son[x][1]] ^= 1,
+        rev[x] = 0;
+  id[son[x][0]] = son[x][0] ? id[x] : 0, id[son[x][1]] = son[x][1] ? id[x] : 0;
+}
+void fixup(int x) {
+  if (!isroot(x)) fixup(fa[x]);
+  fuckdown(x);
+}
+void rot(int x) {
+  int y = fa[x], z = fa[y];
+  int xis = son[y][1] == x, yis = son[z][1] == y;
+  if (!isroot(y)) son[z][yis] = x;
+  fa[son[x][xis ^ 1]] = y, fa[x] = z, fa[y] = x;
+  son[y][xis] = son[x][xis ^ 1], son[x][xis ^ 1] = y;
+  fuckup(y), fuckup(x);
+}
+void splay(int x) {
+  fixup(x);
+  while (!isroot(x)) {
+    int y = fa[x], z = fa[y];
+    int xis = son[y][1] == x, yis = son[z][1] == y;
+    if (!isroot(y)) rot(xis ^ yis ? x : y);
+    rot(x);
+  }
+}
+void access(int x) {
+  int lst = 0;
+  while (x)
+    splay(x), son[x][1] = 0, fuckup(x), add(id[x], -size[x]), add(cnt, size[x]),
+              son[x][1] = lst, fuckup(x), lst = x, x = fa[x];
+}
+void makeroot(int x) { cnt++, access(x), splay(x), rev[x] ^= 1, id[x] = cnt; }
+int getans(int x) {
+  splay(x);
+  return query(id[x]) - size[son[x][0]];
+}
+int maid() {
+  read(n), read(qaq), cnt = n;
+  for (int i = 1; i <= n; i++) id[i] = i, size[i] = 1;
+  for (int i = 1, x, y; i < n; i++)
+    read(x), read(y), addline(x, y), addline(y, x);
+  dfs(n);
+  for (int rkk = 1, op, x, y; rkk <= qaq; rkk++) {
+    read(op);
+    switch (op) {
+      case 1:
+        read(x), makeroot(x);
+        break;
+      case 2:
+        read(x), printf("%d\n", getans(x));
+        break;
+      case 3:
+        read(x), read(y), printf("%d\n", getans(x) < getans(y) ? x : y);
+        break;
+    }
+  }
+  return 0;
+}
+}  // namespace LarjaIX
+int main() { return LarjaIX::maid(); }
+
+
+Example question 3:
+Name: p01707 Cookie Counter
+Tags: ['']
+Description: Problem Statement
+
+One day, my grandmas left $N$ cookies. My elder sister and I were going to eat them immediately, but there was the instruction. It said
+
+* Cookies will go bad; you should eat all of them within $D$ days.
+* Be careful about overeating; you should eat strictly less than $X$ cookies in a day.
+
+
+
+My sister said "How many ways are there to eat all of the cookies? Let's try counting!"
+
+Two ways are considered different if there exists a day such that the numbers of the cookies eaten on that day are different in the two ways. For example, if $N$, $D$ and $X$ are $5$, $2$ and $5$ respectively, the number of the ways is $4$:
+
+* Eating $1$ cookie on the first day and $4$ cookies on the second day.
+* Eating $2$ cookies on the first day and $3$ cookies on the second day.
+* Eating $3$ cookies on the first day and $2$ cookies on the second day.
+* Eating $4$ cookies on the first day and $1$ cookie on the second day.
+
+
+
+I noticed the number of the ways would be very huge and my sister would die before counting it. Therefore, I tried to count it by a computer program to save the life of my sister.
+
+Input
+
+The input consists of multiple datasets. The number of datasets is no more than $100$. For each dataset, three numbers $N$ ($1 \le N \le 2{,}000$), $D$ ($1 \le D \le 10^{12}$) and $X$ ($1 \le X \le 2{,}000$) are written in a line and separated by a space. The end of input is denoted by a line that contains three zeros.
+
+Output
+
+Print the number of the ways modulo $1{,}000{,}000{,}007$ in a line for each dataset.
+
+Sample Input
+
+
+5 2 5
+3 3 3
+5 4 5
+4 1 2
+1 5 1
+1250 50 50
+0 0 0
+
+Output for the Sample Input
+
+
+4
+7
+52
+0
+0
+563144298
+
+
+
+
+
+Example
+
+Input
+
+5 2 5
+3 3 3
+5 4 5
+4 1 2
+1 5 1
+1250 50 50
+0 0 0
+
+
+Output
+
+4
+7
+52
+0
+0
+563144298
+Difficulty: 0
+Solutions: #include <bits/stdc++.h>
+template< typename T >
+T mod_pow(T x, T n, const T &p) {
+  if(x < 0) return 0;
+  T ret = 1;
+  while(n > 0) {
+    if(n & 1) (ret *= x) %= p;
+    (x *= x) %= p;
+    n >>= 1;
+  }
+  return ret;
+}
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+using vvi = vector<vi>;
+using vll = vector<ll>;
+using vvll = vector<vll>;
+using P = pair<int, int>;
+const double eps = 1e-8;
+const ll MOD = 1000000007;
+const int INF = INT_MAX / 2;
+const ll LINF = LLONG_MAX / 2;
+template<typename T1, typename T2>
+bool chmax(T1 &a, const T2 &b) {
+  if (a < b) {
+    a = b;
+    return true;
+  }
+  return false;
+}
+template<typename T1, typename T2>
+bool chmin(T1 &a, const T2 &b) {
+  if (a > b) {
+    a = b;
+    return true;
+  }
+  return false;
+}
+template<typename T1, typename T2>
+ostream &operator<<(ostream &os, const pair<T1, T2> p) {
+  os << p.first << ":" << p.second;
+  return os;
+}
+template<class T>
+ostream &operator<<(ostream &os, const vector<T> &v) {
+  for(int i=0;i<((int)(v.size()));++i) {
+    if (i) os << " ";
+    os << v[i];
+  }
+  return os;
+}
+const int ma = 2001;
+int n = 0;
+ll a[ma];
+ll b[ma];
+ll res[ma];
+void mul(ll a[ma], ll b[ma]) {
+  for(int i=0;i<(n);++i) {
+    for(int j=0;j<(n);++j) {
+      if(i - j < 0) break;
+      res[i] += a[i-j] * b[j] % MOD;
+      res[i] %= MOD;
+    }
+  }
+  for(int i=0;i<(n);++i) {
+    a[i] = res[i];
+  }
+  memset(res, 0, sizeof(res));
+}
+bool solve() {
+  ll d, x;
+  cin >> n >> d >> x;
+  if (n == 0) return false;
+  n++;
+  for(int i=0;i<(min(x, (ll)n));++i) a[i] = 1;
+  b[0] = 1;
+  while (d) {
+    if (d & 1) {
+      mul(b, a);
+    }
+    mul(a, a);
+    d >>= 1;
+  }
+  cout << b[n - 1] << endl;
+  return true;
+}
+int main() {
+  cin.tie(0);
+  ios::sync_with_stdio(false);
+  cout << fixed << setprecision(10);
+  do {
+    for(int i=0;i<(n);++i) {
+      memset(a, 0, sizeof(a));
+      memset(b, 0, sizeof(b));
+    }
+  } while(solve());
+}
+
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

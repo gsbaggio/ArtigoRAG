@@ -1,0 +1,412 @@
+CURRENT QUESTION:
+Let's call a sequence of integers x_1, x_2, ..., x_k MEX-correct if for all i (1 ≤ i ≤ k) |x_i - \operatorname{MEX}(x_1, x_2, ..., x_i)| ≤ 1 holds. Where \operatorname{MEX}(x_1, ..., x_k) is the minimum non-negative integer that doesn't belong to the set x_1, ..., x_k. For example, \operatorname{MEX}(1, 0, 1, 3) = 2 and \operatorname{MEX}(2, 1, 5) = 0.
+
+You are given an array a consisting of n non-negative integers. Calculate the number of non-empty MEX-correct subsequences of a given array. The number of subsequences can be very large, so print it modulo 998244353. 
+
+Note: a subsequence of an array a is a sequence [a_{i_1}, a_{i_2}, ..., a_{i_m}] meeting the constraints 1 ≤ i_1 < i_2 < ... < i_m ≤ n. If two different ways to choose the sequence of indices [i_1, i_2, ..., i_m] yield the same subsequence, the resulting subsequence should be counted twice (i. e. two subsequences are different if their sequences of indices [i_1, i_2, ..., i_m] are not the same).
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10^5) — the number of test cases.
+
+The first line of each test case contains a single integer n (1 ≤ n ≤ 5 ⋅ 10^5).
+
+The second line contains n integers a_1, a_2, ..., a_n (0 ≤ a_i ≤ n).
+
+The sum of n over all test cases doesn't exceed 5 ⋅ 10^5.
+
+Output
+
+For each test case, print a single integer — the number of non-empty MEX-correct subsequences of a given array, taken modulo 998244353.
+
+Example
+
+Input
+
+
+4
+3
+0 2 1
+2
+1 0
+5
+0 0 0 0 0
+4
+0 1 2 3
+
+
+Output
+
+
+4
+2
+31
+7
+
+Note
+
+In the first example, the valid subsequences are [0], [1], [0,1] and [0,2].
+
+In the second example, the valid subsequences are [0] and [1].
+
+In the third example, any non-empty subsequence is valid. 
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.75):
+Name: 1000_D. Yet Another Problem On a Subsequence
+Tags: ['combinatorics', 'dp']
+Description: The sequence of integers a_1, a_2, ..., a_k is called a good array if a_1 = k - 1 and a_1 > 0. For example, the sequences [3, -1, 44, 0], [1, -99] are good arrays, and the sequences [3, 7, 8], [2, 5, 4, 1], [0] — are not.
+
+A sequence of integers is called good if it can be divided into a positive number of good arrays. Each good array should be a subsegment of sequence and each element of the sequence should belong to exactly one array. For example, the sequences [2, -3, 0, 1, 4], [1, 2, 3, -3, -9, 4] are good, and the sequences [2, -3, 0, 1], [1, 2, 3, -3 -9, 4, 1] — are not.
+
+For a given sequence of numbers, count the number of its subsequences that are good sequences, and print the number of such subsequences modulo 998244353.
+
+Input
+
+The first line contains the number n~(1 ≤ n ≤ 10^3) — the length of the initial sequence. The following line contains n integers a_1, a_2, ..., a_n~(-10^9 ≤ a_i ≤ 10^9) — the sequence itself.
+
+Output
+
+In the single line output one integer — the number of subsequences of the original sequence that are good sequences, taken modulo 998244353.
+
+Examples
+
+Input
+
+3
+2 1 1
+
+
+Output
+
+2
+
+
+Input
+
+4
+1 1 1 1
+
+
+Output
+
+7
+
+Note
+
+In the first test case, two good subsequences — [a_1, a_2, a_3] and [a_2, a_3].
+
+In the second test case, seven good subsequences — [a_1, a_2, a_3, a_4], [a_1, a_2], [a_1, a_3], [a_1, a_4], [a_2, a_3], [a_2, a_4] and [a_3, a_4].
+Difficulty: 10
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e3 + 7;
+const int mod = 998244353;
+int a[maxn], c[maxn][maxn];
+long long dp[maxn];
+int main() {
+  int n;
+  scanf("%d", &n);
+  for (int i = 1; i <= n; i++) scanf("%d", &a[i]), dp[i] = 1;
+  for (int i = 0; i <= n; i++) {
+    c[i][0] = 1;
+    for (int j = 1; j <= i; j++)
+      c[i][j] = (c[i - 1][j - 1] + c[i - 1][j]) % mod;
+  }
+  long long ans = 0;
+  for (int i = 1; i <= n; i++) {
+    if (i + a[i] <= n && a[i] > 0) {
+      ans = (ans + dp[i] * c[n - i][a[i]]) % mod;
+      for (int j = i + a[i]; j <= n; j++)
+        dp[j + 1] = (dp[j + 1] + dp[i] * c[j - i][a[i]]) % mod;
+    }
+  }
+  cout << ans;
+  return 0;
+}
+
+
+Similar question 2 (Similarity score: 0.72):
+Name: p02851 AtCoder Beginner Contest 146 - Rem of Sum is Num
+Tags: ['']
+Description: Given are a sequence of N positive integers A_1, A_2, \ldots, A_N, and a positive integer K.
+
+Find the number of non-empty contiguous subsequences in A such that the remainder when dividing the sum of its elements by K is equal to the number of its elements. We consider two subsequences different if they are taken from different positions, even if they are equal sequences.
+
+Constraints
+
+* All values in input are integers.
+* 1 \leq N \leq 2\times 10^5
+* 1 \leq K \leq 10^9
+* 1 \leq A_i \leq 10^9
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N K
+A_1 A_2 \cdots A_N
+
+
+Output
+
+Print the number of subsequences that satisfy the condition.
+
+Examples
+
+Input
+
+5 4
+1 4 2 3 5
+
+
+Output
+
+4
+
+
+Input
+
+8 4
+4 2 4 2 4 2 4 2
+
+
+Output
+
+7
+
+
+Input
+
+10 7
+14 15 92 65 35 89 79 32 38 46
+
+
+Output
+
+8
+Difficulty: 0
+Solutions: from collections import defaultdict
+
+def gets():
+  return list(map(int, input().split()))
+
+N, K = gets()
+A = gets()
+
+S = [0] * (N + 1)
+for i in range(N):
+  S[i + 1] = (S[i] + A[i] - 1) % K
+
+cnt = defaultdict(int)
+ans = 0
+cnt[0] += 1
+for i in range(1, N+1):
+  if i - K >= 0:
+    cnt[S[i - K]] -= 1
+  ans += cnt[S[i]]
+  cnt[S[i]] += 1
+
+print(ans)
+
+
+Similar question 3 (Similarity score: 0.71):
+Name: 1061_C. Multiplicity
+Tags: ['data structures', 'dp', 'implementation', 'math', 'number theory']
+Description: You are given an integer array a_1, a_2, …, a_n.
+
+The array b is called to be a subsequence of a if it is possible to remove some elements from a to get b.
+
+Array b_1, b_2, …, b_k is called to be good if it is not empty and for every i (1 ≤ i ≤ k) b_i is divisible by i.
+
+Find the number of good subsequences in a modulo 10^9 + 7. 
+
+Two subsequences are considered different if index sets of numbers included in them are different. That is, the values ​of the elements ​do not matter in the comparison of subsequences. In particular, the array a has exactly 2^n - 1 different subsequences (excluding an empty subsequence).
+
+Input
+
+The first line contains an integer n (1 ≤ n ≤ 100 000) — the length of the array a.
+
+The next line contains integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 10^6).
+
+Output
+
+Print exactly one integer — the number of good subsequences taken modulo 10^9 + 7.
+
+Examples
+
+Input
+
+2
+1 2
+
+
+Output
+
+3
+
+Input
+
+5
+2 2 1 22 14
+
+
+Output
+
+13
+
+Note
+
+In the first example, all three non-empty possible subsequences are good: \{1\}, \{1, 2\}, \{2\}
+
+In the second example, the possible good subsequences are: \{2\}, \{2, 2\}, \{2, 22\}, \{2, 14\}, \{2\}, \{2, 22\}, \{2, 14\}, \{1\}, \{1, 22\}, \{1, 14\}, \{22\}, \{22, 14\}, \{14\}.
+
+Note, that some subsequences are listed more than once, since they occur in the original array multiple times.
+Difficulty: 9
+Solutions: #!/usr/bin/env python
+"""
+This file is part of https://github.com/Cheran-Senthil/PyRival.
+
+Copyright 2018 Cheran Senthilkumar all rights reserved,
+Cheran Senthilkumar <hello@cheran.io>
+Permission to use, modify, and distribute this software is given under the
+terms of the MIT License.
+
+"""
+from __future__ import division, print_function
+
+import cmath
+import itertools
+import math
+import operator as op
+# import random
+import sys
+from atexit import register
+from bisect import bisect_left, bisect_right
+# from collections import Counter, MutableSequence, defaultdict, deque
+# from copy import deepcopy
+# from decimal import Decimal
+# from difflib import SequenceMatcher
+# from fractions import Fraction
+# from heapq import heappop, heappush
+
+if sys.version_info[0] < 3:
+    # from cPickle import dumps
+    from io import BytesIO as stream
+    # from Queue import PriorityQueue, Queue
+else:
+    # from functools import reduce
+    from io import StringIO as stream
+    from math import gcd
+    # from pickle import dumps
+    # from queue import PriorityQueue, Queue
+
+
+if sys.version_info[0] < 3:
+    class dict(dict):
+        """dict() -> new empty dictionary"""
+        def items(self):
+            """D.items() -> a set-like object providing a view on D's items"""
+            return dict.iteritems(self)
+
+        def keys(self):
+            """D.keys() -> a set-like object providing a view on D's keys"""
+            return dict.iterkeys(self)
+
+        def values(self):
+            """D.values() -> an object providing a view on D's values"""
+            return dict.itervalues(self)
+
+    def gcd(x, y):
+        """gcd(x, y) -> int
+        greatest common divisor of x and y
+        """
+        while y:
+            x, y = y, x % y
+        return x
+
+    input = raw_input
+    range = xrange
+
+    filter = itertools.ifilter
+    map = itertools.imap
+    zip = itertools.izip
+
+
+def sync_with_stdio(sync=True):
+    """Set whether the standard Python streams are allowed to buffer their I/O.
+
+    Args:
+        sync (bool, optional): The new synchronization setting.
+
+    """
+    global input, flush
+
+    if sync:
+        flush = sys.stdout.flush
+    else:
+        sys.stdin = stream(sys.stdin.read())
+        input = lambda: sys.stdin.readline().rstrip('\r\n')
+
+        sys.stdout = stream()
+        register(lambda: sys.__stdout__.write(sys.stdout.getvalue()))
+
+
+def memodict(f):
+    """ Memoization decorator for a function taking a single argument. """
+    class memodict(dict):
+        def __missing__(self, key):
+            ret = self[key] = f(key)
+            return ret
+    return memodict().__getitem__
+
+
+@memodict
+def all_factors(n):
+    return set(reduce(list.__add__,
+                      ([i, n//i] for i in range(1, int(n**0.5) + 1, 2 if n % 2 else 1) if n % i == 0)))
+
+
+def main():
+    n = int(input())
+    a = list(map(int, input().split(' ')))
+
+    div_cnt = [0] * (n + 1)
+    div_cnt[0] = 1
+
+    res = 0
+
+    for i in a:
+        for j in sorted(all_factors(i), reverse=True):
+            try:
+                res += div_cnt[j - 1]
+                if res > 1000000007:
+                    res -= 1000000007
+
+                div_cnt[j] += div_cnt[j - 1]
+                if div_cnt[j] > 1000000007:
+                    div_cnt[j] -= 1000000007
+            except:
+                pass
+
+    print(res)
+
+
+if __name__ == '__main__':
+    sync_with_stdio(False)
+    main()
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

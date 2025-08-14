@@ -1,0 +1,137 @@
+CURRENT QUESTION:
+YouKn0wWho has two even integers x and y. Help him to find an integer n such that 1 ≤ n ≤ 2 ⋅ 10^{18} and n mod x = y mod n. Here, a mod b denotes the remainder of a after division by b. If there are multiple such integers, output any. It can be shown that such an integer always exists under the given constraints.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10^5) — the number of test cases.
+
+The first and only line of each test case contains two integers x and y (2 ≤ x, y ≤ 10^9, both are even).
+
+Output
+
+For each test case, print a single integer n (1 ≤ n ≤ 2 ⋅ 10^{18}) that satisfies the condition mentioned in the statement. If there are multiple such integers, output any. It can be shown that such an integer always exists under the given constraints.
+
+Example
+
+Input
+
+
+4
+4 8
+4 2
+420 420
+69420 42068
+
+
+Output
+
+
+4
+10
+420
+9969128
+
+Note
+
+In the first test case, 4 mod 4 = 8 mod 4 = 0.
+
+In the second test case, 10 mod 4 = 2 mod 10 = 2.
+
+In the third test case, 420 mod 420 = 420 mod 420 = 0.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: p01483 Elevator
+Tags: ['']
+Description: Time Limit: 8 sec / Memory Limit: 64 MB
+
+
+
+
+
+Example
+
+Input
+
+3 3 2
+1 1
+2 1 1
+3 1 1 1
+
+
+Output
+
+8
+Difficulty: 0
+Solutions: #include <iostream>
+#include <vector>
+#include <cstring>
+#include <cstdlib>
+using namespace std;
+
+int n,m,W,k,kt,w;
+int weight[17];
+int load[10001];
+int memo[1<<17];
+
+void memoize() {
+    for(int i=1; i<(1<<k); ++i) {
+        memo[i] = 1<<29;
+        int sumw = 0;
+        for(int j=0; j<k; ++j)
+            if((i>>j)&1) sumw += weight[j];
+        if(sumw <= W) {
+            memo[i] = 1;
+            continue;
+        }
+
+        for(int T=i&-i; T; T = (T-i)&i) {
+            memo[i] = min(memo[T]+memo[i-T],memo[i]);
+        }
+    }
+    memo[0] = 0;
+    return;
+}
+
+int main() {
+    cin>>n>>m>>W; m--;
+    k = 0;
+    for(int i=0; i<n; ++i) {
+        cin>>kt;
+        for(int j=0; j<kt; ++j) {
+            cin>>weight[k+j];
+            load[i] |= 1<<(k+j);
+        }
+        k += kt;
+    }
+    memoize();
+
+    int have = 0,ans = 0,maxfloor = 0;
+    for(int i=0; i<n; ++i)
+        if(load[i] > 0) maxfloor = i;
+    if(maxfloor == 0 ) {
+        cout<<0<<endl;
+        return 0;
+    }
+
+    ans += abs(m-maxfloor);
+    for(int i=maxfloor; i>0; --i) {
+        have |= load[i];
+        ans += memo[have]*2-1;
+    }
+    cout<<ans<<endl;
+    return 0;
+}
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

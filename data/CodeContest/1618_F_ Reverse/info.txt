@@ -1,0 +1,2 @@
+2000
+['bitmasks', 'constructive algorithms', 'dfs and similar', 'implementation', 'math', 'strings']

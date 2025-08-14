@@ -1,0 +1,375 @@
+CURRENT QUESTION:
+Shohag has an integer sequence a_1, a_2, …, a_n. He can perform the following operation any number of times (possibly, zero):
+
+  * Select any positive integer k (it can be different in different operations). 
+  * Choose any position in the sequence (possibly the beginning or end of the sequence, or in between any two elements) and insert k into the sequence at this position. 
+  * This way, the sequence a changes, and the next operation is performed on this changed sequence. 
+
+
+
+For example, if a=[3,3,4] and he selects k = 2, then after the operation he can obtain one of the sequences [\underline{2},3,3,4], [3,\underline{2},3,4], [3,3,\underline{2},4], or [3,3,4,\underline{2}].
+
+Shohag wants this sequence to satisfy the following condition: for each 1 ≤ i ≤ |a|, a_i ≤ i. Here, |a| denotes the size of a.
+
+Help him to find the minimum number of operations that he has to perform to achieve this goal. We can show that under the constraints of the problem it's always possible to achieve this goal in a finite number of operations.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 200) — the number of test cases.
+
+The first line of each test case contains a single integer n (1 ≤ n ≤ 100) — the initial length of the sequence.
+
+The second line of each test case contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 10^9) — the elements of the sequence.
+
+Output
+
+For each test case, print a single integer — the minimum number of operations needed to perform to achieve the goal mentioned in the statement.
+
+Example
+
+Input
+
+
+4
+3
+1 3 4
+5
+1 2 5 7 4
+1
+1
+3
+69 6969 696969
+
+
+Output
+
+
+1
+3
+0
+696966
+
+Note
+
+In the first test case, we have to perform at least one operation, as a_2=3>2. We can perform the operation [1, 3, 4] → [1, \underline{2}, 3, 4] (the newly inserted element is underlined), now the condition is satisfied.
+
+In the second test case, Shohag can perform the following operations:
+
+[1, 2, 5, 7, 4] → [1, 2, \underline{3}, 5, 7, 4] → [1, 2, 3, \underline{4}, 5, 7, 4] → [1, 2, 3, 4, 5, \underline{3}, 7, 4].
+
+In the third test case, the sequence already satisfies the condition.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.74):
+Name: 1455_D. Sequence and Swaps
+Tags: ['dp', 'greedy', 'sortings']
+Description: You are given a sequence a consisting of n integers a_1, a_2, ..., a_n, and an integer x. Your task is to make the sequence a sorted (it is considered sorted if the condition a_1 ≤ a_2 ≤ a_3 ≤ ... ≤ a_n holds).
+
+To make the sequence sorted, you may perform the following operation any number of times you want (possibly zero): choose an integer i such that 1 ≤ i ≤ n and a_i > x, and swap the values of a_i and x.
+
+For example, if a = [0, 2, 3, 5, 4], x = 1, the following sequence of operations is possible:
+
+  1. choose i = 2 (it is possible since a_2 > x), then a = [0, 1, 3, 5, 4], x = 2; 
+  2. choose i = 3 (it is possible since a_3 > x), then a = [0, 1, 2, 5, 4], x = 3; 
+  3. choose i = 4 (it is possible since a_4 > x), then a = [0, 1, 2, 3, 4], x = 5. 
+
+
+
+Calculate the minimum number of operations you have to perform so that a becomes sorted, or report that it is impossible.
+
+Input
+
+The first line contains one integer t (1 ≤ t ≤ 500) — the number of test cases.
+
+Each test case consists of two lines. The first line contains two integers n and x (1 ≤ n ≤ 500, 0 ≤ x ≤ 500) — the number of elements in the sequence and the initial value of x.
+
+The second line contains n integers a_1, a_2, ..., a_n (0 ≤ a_i ≤ 500).
+
+The sum of values of n over all test cases in the input does not exceed 500.
+
+Output
+
+For each test case, print one integer — the minimum number of operations you have to perform to make a sorted, or -1, if it is impossible.
+
+Example
+
+Input
+
+
+6
+4 1
+2 3 5 4
+5 6
+1 1 3 4 4
+1 10
+2
+2 10
+11 9
+2 10
+12 11
+5 18
+81 324 218 413 324
+
+
+Output
+
+
+3
+0
+0
+-1
+1
+3
+Difficulty: 10
+Solutions: import math
+for _ in range(int(input())):
+    n,k=map(int,input().split())
+    a=list(map(int,input().split()))
+    ans=0
+    prob=0
+    rang=0
+    for i in range(1,n):
+        if a[i]<a[i-1]:
+            prob=1
+            rang=i
+    for i in range(rang):
+        if a[i]>k:
+            a[i],k=k,a[i]
+            ans+=1
+    probb=0
+    for i in range(1,n):
+        if a[i]<a[i-1]:
+            probb=1
+            break
+    if prob==0:
+        print("0")
+    else:
+        if probb==1:
+            print("-1")
+        else:
+            print(ans)
+
+Similar question 2 (Similarity score: 0.74):
+Name: 798_C. Mike and gcd problem
+Tags: ['dp', 'greedy', 'number theory']
+Description: Mike has a sequence A = [a1, a2, ..., an] of length n. He considers the sequence B = [b1, b2, ..., bn] beautiful if the gcd of all its elements is bigger than 1, i.e. <image>. 
+
+Mike wants to change his sequence in order to make it beautiful. In one move he can choose an index i (1 ≤ i < n), delete numbers ai, ai + 1 and put numbers ai - ai + 1, ai + ai + 1 in their place instead, in this order. He wants perform as few operations as possible. Find the minimal number of operations to make sequence A beautiful if it's possible, or tell him that it is impossible to do so.
+
+<image> is the biggest non-negative number d such that d divides bi for every i (1 ≤ i ≤ n).
+
+Input
+
+The first line contains a single integer n (2 ≤ n ≤ 100 000) — length of sequence A.
+
+The second line contains n space-separated integers a1, a2, ..., an (1 ≤ ai ≤ 109) — elements of sequence A.
+
+Output
+
+Output on the first line "YES" (without quotes) if it is possible to make sequence A beautiful by performing operations described above, and "NO" (without quotes) otherwise.
+
+If the answer was "YES", output the minimal number of moves needed to make sequence A beautiful.
+
+Examples
+
+Input
+
+2
+1 1
+
+
+Output
+
+YES
+1
+
+
+Input
+
+3
+6 2 4
+
+
+Output
+
+YES
+0
+
+
+Input
+
+2
+1 3
+
+
+Output
+
+YES
+1
+
+Note
+
+In the first example you can simply make one move to obtain sequence [0, 2] with <image>.
+
+In the second example the gcd of the sequence is already greater than 1. 
+Difficulty: 9
+Solutions: import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+
+public class C {
+
+
+	public static void main(String[] args) throws Exception{
+
+		Scanner sc = new Scanner(System.in);
+		PrintWriter out = new PrintWriter(System.out);
+		int n = sc.nextInt();
+		int[] a = new int[n];
+		int gcd = a[0] = sc.nextInt();
+		for(int i = 1; i < n; i++)
+		{
+			a[i] = sc.nextInt();
+			gcd = GCD(gcd, a[i]);
+		}
+		if(gcd > 1){out.println("YES\n0");}
+		else
+		{
+			boolean[] even = new boolean[n];
+			int ev = 0;
+			for(int i = 0; i < n; i++)
+				if(a[i] % 2 == 0)
+				{
+					ev++;
+					even[i] = true;
+				}
+			int ans = 0;
+			for(int i = 0; i < n-1; i++)
+				if(!even[i] && !even[i+1])
+				{
+					ans++;
+					even[i] = even[i+1] = true;
+					ev += 2;
+				}
+			int rem = n - ev;
+			ans += 2 * rem;
+			out.println("YES\n" + ans);
+		}
+		out.flush();
+		out.close();
+	}
+
+	static int GCD(int a, int b)
+	{
+		   if (b==0) 
+			   return a;
+		   return GCD(b,a%b);
+	}
+
+	static class Scanner 
+	{
+		StringTokenizer st;
+		BufferedReader br;
+
+		public Scanner(InputStream System){br = new BufferedReader(new InputStreamReader(System));}
+		public String next() throws IOException 
+		{
+			while (st == null || !st.hasMoreTokens()) 
+				st = new StringTokenizer(br.readLine());
+			return st.nextToken();
+		}
+		public String nextLine()throws IOException{return br.readLine();}
+		public int nextInt() throws IOException {return Integer.parseInt(next());}
+		public double nextDouble() throws IOException {return Double.parseDouble(next());}
+		public char nextChar()throws IOException{return next().charAt(0);}
+		public Long nextLong()throws IOException{return Long.parseLong(next());}
+		public boolean ready() throws IOException{return br.ready();}
+		public void waitForInput(){for(long i = 0; i < 3e9; i++);}
+	}
+}
+
+Similar question 3 (Similarity score: 0.74):
+Name: p03317 AtCoder Beginner Contest 101 - Minimization
+Tags: ['']
+Description: There is a sequence of length N: A_1, A_2, ..., A_N. Initially, this sequence is a permutation of 1, 2, ..., N.
+
+On this sequence, Snuke can perform the following operation:
+
+* Choose K consecutive elements in the sequence. Then, replace the value of each chosen element with the minimum value among the chosen elements.
+
+
+
+Snuke would like to make all the elements in this sequence equal by repeating the operation above some number of times. Find the minimum number of operations required. It can be proved that, Under the constraints of this problem, this objective is always achievable.
+
+Constraints
+
+* 2 \leq K \leq N \leq 100000
+* A_1, A_2, ..., A_N is a permutation of 1, 2, ..., N.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N K
+A_1 A_2 ... A_N
+
+
+Output
+
+Print the minimum number of operations required.
+
+Examples
+
+Input
+
+4 3
+2 3 1 4
+
+
+Output
+
+2
+
+
+Input
+
+3 3
+1 2 3
+
+
+Output
+
+1
+
+
+Input
+
+8 3
+7 3 1 8 4 6 2 5
+
+
+Output
+
+4
+Difficulty: 0
+Solutions: import math
+n, k = map(int, input().split())
+print(math.ceil((n-k) / (k - 1) + 1))
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

@@ -1,0 +1,233 @@
+CURRENT QUESTION:
+The robot is located on a checkered rectangular board of size n × m (n rows, m columns). The rows in the board are numbered from 1 to n from top to bottom, and the columns — from 1 to m from left to right.
+
+The robot is able to move from the current cell to one of the four cells adjacent by side.
+
+The sequence of commands s executed by the robot is given. Each command is denoted by one of the symbols 'L', 'R', 'D' or 'U', and triggers the movement to left, right, down or up, respectively.
+
+The robot can start its movement in any cell. The robot executes the commands starting from the first one, strictly in the order in which they are listed in s. If the robot moves beyond the edge of the board, it falls and breaks. A command that causes the robot to break is not considered successfully executed.
+
+The robot's task is to execute as many commands as possible without falling off the board. For example, on board 3 × 3, if the robot starts a sequence of actions s="RRDLUU" ("right", "right", "down", "left", "up", "up") from the central cell, the robot will perform one command, then the next command will force him to cross the edge. If the robot starts moving from the cell (2, 1) (second row, first column) then all commands will be executed successfully and the robot will stop at the cell (1, 2) (first row, second column).
+
+<image> The robot starts from cell (2, 1) (second row, first column). It moves right, right, down, left, up, and up. In this case it ends in the cell (1, 2) (first row, second column).
+
+Determine the cell from which the robot should start its movement in order to execute as many commands as possible.
+
+Input
+
+The first line contains an integer t (1 ≤ t ≤ 10^4) — the number of test cases.
+
+The next 2t lines contain descriptions of the test cases.
+
+In the description of each test case, the first line contains two integers n and m (1 ≤ n, m ≤ 10^6) — the height and width of the field that the robot is located on. The second line of the description is a string s consisting solely of characters 'L', 'R', 'D' and 'U' — the sequence of commands the robot executes. The string has a length from 1 to 10^6 commands.
+
+It is guaranteed that the total length of s over all test cases does not exceed 10^6.
+
+Output
+
+Print t lines, each of which contains the answer to the corresponding test case. The answer to the test case are two integers r (1 ≤ r ≤ n) and c (1 ≤ c ≤ m), separated by a space — the coordinates of the cell (row number and column number) from which the robot should start moving to perform as many commands as possible.
+
+If there are several such cells, you may output any of them.
+
+Example
+
+Input
+
+
+4
+1 1
+L
+1 2
+L
+3 3
+RRDLUU
+4 3
+LUURRDDLLLUU
+
+
+Output
+
+
+1 1
+1 2
+2 1
+3 2
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 725_C. Hidden Word
+Tags: ['brute force', 'constructive algorithms', 'implementation', 'strings']
+Description: Let’s define a grid to be a set of tiles with 2 rows and 13 columns. Each tile has an English letter written in it. The letters don't have to be unique: there might be two or more tiles with the same letter written on them. Here is an example of a grid:
+    
+    
+    ABCDEFGHIJKLM  
+    NOPQRSTUVWXYZ
+
+We say that two tiles are adjacent if they share a side or a corner. In the example grid above, the tile with the letter 'A' is adjacent only to the tiles with letters 'B', 'N', and 'O'. A tile is not adjacent to itself.
+
+A sequence of tiles is called a path if each tile in the sequence is adjacent to the tile which follows it (except for the last tile in the sequence, which of course has no successor). In this example, "ABC" is a path, and so is "KXWIHIJK". "MAB" is not a path because 'M' is not adjacent to 'A'. A single tile can be used more than once by a path (though the tile cannot occupy two consecutive places in the path because no tile is adjacent to itself).
+
+You’re given a string s which consists of 27 upper-case English letters. Each English letter occurs at least once in s. Find a grid that contains a path whose tiles, viewed in the order that the path visits them, form the string s. If there’s no solution, print "Impossible" (without the quotes).
+
+Input
+
+The only line of the input contains the string s, consisting of 27 upper-case English letters. Each English letter occurs at least once in s.
+
+Output
+
+Output two lines, each consisting of 13 upper-case English characters, representing the rows of the grid. If there are multiple solutions, print any of them. If there is no solution print "Impossible".
+
+Examples
+
+Input
+
+ABCDEFGHIJKLMNOPQRSGTUVWXYZ
+
+
+Output
+
+YXWVUTGHIJKLM
+ZABCDEFSRQPON
+
+
+Input
+
+BUVTYZFQSNRIWOXXGJLKACPEMDH
+
+
+Output
+
+Impossible
+Difficulty: 9
+Solutions: import java.io.OutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.StringTokenizer;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.InputStream;
+
+/**
+ * Built using CHelper plug-in
+ * Actual solution is at the top
+ *
+ * @author lebegio
+ */
+public class Main {
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        MyReader in = new MyReader(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        TaskC solver = new TaskC();
+        solver.solve(1, in, out);
+        out.close();
+    }
+
+    static class TaskC {
+        public void solve(int testNumber, MyReader in, PrintWriter out) {
+            String str = in.next();
+            int SIZE = 13;
+            HashSet<Character> set = new HashSet<Character>();
+            char CH = 'x';
+            for (char ch : str.toCharArray()) {
+                if (set.contains(ch)) {
+                    CH = ch;
+                    break;
+                }
+                set.add(ch);
+            }
+            int start = -1;
+            int end = 0;
+            for (int i = 0; i < str.length(); i++) {
+                if (str.charAt(i) == CH) {
+                    if (start == -1) start = i;
+                    else end = i;
+                }
+            }
+
+            if (end - start <= 1) {
+                out.println("Impossible");
+                return;
+            }
+
+            String upStr = "" + CH;
+            String downStr = "";
+            int x = start + 1;
+            int y = end - 1;
+            while (y > x) {
+                upStr += str.charAt(x);
+                downStr += str.charAt(y);
+                x++;
+                y--;
+            }
+            if (x == y) downStr += str.charAt(x);
+
+            start--;
+            end++;
+            while (start >= 0 && upStr.length() < SIZE) {
+                upStr = str.charAt(start) + upStr;
+                start--;
+            }
+
+            while (end < str.length() && downStr.length() < SIZE) {
+                downStr = str.charAt(end) + downStr;
+                end++;
+            }
+            int p = 0;
+            while (p <= start) {
+                downStr = str.charAt(p) + downStr;
+                p++;
+            }
+            p = str.length() - 1;
+            while (p >= end) {
+                upStr = str.charAt(p) + upStr;
+                p--;
+            }
+
+            out.println(upStr);
+            out.println(downStr);
+        }
+
+    }
+
+    static class MyReader {
+        private BufferedReader buffReader;
+        private StringTokenizer strTokenizer;
+        private static final int SIZE = 32768;
+
+        public MyReader(InputStream inputStream) {
+            buffReader = new BufferedReader(new InputStreamReader(inputStream), SIZE);
+        }
+
+        public String next() {
+            if (strTokenizer == null || !strTokenizer.hasMoreTokens()) {
+                try {
+                    strTokenizer = new StringTokenizer(buffReader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return strTokenizer.nextToken();
+        }
+
+    }
+}
+
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

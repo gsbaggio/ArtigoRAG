@@ -1,0 +1,165 @@
+CURRENT QUESTION:
+Luntik came out for a morning stroll and found an array a of length n. He calculated the sum s of the elements of the array (s= ∑_{i=1}^{n} a_i). Luntik calls a subsequence of the array a nearly full if the sum of the numbers in that subsequence is equal to s-1.
+
+Luntik really wants to know the number of nearly full subsequences of the array a. But he needs to come home so he asks you to solve that problem!
+
+A sequence x is a subsequence of a sequence y if x can be obtained from y by deletion of several (possibly, zero or all) elements.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of test cases. The next 2 ⋅ t lines contain descriptions of test cases. The description of each test case consists of two lines.
+
+The first line of each test case contains a single integer n (1 ≤ n ≤ 60) — the length of the array.
+
+The second line contains n integers a_1, a_2, …, a_n (0 ≤ a_i ≤ 10^9) — the elements of the array a.
+
+Output
+
+For each test case print the number of nearly full subsequences of the array.
+
+Example
+
+Input
+
+
+5
+5
+1 2 3 4 5
+2
+1000 1000
+2
+1 0
+5
+3 0 2 1 1
+5
+2 1 0 3 0
+
+
+Output
+
+
+1
+0
+2
+4
+4
+
+Note
+
+In the first test case, s=1+2+3+4+5=15, only (2,3,4,5) is a nearly full subsequence among all subsequences, the sum in it is equal to 2+3+4+5=14=15-1.
+
+In the second test case, there are no nearly full subsequences.
+
+In the third test case, s=1+0=1, the nearly full subsequences are (0) and () (the sum of an empty subsequence is 0).
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 199_D. Jumping on Walls
+Tags: ['shortest paths']
+Description: Vasya plays a computer game with ninjas. At this stage Vasya's ninja should get out of a deep canyon.
+
+The canyon consists of two vertical parallel walls, their height is n meters. Let's imagine that we split these walls into 1 meter-long areas and number them with positive integers from 1 to n from bottom to top. Some areas are safe and the ninja can climb them. Others are spiky and ninja can't be there. Let's call such areas dangerous.
+
+Initially the ninja is on the lower area of the left wall. He can use each second to perform one of the following actions: 
+
+  * climb one area up; 
+  * climb one area down; 
+  * jump to the opposite wall. That gets the ninja to the area that is exactly k meters higher than the area he jumped from. More formally, if before the jump the ninja is located at area x of one wall, then after the jump he is located at area x + k of the other wall. 
+
+
+
+If at some point of time the ninja tries to get to an area with a number larger than n, then we can assume that the ninja got out of the canyon.
+
+The canyon gets flooded and each second the water level raises one meter. Initially the water level is at the lower border of the first area. Ninja cannot be on the area covered by water. We can assume that the ninja and the water "move in turns" — first the ninja performs some action, then the water raises for one meter, then the ninja performs one more action and so on.
+
+The level is considered completed if the ninja manages to get out of the canyon.
+
+After several failed attempts Vasya started to doubt whether it is possible to complete the level at all. Help him answer the question.
+
+Input
+
+The first line contains two integers n and k (1 ≤ n, k ≤ 105) — the height of the canyon and the height of ninja's jump, correspondingly.
+
+The second line contains the description of the left wall — a string with the length of n characters. The i-th character represents the state of the i-th wall area: character "X" represents a dangerous area and character "-" represents a safe area.
+
+The third line describes the right wall in the same format.
+
+It is guaranteed that the first area of the left wall is not dangerous.
+
+Output
+
+Print "YES" (without the quotes) if the ninja can get out from the canyon, otherwise, print "NO" (without the quotes).
+
+Examples
+
+Input
+
+7 3
+---X--X
+-X--XX-
+
+
+Output
+
+YES
+
+
+Input
+
+6 2
+--X-X-
+X--XX-
+
+
+Output
+
+NO
+
+Note
+
+In the first sample the ninja should first jump to the right wall, then go one meter down along the right wall, then jump to the left wall. The next jump can get the ninja from the canyon. 
+
+In the second sample there's no way the ninja can get out of the canyon.
+Difficulty: 10
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int MX = 1e5 + 7;
+vector<long long> v[MX];
+bool vis[2][MX], ans;
+string s[2];
+long long n, k;
+void DFS(bool UD, long long i, long long flood) {
+  if (s[UD][i] == 'X' || i <= flood || vis[UD][i]) return;
+  if (i >= n - k) {
+    ans = 1;
+    return;
+  }
+  vis[UD][i] = 1;
+  DFS(!UD, i + k, flood + 1);
+  DFS(UD, i + 1, flood + 1);
+  DFS(UD, i - 1, flood + 1);
+}
+int main() {
+  ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+  cin >> n >> k;
+  cin >> s[0] >> s[1];
+  DFS(0, 0, -1);
+  if (ans)
+    cout << "YES";
+  else
+    cout << "NO";
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

@@ -1,0 +1,2 @@
+1700
+['constructive algorithms', 'data structures', 'dp', 'greedy', 'implementation', 'math', 'sortings']

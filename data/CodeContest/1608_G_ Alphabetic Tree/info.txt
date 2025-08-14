@@ -1,0 +1,2 @@
+3500
+['binary search', 'data structures', 'dfs and similar', 'hashing', 'string suffix structures', 'strings', 'trees']

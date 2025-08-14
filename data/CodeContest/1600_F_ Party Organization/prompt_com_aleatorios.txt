@@ -1,0 +1,331 @@
+CURRENT QUESTION:
+On the great island of Baltia, there live N people, numbered from 1 to N. There are exactly M pairs of people that are friends with each other. The people of Baltia want to organize a successful party, but they have very strict rules on what a party is and when the party is successful. On the island of Baltia, a party is a gathering of exactly 5 people. The party is considered to be successful if either all the people at the party are friends with each other (so that they can all talk to each other without having to worry about talking to someone they are not friends with) or no two people at the party are friends with each other (so that everyone can just be on their phones without anyone else bothering them). Please help the people of Baltia organize a successful party or tell them that it's impossible to do so.
+
+Input
+
+The first line contains two integer numbers, N (5 ≤ N ≤ 2*10^5) and M (0 ≤ M ≤ 2*10^5) – the number of people that live in Baltia, and the number of friendships. The next M lines each contains two integers U_i and V_i (1 ≤ U_i,V_i ≤ N) – meaning that person U_i is friends with person V_i. Two friends can not be in the list of friends twice (no pairs are repeated) and a person can be friends with themselves (U_i ≠ V_i).
+
+Output
+
+If it's possible to organize a successful party, print 5 numbers indicating which 5 people should be invited to the party. If it's not possible to organize a successful party, print -1 instead. If there are multiple successful parties possible, print any.
+
+Examples
+
+Input
+
+
+6 3
+1 4
+4 2
+5 4
+
+
+Output
+
+
+1 2 3 5 6
+
+
+Input
+
+
+5 4
+1 2
+2 3
+3 4
+4 5
+
+
+Output
+
+
+-1
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 889_B. Restoration of string
+Tags: ['constructive algorithms', 'graphs', 'implementation']
+Description: A substring of some string is called the most frequent, if the number of its occurrences is not less than number of occurrences of any other substring.
+
+You are given a set of strings. A string (not necessarily from this set) is called good if all elements of the set are the most frequent substrings of this string. Restore the non-empty good string with minimum length. If several such strings exist, restore lexicographically minimum string. If there are no good strings, print "NO" (without quotes).
+
+A substring of a string is a contiguous subsequence of letters in the string. For example, "ab", "c", "abc" are substrings of string "abc", while "ac" is not a substring of that string.
+
+The number of occurrences of a substring in a string is the number of starting positions in the string where the substring occurs. These occurrences could overlap.
+
+String a is lexicographically smaller than string b, if a is a prefix of b, or a has a smaller letter at the first position where a and b differ.
+
+Input
+
+The first line contains integer n (1 ≤ n ≤ 105) — the number of strings in the set.
+
+Each of the next n lines contains a non-empty string consisting of lowercase English letters. It is guaranteed that the strings are distinct.
+
+The total length of the strings doesn't exceed 105.
+
+Output
+
+Print the non-empty good string with minimum length. If several good strings exist, print lexicographically minimum among them. Print "NO" (without quotes) if there are no good strings.
+
+Examples
+
+Input
+
+4
+mail
+ai
+lru
+cf
+
+
+Output
+
+cfmailru
+
+
+Input
+
+3
+kek
+preceq
+cheburek
+
+
+Output
+
+NO
+
+Note
+
+One can show that in the first sample only two good strings with minimum length exist: "cfmailru" and "mailrucf". The first string is lexicographically minimum.
+Difficulty: 8
+Solutions: import oracle.jrockit.jfr.events.*;
+
+import java.io.*;
+import java.util.*;
+
+public class Template implements Runnable {
+
+    BufferedReader in;
+    PrintWriter out;
+    StringTokenizer tok = new StringTokenizer("");
+
+    void init() throws FileNotFoundException {
+        try {
+            in = new BufferedReader(new FileReader("input.txt"));
+            out = new PrintWriter("output.txt");
+        } catch (Exception e) {
+            String filename = "";
+            if (!filename.isEmpty()) {
+                in = new BufferedReader(new FileReader(filename + ".in"));
+                out = new PrintWriter(filename + ".out");
+            } else {
+                in = new BufferedReader(new InputStreamReader(System.in));
+                out = new PrintWriter(System.out);
+            }
+        }
+    }
+
+    String readString() throws IOException {
+        while (!tok.hasMoreTokens()) {
+            try {
+                tok = new StringTokenizer(in.readLine());
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return tok.nextToken();
+    }
+
+    int readInt() throws IOException {
+        return Integer.parseInt(readString());
+    }
+
+    int[] readIntArray(int size) throws IOException {
+        int[] res = new int[size];
+        for (int i = 0; i < size; i++) {
+            res[i] = readInt();
+        }
+        return res;
+    }
+
+    long readLong() throws IOException {
+        return Long.parseLong(readString());
+    }
+
+    double readDouble() throws IOException {
+        return Double.parseDouble(readString());
+    }
+
+    <T> List<T>[] createGraphList(int size) {
+        List<T>[] list = new List[size];
+        for (int i = 0; i < size; i++) {
+            list[i] = new ArrayList<>();
+        }
+        return list;
+    }
+
+    public static void main(String[] args) {
+        new Template().run();
+//        new Thread(null, new Template(), "", 1l * 200 * 1024 * 1024).start();
+    }
+
+    long timeBegin, timeEnd;
+
+    void time() {
+        timeEnd = System.currentTimeMillis();
+        System.err.println("Time = " + (timeEnd - timeBegin));
+    }
+
+    long memoryTotal, memoryFree;
+
+    void memory() {
+        memoryFree = Runtime.getRuntime().freeMemory();
+        System.err.println("Memory = " + ((memoryTotal - memoryFree) >> 10)
+                + " KB");
+    }
+
+    public void run() {
+        try {
+            timeBegin = System.currentTimeMillis();
+            memoryTotal = Runtime.getRuntime().freeMemory();
+            init();
+            solve();
+            out.close();
+            if (System.getProperty("ONLINE_JUDGE") == null) {
+                time();
+                memory();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+    }
+
+    private void solve() throws IOException {
+        int n = readInt();
+        String[] strings = new String[n];
+        for (int i = 0; i < n; i++) {
+            strings[i] = readString();
+        }
+        int[] wasCnt = new int[26];
+        Arrays.fill(wasCnt, -1);
+        for (int i = 0; i < n; i++) {
+            int[] cnt = new int[26];
+            for (char x : strings[i].toCharArray()) {
+                cnt[x - 'a']++;
+            }
+            for (int j = 0; j < 26; j++) {
+                if (cnt[j] == 0) continue;
+                if (cnt[j] > 1) {
+                    out.println("NO");
+                    return;
+                }
+            }
+        }
+
+        List<String> list = new ArrayList<>();
+        for (String s : strings) {
+            list.add(s);
+        }
+
+        for (char letter = 'a'; letter <= 'z'; letter++) {
+            String maxBefore = "";
+            String maxAfter = "";
+            List<String> without = new ArrayList<>();
+            List<String> with = new ArrayList<>();
+            for (String s : list) {
+                int pos = s.indexOf(letter);
+                if (pos < 0) {
+                    without.add(s);
+                } else {
+                    with.add(s);
+                    int befLen = pos;
+                    if (befLen > maxBefore.length()) {
+                        maxBefore = s.substring(0, pos);
+                    }
+                    int aftLen = s.length() - 1 - pos;
+                    if (aftLen > maxAfter.length()) {
+                        maxAfter = s.substring(pos + 1);
+                    }
+                }
+            }
+            if (with.size() == 0) continue;
+            for (String s : with) {
+                int pos = s.indexOf(letter);
+                if (!endEq(maxBefore, s, 0, pos)) {
+                    out.println("NO");
+                    return;
+                }
+                if (!startEq(maxAfter, s, pos + 1, s.length())) {
+                    out.println("NO");
+                    return;
+                }
+            }
+
+            String res = maxBefore + letter + maxAfter;
+            int[] cnt = new int[26];
+            for (char x : res.toCharArray()) {
+                cnt[x - 'a']++;
+            }
+            for (int v : cnt) {
+                if (v > 1) {
+                    out.println("NO");
+                    return;
+                }
+            }
+            list.clear();
+            list.addAll(without);
+            list.add(res);
+        }
+
+        Collections.sort(list, (o1, o2) -> {
+            String a = o1 + o2;
+            String b = o2 + o1;
+            return a.compareTo(b);
+        });
+        for (String s : list) {
+            out.print(s);
+        }
+        out.println();
+    }
+
+    boolean endEq(String whole, String full, int l, int r) {
+        int len = (r - l);
+        for (int i = 0; i < len; i++) {
+            if (whole.charAt(whole.length() - 1 - i) != full.charAt(r - 1 - i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    boolean startEq(String whole, String full, int l, int r) {
+        int len = (r - l);
+        for (int i = 0; i < len; i++) {
+            if (whole.charAt(i) != full.charAt(l + i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+}
+
+
+
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

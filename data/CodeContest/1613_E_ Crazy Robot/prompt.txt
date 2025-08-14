@@ -1,0 +1,502 @@
+CURRENT QUESTION:
+There is a grid, consisting of n rows and m columns. Each cell of the grid is either free or blocked. One of the free cells contains a lab. All the cells beyond the borders of the grid are also blocked.
+
+A crazy robot has escaped from this lab. It is currently in some free cell of the grid. You can send one of the following commands to the robot: "move right", "move down", "move left" or "move up". Each command means moving to a neighbouring cell in the corresponding direction.
+
+However, as the robot is crazy, it will do anything except following the command. Upon receiving a command, it will choose a direction such that it differs from the one in command and the cell in that direction is not blocked. If there is such a direction, then it will move to a neighbouring cell in that direction. Otherwise, it will do nothing.
+
+We want to get the robot to the lab to get it fixed. For each free cell, determine if the robot can be forced to reach the lab starting in this cell. That is, after each step of the robot a command can be sent to a robot such that no matter what different directions the robot chooses, it will end up in a lab.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of testcases.
+
+The first line of each testcase contains two integers n and m (1 ≤ n, m ≤ 10^6; n ⋅ m ≤ 10^6) — the number of rows and the number of columns in the grid.
+
+The i-th of the next n lines provides a description of the i-th row of the grid. It consists of m elements of one of three types: 
+
+  * '.' — the cell is free; 
+  * '#' — the cell is blocked; 
+  * 'L' — the cell contains a lab. 
+
+
+
+The grid contains exactly one lab. The sum of n ⋅ m over all testcases doesn't exceed 10^6.
+
+Output
+
+For each testcase find the free cells that the robot can be forced to reach the lab from. Given the grid, replace the free cells (marked with a dot) with a plus sign ('+') for the cells that the robot can be forced to reach the lab from. Print the resulting grid.
+
+Example
+
+Input
+
+
+4
+3 3
+...
+.L.
+...
+4 5
+#....
+..##L
+...#.
+.....
+1 1
+L
+1 9
+....L..#.
+
+
+Output
+
+
+...
+.L.
+...
+#++++
+..##L
+...#+
+...++
+L
+++++L++#.
+
+Note
+
+In the first testcase there is no free cell that the robot can be forced to reach the lab from. Consider a corner cell. Given any direction, it will move to a neighbouring border grid that's not a corner. Now consider a non-corner free cell. No matter what direction you send to the robot, it can choose a different direction such that it ends up in a corner.
+
+In the last testcase, you can keep sending the command that is opposite to the direction to the lab and the robot will have no choice other than move towards the lab.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.75):
+Name: 1468_K. The Robot
+Tags: ['brute force', 'implementation']
+Description: There is a robot on a checkered field that is endless in all directions. Initially, the robot is located in the cell with coordinates (0, 0). He will execute commands which are described by a string of capital Latin letters 'L', 'R', 'D', 'U'. When a command is executed, the robot simply moves in the corresponding direction:
+
+  * 'L': one cell to the left (the x-coordinate of the current cell decreases by 1); 
+  * 'R': one cell to the right (the x-coordinate of the current cell is increased by 1); 
+  * 'D': one cell down (the y-coordinate of the current cell decreases by 1); 
+  * 'U': one cell up (the y-coordinate of the current cell is increased by 1). 
+
+
+
+Your task is to put an obstacle in one cell of the field so that after executing the commands, the robot will return to the original cell of its path (0, 0). Of course, an obstacle cannot be placed in the starting cell (0, 0). It is guaranteed that if the obstacle is not placed, then the robot will not return to the starting cell.
+
+An obstacle affects the movement of the robot in the following way: if it tries to go in a certain direction, and there is an obstacle, then it simply remains in place (the obstacle also remains, that is, it does not disappear).
+
+Find any such cell of the field (other than (0, 0)) that if you put an obstacle there, the robot will return to the cell (0, 0) after the execution of all commands. If there is no solution, then report it.
+
+Input
+
+The first line contains one integer t (1 ≤ t ≤ 500) — the number of test cases.
+
+Each test case consists of a single line containing s — the sequence of commands, which are uppercase Latin letters 'L', 'R', 'D', 'U' only. The length of s is between 1 and 5000, inclusive. Additional constraint on s: executing this sequence of commands leads the robot to some cell other than (0, 0), if there are no obstacles.
+
+The sum of lengths of all s in a test doesn't exceed 5000.
+
+Output
+
+For each test case print a single line:
+
+  * if there is a solution, print two integers x and y (-10^9 ≤ x,y ≤ 10^9) such that an obstacle in (x, y) will force the robot to return back to the cell (0, 0); 
+  * otherwise, print two zeroes (i. e. 0 0). 
+
+
+
+If there are multiple answers, you can print any of them.
+
+Example
+
+Input
+
+
+4
+L
+RUUDL
+LLUU
+DDDUUUUU
+
+
+Output
+
+
+-1 0
+1 2
+0 0
+0 1
+Difficulty: 17
+Solutions: ///Astalavista Code........~CodeSlayer007
+#include <bits/stdc++.h>
+using namespace std;
+#define endl "\n"
+#define Br cout<<endl
+#define int long long
+#define fe first
+#define se second
+#define double long double
+#define all(v) v.begin(),v.end()
+#define allr(v) v.rbegin(),v.rend()
+#define PT(x) cout << (x) << endl
+#define last(x)  prev(x.end())
+#define PP(x) cout << (x) << " "
+#define PS(x) for(auto it: x)cout << it <<" "; cout << endl;
+#define PTT(x) cout << (#x) << " is " << (x) << endl
+#define lets_go ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+typedef vector<int> vi;
+typedef pair<int, int> ii;
+typedef vector<ii> vii;
+void PV(vi v) { for (int i = 0 ; i < v.size() ; i++) cout << v[i] << " " ; cout << endl;}
+void PVV(vii v) {for (int i = 0 ; i < v.size() ; i++) cout << v[i].first << " " << v[i].second << endl;}
+void PA(int v[], int n, int x = 0) { for (int i = x ; i < n + x; i++)cout << v[i] << ' ' ; cout << endl;}
+void IN(int a[], int n, int x = 0) {for (int i = x; i < n + x; i++)cin >> a[i];}
+inline void op() {
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+}
+// <=================================================================================================================================
+// <=================================================================================================================================
+const int M = 1e9 + 7;
+const int IM = 1e18 + 37;
+const int N = 300 + 10;
+
+
+signed  main() {
+    lets_go
+    op();
+
+    int t;
+    cin >> t;
+    while (t--) {
+        string s;
+        cin >> s;
+        // PT(s);
+        int x = 0, y = 0;
+        int n = s.size();
+        ii p = {0, 0};
+        for (int i = 0; i < n; i++) {
+            char cc = s[i];
+            if (cc == 'L')
+                x--;
+            if (cc == 'R')
+                x++;
+            if (cc == 'U')
+                y++;
+            if (cc == 'D')
+                y--;
+            if(x == 0 && y == 0)
+                continue ;
+            int px = 0, py = 0;
+            int id = 0;
+            for ( ; id < n; id++) {
+                char c = s[id];
+                if (c == 'L')
+                    px--;
+                if (c == 'R')
+                    px++;
+                if (c == 'U')
+                    py++;
+                if (c == 'D')
+                    py--;
+                if (px == x && py == y) { // vapis jao 
+                    if (c == 'L')
+                        px++;
+                    if (c == 'R')
+                        px--;
+                    if (c == 'U')
+                        py--;
+                    if (c == 'D')
+                        py++;
+                }
+            }
+            if (px == 0 && py == 0) {
+                p = {x, y};
+            }
+        }
+        cout << p.fe << " " << p.se << endl;
+
+    }
+
+    return 0;
+}
+
+Similar question 2 (Similarity score: 0.72):
+Name: 1202_C. You Are Given a WASD-string...
+Tags: ['brute force', 'data structures', 'dp', 'greedy', 'implementation', 'math', 'strings']
+Description: You have a string s — a sequence of commands for your toy robot. The robot is placed in some cell of a rectangular grid. He can perform four commands:
+
+  * 'W' — move one cell up; 
+  * 'S' — move one cell down; 
+  * 'A' — move one cell left; 
+  * 'D' — move one cell right. 
+
+
+
+Let Grid(s) be the grid of minimum possible area such that there is a position in the grid where you can place the robot in such a way that it will not fall from the grid while running the sequence of commands s. For example, if s = DSAWWAW then Grid(s) is the 4 × 3 grid:
+
+  1. you can place the robot in the cell (3, 2); 
+  2. the robot performs the command 'D' and moves to (3, 3); 
+  3. the robot performs the command 'S' and moves to (4, 3); 
+  4. the robot performs the command 'A' and moves to (4, 2); 
+  5. the robot performs the command 'W' and moves to (3, 2); 
+  6. the robot performs the command 'W' and moves to (2, 2); 
+  7. the robot performs the command 'A' and moves to (2, 1); 
+  8. the robot performs the command 'W' and moves to (1, 1). 
+
+<image>
+
+You have 4 extra letters: one 'W', one 'A', one 'S', one 'D'. You'd like to insert at most one of these letters in any position of sequence s to minimize the area of Grid(s).
+
+What is the minimum area of Grid(s) you can achieve?
+
+Input
+
+The first line contains one integer T (1 ≤ T ≤ 1000) — the number of queries.
+
+Next T lines contain queries: one per line. This line contains single string s (1 ≤ |s| ≤ 2 ⋅ 10^5, s_i ∈ \{W, A, S, D\}) — the sequence of commands.
+
+It's guaranteed that the total length of s over all queries doesn't exceed 2 ⋅ 10^5.
+
+Output
+
+Print T integers: one per query. For each query print the minimum area of Grid(s) you can achieve.
+
+Example
+
+Input
+
+
+3
+DSAWWAW
+D
+WA
+
+
+Output
+
+
+8
+2
+4
+
+Note
+
+In the first query you have to get string DSAWW\underline{D}AW.
+
+In second and third queries you can not decrease the area of Grid(s).
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int maxs = 200000;
+const char dbuf[] = "DWAS";
+const int dx[] = {1, 0, -1, 0};
+const int dy[] = {0, 1, 0, -1};
+char s[maxs + 1];
+int xv[maxs + 1];
+int yv[maxs + 1];
+int lprv[maxs + 1];
+int bprv[maxs + 1];
+int rprv[maxs + 1];
+int tprv[maxs + 1];
+int lnxt[maxs + 1];
+int bnxt[maxs + 1];
+int rnxt[maxs + 1];
+int tnxt[maxs + 1];
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  int T;
+  cin >> T;
+  for (int TN = 0; TN < T; TN++) {
+    cin >> s;
+    int n = strlen(s);
+    xv[0] = 0;
+    yv[0] = 0;
+    for (int i = 0; i < n; i++) {
+      int d = find(dbuf, dbuf + 4, s[i]) - dbuf;
+      xv[i + 1] = xv[i] + dx[d];
+      yv[i + 1] = yv[i] + dy[d];
+    }
+    lprv[0] = rprv[0] = xv[0];
+    bprv[0] = tprv[0] = yv[0];
+    for (int i = 1; i <= n; i++) {
+      lprv[i] = min(lprv[i - 1], xv[i]);
+      bprv[i] = min(bprv[i - 1], yv[i]);
+      rprv[i] = max(rprv[i - 1], xv[i]);
+      tprv[i] = max(tprv[i - 1], yv[i]);
+    }
+    lnxt[n] = rnxt[n] = xv[n];
+    bnxt[n] = tnxt[n] = yv[n];
+    for (int i = n - 1; i >= 0; i--) {
+      lnxt[i] = min(lnxt[i + 1], xv[i]);
+      bnxt[i] = min(bnxt[i + 1], yv[i]);
+      rnxt[i] = max(rnxt[i + 1], xv[i]);
+      tnxt[i] = max(tnxt[i + 1], yv[i]);
+    }
+    long long ans = 0x7f7f7f7f7f7f7f7fll;
+    for (int i = 0; i <= n; i++) {
+      for (int d = 0; d < 4; d++) {
+        int w =
+            max(rprv[i], rnxt[i] + dx[d]) - min(lprv[i], lnxt[i] + dx[d]) + 1;
+        int h =
+            max(tprv[i], tnxt[i] + dy[d]) - min(bprv[i], bnxt[i] + dy[d]) + 1;
+        ans = min(ans, (long long)w * h);
+      }
+    }
+    cout << ans << '\n';
+  }
+  return 0;
+}
+
+
+Similar question 3 (Similarity score: 0.72):
+Name: 1467_D. Sum of Paths
+Tags: ['combinatorics', 'dp', 'math']
+Description: There are n cells, numbered 1,2,..., n from left to right. You have to place a robot at any cell initially. The robot must make exactly k moves.
+
+In one move, the robot must move one cell to the left or right, provided that it doesn't move out of bounds. In other words, if the robot was in the cell i, it must move to either the cell i-1 or the cell i+1, as long as it lies between 1 and n (endpoints inclusive). The cells, in the order they are visited (including the cell the robot is placed), together make a good path.
+
+Each cell i has a value a_i associated with it. Let c_0, c_1, ..., c_k be the sequence of cells in a good path in the order they are visited (c_0 is the cell robot is initially placed, c_1 is the cell where the robot is after its first move, and so on; more formally, c_i is the cell that the robot is at after i moves). Then the value of the path is calculated as a_{c_0} + a_{c_1} + ... + a_{c_k}.
+
+Your task is to calculate the sum of values over all possible good paths. Since this number can be very large, output it modulo 10^9 + 7. Two good paths are considered different if the starting cell differs or there exists an integer i ∈ [1, k] such that the current cell of the robot after exactly i moves is different in those paths.
+
+You must process q updates to a and print the updated sum each time. Each update changes the value of exactly one cell. See the input format and the sample input-output for more details.
+
+Input
+
+The first line of the input contains three space-separated integers n, k and q (2 ≤ n ≤ 5000; 1 ≤ k ≤ 5000; 1 ≤ q ≤ 2 ⋅ 10^5).
+
+The second line of the input contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^9).
+
+q lines follow. Each line contains two space-separated integers i and x (1 ≤ i ≤ n; 1 ≤ x ≤ 10^9) indicating that you must change the value of a_i to x.
+
+Output
+
+Print q integers. The i-th integer should be the sum of values over all good paths after the first i updates are performed. Since the answers may be large, print them modulo 10^9 + 7.
+
+Examples
+
+Input
+
+
+5 1 5
+3 5 1 4 2
+1 9
+2 4
+3 6
+4 6
+5 2
+
+
+Output
+
+
+62
+58
+78
+86
+86
+
+
+Input
+
+
+5 2 5
+3 5 1 4 2
+1 9
+2 4
+3 6
+4 6
+5 2
+
+
+Output
+
+
+157
+147
+207
+227
+227
+
+
+Input
+
+
+4 40 6
+92 21 82 46
+3 56
+1 72
+4 28
+1 97
+2 49
+2 88
+
+
+Output
+
+
+239185261
+666314041
+50729936
+516818968
+766409450
+756910476
+
+Note
+
+In the first example, the good paths are (1, 2), (2, 1), (2, 3), (3, 2), (3, 4), (4, 3), (4, 5), (5, 4).
+
+Initially the values of a are [3, 5, 1, 4, 2]. After the first update, they become [9, 5, 1, 4, 2]. After the second update, they become [9, 4, 1, 4, 2], and so on.
+Difficulty: 10
+Solutions: #include<cstdio>
+#include<algorithm>
+#include<vector>
+#include<queue>
+#include<set>
+using namespace std;
+typedef long long ll;
+const int N = 5005;
+const int p = 1e9 + 7;
+
+int n, k, q;
+int a[N];
+ll ans;
+ll num[N], dp[N][N];
+
+int main(){
+    scanf("%d%d%d", &n, &k, &q);  ++k;
+    for(int i = 1; i <= n; ++i)  scanf("%d", &a[i]);
+    for(int i = 1; i <= k; ++i)
+        for(int t = 1; t <= n; ++t)
+            dp[t][i] = (i == 1 ? 1 : (dp[t - 1][i - 1] + dp[t + 1][i - 1]) % p);
+    for(int i = 1; i <= n; ++i){
+        for(int t = 1; t <= k; ++t){
+            num[i] = (num[i] + dp[i][t] * dp[i][k - t + 1]) % p;
+		}
+        ans = (ans + a[i] * num[i]) % p;
+    }
+    //for(int i = 1; i <= k; ++i)  printf("%lld ", dp[2][i]);puts("kk");
+    for(int i = 1, id, x; i <= q; ++i){
+        scanf("%d%d", &id, &x);
+        ans = (ans + 1LL * (x - a[id]) * num[id] % p + p) % p;
+        a[id] = x;
+        printf("%lld\n", ans);
+    }
+    return 0;
+}
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

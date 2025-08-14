@@ -1,0 +1,415 @@
+CURRENT QUESTION:
+You are given an array a of n integers, and another integer k such that 2k ≤ n.
+
+You have to perform exactly k operations with this array. In one operation, you have to choose two elements of the array (let them be a_i and a_j; they can be equal or different, but their positions in the array must not be the same), remove them from the array, and add ⌊ (a_i)/(a_j) ⌋ to your score, where ⌊ x/y ⌋ is the maximum integer not exceeding x/y.
+
+Initially, your score is 0. After you perform exactly k operations, you add all the remaining elements of the array to the score.
+
+Calculate the minimum possible score you can get.
+
+Input
+
+The first line of the input contains one integer t (1 ≤ t ≤ 500) — the number of test cases.
+
+Each test case consists of two lines. The first line contains two integers n and k (1 ≤ n ≤ 100; 0 ≤ k ≤ ⌊ n/2 ⌋).
+
+The second line contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 2 ⋅ 10^5).
+
+Output
+
+Print one integer — the minimum possible score you can get.
+
+Example
+
+Input
+
+
+5
+7 3
+1 1 1 2 1 3 1
+5 1
+5 5 5 5 5
+4 2
+1 3 3 7
+2 0
+4 2
+9 2
+1 10 10 1 10 2 7 10 3
+
+
+Output
+
+
+2
+16
+0
+6
+16
+
+Note
+
+Let's consider the example test.
+
+In the first test case, one way to obtain a score of 2 is the following one:
+
+  1. choose a_7 = 1 and a_4 = 2 for the operation; the score becomes 0 + ⌊ 1/2 ⌋ = 0, the array becomes [1, 1, 1, 1, 3]; 
+  2. choose a_1 = 1 and a_5 = 3 for the operation; the score becomes 0 + ⌊ 1/3 ⌋ = 0, the array becomes [1, 1, 1]; 
+  3. choose a_1 = 1 and a_2 = 1 for the operation; the score becomes 0 + ⌊ 1/1 ⌋ = 1, the array becomes [1]; 
+  4. add the remaining element 1 to the score, so the resulting score is 2. 
+
+
+
+In the second test case, no matter which operations you choose, the resulting score is 16.
+
+In the third test case, one way to obtain a score of 0 is the following one:
+
+  1. choose a_1 = 1 and a_2 = 3 for the operation; the score becomes 0 + ⌊ 1/3 ⌋ = 0, the array becomes [3, 7]; 
+  2. choose a_1 = 3 and a_2 = 7 for the operation; the score becomes 0 + ⌊ 3/7 ⌋ = 0, the array becomes empty; 
+  3. the array is empty, so the score doesn't change anymore. 
+
+
+
+In the fourth test case, no operations can be performed, so the score is the sum of the elements of the array: 4 + 2 = 6.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.75):
+Name: 1469_D. Ceil Divisions
+Tags: ['brute force', 'constructive algorithms', 'math', 'number theory']
+Description: You have an array a_1, a_2, ..., a_n where a_i = i.
+
+In one step, you can choose two indices x and y (x ≠ y) and set a_x = \left⌈ (a_x)/(a_y) \right⌉ (ceiling function).
+
+Your goal is to make array a consist of n - 1 ones and 1 two in no more than n + 5 steps. Note that you don't have to minimize the number of steps.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of test cases.
+
+The first and only line of each test case contains the single integer n (3 ≤ n ≤ 2 ⋅ 10^5) — the length of array a.
+
+It's guaranteed that the sum of n over test cases doesn't exceed 2 ⋅ 10^5.
+
+Output
+
+For each test case, print the sequence of operations that will make a as n - 1 ones and 1 two in the following format: firstly, print one integer m (m ≤ n + 5) — the number of operations; next print m pairs of integers x and y (1 ≤ x, y ≤ n; x ≠ y) (x may be greater or less than y) — the indices of the corresponding operation.
+
+It can be proven that for the given constraints it's always possible to find a correct sequence of operations.
+
+Example
+
+Input
+
+
+2
+3
+4
+
+
+Output
+
+
+2
+3 2
+3 2
+3
+3 4
+4 2
+4 2
+
+Note
+
+In the first test case, you have array a = [1, 2, 3]. For example, you can do the following: 
+
+  1. choose 3, 2: a_3 = \left⌈ (a_3)/(a_2) \right⌉ = 2 and array a = [1, 2, 2]; 
+  2. choose 3, 2: a_3 = \left⌈ 2/2 \right⌉ = 1 and array a = [1, 2, 1]. 
+
+You've got array with 2 ones and 1 two in 2 steps.
+
+In the second test case, a = [1, 2, 3, 4]. For example, you can do the following: 
+
+  1. choose 3, 4: a_3 = \left⌈ 3/4 \right⌉ = 1 and array a = [1, 2, 1, 4]; 
+  2. choose 4, 2: a_4 = \left⌈ 4/2 \right⌉ = 2 and array a = [1, 2, 1, 2]; 
+  3. choose 4, 2: a_4 = \left⌈ 2/2 \right⌉ = 1 and array a = [1, 2, 1, 1]. 
+Difficulty: 10
+Solutions: import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import java.util.StringTokenizer;
+
+
+public class TaskD {
+
+    public static void main(String[] arg) {
+        final FastScanner in = new FastScanner(System.in);
+        final PrintWriter out = new PrintWriter(System.out);
+        final int T = in.nextInt();
+        for (int t = 0; t < T; t++) {
+           final int n = in.nextInt();
+           List<int[]> result = new ArrayList<>();
+           long max=n;
+
+           while(max>2) {
+               long i=max-1;
+               while ((i - 1) * (i - 1) > max) {
+                   result.add(new int[]{(int) i, (int) max});
+                   i--;
+               }
+               result.add(new int[]{(int) max, (int) i});
+               result.add(new int[]{(int) max, (int) i});
+               max = i;
+           }
+           StringBuilder res = new StringBuilder();
+           res.append(result.size()).append('\n');
+           for(int []p:result){
+             res.append(String.format("%d %d%n", p[0],p[1]));
+           }
+           out.println(res.toString());
+        }
+
+        out.close();
+        in.close();
+    }
+
+
+
+    private static class FastScanner {
+        BufferedReader br;
+        StringTokenizer st;
+
+        FastScanner(InputStream stream) {
+            try {
+                br = new BufferedReader(new InputStreamReader(stream));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreTokens()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        int[] readIntArr(int n) {
+            int[] result = new int[n];
+            for (int i = 0; i < n; i++) {
+                result[i] = Integer.parseInt(next());
+            }
+            return result;
+        }
+
+        void close() {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+
+    }
+
+}
+
+Similar question 2 (Similarity score: 0.74):
+Name: 1389_B. Array Walk
+Tags: ['brute force', 'dp', 'greedy']
+Description: You are given an array a_1, a_2, ..., a_n, consisting of n positive integers. 
+
+Initially you are standing at index 1 and have a score equal to a_1. You can perform two kinds of moves: 
+
+  1. move right — go from your current index x to x+1 and add a_{x+1} to your score. This move can only be performed if x<n. 
+  2. move left — go from your current index x to x-1 and add a_{x-1} to your score. This move can only be performed if x>1. Also, you can't perform two or more moves to the left in a row.
+
+
+
+You want to perform exactly k moves. Also, there should be no more than z moves to the left among them.
+
+What is the maximum score you can achieve?
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10^4) — the number of testcases.
+
+The first line of each testcase contains three integers n, k and z (2 ≤ n ≤ 10^5, 1 ≤ k ≤ n - 1, 0 ≤ z ≤ min(5, k)) — the number of elements in the array, the total number of moves you should perform and the maximum number of moves to the left you can perform.
+
+The second line of each testcase contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^4) — the given array.
+
+The sum of n over all testcases does not exceed 3 ⋅ 10^5.
+
+Output
+
+Print t integers — for each testcase output the maximum score you can achieve if you make exactly k moves in total, no more than z of them are to the left and there are no two or more moves to the left in a row.
+
+Example
+
+Input
+
+
+4
+5 4 0
+1 5 4 3 2
+5 4 1
+1 5 4 3 2
+5 4 4
+10 20 30 40 50
+10 7 3
+4 6 8 2 9 9 7 4 10 9
+
+
+Output
+
+
+15
+19
+150
+56
+
+Note
+
+In the first testcase you are not allowed to move left at all. So you make four moves to the right and obtain the score a_1 + a_2 + a_3 + a_4 + a_5.
+
+In the second example you can move one time to the left. So we can follow these moves: right, right, left, right. The score will be a_1 + a_2 + a_3 + a_2 + a_3.
+
+In the third example you can move four times to the left but it's not optimal anyway, you can just move four times to the right and obtain the score a_1 + a_2 + a_3 + a_4 + a_5.
+Difficulty: 8
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int main() {
+  int t;
+  cin >> t;
+  while (t--) {
+    long long n, k, z;
+    cin >> n >> k >> z;
+    long long a[n + 7];
+    for (int i = 0; i < n; i++) cin >> a[i];
+    long long ans = 0;
+    for (int i = 0; i <= (z); i++) {
+      long long r = (k - (2 * i)), sum = 0, mx = 0;
+      for (long long j = 0; j <= r; j++) {
+        sum += a[j];
+        mx = max(mx, a[j] + a[j + 1]);
+      }
+      ans = max(ans, sum + (mx * i));
+    }
+    cout << ans << '\n';
+  }
+  return 0;
+}
+
+
+Similar question 3 (Similarity score: 0.73):
+Name: 1416_A. k-Amazing Numbers
+Tags: ['binary search', 'data structures', 'implementation', 'two pointers']
+Description: You are given an array a consisting of n integers numbered from 1 to n.
+
+Let's define the k-amazing number of the array as the minimum number that occurs in all of the subsegments of the array having length k (recall that a subsegment of a of length k is a contiguous part of a containing exactly k elements). If there is no integer occuring in all subsegments of length k for some value of k, then the k-amazing number is -1.
+
+For each k from 1 to n calculate the k-amazing number of the array a.
+
+Input
+
+The first line contains one integer t (1 ≤ t ≤ 1000) — the number of test cases. Then t test cases follow.
+
+The first line of each test case contains one integer n (1 ≤ n ≤ 3 ⋅ 10^5) — the number of elements in the array. The second line contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ n) — the elements of the array. 
+
+It is guaranteed that the sum of n over all test cases does not exceed 3 ⋅ 10^5.
+
+Output
+
+For each test case print n integers, where the i-th integer is equal to the i-amazing number of the array.
+
+Example
+
+Input
+
+
+3
+5
+1 2 3 4 5
+5
+4 4 4 4 2
+6
+1 3 1 5 3 1
+
+
+Output
+
+
+-1 -1 3 2 1 
+-1 4 4 4 2 
+-1 -1 1 1 1 1 
+Difficulty: 7
+Solutions: t = int(input())
+
+ns = []
+
+for i in range(t):
+
+    n = int(input())
+    arr = list(map(int, input().split()))
+
+    nums = set(arr)
+    dct1 = {}
+    dct2 = {num: 0 for num in nums}
+
+    for idx, el in enumerate(arr):
+        if el in dct1:
+            dct2[el] = max(dct2[el], idx - dct1[el])
+        else:
+            dct2[el] = idx + 1
+        dct1[el] = idx
+
+    for el in dct2:
+        dct2[el] = max(dct2[el], n - dct1[el])
+
+    ans = []
+    temp = sorted(nums, key=lambda x: dct2[x])
+    index = 0
+
+    mini = 10**20
+    for k in range(1, n + 1):
+        while index < len(temp) and dct2[temp[index]] == k:
+            mini = min(mini, temp[index])
+            index += 1       
+        if mini == 10**20:
+            ans.append(-1)
+        else:
+            ans.append(mini)
+
+    ns.append(ans)
+
+
+for el in ns:
+    print(" ".join(list(map(str, el))))
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

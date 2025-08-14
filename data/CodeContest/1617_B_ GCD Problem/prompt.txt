@@ -1,0 +1,285 @@
+CURRENT QUESTION:
+Given a positive integer n. Find three distinct positive integers a, b, c such that a + b + c = n and \operatorname{gcd}(a, b) = c, where \operatorname{gcd}(x, y) denotes the [greatest common divisor (GCD)](https://en.wikipedia.org/wiki/Greatest_common_divisor) of integers x and y.
+
+Input
+
+The input consists of multiple test cases. The first line contains a single integer t (1 ≤ t ≤ 10^5) — the number of test cases. Description of the test cases follows.
+
+The first and only line of each test case contains a single integer n (10 ≤ n ≤ 10^9).
+
+Output
+
+For each test case, output three distinct positive integers a, b, c satisfying the requirements. If there are multiple solutions, you can print any. We can show that an answer always exists.
+
+Example
+
+Input
+
+
+6
+18
+63
+73
+91
+438
+122690412
+
+
+Output
+
+
+6 9 3
+21 39 3
+29 43 1
+49 35 7
+146 219 73
+28622 122661788 2
+
+Note
+
+In the first test case, 6 + 9 + 3 = 18 and \operatorname{gcd}(6, 9) = 3.
+
+In the second test case, 21 + 39 + 3 = 63 and \operatorname{gcd}(21, 39) = 3.
+
+In the third test case, 29 + 43 + 1 = 73 and \operatorname{gcd}(29, 43) = 1.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.81):
+Name: equatio
+Tags: []
+Description: x*y = a + b*lcm(x,y) + c*gcd(x,y)
+It's easy: you are to write a program which for given a, b and c finds the number of pairs of positive integers (x, y) satisfying this equation.
+
+Here * stands for multiplication, gcd(x,y) stands for the greatest common divisor of x and y, while lcm(x,y) stands for the least common multiple of x and y.
+
+
+Input
+The first line of the input file contains one integer T -- the number of test cases (no more than 10). Each of the next T lines contains exactly three space-separated integers a, b and c (0 ≤ a, b, c ≤ 10^6).
+
+
+Output
+For each test case output one line containing the sought number of solutions to the equation. If there is an infinite number of solutions, output -1 instead.
+
+
+Example
+
+Input:
+3
+2 1 1
+160 0 90
+300 7 5
+
+Output:
+2
+8
+4
+
+Explanation:
+
+In the first test case, the only pairs are (2,4) and (4,2).
+Difficulty: 3
+Solutions: from math import sqrt
+ 
+def fn():
+    a,b,c = map(int,raw_input().split())
+    if a == 0 and b > 0 and c==0:
+        print -1 
+        return 
+    af,cf = [], []
+    for i in range(1,int(sqrt(a))+1):
+        if i*i == a:
+            af.append(i)
+        else:
+            if a%i==0:
+                af.append(i)
+                af.append(a/i)
+ 
+    for i in range(1,int(sqrt(c))+1):
+        if i*i == c:
+            cf.append(i)
+        else:
+            if c%i==0:
+                cf.append(i)
+                cf.append(c/i)
+                
+    xy = []
+    for g in af:
+        if g*g - b*g>0:
+            if (g*c+a)%(g*g-b*g)==0:
+                xy.append((g*c+a)/(g*g-b*g))
+        elif g*g - b*g == 0:
+            if a == 0 and c ==0:
+                print -1
+                return 
+    if a==0:
+        for x in cf:
+            xy.append(c/x)
+ 
+                
+    np = []
+    for i in xy:
+        cnt = 0
+        for j in range(2,int(sqrt(i)+1)):
+            if i%j == 0:
+                cnt += 1
+                while(i%j==0):
+                    i/=j
+        if i != 1:
+            cnt += 1
+        np.append(cnt)
+    
+    sm = 0
+    for i in np:
+        sm+=pow(2,i)
+        
+    print sm
+        
+t = int(raw_input())
+for i in range(t):
+    fn()
+
+Similar question 2 (Similarity score: 0.81):
+Name: 1370_A. Maximum GCD
+Tags: ['greedy', 'implementation', 'math', 'number theory']
+Description: Let's consider all integers in the range from 1 to n (inclusive).
+
+Among all pairs of distinct integers in this range, find the maximum possible greatest common divisor of integers in pair. Formally, find the maximum value of gcd(a, b), where 1 ≤ a < b ≤ n.
+
+The greatest common divisor, gcd(a, b), of two positive integers a and b is the biggest integer that is a divisor of both a and b.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 100) — the number of test cases. The description of the test cases follows.
+
+The only line of each test case contains a single integer n (2 ≤ n ≤ 10^6).
+
+Output
+
+For each test case, output the maximum value of gcd(a, b) among all 1 ≤ a < b ≤ n.
+
+Example
+
+Input
+
+
+2
+3
+5
+
+
+Output
+
+
+1
+2
+
+Note
+
+In the first test case, gcd(1, 2) = gcd(2, 3) = gcd(1, 3) = 1.
+
+In the second test case, 2 is the maximum possible value, corresponding to gcd(2, 4).
+Difficulty: 7
+Solutions: n = int(input())
+for i in range(n):
+    print(int(input())//2)
+
+Similar question 3 (Similarity score: 0.80):
+Name: 1498_A. GCD Sum
+Tags: ['brute force', 'math']
+Description: The \text{gcdSum} of a positive integer is the gcd of that integer with its sum of digits. Formally, \text{gcdSum}(x) = gcd(x,  sum of digits of  x) for a positive integer x. gcd(a, b) denotes the greatest common divisor of a and b — the largest integer d such that both integers a and b are divisible by d.
+
+For example: \text{gcdSum}(762) = gcd(762, 7 + 6 + 2)=gcd(762,15) = 3.
+
+Given an integer n, find the smallest integer x ≥ n such that \text{gcdSum}(x) > 1.
+
+Input
+
+The first line of input contains one integer t (1 ≤ t ≤ 10^4) — the number of test cases. 
+
+Then t lines follow, each containing a single integer n (1 ≤ n ≤ 10^{18}).
+
+All test cases in one test are different.
+
+Output
+
+Output t lines, where the i-th line is a single integer containing the answer to the i-th test case.
+
+Example
+
+Input
+
+
+3
+11
+31
+75
+
+
+Output
+
+
+12
+33
+75
+
+Note
+
+Let us explain the three test cases in the sample.
+
+Test case 1: n = 11: 
+
+\text{gcdSum}(11) = gcd(11, 1 + 1) = gcd(11,\ 2) = 1.
+
+\text{gcdSum}(12) = gcd(12, 1 + 2) = gcd(12,\ 3) = 3.
+
+So the smallest number ≥ 11 whose gcdSum > 1 is 12.
+
+Test case 2: n = 31: 
+
+\text{gcdSum}(31) = gcd(31, 3 + 1) = gcd(31,\ 4) = 1.
+
+\text{gcdSum}(32) = gcd(32, 3 + 2) = gcd(32,\ 5) = 1.
+
+\text{gcdSum}(33) = gcd(33, 3 + 3) = gcd(33,\ 6) = 3.
+
+So the smallest number ≥ 31 whose gcdSum > 1 is 33.
+
+Test case 3: \ n = 75: 
+
+\text{gcdSum}(75) = gcd(75, 7 + 5) = gcd(75,\ 12) = 3.
+
+The \text{gcdSum} of 75 is already > 1. Hence, it is the answer.
+Difficulty: 7
+Solutions: def gcd(a,b):
+     
+    # Everything divides 0
+    if (b == 0):
+         return a
+    return gcd(b, a%b)
+
+
+for i in range(int(input())):
+    n=int(input())
+    while(True):
+        l=list(str(n))
+        sum1=0
+        for i in l:
+            sum1+=int(i)
+  
+        if(gcd(n,sum1)>1):
+            print(n)
+            break
+        n+=1    
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

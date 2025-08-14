@@ -1,0 +1,855 @@
+CURRENT QUESTION:
+You are given an integer k and a string s that consists only of characters 'a' (a lowercase Latin letter) and '*' (an asterisk).
+
+Each asterisk should be replaced with several (from 0 to k inclusive) lowercase Latin letters 'b'. Different asterisk can be replaced with different counts of letter 'b'.
+
+The result of the replacement is called a BA-string.
+
+Two strings a and b are different if they either have different lengths or there exists such a position i that a_i ≠ b_i.
+
+A string a is lexicographically smaller than a string b if and only if one of the following holds: 
+
+  * a is a prefix of b, but a ≠ b; 
+  * in the first position where a and b differ, the string a has a letter that appears earlier in the alphabet than the corresponding letter in b. 
+
+
+
+Now consider all different BA-strings and find the x-th lexicographically smallest of them.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 2000) — the number of testcases.
+
+The first line of each testcase contains three integers n, k and x (1 ≤ n ≤ 2000; 0 ≤ k ≤ 2000; 1 ≤ x ≤ 10^{18}). n is the length of string s.
+
+The second line of each testcase is a string s. It consists of n characters, each of them is either 'a' (a lowercase Latin letter) or '*' (an asterisk).
+
+The sum of n over all testcases doesn't exceed 2000. For each testcase x doesn't exceed the total number of different BA-strings. String s contains at least one character 'a'.
+
+Output
+
+For each testcase, print a single string, consisting only of characters 'b' and 'a' (lowercase Latin letters) — the x-th lexicographically smallest BA-string.
+
+Example
+
+Input
+
+
+3
+2 4 3
+a*
+4 1 3
+a**a
+6 3 20
+**a***
+
+
+Output
+
+
+abb
+abba
+babbbbbbbbb
+
+Note
+
+In the first testcase of the example, BA-strings ordered lexicographically are: 
+
+  1. a
+  2. ab
+  3. abb
+  4. abbb
+  5. abbbb
+
+
+
+In the second testcase of the example, BA-strings ordered lexicographically are: 
+
+  1. aa
+  2. aba
+  3. abba
+
+
+
+Note that string "aba" is only counted once, even though there are two ways to replace asterisks with characters 'b' to get it.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.78):
+Name: 1493_C. K-beautiful Strings
+Tags: ['binary search', 'brute force', 'constructive algorithms', 'greedy', 'strings']
+Description: You are given a string s consisting of lowercase English letters and a number k. Let's call a string consisting of lowercase English letters beautiful if the number of occurrences of each letter in that string is divisible by k. You are asked to find the lexicographically smallest beautiful string of length n, which is lexicographically greater or equal to string s. If such a string does not exist, output -1.
+
+A string a is lexicographically smaller than a string b if and only if one of the following holds: 
+
+  * a is a prefix of b, but a ≠ b; 
+  * in the first position where a and b differ, the string a has a letter that appears earlier in the alphabet than the corresponding letter in b. 
+
+Input
+
+The first line contains a single integer T (1 ≤ T ≤ 10 000) — the number of test cases.
+
+The next 2 ⋅ T lines contain the description of test cases. The description of each test case consists of two lines.
+
+The first line of the description contains two integers n and k (1 ≤ k ≤ n ≤ 10^5) — the length of string s and number k respectively.
+
+The second line contains string s consisting of lowercase English letters.
+
+It is guaranteed that the sum of n over all test cases does not exceed 10^5.
+
+Output
+
+For each test case output in a separate line lexicographically smallest beautiful string of length n, which is greater or equal to string s, or -1 if such a string does not exist.
+
+Example
+
+Input
+
+
+4
+4 2
+abcd
+3 1
+abc
+4 3
+aaaa
+9 3
+abaabaaaa
+
+
+Output
+
+
+acac
+abc
+-1
+abaabaaab
+
+Note
+
+In the first test case "acac" is greater than or equal to s, and each letter appears 2 or 0 times in it, so it is beautiful.
+
+In the second test case each letter appears 0 or 1 times in s, so s itself is the answer.
+
+We can show that there is no suitable string in the third test case.
+
+In the fourth test case each letter appears 0, 3, or 6 times in "abaabaaab". All these integers are divisible by 3.
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+
+using namespace std ;
+
+const int MAX = 1e5 + 10 ;
+
+int need[27] ;
+int n , k ;
+
+string s ;
+
+bool check(int idx)
+{
+	memset(need , 0 , sizeof(need)) ;
+	for(int i = 0 ; i < idx ; ++i)
+		need[s[i]-'a'] = (need[s[i]-'a'] - 1 + k) % k ;
+	int sum = 0 ;
+	for(int i = 0 ; i < 26 ; ++i)
+		sum += need[i] ;
+	if(idx == n)
+		return (sum == 0) ;
+	for(char c = s[idx]+1 ; c <= 'z' ; ++c)
+	{
+		sum -= need[c-'a'] ;
+		need[c - 'a'] = (need[c - 'a'] - 1 + k) % k ;
+		sum += need[c-'a'] ;
+		int x = n-idx-1 - sum ;
+		if(x >= 0 && x % k == 0)
+			return true ;
+		sum -= need[c-'a'] ;
+		need[c-'a'] = (need[c-'a'] + 1) % k ;
+		sum += need[c-'a'] ;
+	}
+	return false ;
+}
+
+void build(int idx)
+{
+	memset(need , 0 , sizeof(need)) ;
+	for(int i = 0 ; i < idx ; ++i)
+		need[s[i]-'a'] = (need[s[i]-'a'] - 1 + k) % k ;
+	int sum = 0 ;
+	for(int i = 0 ; i < 26 ; ++i)
+		sum += need[i] ;
+	if(idx == n)
+	{
+		cout<<s<<"\n" ;
+		return ;
+	}
+	for(char c = s[idx]+1 ; c <= 'z' ; ++c)
+	{
+		sum -= need[c-'a'] ;
+		need[c - 'a'] = (need[c - 'a'] - 1 + k) % k ;
+		sum += need[c-'a'] ;
+		int x = n-idx-1 - sum ;
+		if(x >= 0 && x % k == 0)
+		{
+			for(int i = 0 ; i < idx ; ++i)
+				cout<<s[i] ;
+			cout<<c ;
+			for(int i = 0 ; i < x ; ++i)
+				cout<<'a' ;
+			for(int i = 0 ; i < 26 ; ++i)
+			{
+				for(int j = 0 ; j < need[i] ; ++j)
+					cout<<(char)('a' + i) ;
+			}
+			cout<<"\n" ;
+			return ;
+		}
+		sum -= need[c-'a'] ;
+		need[c-'a'] = (need[c-'a'] + 1) % k ;
+		sum += need[c-'a'] ;
+	}
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(0) ;
+	cin.tie(0) ;
+	int t ;
+	cin>>t ;
+	while(t--)
+	{
+		cin>>n>>k ;
+		cin>>s ;
+		if(n % k != 0)
+		{
+			cout<<-1<<"\n" ;
+			continue ;
+		}
+		if(check(n))
+		{
+			cout<<s<<"\n" ;
+			continue ;
+		}
+		memset(need , 0 , sizeof(need)) ;
+		int sum = 0 , idx = 0 ;
+		for(int i = 0 ; i < n ; ++i)
+		{
+			for(char c = s[i]+1 ; c <= 'z' ; ++c)
+			{
+				sum -= need[c-'a'] ;
+				need[c - 'a'] = (need[c - 'a'] - 1 + k) % k ;
+				sum += need[c-'a'] ;
+				int x = n-i-1 - sum ;
+				if(x >= 0 && x % k == 0)
+					idx = i ;
+				sum -= need[c-'a'] ;
+				need[c-'a'] = (need[c-'a'] + 1) % k ;
+				sum += need[c-'a'] ;
+			}
+			sum -= need[s[i] - 'a'] ;
+			need[s[i] - 'a'] = (need[s[i] - 'a'] - 1 + k) % k ;
+			sum += need[s[i] - 'a'] ;
+		}
+		build(idx) ;
+	}
+	return 0 ;
+}		
+
+Similar question 2 (Similarity score: 0.76):
+Name: 940_C. Phone Numbers
+Tags: ['constructive algorithms', 'implementation', 'strings']
+Description: And where the are the phone numbers?
+
+You are given a string s consisting of lowercase English letters and an integer k. Find the lexicographically smallest string t of length k, such that its set of letters is a subset of the set of letters of s and s is lexicographically smaller than t.
+
+It's guaranteed that the answer exists.
+
+Note that the set of letters is a set, not a multiset. For example, the set of letters of abadaba is {a, b, d}.
+
+String p is lexicographically smaller than string q, if p is a prefix of q, is not equal to q or there exists i, such that pi < qi and for all j < i it is satisfied that pj = qj. For example, abc is lexicographically smaller than abcd , abd is lexicographically smaller than abec, afa is not lexicographically smaller than ab and a is not lexicographically smaller than a.
+
+Input
+
+The first line of input contains two space separated integers n and k (1 ≤ n, k ≤ 100 000) — the length of s and the required length of t.
+
+The second line of input contains the string s consisting of n lowercase English letters.
+
+Output
+
+Output the string t conforming to the requirements above.
+
+It's guaranteed that the answer exists.
+
+Examples
+
+Input
+
+3 3
+abc
+
+
+Output
+
+aca
+
+
+Input
+
+3 2
+abc
+
+
+Output
+
+ac
+
+
+Input
+
+3 3
+ayy
+
+
+Output
+
+yaa
+
+
+Input
+
+2 3
+ba
+
+
+Output
+
+baa
+
+Note
+
+In the first example the list of strings t of length 3, such that the set of letters of t is a subset of letters of s is as follows: aaa, aab, aac, aba, abb, abc, aca, acb, .... Among them, those are lexicographically greater than abc: aca, acb, .... Out of those the lexicographically smallest is aca.
+Difficulty: 9
+Solutions: import java.util.Scanner;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+public class C {
+
+	static SortedSet<Integer> valueSet = new TreeSet<>();
+	private static int MAX_VALUE;
+	private static int MIN_VALUE;
+	
+	public static void main(String[] args) throws InterruptedException {
+		
+		Integer length;
+		String t;
+		
+		Scanner sc = new Scanner(System.in);
+		
+		sc.nextInt();
+		length = sc.nextInt();
+		
+		t = sc.next(); 
+		
+		//t= "fjrhrlxvhpljltpnfxpvjttjhfrxxrnrlhrxhldxhbvbvjbrflnfnbdjxflpvnplrrfttrpfrjlnbvtldfhfvjfxbhpbplnprhdppldprjfxvpxjpjttbrnvbndnhnbfnblxttxfvvnnllfhlntpxthtbdjhvjltrbhlxblvfxdxjlfjvhttpfvrtlxtxbldrtfhjlxrbblpbnxbfdrtvrrffhvpxfbndbppdbbjlhjjllthtxhtfvxrhtfvfltjxttjtvfthlvtplhlhjddrdjnbjnthtnpntbpdpxdbpnpdbhlrfhphjpbtlpjprdvhnlvlndvxpbbrfbttrrdbbjvxvjpnhbfbthxrrnljxthhjlxjnbvxdvprlthpblhphpvxjhdxlrbxlhhhrrpxvxbvrpnhxvdxnrlvnjbjxdpbnnpdfbnthvdjldxdptxjjnnjbtrbxdtthhdvjflltfnfxjhhtpnnxfjfhnndhpdhxbhxf";
+		//length = 200;
+		
+		String solution = "";
+
+		for(int i=0; i<t.length(); i++){
+			//System.out.println(5);
+			valueSet.add((int)(t.charAt(i)));
+		}
+		
+		//System.out.println(valueAndChar.keySet().size());
+		
+		MAX_VALUE = valueSet.last();
+		MIN_VALUE = valueSet.first();
+		
+		StringBuffer strB = new StringBuffer();
+		
+		if(length<=t.length()){
+			int i=length-1;
+				
+				//the tail, should be small
+				while(t.charAt(i) == MAX_VALUE){
+					//System.out.println("adding "+minValue(valueAndChar.keySet()));
+					strB.insert(0,(char)MIN_VALUE);
+					//strB.insert(0,solution);
+					i--;
+				}
+				
+				//add the next character 
+				int nextChar = t.charAt(i) + 1;
+				while(!valueSet.contains(nextChar)){
+					nextChar++;
+					//System.out.println(2);
+				}
+				
+				strB.insert(0,(char)nextChar);
+				
+				//the head, should be the same
+				
+				while(i>0){
+					strB.insert(0,t.charAt(i-1));
+					//strB.insert(0,solution);
+					i--;
+				}
+				
+
+			System.out.println(strB.toString());
+			
+		} else {
+			strB.insert(0,t);
+			
+			while(strB.length()<length){
+				strB.append((char)MIN_VALUE);
+				//System.out.println(4);
+			}
+			System.out.println(strB.toString());
+		}
+		
+		
+	}
+	
+	static int maxValue(Set<Integer> set){
+		return set.stream().max((i1,i2)->{
+			return i1-i2;
+		}).get();
+	}
+	
+	static int minValue(Set<Integer> set){
+		return set.stream().min((i1,i2)->{
+			return i1-i2;
+		}).get();
+	}
+	
+}
+
+
+Similar question 3 (Similarity score: 0.75):
+Name: 1360_F. Spy-string
+Tags: ['bitmasks', 'brute force', 'constructive algorithms', 'dp', 'hashing', 'strings']
+Description: You are given n strings a_1, a_2, …, a_n: all of them have the same length m. The strings consist of lowercase English letters.
+
+Find any string s of length m such that each of the given n strings differs from s in at most one position. Formally, for each given string a_i, there is no more than one position j such that a_i[j] ≠ s[j].
+
+Note that the desired string s may be equal to one of the given strings a_i, or it may differ from all the given strings.
+
+For example, if you have the strings abac and zbab, then the answer to the problem might be the string abab, which differs from the first only by the last character, and from the second only by the first.
+
+Input
+
+The first line contains an integer t (1 ≤ t ≤ 100) — the number of test cases. Then t test cases follow.
+
+Each test case starts with a line containing two positive integers n (1 ≤ n ≤ 10) and m (1 ≤ m ≤ 10) — the number of strings and their length.
+
+Then follow n strings a_i, one per line. Each of them has length m and consists of lowercase English letters.
+
+Output
+
+Print t answers to the test cases. Each answer (if it exists) is a string of length m consisting of lowercase English letters. If there are several answers, print any of them. If the answer does not exist, print "-1" ("minus one", without quotes).
+
+Example
+
+Input
+
+
+5
+2 4
+abac
+zbab
+2 4
+aaaa
+bbbb
+3 3
+baa
+aaa
+aab
+2 2
+ab
+bb
+3 1
+a
+b
+c
+
+
+Output
+
+
+abab
+-1
+aaa
+ab
+z
+
+Note
+
+The first test case was explained in the statement.
+
+In the second test case, the answer does not exist.
+Difficulty: 12
+Solutions: import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.*;
+import java.io.*;
+public class Main {
+InputStream is;
+	PrintWriter out;
+	String INPUT = ""; 
+//class  Declaration
+
+static class pair implements Comparable<pair>{
+	int x;
+	int y;
+
+	
+	pair (int i,int j)
+	{ x=i; y=j;
+	
+		
+	}
+	public int compareTo(pair p){
+		if(this.x!=p.x) { return this.x-p.x;}
+		else { return this.y-p.y;}
+	}
+	public int hashCode() { return (x+" "+y).hashCode();}
+	public String toString(){ return x+" "+y;} 
+	public boolean equals(Object o){ 
+		pair x = (pair) o ;
+		return (x.x==this.x&&x.y==this.y);}
+}
+
+
+
+int inf = (int)1e9 + 5;
+void solve() throws Exception{
+int t=ni();
+while(t-->0){
+	int n=ni(),m=ni();
+	char[][] str = new char[n][m];
+	for(int i=0;i<n;++i){
+		str[i] = ns().toCharArray();
+	}
+	boolean pos = false ;
+	String ans = "";
+	 outer : for(int i=0;i<n;++i){
+		 
+		String x = new String(str[i]);
+		//print("trying "+x);
+		char[] chk = x.toCharArray();
+		for(int j=0;j<m;++j){
+			for(int k=0;k<26;++k){
+				chk[j] = (char)('a'+k );
+
+				boolean use = true ;
+				for(int l= 0;l<n;++l){
+					int cost =0;
+					for(int jj =0;jj<m;++jj){
+						if(chk[jj]!= str[l][jj]) cost++;
+					}
+					if(cost>1){
+						use = false;
+						 break ;
+					}
+
+				}
+				if(use){
+					pos =true ;
+					ans = new String(chk);
+					break  outer ;
+				}
+
+
+			}
+			chk[j] = str[i][j];
+		}
+	}
+	if(pos){
+		pn(ans);
+	}
+	else{
+		pn(-1);
+	}
+
+}
+}
+
+void print(Object o){
+System.out.println(o);
+System.out.flush();
+}
+
+long gcd(long a, long b) 
+{ 
+if (b == 0) 
+return a; 
+return gcd(b, a % b);  
+}
+void run() throws Exception{
+		is = INPUT.isEmpty() ? System.in : new ByteArrayInputStream(INPUT.getBytes());
+out = new PrintWriter(System.out);
+		
+		long s = System.currentTimeMillis();
+		solve();
+		out.flush();
+		if(!INPUT.isEmpty())tr(System.currentTimeMillis()-s+"ms");
+}
+	
+	
+public static void main(String[] args) throws Exception { new Main().run(); }
+	
+//output methods
+private void pn(Object o)
+{
+	out.println(o);
+}
+private void p(Object o)
+{
+	out.print(o);
+}
+
+
+
+//input methods
+		private byte[] inbuf = new byte[1024];
+	public int lenbuf = 0, ptrbuf = 0;
+	
+
+	private int readByte()
+	{
+		if(lenbuf == -1)throw new InputMismatchException();
+		if(ptrbuf >= lenbuf){
+			ptrbuf = 0;
+			try { lenbuf = is.read(inbuf); } catch (IOException e) { throw new InputMismatchException(); }
+			if(lenbuf <= 0)return -1;
+		}
+		return inbuf[ptrbuf++];
+	}
+	
+	
+	
+	
+	private boolean isSpaceChar(int c) { return !(c >= 33 && c <= 126); }
+	private int skip() { int b; while((b = readByte()) != -1 && isSpaceChar(b)); return b; }
+	
+	private double nd() { return Double.parseDouble(ns()); }
+	private char nc() { return (char)skip(); }
+	
+	private String ns()
+	{
+		int b = skip();
+		StringBuilder sb = new StringBuilder();
+		while(!(isSpaceChar(b))){ // when nextLine, (isSpaceChar(b) && b != ' ')
+			sb.appendCodePoint(b);
+			b = readByte();
+		}
+		return sb.toString();
+	}
+	
+	private char[] ns(int n)
+	{
+		char[] buf = new char[n];
+		int b = skip(), p = 0;
+		while(p < n && !(isSpaceChar(b))){
+			buf[p++] = (char)b;
+			b = readByte();
+		}
+		return n == p ? buf : Arrays.copyOf(buf, p);
+	}
+		
+	private char[][] nm(int n, int m)
+	{
+		char[][] map = new char[n][];
+		for(int i = 0;i < n;i++)map[i] = ns(m);
+		return map;
+	}
+	
+	private int[] na(int n)
+	{
+		int[] a = new int[n];
+		for(int i = 0;i < n;i++)a[i] = ni();
+		return a;
+	}
+	
+	private int ni()
+	{
+		int num = 0, b;
+		boolean minus = false;
+		while((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+		if(b == '-'){
+			minus = true;
+			b = readByte();
+		}
+		
+		while(true){
+			if(b >= '0' && b <= '9'){
+				num = num * 10 + (b - '0');
+			}else{
+				return minus ? -num : num;
+			}
+			b = readByte();
+		}
+	}
+	
+	private long nl()
+	{
+		long num = 0;
+		int b;
+		boolean minus = false;
+		while((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+		if(b == '-'){
+			minus = true;
+			b = readByte();
+		}
+		
+		while(true){
+			if(b >= '0' && b <= '9'){
+				num = num * 10 + (b - '0');
+			}else{
+				return minus ? -num : num;
+			}
+			b = readByte();
+		}
+	}
+	
+	private void tr(Object... o) { if(INPUT.length() > 0)System.out.println(Arrays.deepToString(o)); }
+	void watch(Object ... a) throws Exception{
+		int i=1;
+		print("watch starts :");
+		for(Object o : a ) {
+			//print(o);
+			boolean notfound = true;
+			if(o.getClass().isArray()){
+				
+				String type = o.getClass().getName().toString();
+				//print("type is "+type);
+				switch (type) {
+					case "[I":{
+						int[] test = (int[])o ;
+						print(i+" "+Arrays.toString(test));
+						break;
+					}
+					case "[[I":{
+						int[][] obj = (int[][])o;
+						
+						print(i+" "+Arrays.deepToString(obj));
+						break;
+					}
+					case "[J" : {
+						
+						long[] obj  = (long[])o ;
+						print(i+" "+Arrays.toString(obj));
+						break;
+					}
+					case "[[J": {
+						
+						long[][] obj = (long[][])o;
+						print(i+" "+Arrays.deepToString(obj));
+						break;
+					}
+					case "[D" :{
+						
+						double[] obj= (double[])o;
+						print(i+" "+Arrays.toString(obj));
+						break;
+					}
+					case "[[D" :{
+						
+						double[][] obj = (double[][])o;
+						print(i+" "+Arrays.deepToString(obj));
+						break;
+					}
+					case "[Ljava.lang.String": {
+						
+						String[] obj = (String[])o ;
+						print(i+" "+Arrays.toString(obj));
+						break;
+					}
+					case "[[Ljava.lang.String": {
+						
+						String[][] obj = (String[][])o ;
+						print(i+" "+Arrays.deepToString(obj));
+						break ; 
+					}
+					case "[C" :{
+						char[] obj = (char[])o ;
+						print(i+" "+Arrays.toString(obj));
+						break;
+					}
+					case "[[C" :{
+						
+						char[][] obj = (char[][])o;
+						print(i+" "+Arrays.deepToString(obj));
+						break;
+					}
+
+						
+				
+					default:{
+						print(i+" type not identified");
+						break;
+					}
+				}
+				notfound = false;
+				
+			}
+			if(o.getClass() == ArrayList.class){
+				print(i+" al: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == HashSet.class){
+				print(i+" hs: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == TreeSet.class){
+				print(i+" ts: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == TreeMap.class){
+				print(i+" tm: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == HashMap.class){
+				print(i+" hm: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == LinkedList.class){
+				print(i+" ll: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == PriorityQueue.class){
+				print(i+" pq : "+o);
+				notfound = false;
+			}
+			if(o.getClass() == pair.class){
+				print(i+" pq : "+o);
+				notfound = false;
+			}
+			
+			if(notfound){
+				print(i+" unknown: "+o);
+			}
+			i++;
+		}
+		print("watch ends ");
+	}
+
+}	
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

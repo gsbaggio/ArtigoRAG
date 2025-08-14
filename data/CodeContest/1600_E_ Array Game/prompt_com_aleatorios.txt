@@ -1,0 +1,214 @@
+CURRENT QUESTION:
+Alice and Bob are playing a game. They are given an array A of length N. The array consists of integers. They are building a sequence together. In the beginning, the sequence is empty. In one turn a player can remove a number from the left or right side of the array and append it to the sequence. The rule is that the sequence they are building must be strictly increasing. The winner is the player that makes the last move. Alice is playing first. Given the starting array, under the assumption that they both play optimally, who wins the game?
+
+Input
+
+The first line contains one integer N (1 ≤ N ≤ 2*10^5) - the length of the array A.
+
+The second line contains N integers A_1, A_2,...,A_N (0 ≤ A_i ≤ 10^9)
+
+Output
+
+The first and only line of output consists of one string, the name of the winner. If Alice won, print "Alice", otherwise, print "Bob".
+
+Examples
+
+Input
+
+
+1
+5
+
+
+Output
+
+
+Alice
+
+
+Input
+
+
+3
+5 4 5
+
+
+Output
+
+
+Alice
+
+
+Input
+
+
+6
+5 8 2 1 10 9
+
+
+Output
+
+
+Bob
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 290_A. Mysterious strings
+Tags: ['*special', 'implementation']
+Description: 
+
+Input
+
+The input contains a single integer a (1 ≤ a ≤ 40).
+
+Output
+
+Output a single string.
+
+Examples
+
+Input
+
+2
+
+
+Output
+
+Adams
+
+
+Input
+
+8
+
+
+Output
+
+Van Buren
+
+
+Input
+
+29
+
+
+Output
+
+Harding
+Difficulty: 7
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int main() {
+  char war[55][20] = {
+      "WASHINGTON", "ADAMS",     "JEFFERSON", "MADISON",    "MONROE",
+      "ADAMS",      "JACKSON",   "Van BUREN", "HARRISON",   "TYLER",
+      "POLK",       "TAYLOR",    "FILLMORE",  "PIERCE",     "BUCHANAN",
+      "LINCOLN",    "JOHNSON",   "GRANT",     "HAYES",      "GARFIELD",
+      "ARTHUR",     "CLEVELAND", "HARRISON",  "Cleveland",  "McKinley",
+      "ROOSEVELT",  "TAFT",      "WILSON",    "HARDING",    "COOLIDGE",
+      "HOOVER",     "ROOSEVELT", "TRUMAN",    "EISENHOWER", "KENNEDY",
+      "JOHNSON",    "NIXON",     "FORD",      "CARTER",     "REAGAN",
+      "BUSH",       "CLINTON"};
+  int num = 0;
+  cin >> num;
+  num--;
+  string cur = war[num];
+  istringstream iss(cur);
+  string in = "";
+  vector<string> print;
+  while (iss >> in) {
+    string p = "";
+    if (num == 24) {
+      p += in;
+      print.push_back(p);
+      continue;
+    }
+    for (int i = 0; i < in.size(); i++) {
+      if (i == 0)
+        p += in[i];
+      else if (in[i] >= 'A' && in[i] <= 'Z')
+        p += in[i] + 32;
+      else
+        p += in[i];
+    }
+    print.push_back(p);
+  }
+  for (int i = 0; i < print.size(); i++) {
+    if (i == 0)
+      cout << print[i];
+    else
+      cout << " " << print[i];
+  }
+  cout << endl;
+  return 0;
+}
+
+
+Example question 2:
+Name: karan-and-trees
+Tags: []
+Description: Karan performed poorly in the Capillary Java Hiring Challenge because he did not know the concept of trees. After the contest, he asks you to help him out in the questions.
+
+Given two nodes of a binary tree, you need to tell the lowest common ancestor.
+
+The root node is 1 and the general form of left node is 2n and of right node is 2n+1, where n is the parent.
+
+Input:
+
+The first line contains the number of test cases T. Each test case contains two space separated integers, the nodes.
+
+Output:
+
+The Lowest Common Ancestor, one per line.
+
+Constraints:
+
+1 ≤ T ≤ 1000
+
+1 ≤ a,b ≤ 10^18
+This is the last question in the contest. Hope you had a great time!!! Keep practising :)
+Thanks to Sri Patel for pointing out the language problem in the statement. Any inconvenience is regretted.
+
+SAMPLE INPUT
+1
+2 3
+
+SAMPLE OUTPUT
+1
+Difficulty: 0
+Solutions: '''
+# Read input from stdin and provide input before running code
+
+name = raw_input('What is your name?\n')
+print 'Hi, %s.' % name
+'''
+#print 'Hello World!'
+
+t = int(raw_input())
+for i in range(t):
+    a,b = map(int,raw_input().split())
+    while(a != b):
+        if a > b:
+            if a % 2==0:
+                a = a/2
+            else:
+                a = (a -1)/2
+        elif b > a:
+            if b % 2==0:
+                b=b/2
+            else:
+                b = (b-1)/2
+    print a
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

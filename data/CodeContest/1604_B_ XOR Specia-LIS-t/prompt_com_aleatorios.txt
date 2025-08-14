@@ -1,0 +1,575 @@
+CURRENT QUESTION:
+YouKn0wWho has an integer sequence a_1, a_2, … a_n. Now he will split the sequence a into one or more consecutive subarrays so that each element of a belongs to exactly one subarray. Let k be the number of resulting subarrays, and h_1, h_2, …, h_k be the lengths of the longest increasing subsequences of corresponding subarrays.
+
+For example, if we split [2, 5, 3, 1, 4, 3, 2, 2, 5, 1] into [2, 5, 3, 1, 4], [3, 2, 2, 5], [1], then h = [3, 2, 1].
+
+YouKn0wWho wonders if it is possible to split the sequence a in such a way that the [bitwise XOR](https://en.wikipedia.org/wiki/Bitwise_operation#XOR) of h_1, h_2, …, h_k is equal to 0. You have to tell whether it is possible.
+
+The longest increasing subsequence (LIS) of a sequence b_1, b_2, …, b_m is the longest sequence of valid indices i_1, i_2, …, i_k such that i_1 < i_2 < … < i_k and b_{i_1} < b_{i_2} < … < b_{i_k}. For example, the LIS of [2, 5, 3, 3, 5] is [2, 3, 5], which has length 3.
+
+An array c is a subarray of an array b if c can be obtained from b by deletion of several (possibly, zero or all) elements from the beginning and several (possibly, zero or all) elements from the end.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10 000) — the number of test cases.
+
+The first line of each test case contains a single integer n (2 ≤ n ≤ 10^5).
+
+The second line of each test case contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 10^9).
+
+It is guaranteed that the sum of n over all test cases doesn't exceed 3 ⋅ 10^5.
+
+Output
+
+For each test case, print "YES" (without quotes) if it is possible to split into subarrays in the desired way, print "NO" (without quotes) otherwise. You can print each letter in any register (upper or lower).
+
+Example
+
+Input
+
+
+4
+7
+1 3 4 2 2 1 5
+3
+1 3 4
+5
+1 3 2 4 2
+4
+4 3 2 1
+
+
+Output
+
+
+YES
+NO
+YES
+YES
+
+Note
+
+In the first test case, YouKn0wWho can split the sequence in the following way: [1, 3, 4], [2, 2], [1, 5]. This way, the LIS lengths are h = [3, 1, 2], and the bitwise XOR of the LIS lengths is 3 ⊕ 1 ⊕ 2 = 0.
+
+In the second test case, it can be shown that it is impossible to split the sequence into subarrays that will satisfy the condition.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 180_D. Name
+Tags: ['greedy', 'strings']
+Description: Everything got unclear to us in a far away constellation Tau Ceti. Specifically, the Taucetians choose names to their children in a very peculiar manner.
+
+Two young parents abac and bbad think what name to give to their first-born child. They decided that the name will be the permutation of letters of string s. To keep up with the neighbours, they decided to call the baby so that the name was lexicographically strictly larger than the neighbour's son's name t.
+
+On the other hand, they suspect that a name tax will be introduced shortly. According to it, the Taucetians with lexicographically larger names will pay larger taxes. That's the reason abac and bbad want to call the newborn so that the name was lexicographically strictly larger than name t and lexicographically minimum at that.
+
+The lexicographical order of strings is the order we are all used to, the "dictionary" order. Such comparison is used in all modern programming languages to compare strings. Formally, a string p of length n is lexicographically less than string q of length m, if one of the two statements is correct:
+
+  * n < m, and p is the beginning (prefix) of string q (for example, "aba" is less than string "abaa"), 
+  * p1 = q1, p2 = q2, ..., pk - 1 = qk - 1, pk < qk for some k (1 ≤ k ≤ min(n, m)), here characters in strings are numbered starting from 1. 
+
+
+
+Write a program that, given string s and the heighbours' child's name t determines the string that is the result of permutation of letters in s. The string should be lexicographically strictly more than t and also, lexicographically minimum.
+
+Input
+
+The first line contains a non-empty string s (1 ≤ |s| ≤ 5000), where |s| is its length. The second line contains a non-empty string t (1 ≤ |t| ≤ 5000), where |t| is its length. Both strings consist of lowercase Latin letters.
+
+Output
+
+Print the sought name or -1 if it doesn't exist.
+
+Examples
+
+Input
+
+aad
+aac
+
+
+Output
+
+aad
+
+
+Input
+
+abad
+bob
+
+
+Output
+
+daab
+
+
+Input
+
+abc
+defg
+
+
+Output
+
+-1
+
+
+Input
+
+czaaab
+abcdef
+
+
+Output
+
+abczaa
+
+Note
+
+In the first sample the given string s is the sought one, consequently, we do not need to change the letter order there.
+Difficulty: 10
+Solutions: import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class D {
+
+	final int MOD = 1000000007;
+	final double eps = 1e-12;
+
+	public D () throws IOException {
+		char [] S = sc.nextChars();
+		char [] T = sc.nextChars();
+		
+		start();
+		
+		int [] C = new int [200];
+		for (char s : S)
+			++C[s];
+
+		
+		int N = Math.min(S.length, T.length);
+		out: for (int n = N; n >= 0; --n) {
+			int [] Q = Arrays.copyOf(C, 200);
+			char [] D = new char [S.length];
+			for (int i = 0; i < n; ++i) {
+				char z = T[i];
+				if (Q[z] > 0) {
+					--Q[z];
+					D[i] = z;
+				} else
+					continue out;
+			}
+			
+			boolean good = false;
+			if (n == T.length) {
+				if (S.length > n) good = true;
+				else continue out;
+			}
+
+			if (n < T.length) {
+				int y = T[n];
+				for (int x = (y+1); x < 200; ++x)
+					if (Q[x] > 0) {
+						--Q[x];
+						D[n] = (char)x;
+						good = true;
+						break;
+					}
+				if (!good) continue out;
+				++n;
+			}
+			
+			for (int i = n, j = 0; i < S.length; ++i) {
+				while (Q[j] == 0) ++j;
+				D[i] = (char)j; --Q[j];
+			}
+			
+			exit(new String(D));
+				
+		}
+		exit(-1);
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////
+	
+	static MyScanner sc;
+	
+	static void print (Object... a) {
+		StringBuffer b = new StringBuffer();
+		for (Object o : a)
+			b.append(" ").append(o);
+		System.out.println(b.toString().trim());
+	}
+
+	static void exit (Object... a) {
+		print(a);
+		System.out.flush();
+		exit();
+	}
+
+	static void exit () {
+		System.err.println("------------------");
+		System.err.println("Time: " + (millis() - t) / 1000.0);
+		System.exit(0);
+	}
+	
+	static class MyScanner {
+		String next() throws IOException {
+			newLine();
+			return line[index++];
+		}
+		
+		char [] nextChars() throws IOException {
+			return next().toCharArray();
+		}
+		
+		double nextDouble() throws IOException {
+			return Double.parseDouble(next());
+		}
+		
+		int nextInt() throws IOException {
+			return Integer.parseInt(next());
+		}
+		
+		long nextLong() throws IOException {
+			return Long.parseLong(next());
+		}
+		
+		String nextLine() throws IOException {
+			line = null;
+			return r.readLine();
+		}
+		
+		String [] nextStrings() throws IOException {
+			line = null;
+			return r.readLine().split(" ");
+		}
+		
+		int [] nextInts() throws IOException {
+			String [] L = nextStrings();
+			int [] res = new int [L.length];
+			for (int i = 0; i < L.length; ++i)
+				res[i] = Integer.parseInt(L[i]);
+			return res;
+		}
+		
+		long [] nextLongs() throws IOException {
+			String [] L = nextStrings();
+			long [] res = new long [L.length];
+			for (int i = 0; i < L.length; ++i)
+				res[i] = Long.parseLong(L[i]);
+			return res;
+		}
+
+		boolean eol() {
+			return index == line.length;
+		}
+
+		//////////////////////////////////////////////
+		
+		private final BufferedReader r;
+
+		MyScanner () throws IOException {
+			this(new BufferedReader(new InputStreamReader(System.in)));
+		}
+		
+		MyScanner(BufferedReader r) throws IOException { 
+			this.r = r;
+		}
+		
+		private String [] line;
+		private int index;
+
+		private void newLine() throws IOException {
+			if (line == null || eol()) {
+				line = r.readLine().split(" ");
+				index = 0;
+			}
+		}		
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////
+	
+	public static void main(String[] args) throws IOException {
+		run();
+		exit();
+	}
+
+	static void start() {
+		t = millis();
+	}
+
+	static void run () throws IOException {
+		sc = new MyScanner ();
+		new D();
+	}
+
+	static long t;
+	
+	static long millis() {
+		return System.currentTimeMillis();
+	}	
+}
+
+
+Example question 2:
+Name: 1495_C. Garden of the Sun
+Tags: ['constructive algorithms', 'graphs']
+Description: There are many sunflowers in the Garden of the Sun.
+
+Garden of the Sun is a rectangular table with n rows and m columns, where the cells of the table are farmlands. All of the cells grow a sunflower on it. Unfortunately, one night, the lightning stroke some (possibly zero) cells, and sunflowers on those cells were burned into ashes. In other words, those cells struck by the lightning became empty. Magically, any two empty cells have no common points (neither edges nor corners).
+
+Now the owner wants to remove some (possibly zero) sunflowers to reach the following two goals: 
+
+  * When you are on an empty cell, you can walk to any other empty cell. In other words, those empty cells are connected. 
+  * There is exactly one simple path between any two empty cells. In other words, there is no cycle among the empty cells. 
+
+
+
+You can walk from an empty cell to another if they share a common edge.
+
+Could you please give the owner a solution that meets all her requirements?
+
+Note that you are not allowed to plant sunflowers. You don't need to minimize the number of sunflowers you remove. It can be shown that the answer always exists.
+
+Input
+
+The input consists of multiple test cases. The first line contains a single integer t (1≤ t≤ 10^4) — the number of test cases. The description of the test cases follows.
+
+The first line contains two integers n, m (1 ≤ n,m ≤ 500) — the number of rows and columns. 
+
+Each of the next n lines contains m characters. Each character is either 'X' or '.', representing an empty cell and a cell that grows a sunflower, respectively.
+
+It is guaranteed that the sum of n ⋅ m for all test cases does not exceed 250 000.
+
+Output
+
+For each test case, print n lines. Each should contain m characters, representing one row of the table. Each character should be either 'X' or '.', representing an empty cell and a cell with a sunflower, respectively.
+
+If there are multiple answers, you can print any. It can be shown that the answer always exists.
+
+Example
+
+Input
+
+
+5
+3 3
+X.X
+...
+X.X
+4 4
+....
+.X.X
+....
+.X.X
+5 5
+.X...
+....X
+.X...
+.....
+X.X.X
+1 10
+....X.X.X.
+2 2
+..
+..
+
+
+Output
+
+
+XXX
+..X
+XXX
+XXXX
+.X.X
+.X..
+.XXX
+.X...
+.XXXX
+.X...
+.X...
+XXXXX
+XXXXXXXXXX
+..
+..
+
+Note
+
+Let's use (x,y) to describe the cell on x-th row and y-th column.
+
+In the following pictures white, yellow, and blue cells stand for the cells that grow a sunflower, the cells lightning stroke, and the cells sunflower on which are removed, respectively.
+
+<image>
+
+In the first test case, one possible solution is to remove sunflowers on (1,2), (2,3) and (3 ,2). 
+
+<image>
+
+Another acceptable solution is to remove sunflowers on (1,2), (2,2) and (3,2). 
+
+<image>
+
+This output is considered wrong because there are 2 simple paths between any pair of cells (there is a cycle). For example, there are 2 simple paths between (1,1) and (3,3).
+
+  1. (1,1)→ (1,2)→ (1,3)→ (2,3)→ (3,3)
+
+  2. (1,1)→ (2,1)→ (3,1)→ (3,2)→ (3,3) 
+
+
+
+<image>
+
+This output is considered wrong because you can't walk from (1,1) to (3,3).
+Difficulty: 9
+Solutions: import sys, os
+
+if os.environ['USERNAME']=='kissz':
+    inp=open('in.txt','r').readline
+    def debug(*args):
+        print(*args,file=sys.stderr)
+else:
+    inp=sys.stdin.readline    
+    def debug(*args):
+        pass
+
+# SCRIPT STARTS HERE
+
+for _ in range(int(inp())):
+    n,m=map(int,inp().split())
+    R=[]
+    for i in range(n):
+        R+=[list(inp().strip())]
+    n_=((n-1)//3)*3+1
+    n__=n-n_
+    for i in range(n_):
+        if i%3==0:
+            R[i]=['X']*m
+        elif i%3==1:
+            if 'X' in R[i]:
+                j=R[i].index('X')
+                R[i+1][j]='X'
+            elif 'X' in R[i+1]:
+                j=R[i+1].index('X')
+                R[i][j]='X'
+            else:
+                R[i][0]='X'
+                R[i+1][0]='X'
+    if n__==2:
+        for j in range(m):
+            if R[-1][j]=='X': R[-2][j]='X'
+    for i in range(n):
+        print(''.join(R[i]))
+
+
+Example question 3:
+Name: 603_B. Moodular Arithmetic
+Tags: ['combinatorics', 'dfs and similar', 'dsu', 'math', 'number theory']
+Description: As behooves any intelligent schoolboy, Kevin Sun is studying psycowlogy, cowculus, and cryptcowgraphy at the Bovinia State University (BGU) under Farmer Ivan. During his Mathematics of Olympiads (MoO) class, Kevin was confronted with a weird functional equation and needs your help. For two fixed integers k and p, where p is an odd prime number, the functional equation states that 
+
+<image>
+
+for some function <image>. (This equation should hold for any integer x in the range 0 to p - 1, inclusive.)
+
+It turns out that f can actually be many different functions. Instead of finding a solution, Kevin wants you to count the number of distinct functions f that satisfy this equation. Since the answer may be very large, you should print your result modulo 109 + 7.
+
+Input
+
+The input consists of two space-separated integers p and k (3 ≤ p ≤ 1 000 000, 0 ≤ k ≤ p - 1) on a single line. It is guaranteed that p is an odd prime number.
+
+Output
+
+Print a single integer, the number of distinct functions f modulo 109 + 7.
+
+Examples
+
+Input
+
+3 2
+
+
+Output
+
+3
+
+
+Input
+
+5 4
+
+
+Output
+
+25
+
+Note
+
+In the first sample, p = 3 and k = 2. The following functions work: 
+
+  1. f(0) = 0, f(1) = 1, f(2) = 2. 
+  2. f(0) = 0, f(1) = 2, f(2) = 1. 
+  3. f(0) = f(1) = f(2) = 0. 
+Difficulty: 8
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int INF = (1LL << 30) - 1;
+const long long int LINF = (1LL << 62) - 1;
+const int MOD = (int)1e9 + 7;
+const int NMAX = (int)1e6;
+int P, K;
+int root[NMAX + 5];
+unordered_set<int> M;
+int expLog(int B, int E) {
+  int Q = B, sol = 1;
+  for (int i = E; i; i /= 2) {
+    if (i & 1) sol = (sol * 1LL * Q) % MOD;
+    Q = (Q * 1LL * Q) % MOD;
+  }
+  return sol;
+}
+int find(int x) {
+  if (x != root[x]) root[x] = find(root[x]);
+  return root[x];
+}
+void unite(int x, int y) {
+  x = find(x), y = find(y);
+  root[y] = x;
+}
+int main() {
+  cin.sync_with_stdio(false);
+  scanf("%d%d", &P, &K);
+  if (K == 0) {
+    printf("%d\n", expLog(P, P - 1));
+    return 0;
+  } else if (K == 1) {
+    printf("%d\n", expLog(P, P));
+    return 0;
+  }
+  for (int i = 1; i <= P - 1; i++) root[i] = i;
+  for (int i = 1, j; i <= P - 1; i++) {
+    j = (K * 1LL * i) % P;
+    unite(i, j);
+  }
+  for (int i = 1; i <= P - 1; i++) M.insert(find(i));
+  int sol = expLog(P, (int)M.size());
+  printf("%d\n", sol);
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

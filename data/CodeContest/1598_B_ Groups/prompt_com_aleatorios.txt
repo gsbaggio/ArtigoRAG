@@ -1,0 +1,509 @@
+CURRENT QUESTION:
+n students attended the first meeting of the Berland SU programming course (n is even). All students will be divided into two groups. Each group will be attending exactly one lesson each week during one of the five working days (Monday, Tuesday, Wednesday, Thursday and Friday), and the days chosen for the groups must be different. Furthermore, both groups should contain the same number of students.
+
+Each student has filled a survey in which they told which days of the week are convenient for them to attend a lesson, and which are not. 
+
+Your task is to determine if it is possible to choose two different week days to schedule the lessons for the group (the first group will attend the lesson on the first chosen day, the second group will attend the lesson on the second chosen day), and divide the students into two groups, so the groups have equal sizes, and for each student, the chosen lesson day for their group is convenient.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10^4) — the number of testcases.
+
+Then the descriptions of t testcases follow.
+
+The first line of each testcase contains one integer n (2 ≤ n ≤ 1 000) — the number of students.
+
+The i-th of the next n lines contains 5 integers, each of them is 0 or 1. If the j-th integer is 1, then the i-th student can attend the lessons on the j-th day of the week. If the j-th integer is 0, then the i-th student cannot attend the lessons on the j-th day of the week. 
+
+Additional constraints on the input: for each student, at least one of the days of the week is convenient, the total number of students over all testcases doesn't exceed 10^5.
+
+Output
+
+For each testcase print an answer. If it's possible to divide the students into two groups of equal sizes and choose different days for the groups so each student can attend the lesson in the chosen day of their group, print "YES" (without quotes). Otherwise, print "NO" (without quotes). 
+
+Example
+
+Input
+
+
+2
+4
+1 0 0 1 0
+0 1 0 0 1
+0 0 0 1 0
+0 1 0 1 0
+2
+0 0 0 1 0
+0 0 0 1 0
+
+
+Output
+
+
+YES
+NO
+
+Note
+
+In the first testcase, there is a way to meet all the constraints. For example, the first group can consist of the first and the third students, they will attend the lessons on Thursday (the fourth day); the second group can consist of the second and the fourth students, and they will attend the lessons on Tuesday (the second day).
+
+In the second testcase, it is impossible to divide the students into groups so they attend the lessons on different days.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: p01602 Parentheses
+Tags: ['']
+Description: ()
+
+Problem Statement
+
+There is a string S. Initially, S is an empty string.
+Perform the following processing in order of n.
+
+* Add x_i p_i (=" (" or") ") to the end of S.
+
+
+
+After processing, determine if S is a well-balanced string.
+
+"The string is balanced" is defined as follows.
+
+* The empty string is well-balanced.
+* For balanced strings a and b, a + b (+ represents a concatenation of strings) is balanced.
+* For a balanced string a, "(" + a + ")" is balanced.
+
+Constraints
+
+* 1 ≤ n ≤ 1,000
+* 1 ≤ x_i ≤ 10 ^ 6
+* p_i is "(" or ")"
+
+Input
+
+Input follows the following format. All given numbers are integers.
+
+
+n
+p_1 x_1
+.. ..
+p_n x_n
+
+Output
+
+Output "YES" if balanced, otherwise output "NO" on one line.
+
+Examples
+
+Input
+
+3
+( 5
+) 4
+) 1
+
+
+Output
+
+YES
+
+
+Input
+
+5
+( 2
+) 2
+( 3
+) 1
+) 2
+
+
+Output
+
+YES
+
+
+Input
+
+2
+) 1
+( 1
+
+
+Output
+
+NO
+Difficulty: 0
+Solutions: #include <iostream>
+
+using namespace std;
+
+int main(){
+
+    long long int n,a=0,tmp;
+    char p;
+    cin>>n;
+    for(int i=0;i<n;i++){
+        cin>>p>>tmp;
+        if(p=='('){
+            a+=tmp;
+        }else{
+            a-=tmp;
+        }
+        if(a<0){
+             cout<<"NO"<<endl;
+             return 0;
+        }
+    }
+    if(a==0){
+        cout<<"YES"<<endl;
+    }else{
+        cout<<"NO"<<endl;
+    }
+}
+
+
+Example question 2:
+Name: p01339 Alien's Counting
+Tags: ['']
+Description: Natsuki and her friends were taken to the space by an alien and made friends with a lot of aliens. During the space travel, she discovered that aliens’ hands were often very different from humans’. Generally speaking, in a kind of aliens, there are N fingers and M bend rules on a hand. Each bend rule describes that a finger A always bends when a finger B bends. However, this rule does not always imply that the finger B bends when the finger A bends.
+
+When she were counting numbers with the fingers, she was anxious how many numbers her alien friends can count with the fingers. However, because some friends had too complicated rule sets, she could not calculate those. Would you write a program for her?
+
+
+
+Input
+
+N M
+S1 D1
+S2 D2
+.
+.
+.
+SM DM
+
+
+The first line contains two integers N and M (1 ≤ N ≤ 1000, 0 ≤ M ≤ 1000) in this order. The following M lines mean bend rules. Each line contains two integers Si and Di in this order, which mean that the finger Di always bends when the finger Si bends. Any finger appears at most once in S.
+
+Output
+
+Calculate how many numbers her alien friends can count with the fingers. Print the answer modulo 1000000007 in a line.
+
+Examples
+
+Input
+
+5 4
+2 3
+3 4
+4 3
+5 4
+
+
+Output
+
+10
+
+
+Input
+
+5 5
+1 2
+2 3
+3 4
+4 5
+5 1
+
+
+Output
+
+2
+
+
+Input
+
+5 0
+
+
+Output
+
+32
+Difficulty: 0
+Solutions: #include <iostream>
+#include <set>
+#include <vector>
+#include <string>
+#include <map>
+#include <algorithm>
+#include <cstring>
+
+#define REP(i,n) for(int i=0;i<(int)(n);i++)
+#define ALL(x) begin(x),end(x)
+
+using namespace std;
+
+#define MAX_V 1024
+
+vector<int> g[MAX_V], rg[MAX_V], vs;
+bool used[MAX_V];
+int cmp[MAX_V];
+
+void add_edge(int from, int to) {
+  g[from].push_back(to);
+  rg[to].push_back(from);
+}
+
+void dfs(int v) {
+  used[v] = true;
+  for (int i : g[v]) if (!used[i]) dfs(i);
+  vs.push_back(v);
+}
+
+void rdfs(int v, int k) {
+  used[v] = true; cmp[v] = k;
+  for (int i : rg[v]) if (!used[i]) rdfs(i, k);
+}
+
+int scc(int V) {
+  memset(used, 0, sizeof(used));
+  vs.clear();
+  REP(v, V) if (!used[v]) dfs(v);
+  memset(used, 0, sizeof(used));
+  reverse(ALL(vs));
+  int k = 0;
+  for (int i : vs) if (!used[i]) rdfs(i, k++);
+  return k;
+}
+
+vector<vector<int>> buildGraph(int V, int K) {
+  vector<set<int>> s(K);
+  vector<vector<int>> res(K,vector<int>(K));
+  REP(i,V) for (int j : g[i]) s[cmp[i]].insert(cmp[j]);
+  REP(i,K) for (int j : s[i]) ++res[i][j];
+  return res;
+}
+
+void dfs2(vector<vector<int>>& dag, int i, vector<int64_t>& dp, vector<bool>& vis) {
+  int n=dag.size();
+  vis[i] = true;
+  REP(j,n) {
+    if (dag[j][i]==0)continue;
+    if (j==i) continue;
+    if (!vis[j])
+      dfs2(dag, j, dp, vis);
+    dp[i] *= dp[j];
+    dp[i] %= 1000000007;
+  }
+  ++dp[i];
+  dp[i] %= 1000000007;
+}
+
+int main() {
+  int n,m;
+  cin>>n>>m;
+  REP(i,m){
+    int s,d;
+    cin>>s>>d;
+    --s;--d;
+    add_edge(s,d);
+  }
+  int k = scc(n);
+  auto dag = buildGraph(n, k);
+  vector<int64_t> dp(k, 1);
+  vector<bool> vis(k);
+  int64_t sum = 1;
+  REP(i,k) {
+    if(!vis[i]) {
+      bool ok = true;
+      REP(j,k){
+        if(j==i)continue;
+        if(dag[i][j] != 0){
+          ok=false;
+          break;
+        }
+      }
+      if (ok) {
+        dfs2(dag, i, dp, vis);
+        sum *= dp[i];
+        sum %= 1000000007;
+      }
+    }
+  }
+  cout<<sum<<endl;
+  return 0;
+}
+
+Example question 3:
+Name: 1271_E. Common Number
+Tags: ['binary search', 'combinatorics', 'dp', 'math']
+Description: At first, let's define function f(x) as follows: $$$ \begin{matrix} f(x) & = & \left\{ \begin{matrix} x/2 & \mbox{if } x  is even \\\ x - 1 & \mbox{otherwise } \end{matrix} \right. \end{matrix} $$$
+
+We can see that if we choose some value v and will apply function f to it, then apply f to f(v), and so on, we'll eventually get 1. Let's write down all values we get in this process in a list and denote this list as path(v). For example, path(1) = [1], path(15) = [15, 14, 7, 6, 3, 2, 1], path(32) = [32, 16, 8, 4, 2, 1].
+
+Let's write all lists path(x) for every x from 1 to n. The question is next: what is the maximum value y such that y is contained in at least k different lists path(x)?
+
+Formally speaking, you need to find maximum y such that \left| \{ x ~|~ 1 ≤ x ≤ n, y ∈ path(x) \} \right| ≥ k.
+
+Input
+
+The first line contains two integers n and k (1 ≤ k ≤ n ≤ 10^{18}).
+
+Output
+
+Print the only integer — the maximum value that is contained in at least k paths.
+
+Examples
+
+Input
+
+
+11 3
+
+
+Output
+
+
+5
+
+
+Input
+
+
+11 6
+
+
+Output
+
+
+4
+
+
+Input
+
+
+20 20
+
+
+Output
+
+
+1
+
+
+Input
+
+
+14 5
+
+
+Output
+
+
+6
+
+
+Input
+
+
+1000000 100
+
+
+Output
+
+
+31248
+
+Note
+
+In the first example, the answer is 5, since 5 occurs in path(5), path(10) and path(11).
+
+In the second example, the answer is 4, since 4 occurs in path(4), path(5), path(8), path(9), path(10) and path(11).
+
+In the third example n = k, so the answer is 1, since 1 is the only number occuring in all paths for integers from 1 to 20.
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int main() {
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  long long n, k;
+  cin >> n >> k;
+  auto count = [&](long long x) {
+    if (x % 2 == 1) {
+      long long left = x, right = x;
+      long long ans = 0;
+      while (left <= n) {
+        ans += min(right, n) - left + 1;
+        left = left * 2;
+        right = right * 2 + 1;
+      }
+      return ans;
+    } else {
+      long long left = x, right = x + 1;
+      long long ans = 0;
+      while (left <= n) {
+        ans += min(right, n) - left + 1;
+        left = left * 2;
+        right = right * 2 + 1;
+      }
+      return ans;
+    }
+  };
+  cerr << count(2) << endl;
+  cerr << count(3) << endl;
+  long long ans = 1;
+  {
+    long long low = 1, high = n % 2 == 0 ? n - 1 : n;
+    while (low <= high) {
+      long long mid = (low + high) / 2;
+      if (mid % 2 == 0) {
+        if (low < mid) {
+          mid--;
+        } else {
+          mid++;
+        }
+      }
+      long long c = count(mid);
+      if (c >= k) {
+        ans = max(ans, mid);
+        low = mid + 2;
+      } else {
+        high = mid - 2;
+      }
+    }
+  }
+  {
+    long long low = 2, high = n % 2 == 0 ? n : n - 1;
+    while (low <= high) {
+      long long mid = (low + high) / 2;
+      if (mid % 2 == 1) {
+        if (low < mid) {
+          mid--;
+        } else {
+          mid++;
+        }
+      }
+      long long c = count(mid);
+      if (c >= k) {
+        ans = max(ans, mid);
+        low = mid + 2;
+      } else {
+        high = mid - 2;
+      }
+    }
+  }
+  cout << ans << '\n';
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

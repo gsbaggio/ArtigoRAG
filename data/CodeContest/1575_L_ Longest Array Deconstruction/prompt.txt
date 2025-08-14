@@ -1,0 +1,562 @@
+CURRENT QUESTION:
+Mr. Chanek gives you a sequence a indexed from 1 to n. Define f(a) as the number of indices where a_i = i. 
+
+You can pick an element from the current sequence and remove it, then concatenate the remaining elements together. For example, if you remove the 3-rd element from the sequence [4, 2, 3, 1], the resulting sequence will be [4, 2, 1]. 
+
+You want to remove some elements from a in order to maximize f(a), using zero or more operations. Find the largest possible f(a).
+
+Input
+
+The first line contains one integer n (1 ≤ n ≤ 2 ⋅ 10^5) — the initial length of the sequence.
+
+The second line contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 2 ⋅ 10^5) — the initial sequence a.
+
+Output
+
+Output an integer denoting the largest f(a) that can be obtained by doing zero or more operations.
+
+Examples
+
+Input
+
+
+7
+2 1 4 2 5 3 7
+
+
+Output
+
+
+3
+
+
+Input
+
+
+4
+4 2 3 1
+
+
+Output
+
+
+2
+
+Note
+
+In the first example, f(A) = 3 by doing the following operations.
+
+[2,1,4,2,5,3,7] → [2,1,2,5,3,7] → [1,2,5,3,7] → [1,2,5,3] → [1,2,3]
+
+In the second example, f(A) = 2 and no additional operation is needed.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.83):
+Name: p03413 AtCoder Regular Contest 092 - Both Sides Merger
+Tags: ['']
+Description: You have an integer sequence of length N: a_1, a_2, ..., a_N.
+
+You repeatedly perform the following operation until the length of the sequence becomes 1:
+
+* First, choose an element of the sequence.
+* If that element is at either end of the sequence, delete the element.
+* If that element is not at either end of the sequence, replace the element with the sum of the two elements that are adjacent to it. Then, delete those two elements.
+
+
+
+You would like to maximize the final element that remains in the sequence.
+
+Find the maximum possible value of the final element, and the way to achieve it.
+
+Constraints
+
+* All input values are integers.
+* 2 \leq N \leq 1000
+* |a_i| \leq 10^9
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N
+a_1 a_2 ... a_N
+
+
+Output
+
+* In the first line, print the maximum possible value of the final element in the sequence.
+* In the second line, print the number of operations that you perform.
+* In the (2+i)-th line, if the element chosen in the i-th operation is the x-th element from the left in the sequence at that moment, print x.
+* If there are multiple ways to achieve the maximum value of the final element, any of them may be printed.
+
+Examples
+
+Input
+
+5
+1 4 3 7 5
+
+
+Output
+
+11
+3
+1
+4
+2
+
+
+Input
+
+4
+100 100 -1 100
+
+
+Output
+
+200
+2
+3
+1
+
+
+Input
+
+6
+-1 -2 -3 1 2 3
+
+
+Output
+
+4
+3
+2
+1
+2
+
+
+Input
+
+9
+1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000
+
+
+Output
+
+5000000000
+4
+2
+2
+2
+2
+Difficulty: 0
+Solutions: def examC():
+    ans = 0
+    print(ans)
+    return
+
+def examD():
+    ans = 0
+    print(ans)
+    return
+
+def examE():
+    N = I()
+    A = LI()
+    ans = -inf
+
+    S = [0]*(N+1)
+    fr = [-1]*N
+    best = -1
+
+    for i,a in enumerate(A):
+        S[i] = a
+        for j in range(i):
+            if ((i-j)%2==0):
+                if (S[j]+a>S[i]):
+                    fr[i] = j
+                    S[i] = S[j] + a
+            if (S[i]>ans):
+                ans = S[i]
+                best = i
+    #print(best)
+    V = []
+    for i in range(best+1,N)[::-1]:
+        V.append(i+1)
+    i = best
+    while(fr[i]>=0):
+        f = fr[i]
+        #print(i,f)
+        while(f<i):
+            V.append(1+(i+f)//2)
+            i -= 2
+    for _ in range(i):
+        V.append(1)
+
+    print(ans)
+    print(len(V))
+    for v in V:
+        print(v)
+    return
+
+def examF():
+    ans = 0
+    print(ans)
+    return
+
+from decimal import getcontext,Decimal as dec
+import sys,bisect,itertools,heapq,math,random
+from copy import deepcopy
+from heapq import heappop,heappush,heapify
+from collections import Counter,defaultdict,deque
+read = sys.stdin.buffer.read
+readline = sys.stdin.buffer.readline
+readlines = sys.stdin.buffer.readlines
+def I(): return int(input())
+def LI(): return list(map(int,sys.stdin.readline().split()))
+def DI(): return dec(input())
+def LDI(): return list(map(dec,sys.stdin.readline().split()))
+def LSI(): return list(map(str,sys.stdin.readline().split()))
+def LS(): return sys.stdin.readline().split()
+def SI(): return sys.stdin.readline().strip()
+global mod,mod2,inf,alphabet,_ep
+mod = 10**9 + 7
+mod2 = 998244353
+inf = 10**18
+_ep = dec("0.000000000001")
+alphabet = [chr(ord('a') + i) for i in range(26)]
+alphabet_convert = {chr(ord('a') + i): i for i in range(26)}
+
+getcontext().prec = 28
+
+sys.setrecursionlimit(10**7)
+
+if __name__ == '__main__':
+    examE()
+
+"""
+142
+12 9 1445 0 1
+asd dfg hj o o
+aidn
+"""
+
+Similar question 2 (Similarity score: 0.79):
+Name: 1272_D. Remove One Element
+Tags: ['brute force', 'dp']
+Description: You are given an array a consisting of n integers.
+
+You can remove at most one element from this array. Thus, the final length of the array is n-1 or n.
+
+Your task is to calculate the maximum possible length of the strictly increasing contiguous subarray of the remaining array.
+
+Recall that the contiguous subarray a with indices from l to r is a[l ... r] = a_l, a_{l + 1}, ..., a_r. The subarray a[l ... r] is called strictly increasing if a_l < a_{l+1} < ... < a_r.
+
+Input
+
+The first line of the input contains one integer n (2 ≤ n ≤ 2 ⋅ 10^5) — the number of elements in a.
+
+The second line of the input contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^9), where a_i is the i-th element of a.
+
+Output
+
+Print one integer — the maximum possible length of the strictly increasing contiguous subarray of the array a after removing at most one element.
+
+Examples
+
+Input
+
+
+5
+1 2 5 3 4
+
+
+Output
+
+
+4
+
+
+Input
+
+
+2
+1 2
+
+
+Output
+
+
+2
+
+
+Input
+
+
+7
+6 5 4 3 2 4 3
+
+
+Output
+
+
+2
+
+Note
+
+In the first example, you can delete a_3=5. Then the resulting array will be equal to [1, 2, 3, 4] and the length of its largest increasing subarray will be equal to 4.
+Difficulty: 10
+Solutions: # ------------------- fast io --------------------
+import os
+import sys
+from io import BytesIO, IOBase
+ 
+BUFSIZE = 8192
+ 
+class FastIO(IOBase):
+    newlines = 0
+    def __init__(self, file):
+        self._fd = file.fileno()
+        self.buffer = BytesIO()
+        self.writable = "x" in file.mode or "r" not in file.mode
+        self.write = self.buffer.write if self.writable else None
+ 
+    def read(self):
+        while True:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            if not b:
+                break
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines = 0
+        return self.buffer.read()
+ 
+    def readline(self):
+        while self.newlines == 0:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            self.newlines = b.count(b"\n") + (not b)
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines -= 1
+        return self.buffer.readline()
+ 
+    def flush(self):
+        if self.writable:
+            os.write(self._fd, self.buffer.getvalue())
+            self.buffer.truncate(0), self.buffer.seek(0)
+ 
+ 
+class IOWrapper(IOBase):
+    def __init__(self, file):
+        self.buffer = FastIO(file)
+        self.flush = self.buffer.flush
+        self.writable = self.buffer.writable
+        self.write = lambda s: self.buffer.write(s.encode("ascii"))
+        self.read = lambda: self.buffer.read().decode("ascii")
+        self.readline = lambda: self.buffer.readline().decode("ascii")
+ 
+ 
+sys.stdin, sys.stdout = IOWrapper(sys.stdin), IOWrapper(sys.stdout)
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+ 
+# ------------------- fast io --------------------
+
+n=int(input())
+vals=list(map(int,input().split()))
+#find the continous increasing
+chain=1
+chains=[]
+left=0
+right=0
+for s in range(1,n):
+    if vals[s]>vals[s-1]:
+        chain+=1
+        right=s
+    else:
+        if chain>=1:
+            chains.append((left,right))
+        left=s
+        right=s
+        chain=1
+if len(chains)>0:
+    if chains[-1][1]!=n-1:
+        chains.append((left,right))
+else:
+    chains.append((left,right))
+#then we loop throughthe chains
+length=0
+if len(chains)>=2:
+    for s in range(len(chains)):
+        int1=chains[s]
+        #we need to look at
+        need=int1[0]-2
+        if need>=0:
+            int2=chains[s-1]
+            if int2[0]<=need and need<=int2[1]:
+                if vals[need]<vals[int1[0]]:
+                    d1=(int1[1]+1-int1[0])+(need+1-int2[0])
+                    if d1>length:
+                        length=d1
+                else:
+                    d1=int1[1]+1-int1[0]
+                    if d1>length:
+                        length=d1
+            else:
+                int3=chains[s-2]
+                if int3[0]<=need and need<=int3[1]:
+                    if vals[need]<vals[int1[0]]:
+                        d1=(int1[1]+1-int1[0])+(need+1-int3[0])
+                        if d1>length:
+                            length=d1
+                    else:
+                        d1=int1[1]+1-int1[0]
+                        if d1>length:
+                            length=d1
+                else:
+                    d1=int1[1]+1-int1[0]
+                    if d1>length:
+                        length=d1
+        else:
+            d1=int1[1]+1-int1[0]
+            if d1>length:
+                length=d1
+        need1=int1[1]+2
+        if need1<=len(vals)-1:
+            int2=chains[s+1]
+            if int2[0]<=need1 and need1<=int2[1]:
+                if vals[int1[1]]<vals[need1]:
+                    d1=(int2[1]+1-need1)+(int1[1]+1-int1[0])
+                    if d1>length:
+                        length=d1
+                else:
+                    d1=int1[1]+1-int1[0]
+                    if d1>length:
+                        length=d1
+            else:
+                int3=chains[s+2]
+                if int3[0]<=need1 and need1<=int3[1]:
+                    if vals[int1[1]]<vals[need1]:
+                        d1=(int3[1]+1-need1)+(int1[1]+1-int1[0])
+                        if d1>length:
+                            length=d1
+                    else:
+                        d1=int1[1]+1-int1[0]
+                        if d1>length:
+                            length=d1
+                else:
+                    d1=int1[1]+1-int1[0]
+                    if d1>length:
+                        length=d1
+        else:
+            d1=int1[1]+1-int1[0]
+            if d1>length:
+                length=d1
+            
+else:
+    length=chains[0][1]+1-chains[0][0]
+print(length)
+
+Similar question 3 (Similarity score: 0.79):
+Name: p03613 AtCoder Regular Contest 082 - Together
+Tags: ['']
+Description: You are given an integer sequence of length N, a_1,a_2,...,a_N.
+
+For each 1≤i≤N, you have three choices: add 1 to a_i, subtract 1 from a_i or do nothing.
+
+After these operations, you select an integer X and count the number of i such that a_i=X.
+
+Maximize this count by making optimal choices.
+
+Constraints
+
+* 1≤N≤10^5
+* 0≤a_i<10^5 (1≤i≤N)
+* a_i is an integer.
+
+Input
+
+The input is given from Standard Input in the following format:
+
+
+N
+a_1 a_2 .. a_N
+
+
+Output
+
+Print the maximum possible number of i such that a_i=X.
+
+Examples
+
+Input
+
+7
+3 1 4 1 5 9 2
+
+
+Output
+
+4
+
+
+Input
+
+10
+0 1 2 3 4 5 6 7 8 9
+
+
+Output
+
+3
+
+
+Input
+
+1
+99999
+
+
+Output
+
+1
+Difficulty: 0
+Solutions: #include <bits/stdc++.h>
+
+using namespace std;
+
+int n;
+int a[100001];
+int main() {
+  cin >> n;
+  for(int i = 0; i < n; i++) {
+    int x;
+    cin >> x;
+    if(x > 0) a[x-1]++;
+    a[x]++;
+    a[x+1]++;
+  }
+  int ans = 0;
+  for(int i = 0; i < 100001; i++) {
+    ans = max(ans,a[i]);
+  }
+
+  cout << ans << endl;
+}
+
+  
+  
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

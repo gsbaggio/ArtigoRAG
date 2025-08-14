@@ -1,0 +1,607 @@
+CURRENT QUESTION:
+You have an array of integers (initially empty).
+
+You have to perform q queries. Each query is of one of two types: 
+
+  * "1 x" — add the element x to the end of the array; 
+  * "2 x y" — replace all occurrences of x in the array with y. 
+
+
+
+Find the resulting array after performing all the queries.
+
+Input
+
+The first line contains a single integer q (1 ≤ q ≤ 5 ⋅ 10^5) — the number of queries.
+
+Next q lines contain queries (one per line). Each query is of one of two types: 
+
+  * "1 x" (1 ≤ x ≤ 5 ⋅ 10^5); 
+  * "2 x y" (1 ≤ x, y ≤ 5 ⋅ 10^5). 
+
+
+
+It's guaranteed that there is at least one query of the first type.
+
+Output
+
+In a single line, print k integers — the resulting array after performing all the queries, where k is the number of queries of the first type.
+
+Examples
+
+Input
+
+
+7
+1 3
+1 1
+2 1 2
+1 2
+1 1
+1 2
+2 1 3
+
+
+Output
+
+
+3 2 2 3 2 
+
+Input
+
+
+4
+1 1
+1 2
+1 1
+2 2 2
+
+
+Output
+
+
+1 2 1 
+
+Input
+
+
+8
+2 1 4
+1 1
+1 4
+1 2
+2 2 4
+2 4 3
+1 2
+2 2 7
+
+
+Output
+
+
+1 3 3 7 
+
+Note
+
+In the first example, the array changes as follows:
+
+[] → [3] → [3, 1] → [3, 2] → [3, 2, 2] → [3, 2, 2, 1] → [3, 2, 2, 1, 2] → [3, 2, 2, 3, 2].
+
+In the second example, the array changes as follows:
+
+[] → [1] → [1, 2] → [1, 2, 1] → [1, 2, 1].
+
+In the third example, the array changes as follows:
+
+[] → [] → [1] → [1, 4] → [1, 4, 2] → [1, 4, 4] → [1, 3, 3] → [1, 3, 3, 2] → [1, 3, 3, 7].
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.76):
+Name: 1219_H. Function Composition
+Tags: ['dfs and similar']
+Description: We are definitely not going to bother you with another generic story when Alice finds about an array or when Alice and Bob play some stupid game. This time you'll get a simple, plain text.
+
+First, let us define several things. We define function F on the array A such that F(i, 1) = A[i] and F(i, m) = A[F(i, m - 1)] for m > 1. In other words, value F(i, m) represents composition A[...A[i]] applied m times.
+
+You are given an array of length N with non-negative integers. You are expected to give an answer on Q queries. Each query consists of two numbers – m and y. For each query determine how many x exist such that F(x,m) = y.
+
+Input
+
+The first line contains one integer N (1 ≤ N ≤ 2 ⋅ 10^5) – the size of the array A. The next line contains N non-negative integers – the array A itself (1 ≤ A_i ≤ N). The next line contains one integer Q (1 ≤ Q ≤ 10^5) – the number of queries. Each of the next Q lines contain two integers m and y (1 ≤ m ≤ 10^{18}, 1≤ y ≤ N).
+
+Output
+
+Output exactly Q lines with a single integer in each that represent the solution. Output the solutions in the order the queries were asked in.
+
+Example
+
+Input
+
+
+10
+2 3 1 5 6 4 2 10 7 7
+5
+10 1
+5 7
+10 6
+1 1
+10 8
+
+
+Output
+
+
+3
+0
+1
+1
+0
+
+Note
+
+For the first query we can notice that F(3, 10) = 1,\ F(9, 10) = 1 and F(10, 10) = 1.
+
+For the second query no x satisfies condition F(x, 5) = 7.
+
+For the third query F(5, 10) = 6 holds.
+
+For the fourth query F(3, 1) = 1.
+
+For the fifth query no x satisfies condition F(x, 10) = 8.
+Difficulty: 14
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+const int N = 200200;
+int n, m;
+int ANS[N];
+int g[N];
+vector<int> G[N];
+int deg[N];
+int q[N];
+int topQ;
+int id[N];
+vector<int> a[N];
+vector<pair<long long, int> > Q[N];
+vector<pair<int, int> > b[N];
+vector<int> pref[N];
+void read() {
+  scanf("%d", &n);
+  for (int i = 0; i < n; i++) {
+    scanf("%d", &g[i]);
+    g[i]--;
+    deg[g[i]]++;
+  }
+  scanf("%d", &m);
+  for (int i = 0; i < m; i++) {
+    long long x;
+    int v;
+    scanf("%lld%d", &x, &v);
+    v--;
+    Q[v].push_back(make_pair(x, i));
+  }
+}
+void solveTree(int v) {
+  int big = -1;
+  for (int u : G[v]) {
+    if (big == -1 || (int)a[id[u]].size() > (int)a[id[big]].size()) big = u;
+  }
+  if (big == -1) {
+    id[v] = v;
+  } else {
+    id[v] = id[big];
+  }
+  int sz = (int)a[id[v]].size();
+  for (int u : G[v]) {
+    if (u == big) continue;
+    int z = id[u];
+    reverse(a[z].begin(), a[z].end());
+    for (int i = 0; i < (int)a[z].size(); i++) a[id[v]][sz - 1 - i] += a[z][i];
+  }
+  a[id[v]].push_back(1);
+  for (pair<long long, int> t : Q[v]) {
+    long long x = t.first;
+    if (x <= sz) ANS[t.second] = a[id[v]][sz - x];
+  }
+  int u = g[v];
+  G[u].push_back(v);
+  deg[u]--;
+  if (deg[u] == 0) q[topQ++] = u;
+}
+void solveCycle(vector<int> cycle) {
+  reverse(cycle.begin(), cycle.end());
+  int k = (int)cycle.size();
+  for (int i = 0; i < k; i++) {
+    b[i].clear();
+    pref[i].clear();
+  }
+  for (int t = 0; t < k; t++) {
+    int v = cycle[t];
+    int big = -1;
+    for (int u : G[v]) {
+      if (big == -1 || (int)a[id[u]].size() > (int)a[id[big]].size()) big = u;
+    }
+    if (big == -1) {
+      id[v] = v;
+    } else {
+      id[v] = id[big];
+    }
+    int sz = (int)a[id[v]].size();
+    for (int u : G[v]) {
+      if (u == big) continue;
+      int z = id[u];
+      reverse(a[z].begin(), a[z].end());
+      for (int i = 0; i < (int)a[z].size(); i++)
+        a[id[v]][sz - 1 - i] += a[z][i];
+    }
+    a[id[v]].push_back(1);
+    reverse(a[id[v]].begin(), a[id[v]].end());
+    for (int i = 0; i <= sz; i++) {
+      int p = (t + i) % k;
+      b[p].push_back(make_pair(i, a[id[v]][i]));
+    }
+  }
+  for (int i = 0; i < k; i++) {
+    sort(b[i].begin(), b[i].end());
+    pref[i].push_back(0);
+    for (pair<int, int> t : b[i]) pref[i].push_back(pref[i].back() + t.second);
+  }
+  for (int t = 0; t < k; t++) {
+    int v = cycle[t];
+    for (pair<long long, int> z : Q[v]) {
+      long long x = z.first;
+      int xx;
+      if (x > (long long)1e7) {
+        xx = x - ((x - (long long)1e7) / k) * k;
+      } else {
+        xx = x;
+      }
+      int p = (xx + t) % k;
+      int pos = lower_bound(b[p].begin(), b[p].end(), make_pair(xx, N)) -
+                b[p].begin();
+      ANS[z.second] = pref[p][pos];
+    }
+  }
+}
+int main() {
+  read();
+  for (int v = 0; v < n; v++)
+    if (deg[v] == 0) q[topQ++] = v;
+  for (int i = 0; i < topQ; i++) {
+    int v = q[i];
+    solveTree(v);
+  }
+  for (int v = 0; v < n; v++) {
+    if (deg[v] == 0) continue;
+    vector<int> all;
+    int u = v;
+    do {
+      all.push_back(u);
+      u = g[u];
+    } while (u != v);
+    solveCycle(all);
+    for (int u : all) deg[u] = 0;
+  }
+  for (int i = 0; i < m; i++) printf("%d\n", ANS[i]);
+  return 0;
+}
+
+
+Similar question 2 (Similarity score: 0.76):
+Name: 1218_H. Function Composition
+Tags: ['dfs and similar']
+Description: We are definitely not going to bother you with another generic story when Alice finds about an array or when Alice and Bob play some stupid game. This time you'll get a simple, plain text.
+
+First, let us define several things. We define function F on the array A such that F(i, 1) = A[i] and F(i, m) = A[F(i, m - 1)] for m > 1. In other words, value F(i, m) represents composition A[...A[i]] applied m times.
+
+You are given an array of length N with non-negative integers. You are expected to give an answer on Q queries. Each query consists of two numbers – m and y. For each query determine how many x exist such that F(x,m) = y.
+
+Input
+
+The first line contains one integer N (1 ≤ N ≤ 2 ⋅ 10^5) – the size of the array A. The next line contains N non-negative integers – the array A itself (1 ≤ A_i ≤ N). The next line contains one integer Q (1 ≤ Q ≤ 10^5) – the number of queries. Each of the next Q lines contain two integers m and y (1 ≤ m ≤ 10^{18}, 1≤ y ≤ N).
+
+Output
+
+Output exactly Q lines with a single integer in each that represent the solution. Output the solutions in the order the queries were asked in.
+
+Example
+
+Input
+
+
+10
+2 3 1 5 6 4 2 10 7 7
+5
+10 1
+5 7
+10 6
+1 1
+10 8
+
+
+Output
+
+
+3
+0
+1
+1
+0
+
+Note
+
+For the first query we can notice that F(3, 10) = 1,\ F(9, 10) = 1 and F(10, 10) = 1.
+
+For the second query no x satisfies condition F(x, 5) = 7.
+
+For the third query F(5, 10) = 6 holds.
+
+For the fourth query F(3, 1) = 1.
+
+For the fifth query no x satisfies condition F(x, 10) = 8.
+Difficulty: 14
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int N = 2e5 + 234;
+vector<pair<int, int> > arpa[N], pasha[N];
+int mark[N], cmp[N], plCycl[N], Next[N];
+int st[N], en[N], hei[N], now;
+vector<int> Prev[N], cycles[N], height[N];
+int goPrev(int x, long long n) {
+  int cLen = ((int)cycles[cmp[x]].size());
+  n = cLen - (n % cLen);
+  return cycles[cmp[x]][(plCycl[x] + n) % cLen];
+}
+int goNext(int x, int cnt, int first) {
+  mark[x] = first;
+  if (mark[Next[x]] != first and mark[Next[x]] != -1) return 0;
+  if (mark[Next[x]] == first) {
+    int now = x;
+    while (true) {
+      plCycl[now] = ((int)cycles[cnt].size());
+      cycles[cnt].push_back(now);
+      cmp[now] = cnt;
+      if (Next[now] == x) break;
+      now = Next[now];
+    }
+    return 1;
+  }
+  return goNext(Next[x], cnt, first);
+}
+void dfs(int x, int root, int h = 0) {
+  st[x] = now++;
+  height[h].push_back(st[x]);
+  hei[x] = h;
+  arpa[goPrev(root, h)].push_back({h, 1});
+  for (auto u : Prev[x])
+    if (cmp[u] == -1) dfs(u, root, h + 1);
+  en[x] = now;
+}
+int main() {
+  ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+  memset(mark, -1, sizeof mark);
+  memset(cmp, -1, sizeof cmp);
+  int n, q;
+  cin >> n;
+  for (int i = 0; i < n; i++) {
+    int t;
+    cin >> t;
+    t--;
+    Next[i] = t;
+    Prev[t].push_back(i);
+  }
+  int cnt = 0;
+  for (int i = 0; i < n; i++)
+    if (mark[i] == -1) cnt += goNext(i, cnt, i);
+  for (int i = 0; i < n; i++) {
+    if (cmp[i] != -1) dfs(i, i);
+  }
+  for (int i = 0; i < n; i++)
+    if (cmp[i] != -1) {
+      sort(arpa[i].begin(), arpa[i].end());
+      for (int j = 0; j < ((int)arpa[i].size()); j++)
+        if (j < ((int)arpa[i].size()) - 1 and
+            arpa[i][j].first == arpa[i][j + 1].first)
+          arpa[i][j + 1].second += arpa[i][j].second;
+        else
+          pasha[i].push_back(
+              {arpa[i][j].first,
+               arpa[i][j].second +
+                   (((int)pasha[i].size()) ? pasha[i].back().second : 0)});
+    }
+  cin >> q;
+  while (q--) {
+    long long m, x;
+    cin >> m >> x;
+    x--;
+    if (cmp[x] != -1) {
+      int root = goPrev(x, m);
+      auto it = upper_bound(pasha[root].begin(), pasha[root].end(),
+                            pair<int, int>(min<long long>(m, N), N));
+      it--;
+      cout << (*it).second << '\n';
+    } else {
+      if (m + hei[x] >= N)
+        cout << 0 << '\n';
+      else
+        cout << lower_bound(height[hei[x] + m].begin(),
+                            height[hei[x] + m].end(), en[x]) -
+                    lower_bound(height[hei[x] + m].begin(),
+                                height[hei[x] + m].end(), st[x])
+             << '\n';
+    }
+  }
+  return 0;
+}
+
+
+Similar question 3 (Similarity score: 0.74):
+Name: 1207_F. Remainder Problem
+Tags: ['brute force', 'data structures', 'implementation']
+Description: You are given an array a consisting of 500000 integers (numbered from 1 to 500000). Initially all elements of a are zero.
+
+You have to process two types of queries to this array:
+
+  * 1 x y — increase a_x by y; 
+  * 2 x y — compute ∑_{i ∈ R(x, y)} a_i, where R(x, y) is the set of all integers from 1 to 500000 which have remainder y modulo x. 
+
+
+
+Can you process all the queries?
+
+Input
+
+The first line contains one integer q (1 ≤ q ≤ 500000) — the number of queries.
+
+Then q lines follow, each describing a query. The i-th line contains three integers t_i, x_i and y_i (1 ≤ t_i ≤ 2). If t_i = 1, then it is a query of the first type, 1 ≤ x_i ≤ 500000, and -1000 ≤ y_i ≤ 1000. If t_i = 2, then it it a query of the second type, 1 ≤ x_i ≤ 500000, and 0 ≤ y_i < x_i.
+
+It is guaranteed that there will be at least one query of type 2.
+
+Output
+
+For each query of type 2 print one integer — the answer to it.
+
+Example
+
+Input
+
+
+5
+1 3 4
+2 3 0
+2 4 3
+1 4 -4
+2 1 0
+
+
+Output
+
+
+4
+4
+0
+Difficulty: 12
+Solutions: import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.InputMismatchException;
+
+public class P1207F {
+	public static void main(String[] args) {
+		FastScanner in = new FastScanner(System.in);
+		PrintWriter out = new PrintWriter(System.out);
+		int n = 500000;
+		int sqrt = (int) Math.sqrt(n);
+		int[][] sum = new int[sqrt + 1][sqrt + 1];
+		int[] arr = new int[500000 + 1];
+		int q = in.nextInt();
+		while (q-->0) {
+			int t = in.nextInt();
+			int x = in.nextInt();
+			int y = in.nextInt();
+			if (t == 1) {
+				for (int i = 1; i <= sqrt; i++)
+					sum[i][x % i] += y;
+				arr[x] += y;
+			}
+			else {
+				if (x <= sqrt)
+					out.println(sum[x][y]);
+				else {
+					int ans = 0;
+					for (int k = y; k <= n; k += x)
+						ans += arr[k];
+					out.println(ans);
+				}
+			}
+		}
+		out.close();
+	}
+	
+	/**
+	 * Source: Matt Fontaine
+	 */
+	public static class FastScanner {
+		private InputStream stream;
+		private byte[] buf = new byte[1024];
+		private int curChar;
+		private int numChars;
+
+		public FastScanner(InputStream stream) {
+			this.stream = stream;
+		}
+
+		int read() {
+			if (numChars == -1)
+				throw new InputMismatchException();
+			if (curChar >= numChars) {
+				curChar = 0;
+				try {
+					numChars = stream.read(buf);
+				} catch (IOException e) {
+					throw new InputMismatchException();
+				}
+				if (numChars <= 0)
+					return -1;
+			}
+			return buf[curChar++];
+		}
+
+		boolean isSpaceChar(int c) {
+			return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
+		}
+
+		boolean isEndline(int c) {
+			return c == '\n' || c == '\r' || c == -1;
+		}
+
+		public int nextInt() {
+			return Integer.parseInt(next());
+		}
+
+		public long nextLong() {
+			return Long.parseLong(next());
+		}
+
+		public double nextDouble() {
+			return Double.parseDouble(next());
+		}
+
+		public String next() {
+			int c = read();
+			while (isSpaceChar(c))
+				c = read();
+			StringBuilder res = new StringBuilder();
+			do {
+				res.appendCodePoint(c);
+				c = read();
+			} while (!isSpaceChar(c));
+			return res.toString();
+		}
+
+		public String nextLine() {
+			int c = read();
+			while (isEndline(c))
+				c = read();
+			StringBuilder res = new StringBuilder();
+			do {
+				res.appendCodePoint(c);
+				c = read();
+			} while (!isEndline(c));
+			return res.toString();
+		}
+	}
+}
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

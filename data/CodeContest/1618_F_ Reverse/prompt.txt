@@ -1,0 +1,258 @@
+CURRENT QUESTION:
+You are given two positive integers x and y. You can perform the following operation with x: write it in its binary form without leading zeros, add 0 or 1 to the right of it, reverse the binary form and turn it into a decimal number which is assigned as the new value of x.
+
+For example: 
+
+  * 34 can be turned into 81 via one operation: the binary form of 34 is 100010, if you add 1, reverse it and remove leading zeros, you will get 1010001, which is the binary form of 81. 
+  * 34 can be turned into 17 via one operation: the binary form of 34 is 100010, if you add 0, reverse it and remove leading zeros, you will get 10001, which is the binary form of 17. 
+  * 81 can be turned into 69 via one operation: the binary form of 81 is 1010001, if you add 0, reverse it and remove leading zeros, you will get 1000101, which is the binary form of 69. 
+  * 34 can be turned into 69 via two operations: first you turn 34 into 81 and then 81 into 69. 
+
+
+
+Your task is to find out whether x can be turned into y after a certain number of operations (possibly zero).
+
+Input
+
+The only line of the input contains two integers x and y (1 ≤ x, y ≤ 10^{18}).
+
+Output
+
+Print YES if you can make x equal to y and NO if you can't.
+
+Examples
+
+Input
+
+
+3 3
+
+
+Output
+
+
+YES
+
+
+Input
+
+
+7 4
+
+
+Output
+
+
+NO
+
+
+Input
+
+
+2 8
+
+
+Output
+
+
+NO
+
+
+Input
+
+
+34 69
+
+
+Output
+
+
+YES
+
+
+Input
+
+
+8935891487501725 71487131900013807
+
+
+Output
+
+
+YES
+
+Note
+
+In the first example, you don't even need to do anything.
+
+The fourth example is described in the statement.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.71):
+Name: 1492_D. Genius's Gambit
+Tags: ['bitmasks', 'constructive algorithms', 'greedy', 'math']
+Description: You are given three integers a, b, k.
+
+Find two binary integers x and y (x ≥ y) such that 
+
+  1. both x and y consist of a zeroes and b ones; 
+  2. x - y (also written in binary form) has exactly k ones. 
+
+You are not allowed to use leading zeros for x and y. 
+
+Input
+
+The only line contains three integers a, b, and k (0 ≤ a; 1 ≤ b; 0 ≤ k ≤ a + b ≤ 2 ⋅ 10^5) — the number of zeroes, ones, and the number of ones in the result.
+
+Output
+
+If it's possible to find two suitable integers, print "Yes" followed by x and y in base-2.
+
+Otherwise print "No".
+
+If there are multiple possible answers, print any of them.
+
+Examples
+
+Input
+
+
+4 2 3
+
+
+Output
+
+
+Yes
+101000
+100001
+
+
+Input
+
+
+3 2 1
+
+
+Output
+
+
+Yes
+10100
+10010
+
+
+Input
+
+
+3 2 5
+
+
+Output
+
+
+No
+
+Note
+
+In the first example, x = 101000_2 = 2^5 + 2^3 = 40_{10}, y = 100001_2 = 2^5 + 2^0 = 33_{10}, 40_{10} - 33_{10} = 7_{10} = 2^2 + 2^1 + 2^0 = 111_{2}. Hence x-y has 3 ones in base-2.
+
+In the second example, x = 10100_2 = 2^4 + 2^2 = 20_{10}, y = 10010_2 = 2^4 + 2^1 = 18, x - y = 20 - 18 = 2_{10} = 10_{2}. This is precisely one 1.
+
+In the third example, one may show, that it's impossible to find an answer.
+Difficulty: 10
+Solutions: #tests = int(input())
+#for t in range(tests):
+#n = int(input())
+
+a, b, k = list(map(int, input().split()))
+
+if a == 0 and k!=0:
+    print('No')
+elif k ==0:
+    print('Yes')
+    print('1'*b + '0'*a)
+    print('1'*b + '0'*a)
+elif b==1 or k > (a+b-2):
+    print('No')
+else:
+    shift = a+b-2-k
+    print('Yes')
+    ans_1 = ['1' for _ in range(b)] + ['0' for _ in range(a)] 
+    ans_2 = ['1'] + ['0'] + ['1' for _ in range(b-2)] + ['0' for _ in range(a-1)] + ['1']
+    if shift <= (a-1):
+        ans_2 = ['1'] + ['0'] + ['1' for _ in range(b-2)] + ['0' for _ in range(a-1-shift)] + ['1'] + ['0' for _ in range(shift)]
+    else:
+        ans_2 = ['1'] + ['1' for _ in range(shift-(a-1))] + ['0'] + ['1' for _ in range(b-2 -(shift-(a-1)))] + ['1'] + ['0' for _ in range(a-1)]
+    print(''.join(ans_1))
+    print(''.join(ans_2))
+    
+#    print(bin(int(''.join(ans_1),2)-int(''.join(ans_2),2)).count('1'))
+
+Similar question 2 (Similarity score: 0.71):
+Name: 76_D. Plus and xor
+Tags: ['dp', 'greedy', 'math']
+Description: Bitwise exclusive OR (or bitwise addition modulo two) is a binary operation which is equivalent to applying logical exclusive OR to every pair of bits located on the same positions in binary notation of operands. In other words, a binary digit of the result is equal to 1 if and only if bits on the respective positions in the operands are different.
+
+For example, if X = 10910 = 11011012, Y = 4110 = 1010012, then: 
+
+X xor Y = 6810 = 10001002. 
+
+Write a program, which takes two non-negative integers A and B as an input and finds two non-negative integers X and Y, which satisfy the following conditions: 
+
+  * A = X + Y
+  * B = X xor Y, where xor is bitwise exclusive or. 
+  * X is the smallest number among all numbers for which the first two conditions are true. 
+
+Input
+
+The first line contains integer number A and the second line contains integer number B (0 ≤ A, B ≤ 264 - 1).
+
+Output
+
+The only output line should contain two integer non-negative numbers X and Y. Print the only number -1 if there is no answer.
+
+Examples
+
+Input
+
+142
+76
+
+
+Output
+
+33 109
+Difficulty: 10
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int main() {
+  unsigned long long a, b;
+  cin >> a >> b;
+  if (a < b || a % 2 != b % 2) {
+    cout << "-1\n";
+    return 0;
+  }
+  unsigned long long x = (a - b) / 2;
+  unsigned long long y = x + b;
+  if ((x & (a - x)) != x) {
+    cout << "-1\n";
+    return 0;
+  }
+  cout << x << " " << y << "\n";
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

@@ -1,0 +1,439 @@
+CURRENT QUESTION:
+For an array c of nonnegative integers, MEX(c) denotes the smallest nonnegative integer that doesn't appear in it. For example, MEX([0, 1, 3]) = 2, MEX([42]) = 0.
+
+You are given integers n, k, and an array [b_1, b_2, …, b_n].
+
+Find the number of arrays [a_1, a_2, …, a_n], for which the following conditions hold:
+
+  * 0 ≤ a_i ≤ n for each i for each i from 1 to n.
+
+  * |MEX([a_1, a_2, …, a_i]) - b_i| ≤ k for each i from 1 to n.
+
+
+
+
+As this number can be very big, output it modulo 998 244 353.
+
+Input
+
+The first line of the input contains two integers n, k (1 ≤ n ≤ 2000, 0 ≤ k ≤ 50).
+
+The second line of the input contains n integers b_1, b_2, …, b_n (-k ≤ b_i ≤ n+k) — elements of the array b.
+
+Output
+
+Output a single integer — the number of arrays which satisfy the conditions from the statement, modulo 998 244 353.
+
+Examples
+
+Input
+
+
+4 0
+0 0 0 0
+
+
+Output
+
+
+256
+
+
+Input
+
+
+4 1
+0 0 0 0
+
+
+Output
+
+
+431
+
+
+Input
+
+
+4 1
+0 0 1 1
+
+
+Output
+
+
+509
+
+
+Input
+
+
+5 2
+0 0 2 2 0
+
+
+Output
+
+
+6546
+
+
+Input
+
+
+3 2
+-2 0 4
+
+
+Output
+
+
+11
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.79):
+Name: 1327_F. AND Segments
+Tags: ['bitmasks', 'combinatorics', 'data structures', 'dp', 'two pointers']
+Description: You are given three integers n, k, m and m conditions (l_1, r_1, x_1), (l_2, r_2, x_2), ..., (l_m, r_m, x_m).
+
+Calculate the number of distinct arrays a, consisting of n integers such that: 
+
+  * 0 ≤ a_i < 2^k for each 1 ≤ i ≤ n; 
+  * bitwise AND of numbers a[l_i] \& a[l_i + 1] \& ... \& a[r_i] = x_i for each 1 ≤ i ≤ m. 
+
+
+
+Two arrays a and b are considered different if there exists such a position i that a_i ≠ b_i. 
+
+The number can be pretty large so print it modulo 998244353.
+
+Input
+
+The first line contains three integers n, k and m (1 ≤ n ≤ 5 ⋅ 10^5, 1 ≤ k ≤ 30, 0 ≤ m ≤ 5 ⋅ 10^5) — the length of the array a, the value such that all numbers in a should be smaller than 2^k and the number of conditions, respectively.
+
+Each of the next m lines contains the description of a condition l_i, r_i and x_i (1 ≤ l_i ≤ r_i ≤ n, 0 ≤ x_i < 2^k) — the borders of the condition segment and the required bitwise AND value on it.
+
+Output
+
+Print a single integer — the number of distinct arrays a that satisfy all the above conditions modulo 998244353.
+
+Examples
+
+Input
+
+
+4 3 2
+1 3 3
+3 4 6
+
+
+Output
+
+
+3
+
+
+Input
+
+
+5 2 3
+1 3 2
+2 5 0
+3 3 3
+
+
+Output
+
+
+33
+
+Note
+
+You can recall what is a bitwise AND operation [here](https://en.wikipedia.org/wiki/Bitwise_operation#AND).
+
+In the first example, the answer is the following arrays: [3, 3, 7, 6], [3, 7, 7, 6] and [7, 3, 7, 6].
+Difficulty: 12
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int MOD = (119 << 23) + 1;
+const int MX = 5e5;
+int l[MX], r[MX], x[MX], one[MX + 2], dp[MX + 2], zer[MX + 2], ps[MX + 2];
+int main() {
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  int n, k, m;
+  cin >> n >> k >> m;
+  for (int i = 0; i < m; ++i) {
+    cin >> l[i] >> r[i] >> x[i];
+  }
+  long long ans = 1;
+  for (int i = 1; i < (1 << k); i *= 2) {
+    memset(ps, 0, sizeof ps);
+    memset(dp, 0, sizeof dp);
+    for (int j = 0; j < m; ++j) {
+      if (x[j] & i) {
+        ++one[l[j]];
+        --one[r[j] + 1];
+      } else {
+        zer[r[j] + 1] = max(zer[r[j] + 1], l[j]);
+      }
+    }
+    for (int i = 1; i <= n + 1; ++i) {
+      one[i] += one[i - 1];
+      zer[i] = max(zer[i], zer[i - 1]);
+    }
+    dp[0] = ps[0] = 1;
+    for (int i = 1; i <= n + 1; ++i) {
+      dp[i] = ps[i - 1];
+      if (zer[i]) {
+        ((dp[i] -= ps[zer[i] - 1]) += MOD) %= MOD;
+        zer[i] = 0;
+      }
+      if (one[i]) {
+        dp[i] = 0;
+        one[i] = 0;
+      }
+      ps[i] = (dp[i] + ps[i - 1]) % MOD;
+    }
+    (ans *= dp[n + 1]) %= MOD;
+  }
+  cout << ans << '\n';
+}
+
+
+Similar question 2 (Similarity score: 0.77):
+Name: 1364_C. Ehab and Prefix MEXs
+Tags: ['brute force', 'constructive algorithms', 'greedy']
+Description: Given an array a of length n, find another array, b, of length n such that:
+
+  * for each i (1 ≤ i ≤ n) MEX(\\{b_1, b_2, …, b_i\})=a_i. 
+
+
+
+The MEX of a set of integers is the smallest non-negative integer that doesn't belong to this set.
+
+If such array doesn't exist, determine this.
+
+Input
+
+The first line contains an integer n (1 ≤ n ≤ 10^5) — the length of the array a.
+
+The second line contains n integers a_1, a_2, …, a_n (0 ≤ a_i ≤ i) — the elements of the array a. It's guaranteed that a_i ≤ a_{i+1} for 1≤ i < n.
+
+Output
+
+If there's no such array, print a single line containing -1.
+
+Otherwise, print a single line containing n integers b_1, b_2, …, b_n (0 ≤ b_i ≤ 10^6)
+
+If there are multiple answers, print any.
+
+Examples
+
+Input
+
+
+3
+1 2 3
+
+
+Output
+
+
+0 1 2 
+
+Input
+
+
+4
+0 0 0 2
+
+
+Output
+
+
+1 3 4 0 
+
+Input
+
+
+3
+1 1 3
+
+
+Output
+
+
+0 2 1 
+
+Note
+
+In the second test case, other answers like [1,1,1,0], for example, are valid.
+Difficulty: 9
+Solutions: n=int(input())
+arr=list(map(int,input().split()))
+flag=0
+vis=[0]*(10**6+1)
+for i in range(n):
+    if arr[i]>i+1:
+        flag=1
+    vis[arr[i]]=1
+if flag==1:
+    print(-1)
+    quit()
+b=[-1]*(n)
+for i in range(1,n):
+    if arr[i-1]!=arr[i]:
+        b[i]=arr[i-1]
+not_vis=[]
+for i in range(10**6+1):
+    if vis[i]==0:
+        not_vis.append(i)
+j=0
+for i in range(n):
+    if b[i]==-1:
+        b[i]=not_vis[j]
+        j+=1
+print(*b)
+
+
+
+Similar question 3 (Similarity score: 0.76):
+Name: 1408_B. Arrays Sum
+Tags: ['constructive algorithms', 'greedy', 'math']
+Description: You are given a non-decreasing array of non-negative integers a_1, a_2, …, a_n. Also you are given a positive integer k.
+
+You want to find m non-decreasing arrays of non-negative integers b_1, b_2, …, b_m, such that:
+
+  * The size of b_i is equal to n for all 1 ≤ i ≤ m. 
+  * For all 1 ≤ j ≤ n, a_j = b_{1, j} + b_{2, j} + … + b_{m, j}. In the other word, array a is the sum of arrays b_i. 
+  * The number of different elements in the array b_i is at most k for all 1 ≤ i ≤ m. 
+
+
+
+Find the minimum possible value of m, or report that there is no possible m.
+
+Input
+
+The first line contains one integer t (1 ≤ t ≤ 100): the number of test cases.
+
+The first line of each test case contains two integers n, k (1 ≤ n ≤ 100, 1 ≤ k ≤ n).
+
+The second line contains n integers a_1, a_2, …, a_n (0 ≤ a_1 ≤ a_2 ≤ … ≤ a_n ≤ 100, a_n > 0).
+
+Output
+
+For each test case print a single integer: the minimum possible value of m. If there is no such m, print -1.
+
+Example
+
+Input
+
+
+6
+4 1
+0 0 0 1
+3 1
+3 3 3
+11 3
+0 1 2 2 3 3 3 4 4 4 4
+5 3
+1 2 3 4 5
+9 4
+2 2 3 5 7 11 13 13 17
+10 7
+0 1 1 2 3 3 4 5 5 6
+
+
+Output
+
+
+-1
+1
+2
+2
+2
+1
+
+Note
+
+In the first test case, there is no possible m, because all elements of all arrays should be equal to 0. But in this case, it is impossible to get a_4 = 1 as the sum of zeros.
+
+In the second test case, we can take b_1 = [3, 3, 3]. 1 is the smallest possible value of m.
+
+In the third test case, we can take b_1 = [0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2] and b_2 = [0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2]. It's easy to see, that a_i = b_{1, i} + b_{2, i} for all i and the number of different elements in b_1 and in b_2 is equal to 3 (so it is at most 3). It can be proven that 2 is the smallest possible value of m.
+Difficulty: 8
+Solutions: import sys as _sys
+
+
+def main():
+    t = int(input())
+    for i_t in range(t):
+        n, k = _read_ints()
+        a = tuple(_read_ints())
+        try:
+            result = find_min_m(a, k)
+        except ValueError:
+            result = -1
+        print(result)
+
+
+def _read_line():
+    result = _sys.stdin.readline()
+    assert result[-1] == "\n"
+    return result[:-1]
+
+
+def _read_ints():
+    return map(int, _read_line().split(" "))
+
+
+def find_min_m(a_seq, k):
+    assert k >= 1
+    a_seq = tuple(a_seq)
+    if a_seq.count(0) == len(a_seq):
+        return 0
+    steps_n = sum(x1 != x2 for x1, x2 in zip(a_seq, a_seq[1:]))
+    
+    if k == 1:
+        if steps_n == 0:
+            return 1
+        else:
+            raise ValueError("can't find min m")
+    
+    result = 0
+    steps_per_b_seq = k - 1
+    if a_seq[0] != 0:
+        steps_n += 1
+        if steps_n <= k:
+            return 1
+        steps_n -= k
+        result += 1
+    result += _ceil_div(steps_n, steps_per_b_seq)
+    return result
+
+
+def _ceil_div(x, y):
+    assert y > 0
+    result = x // y
+    if x % y != 0:
+        result += 1
+    return result
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

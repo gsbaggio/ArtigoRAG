@@ -1,0 +1,262 @@
+CURRENT QUESTION:
+Dmitry has an array of n non-negative integers a_1, a_2, ..., a_n.
+
+In one operation, Dmitry can choose any index j (1 ≤ j ≤ n) and increase the value of the element a_j by 1. He can choose the same index j multiple times.
+
+For each i from 0 to n, determine whether Dmitry can make the MEX of the array equal to exactly i. If it is possible, then determine the minimum number of operations to do it.
+
+The MEX of the array is equal to the minimum non-negative integer that is not in the array. For example, the MEX of the array [3, 1, 0] is equal to 2, and the array [3, 3, 1, 4] is equal to 0.
+
+Input
+
+The first line of input data contains a single integer t (1 ≤ t ≤ 10^4) — the number of test cases in the input. 
+
+The descriptions of the test cases follow.
+
+The first line of the description of each test case contains a single integer n (1 ≤ n ≤ 2 ⋅ 10^5) — the length of the array a.
+
+The second line of the description of each test case contains n integers a_1, a_2, ..., a_n (0 ≤ a_i ≤ n) — elements of the array a.
+
+It is guaranteed that the sum of the values n over all test cases in the test does not exceed 2⋅10^5.
+
+Output
+
+For each test case, output n + 1 integer — i-th number is equal to the minimum number of operations for which you can make the array MEX equal to i (0 ≤ i ≤ n), or -1 if this cannot be done.
+
+Example
+
+Input
+
+
+5
+3
+0 1 3
+7
+0 1 2 3 4 3 2
+4
+3 0 0 0
+7
+4 6 2 3 5 0 5
+5
+4 0 1 0 4
+
+
+Output
+
+
+1 1 0 -1 
+1 1 2 2 1 0 2 6 
+3 0 1 4 3 
+1 0 -1 -1 -1 -1 -1 -1 
+2 1 0 2 -1 -1 
+
+Note
+
+In the first set of example inputs, n=3:
+
+  * to get MEX=0, it is enough to perform one increment: a_1++; 
+  * to get MEX=1, it is enough to perform one increment: a_2++; 
+  * MEX=2 for a given array, so there is no need to perform increments; 
+  * it is impossible to get MEX=3 by performing increments. 
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 1250_F. Data Center
+Tags: ['brute force', 'implementation']
+Description: You are developing a project to build a new data center. The data center will be a rectangle with an area of exactly n square meters. Each side of the data center must be an integer.
+
+Your goal is to minimize the impact of the external environment on the data center. For this reason, you want to minimize the length of the perimeter of the data center (that is, the sum of the lengths of its four sides).
+
+What is the minimum perimeter of a rectangular data center with an area of exactly n square meters, if the lengths of all its sides must be integers?
+
+Input
+
+The first and only line of the input contains an integer n (1 ≤ n ≤ 10^5), where n is the area of the data center in square meters.
+
+Output
+
+Print the required minimum perimeter in meters.
+
+Examples
+
+Input
+
+
+36
+
+
+Output
+
+
+24
+
+
+Input
+
+
+13
+
+
+Output
+
+
+28
+
+
+Input
+
+
+1
+
+
+Output
+
+
+4
+
+Note
+
+In the first example, the required shape of the data center is 6×6 square. Its area is 36 and the perimeter is 6+6+6+6=24.
+
+In the second example, the required shape of the data center is 1×13 rectangle. Its area is 13 and the perimeter is 1+13+1+13=28.
+
+In the third example, the required shape of the data center is 1×1 square. Its area is 1 and the perimeter is 1+1+1+1=4.
+Difficulty: 12
+Solutions: 
+
+Example question 2:
+Name: 711_D. Directed Roads
+Tags: ['combinatorics', 'dfs and similar', 'graphs', 'math']
+Description: ZS the Coder and Chris the Baboon has explored Udayland for quite some time. They realize that it consists of n towns numbered from 1 to n. 
+
+There are n directed roads in the Udayland. i-th of them goes from town i to some other town ai (ai ≠ i). ZS the Coder can flip the direction of any road in Udayland, i.e. if it goes from town A to town B before the flip, it will go from town B to town A after.
+
+ZS the Coder considers the roads in the Udayland confusing, if there is a sequence of distinct towns A1, A2, ..., Ak (k > 1) such that for every 1 ≤ i < k there is a road from town Ai to town Ai + 1 and another road from town Ak to town A1. In other words, the roads are confusing if some of them form a directed cycle of some towns.
+
+Now ZS the Coder wonders how many sets of roads (there are 2n variants) in initial configuration can he choose to flip such that after flipping each road in the set exactly once, the resulting network will not be confusing.
+
+Note that it is allowed that after the flipping there are more than one directed road from some town and possibly some towns with no roads leading out of it, or multiple roads between any pair of cities.
+
+Input
+
+The first line of the input contains single integer n (2 ≤ n ≤ 2·105) — the number of towns in Udayland.
+
+The next line contains n integers a1, a2, ..., an (1 ≤ ai ≤ n, ai ≠ i), ai denotes a road going from town i to town ai.
+
+Output
+
+Print a single integer — the number of ways to flip some set of the roads so that the resulting whole set of all roads is not confusing. Since this number may be too large, print the answer modulo 109 + 7.
+
+Examples
+
+Input
+
+3
+2 3 1
+
+
+Output
+
+6
+
+
+Input
+
+4
+2 1 1 1
+
+
+Output
+
+8
+
+
+Input
+
+5
+2 4 2 5 3
+
+
+Output
+
+28
+
+Note
+
+Consider the first sample case. There are 3 towns and 3 roads. The towns are numbered from 1 to 3 and the roads are <image>, <image>, <image> initially. Number the roads 1 to 3 in this order. 
+
+The sets of roads that ZS the Coder can flip (to make them not confusing) are {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3}. Note that the empty set is invalid because if no roads are flipped, then towns 1, 2, 3 is form a directed cycle, so it is confusing. Similarly, flipping all roads is confusing too. Thus, there are a total of 6 possible sets ZS the Coder can flip.
+
+The sample image shows all possible ways of orienting the roads from the first sample such that the network is not confusing.
+
+<image>
+Difficulty: 10
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int cas, cass;
+int n, m, lll, ans;
+long long aans;
+long long e[200014];
+int to[200014];
+int t[200014];
+bool mark[200014];
+long long mi(int x, int y) {
+  long long sum = 1;
+  while (y) {
+    if (y & 1) sum = (sum * x) % 1000000007;
+    x = (x * x) % 1000000007;
+    y >>= 1;
+  }
+  return sum;
+}
+void dfs(int u) {
+  while (!mark[u]) {
+    mark[u] = 1;
+    t[u] = ++cas;
+    u = to[u];
+  }
+  if (t[u] <= cass)
+    aans = (aans * e[cas - cass]) % 1000000007;
+  else {
+    aans = (aans * ((e[cas - t[u] + 1] - 2 + 1000000007) % 1000000007)) %
+           1000000007;
+    aans = (aans * e[t[u] - 1 - cass]) % 1000000007;
+  }
+  return;
+}
+void init() {
+  int i;
+  e[0] = 1;
+  for (i = 1; i < 200014; i++) e[i] = (e[i - 1] * 2) % 1000000007;
+}
+int main() {
+  int i, j, k;
+  init();
+  while (~scanf("%d", &n)) {
+    memset(mark, 0, sizeof(mark));
+    for (i = 1; i <= n; i++) scanf("%d", &to[i]);
+    aans = 1;
+    cas = 0;
+    for (i = 1; i <= n; i++) {
+      if (mark[i]) continue;
+      cass = cas;
+      dfs(i);
+    }
+    printf("%I64d\n", aans);
+  }
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

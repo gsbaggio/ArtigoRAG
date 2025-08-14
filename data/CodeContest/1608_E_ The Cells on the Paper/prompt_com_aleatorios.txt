@@ -1,0 +1,431 @@
+CURRENT QUESTION:
+On an endless checkered sheet of paper, n cells are chosen and colored in three colors, where n is divisible by 3. It turns out that there are exactly n/3 marked cells of each of three colors! 
+
+Find the largest such k that it's possible to choose k/3 cells of each color, remove all other marked cells, and then select three rectangles with sides parallel to the grid lines so that the following conditions hold:
+
+  * No two rectangles can intersect (but they can share a part of the boundary). In other words, the area of intersection of any two of these rectangles must be 0.
+  * The i-th rectangle contains all the chosen cells of the i-th color and no chosen cells of other colors, for i = 1, 2, 3. 
+
+Input
+
+The first line of the input contains a single integer n — the number of the marked cells (3 ≤ n ≤ 10^5, n is divisible by 3).
+
+The i-th of the following n lines contains three integers x_i, y_i, c_i (|x_i|,|y_i| ≤ 10^9; 1 ≤ c_i ≤ 3), where (x_i, y_i) are the coordinates of the i-th marked cell and c_i is its color.
+
+It's guaranteed that all cells (x_i, y_i) in the input are distinct, and that there are exactly n/3 cells of each color.
+
+Output
+
+Output a single integer k — the largest number of cells you can leave.
+
+Examples
+
+Input
+
+
+9
+2 3 1
+4 1 2
+2 1 3
+3 4 1
+5 3 2
+4 4 3
+2 4 1
+5 2 2
+3 5 3
+
+
+Output
+
+
+6
+
+
+Input
+
+
+3
+1 1 1
+2 2 2
+3 3 3
+
+
+Output
+
+
+3
+
+Note
+
+In the first sample, it's possible to leave 6 cells with indexes 1, 5, 6, 7, 8, 9.
+
+In the second sample, it's possible to leave 3 cells with indexes 1, 2, 3.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 1287_E2. Madhouse (Hard version)
+Tags: ['brute force', 'constructive algorithms', 'hashing', 'interactive', 'math']
+Description: This problem is different with easy version only by constraints on total answers length
+
+It is an interactive problem
+
+Venya joined a tour to the madhouse, in which orderlies play with patients the following game. Orderlies pick a string s of length n, consisting only of lowercase English letters. The player can ask two types of queries: 
+
+  * ? l r – ask to list all substrings of s[l..r]. Substrings will be returned in random order, and in every substring, all characters will be randomly shuffled. 
+  * ! s – guess the string picked by the orderlies. This query can be asked exactly once, after that the game will finish. If the string is guessed correctly, the player wins, otherwise he loses. 
+
+
+
+The player can ask no more than 3 queries of the first type.
+
+To make it easier for the orderlies, there is an additional limitation: the total number of returned substrings in all queries of the first type must not exceed \left⌈ 0.777(n+1)^2 \right⌉ (⌈ x ⌉ is x rounded up).
+
+Venya asked you to write a program, which will guess the string by interacting with the orderlies' program and acting by the game's rules.
+
+Your program should immediately terminate after guessing the string using a query of the second type. In case your program guessed the string incorrectly, or it violated the game rules, it will receive verdict Wrong answer.
+
+Note that in every test case the string is fixed beforehand and will not change during the game, which means that the interactor is not adaptive.
+
+Input
+
+First line contains number n (1 ≤ n ≤ 100) — the length of the picked string.
+
+Interaction
+
+You start the interaction by reading the number n.
+
+To ask a query about a substring from l to r inclusively (1 ≤ l ≤ r ≤ n), you should output
+
+? l r
+
+on a separate line. After this, all substrings of s[l..r] will be returned in random order, each substring exactly once. In every returned substring all characters will be randomly shuffled.
+
+In the case, if you ask an incorrect query, ask more than 3 queries of the first type or there will be more than \left⌈ 0.777(n+1)^2 \right⌉ substrings returned in total, you will receive verdict Wrong answer.
+
+To guess the string s, you should output
+
+! s
+
+on a separate line.
+
+After printing each query, do not forget to flush the output. Otherwise, you will get Idleness limit exceeded. To flush the output, you can use: 
+
+  * fflush(stdout) or cout.flush() in C++; 
+  * System.out.flush() in Java; 
+  * flush(output) in Pascal; 
+  * stdout.flush() in Python; 
+  * see documentation for other languages. 
+
+
+
+If you received - (dash) as an answer to any query, you need to terminate your program with exit code 0 (for example, by calling exit(0)). This means that there was an error in the interaction protocol. If you don't terminate with exit code 0, you can receive any unsuccessful verdict. 
+
+Hack format
+
+To hack a solution, use the following format:
+
+The first line should contain one integer n (1 ≤ n ≤ 100) — the length of the string, and the following line should contain the string s.
+
+Example
+
+Input
+
+
+4
+
+a
+aa
+a
+
+cb
+b
+c
+
+c
+
+Output
+
+
+? 1 2
+
+? 3 4
+
+? 4 4
+
+! aabc
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+inline long long read() {
+  long long x = 0, f = 1;
+  char c = getchar();
+  for (; c > '9' || c < '0'; c = getchar()) {
+    if (c == '-') f = -1;
+  }
+  for (; c >= '0' && c <= '9'; c = getchar()) {
+    x = x * 10 + c - '0';
+  }
+  return x * f;
+}
+int cnt[27][105];
+char s[105], s1[105];
+std::string sss, halfans, halfans2;
+std::vector<char> ans;
+std::map<std::string, int> H1[105], H2[105];
+inline char getA(std::string a, std::string b) {
+  int c[30];
+  memset(c, 0, sizeof c);
+  for (int i = 0; i < a.size(); i++) c[a[i] - 'a']++;
+  for (int i = 0; i < b.size(); i++) c[b[i] - 'a']--;
+  for (int i = 0; i < 26; i++) {
+    if (c[i] > 0) return i + 'a';
+  }
+  return 'a';
+}
+inline std::string solve(int n) {
+  printf("? 1 %d\n", n);
+  fflush(stdout);
+  for (int i = 1; i <= n * (n + 1) >> 1; i++) {
+    scanf("%s", s);
+    sss = std::string(s);
+    std::sort(sss.begin(), sss.end());
+    H1[sss.size()][sss]++;
+  }
+  printf("? 2 %d\n", n);
+  fflush(stdout);
+  for (int i = 1; i <= n * (n - 1) >> 1; i++) {
+    scanf("%s", s);
+    sss = std::string(s);
+    std::sort(sss.begin(), sss.end());
+    H2[sss.size()][sss]++;
+  }
+  for (int i = 1; i <= n; i++) {
+    for (auto p : H2[i]) {
+      H1[i][p.first] -= H2[i][p.first];
+    }
+    for (auto p : H1[i]) {
+      if (p.second > 0) {
+        std::string new1 = ("");
+        for (int j = 0; j < ans.size(); j++) new1 += ans[j];
+        ans.push_back(getA(p.first, new1));
+      }
+    }
+  }
+  std::string new1 = ("");
+  for (int j = 0; j < ans.size(); j++) new1 += ans[j];
+  return new1;
+}
+inline void work() {
+  int n = read();
+  if (n == 1) {
+    puts("? 1 1");
+    fflush(stdout);
+    scanf("%s", s);
+    printf("! %s\n", s);
+    fflush(stdout);
+  } else if (n == 2) {
+    puts("? 1 1");
+    fflush(stdout);
+    scanf("%s", s);
+    puts("? 2 2");
+    fflush(stdout);
+    scanf("%s", s1);
+    printf("! %s%s\n", s, s1);
+    fflush(stdout);
+  } else {
+    halfans = solve(n + 1 >> 1);
+    printf("? 1 %d\n", n);
+    fflush(stdout);
+    for (int i = 1; i <= n * (n + 1) >> 1; i++) {
+      scanf("%s", s);
+      sss = std::string(s);
+      for (int j = 0; j < sss.size(); j++) {
+        cnt[sss[j] - 'a'][sss.size()]++;
+      }
+    }
+    halfans2 = std::string("");
+    for (int i = 1; i <= n >> 1; i++) {
+      for (int j = 0; j < 26; j++) {
+        int num = cnt[j][1] - (cnt[j][i + 1] - cnt[j][i]);
+        for (int k = 0; k < i; k++) {
+          if (halfans[k] - 'a' == j) {
+            num--;
+          }
+        }
+        for (int k = 0; k < halfans2.size(); k++) {
+          if (halfans2[k] - 'a' == j) {
+            num--;
+          }
+        }
+        if (num > 0) {
+          halfans2 += ('a' + j);
+          break;
+        }
+      }
+    }
+    for (int i = halfans2.size() - 1; ~i; i--) halfans += halfans2[i];
+    printf("! %s\n", halfans.c_str());
+    fflush(stdout);
+  }
+}
+int main() {
+  work();
+  return 0;
+}
+
+
+Example question 2:
+Name: p00599 Combinatorial Topology
+Tags: ['']
+Description: It was long believed that a 2-dimensional place can not be filled with a finite set of polygons in aperiodic way. British mathematician, Sir Roger Penrose, developed an aperiodic tiling over the years and established a theory of what is known today as quasicrystals.
+
+The classic Penrose tiles consist of two rhombi with angles 36 and 72 degrees, see Figure 1. The edges of the rhombi are all of equal unit length, 1. These can fill the entire place without holes and overlaps (see Figure 2). Example: the bold line boundary in Figure 1 is filled with 20 thin tiles and 20 thick tiles.
+
+Given a boundary (set of adjacent vertices counter-clock-wise oriented), how many thin tiles (36 degrees) and how many thick tiles (72 degrees) do you need to fill it (without any holes and intersections)?
+
+<image>
+
+
+
+Input
+
+Each data set is defined as follows:
+
+Line 1: Number of vertices N (N < 100).
+
+N lines: x and y coordinates of each vertex per line separated by blanks (|x| < 100, |y| < 100).
+
+All floats in the input have 6 digits after the decimal point.
+
+The required precision is 4 digits.
+
+Input file includes several data sets. The number of data sets is less than 20.
+
+Output
+
+Each line contains the solution for one set. First, there is the number of thin tiles, then the number of thick tiles, separated by a space. If the boundary is illegal for the above problem, the output should be "-1 -1".
+
+Example
+
+Input
+
+4
+-5.000000 0.000000
+5.000000 0.000000
+9.635255 14.265848
+-0.364745 14.265848
+3
+-1.000000 0.000000
+0.000000 0.000000
+0.000000 1.000000
+
+
+Output
+
+0 150
+-1 -1
+Difficulty: 0
+Solutions: #include <iostream>
+#include <complex>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+using namespace std;
+const double EPS = 1e-5;
+const double INF = 1e12;
+const double PI = acos(-1);
+#define EQ(n,m) (abs((n)-(m)) < EPS)
+#define X real()
+#define Y imag()
+typedef complex<double> P;
+typedef vector<P> VP;
+
+namespace std{
+    bool operator < (const P& a, const P& b){
+        return !EQ(a.X,b.X) ? a.X<b.X : a.Y+EPS<b.Y;
+    }
+    bool operator == (const P& a, const P& b){
+        return abs(a-b) < EPS;
+    }
+}
+
+double dot(P a, P b){
+    return (conj(a)*b).X;
+}
+double cross(P a, P b){
+    return (conj(a)*b).Y;
+}
+
+double getangle(P a, P b){
+    return abs(arg(a/b));
+}
+double getarea(const VP &poly){
+    double ret = 0;
+    for (int i=0; i<(int)poly.size(); i++){ 
+        ret += cross(poly[i], poly[(i+1)%poly.size()]);
+    }
+    return ret*0.5;
+}
+
+int main(){
+    int n;
+    while(cin >> n){
+        VP p(n);
+        for(int i=0; i<n; i++){
+            double x,y;
+            cin >> x >> y;
+            p[i] = P(x, y);
+        }
+        if(p[0] == p.back()){
+            p.pop_back();
+            n--;
+        }
+
+        bool ng = false;
+        double len = abs(p[1] -p[0]);
+        for(int i=0; i<n; i++){
+            double a = getangle(p[i] -p[(i+1)%n], p[(i+2)%n] -p[(i+1)%n]);
+            a *= 5/PI;
+            double l = abs(p[(i+1)%n] -p[i]);
+            if(!EQ(len, l)) len = -1;
+            if(!EQ(a, round(a)) || !EQ(l, round(l))){
+                ng = true;
+                break;
+            }
+        }
+        if(len != -1 && n == 5) ng = true;
+        if(ng){
+            cout << -1 << " " << -1 << endl;
+            continue;
+        }
+
+        double area = getarea(p);
+        double thin = sin(PI/5);
+        double thick = sin(2*PI/5);
+        int a=-1, b=-1;
+        for(int i=0; thin*i < area +EPS; i++){
+            double rem = area -thin*i;
+            double j = rem/thick;
+            if(EQ(j, round(j))){
+                a = i;
+                b = round(j) +EPS;
+                break;
+            }
+        }
+        cout << a << " " << b << endl;
+    }
+    return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

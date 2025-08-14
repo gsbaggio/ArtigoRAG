@@ -1,0 +1,2 @@
+1800
+['brute force', 'dp', 'greedy', 'implementation', 'math']

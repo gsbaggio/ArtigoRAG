@@ -1,0 +1,475 @@
+CURRENT QUESTION:
+A bracket sequence is a string containing only characters "(" and ")". A regular bracket sequence (or, shortly, an RBS) is a bracket sequence that can be transformed into a correct arithmetic expression by inserting characters "1" and "+" between the original characters of the sequence. For example:
+
+  * bracket sequences "()()" and "(())" are regular (the resulting expressions are: "(1)+(1)" and "((1+1)+1)"); 
+  * bracket sequences ")(", "(" and ")" are not. 
+
+
+
+Let's denote the concatenation of two strings x and y as x+y. For example, "()()" + ")(" = "()())(".
+
+You are given n bracket sequences s_1, s_2, ..., s_n. You can rearrange them in any order (you can rearrange only the strings themselves, but not the characters in them).
+
+Your task is to rearrange the strings in such a way that the string s_1 + s_2 + ... + s_n has as many non-empty prefixes that are RBS as possible.
+
+Input
+
+The first line contains a single integer n (1 ≤ n ≤ 20).
+
+Then n lines follow, the i-th of them contains s_i — a bracket sequence (a string consisting of characters "(" and/or ")". All sequences s_i are non-empty, their total length does not exceed 4 ⋅ 10^5.
+
+Output
+
+Print one integer — the maximum number of non-empty prefixes that are RBS for the string s_1 + s_2 + ... + s_n, if the strings s_1, s_2, ..., s_n can be rearranged arbitrarily.
+
+Examples
+
+Input
+
+
+2
+(
+)
+
+
+Output
+
+
+1
+
+
+Input
+
+
+4
+()()())
+(
+(
+)
+
+
+Output
+
+
+4
+
+
+Input
+
+
+1
+(())
+
+
+Output
+
+
+1
+
+
+Input
+
+
+1
+)(()
+
+
+Output
+
+
+0
+
+Note
+
+In the first example, you can concatenate the strings as follows: "(" + ")" = "()", the resulting string will have one prefix, that is an RBS: "()".
+
+In the second example, you can concatenate the strings as follows: "(" + ")" + "()()())" + "(" = "()()()())(", the resulting string will have four prefixes that are RBS: "()", "()()", "()()()", "()()()()".
+
+The third and the fourth examples contain only one string each, so the order is fixed.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.83):
+Name: 990_C. Bracket Sequences Concatenation Problem
+Tags: ['implementation']
+Description: A bracket sequence is a string containing only characters "(" and ")".
+
+A regular bracket sequence is a bracket sequence that can be transformed into a correct arithmetic expression by inserting characters "1" and "+" between the original characters of the sequence. For example, bracket sequences "()()", "(())" are regular (the resulting expressions are: "(1)+(1)", "((1+1)+1)"), and ")(" and "(" are not.
+
+You are given n bracket sequences s_1, s_2, ... , s_n. Calculate the number of pairs i, j   (1 ≤ i, j ≤ n) such that the bracket sequence s_i + s_j is a regular bracket sequence. Operation + means concatenation i.e. "()(" + ")()" = "()()()".
+
+If s_i + s_j and s_j + s_i are regular bracket sequences and i ≠ j, then both pairs (i, j) and (j, i) must be counted in the answer. Also, if s_i + s_i is a regular bracket sequence, the pair (i, i) must be counted in the answer.
+
+Input
+
+The first line contains one integer n   (1 ≤ n ≤ 3 ⋅ 10^5) — the number of bracket sequences. The following n lines contain bracket sequences — non-empty strings consisting only of characters "(" and ")". The sum of lengths of all bracket sequences does not exceed 3 ⋅ 10^5.
+
+Output
+
+In the single line print a single integer — the number of pairs i, j   (1 ≤ i, j ≤ n) such that the bracket sequence s_i + s_j is a regular bracket sequence.
+
+Examples
+
+Input
+
+3
+)
+()
+(
+
+
+Output
+
+2
+
+
+Input
+
+2
+()
+()
+
+
+Output
+
+4
+
+Note
+
+In the first example, suitable pairs are (3, 1) and (2, 2).
+
+In the second example, any pair is suitable, namely (1, 1), (1, 2), (2, 1), (2, 2).
+Difficulty: 9
+Solutions: n = input()
+zz = 3*10**5 + 1
+tm = [0]*zz
+tp = [0]*zz
+tz = [0]
+w = 0
+b = False
+b2 = False
+for x in range(0,n,+1):
+    s = str(raw_input())
+    tmp = 0
+    if s[0] == ')' and s[-1] == '(':
+        continue
+    for y in range(0, len(s), +1):
+        if s[y] == '(':
+           tmp += 1
+        else:
+            tmp -=1
+    if tmp < 0:
+        tmp4 = 0
+        b3 = False
+        for yyyy in range(len(s)-1,-1, -1):
+            if s[yyyy] == '(':
+                tmp4 += 1
+            else:
+                tmp4 -= 1
+            if tmp4 > 0:
+                b3 = True
+                break
+        if b3 == False:
+            tm[abs(tmp)] += 1
+    elif tmp > 0:
+        tmp3 = 0
+        b2 = False
+        for yyy in range(0, len(s), +1):
+            if s[yyy] == '(':
+                tmp3 += 1
+            else:
+                tmp3 -= 1
+            if tmp3 < 0:
+                b2 = True
+                break
+        if b2 == False:
+            tp[tmp] += 1
+    else:
+        tmp2 = 0
+        b = False
+        for yy in range(0, len(s), +1):
+            if s[yy] == '(':
+                tmp2 += 1
+            else:
+                tmp2 -= 1
+            if tmp2 < 0:
+                b = True
+                break
+        if b == False:
+            tz[0] += 1
+w += tz[0]*tz[0]
+for x in range(0,zz,+1):
+    w += tm[x] * tp[x]
+print w
+
+Similar question 2 (Similarity score: 0.77):
+Name: 847_C. Sum of Nestings
+Tags: ['constructive algorithms']
+Description: Recall that the bracket sequence is considered regular if it is possible to insert symbols '+' and '1' into it so that the result is a correct arithmetic expression. For example, a sequence "(()())" is regular, because we can get correct arithmetic expression insering symbols '+' and '1': "((1+1)+(1+1))". Also the following sequences are regular: "()()()", "(())" and "()". The following sequences are not regular bracket sequences: ")(", "(()" and "())(()".
+
+In this problem you are given two integers n and k. Your task is to construct a regular bracket sequence consisting of round brackets with length 2·n with total sum of nesting of all opening brackets equals to exactly k. The nesting of a single opening bracket equals to the number of pairs of brackets in which current opening bracket is embedded.
+
+For example, in the sequence "()(())" the nesting of first opening bracket equals to 0, the nesting of the second opening bracket equals to 0 and the nesting of the third opening bracket equal to 1. So the total sum of nestings equals to 1.
+
+Input
+
+The first line contains two integers n and k (1 ≤ n ≤ 3·105, 0 ≤ k ≤ 1018) — the number of opening brackets and needed total nesting.
+
+Output
+
+Print the required regular bracket sequence consisting of round brackets.
+
+If there is no solution print "Impossible" (without quotes).
+
+Examples
+
+Input
+
+3 1
+
+
+Output
+
+()(())
+
+Input
+
+4 6
+
+
+Output
+
+(((())))
+
+Input
+
+2 5
+
+
+Output
+
+Impossible
+
+Note
+
+The first example is examined in the statement.
+
+In the second example the answer is "(((())))". The nesting of the first opening bracket is 0, the nesting of the second is 1, the nesting of the third is 2, the nesting of fourth is 3. So the total sum of nestings equals to 0 + 1 + 2 + 3 = 6.
+
+In the third it is impossible to construct a regular bracket sequence, because the maximum possible total sum of nestings for two opening brackets equals to 1. This total sum of nestings is obtained for the sequence "(())".
+Difficulty: 9
+Solutions: # Legends Always Come Up with Solution
+# Author: Manvir Singh
+
+import os
+import sys
+from io import BytesIO, IOBase
+from collections import Counter
+from bisect import *
+from math import gcd
+from itertools import permutations,combinations
+from math import sqrt,ceil,floor
+
+def main():
+    n,k=map(int,input().split())
+    z=floor((-1+sqrt(1+8*k))/2)
+    f=int((z*(z+1))//2!=k)
+    if z+f>n-1:
+        print("Impossible")
+    else:
+        if f:
+            y=((z+1)*(z+2))//2-k
+            print("("*(z+1)+")"*y+"("+")"*(z+2-y)+"()"*(n-(z+2)))
+        else:
+            print("("*(z+1)+")"*(z+1)+"()"*(n-1-z))
+
+# region fastio
+BUFSIZE = 8192
+
+
+class FastIO(IOBase):
+    newlines = 0
+
+    def __init__(self, file):
+        self._fd = file.fileno()
+        self.buffer = BytesIO()
+        self.writable = "x" in file.mode or "r" not in file.mode
+        self.write = self.buffer.write if self.writable else None
+
+    def read(self):
+        while True:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            if not b:
+                break
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines = 0
+        return self.buffer.read()
+
+    def readline(self):
+        while self.newlines == 0:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            self.newlines = b.count(b"\n") + (not b)
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines -= 1
+        return self.buffer.readline()
+
+    def flush(self):
+        if self.writable:
+            os.write(self._fd, self.buffer.getvalue())
+            self.buffer.truncate(0), self.buffer.seek(0)
+
+
+class IOWrapper(IOBase):
+    def __init__(self, file):
+        self.buffer = FastIO(file)
+        self.flush = self.buffer.flush
+        self.writable = self.buffer.writable
+        self.write = lambda s: self.buffer.write(s.encode("ascii"))
+        self.read = lambda: self.buffer.read().decode("ascii")
+        self.readline = lambda: self.buffer.readline().decode("ascii")
+
+
+sys.stdin, sys.stdout = IOWrapper(sys.stdin), IOWrapper(sys.stdout)
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+
+if __name__ == "__main__":
+    main()
+
+Similar question 3 (Similarity score: 0.77):
+Name: 1095_E. Almost Regular Bracket Sequence
+Tags: ['implementation']
+Description: You are given a bracket sequence s consisting of n opening '(' and closing ')' brackets.
+
+A regular bracket sequence is a bracket sequence that can be transformed into a correct arithmetic expression by inserting characters '1' and '+' between the original characters of the sequence. For example, bracket sequences "()()", "(())" are regular (the resulting expressions are: "(1)+(1)", "((1+1)+1)"), and ")(" and "(" are not.
+
+You can change the type of some bracket s_i. It means that if s_i =  ')' then you can change it to '(' and vice versa.
+
+Your task is to calculate the number of positions i such that if you change the type of the i-th bracket, then the resulting bracket sequence becomes regular.
+
+Input
+
+The first line of the input contains one integer n (1 ≤ n ≤ 10^6) — the length of the bracket sequence.
+
+The second line of the input contains the string s consisting of n opening '(' and closing ')' brackets.
+
+Output
+
+Print one integer — the number of positions i such that if you change the type of the i-th bracket, then the resulting bracket sequence becomes regular.
+
+Examples
+
+Input
+
+
+6
+(((())
+
+
+Output
+
+
+3
+
+
+Input
+
+
+6
+()()()
+
+
+Output
+
+
+0
+
+
+Input
+
+
+1
+)
+
+
+Output
+
+
+0
+
+
+Input
+
+
+8
+)))(((((
+
+
+Output
+
+
+0
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int n, ans;
+int prefSuf[1000010][2];
+string s;
+void getPS(int k, char cl, char op) {
+  stack<char> st;
+  bool ok = 1;
+  for (int i = 1; i <= n; ++i) {
+    if (!ok) {
+      prefSuf[i + k * (n - 2 * i + 1)][k] = -1e9;
+      continue;
+    }
+    if (st.empty()) {
+      if (s[i] == cl) {
+        ok = 0;
+        prefSuf[i + k * (n - 2 * i + 1)][k] = -1e9;
+        continue;
+      } else {
+        st.push(s[i]);
+      }
+    } else {
+      if (st.top() == op and s[i] == cl) {
+        st.pop();
+      } else {
+        st.push(s[i]);
+      }
+    }
+    prefSuf[i + k * (n - 2 * i + 1)][k] = st.size();
+  }
+}
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cin >> n >> s;
+  s = " " + s + " ";
+  getPS(0, ')', '(');
+  reverse(s.begin(), s.end());
+  getPS(1, '(', ')');
+  reverse(s.begin(), s.end());
+  for (int i = 1; i <= n; ++i) {
+    if (s[i] == '(') {
+      ans += (prefSuf[i - 1][0] == (prefSuf[i + 1][1] + 1));
+    } else {
+      ans += (prefSuf[i + 1][1] == (prefSuf[i - 1][0] + 1));
+    }
+  }
+  cout << ans;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

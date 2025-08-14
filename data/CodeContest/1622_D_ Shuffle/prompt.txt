@@ -1,0 +1,425 @@
+CURRENT QUESTION:
+You are given a binary string (i. e. a string consisting of characters 0 and/or 1) s of length n. You can perform the following operation with the string s at most once: choose a substring (a contiguous subsequence) of s having exactly k characters 1 in it, and shuffle it (reorder the characters in the substring as you wish).
+
+Calculate the number of different strings which can be obtained from s by performing this operation at most once.
+
+Input
+
+The first line contains two integers n and k (2 ≤ n ≤ 5000; 0 ≤ k ≤ n).
+
+The second line contains the string s of length n, consisting of characters 0 and/or 1.
+
+Output
+
+Print one integer — the number of different strings which can be obtained from s by performing the described operation at most once. Since the answer can be large, output it modulo 998244353.
+
+Examples
+
+Input
+
+
+7 2
+1100110
+
+
+Output
+
+
+16
+
+
+Input
+
+
+5 0
+10010
+
+
+Output
+
+
+1
+
+
+Input
+
+
+8 1
+10001000
+
+
+Output
+
+
+10
+
+
+Input
+
+
+10 8
+0010011000
+
+
+Output
+
+
+1
+
+Note
+
+Some strings you can obtain in the first example:
+
+  * to obtain 0110110, you can take the substring from the 1-st character to the 4-th character, which is 1100, and reorder its characters to get 0110; 
+  * to obtain 1111000, you can take the substring from the 3-rd character to the 7-th character, which is 00110, and reorder its characters to get 11000; 
+  * to obtain 1100101, you can take the substring from the 5-th character to the 7-th character, which is 110, and reorder its characters to get 101. 
+
+
+
+In the second example, k = 0 so you can only choose the substrings consisting only of 0 characters. Reordering them doesn't change the string at all, so the only string you can obtain is 10010.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.79):
+Name: p02635 AtCoder Grand Contest 046 - Shift
+Tags: ['']
+Description: Given is a string S consisting of `0` and `1`. Find the number of strings, modulo 998244353, that can result from applying the following operation on S between 0 and K times (inclusive):
+
+* Choose a pair of integers i, j (1\leq i < j\leq |S|) such that the i-th and j-th characters of S are `0` and `1`, respectively. Remove the j-th character from S and insert it to the immediate left of the i-th character.
+
+Constraints
+
+* 1 \leq |S| \leq 300
+* 0 \leq K \leq 10^9
+* S consists of `0` and `1`.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+S K
+
+
+Output
+
+Find the number of strings, modulo 998244353, that can result from applying the operation on S between 0 and K times (inclusive).
+
+Examples
+
+Input
+
+0101 1
+
+
+Output
+
+4
+
+
+Input
+
+01100110 2
+
+
+Output
+
+14
+
+
+Input
+
+1101010010101101110111100011011111011000111101110101010010101010101 20
+
+
+Output
+
+113434815
+Difficulty: 0
+Solutions: #include<bits/stdc++.h>
+#define ll long long
+using namespace std;
+const int p=998244353;
+int n,m,mx,i,j,k,l,val,ans,f[302][302][302],a[302],b[302],sum,sz;
+char s[10010];
+int main(){
+	scanf("%s",s+1);
+	scanf("%d",&mx);
+	n=strlen(s+1);
+	for(i=1;i<=n;i++){
+		if(s[i]=='1')sz++,sum++;
+		 else{
+		 	a[++m]=sz;sz=0;
+		 }
+	}
+	f[0][0][0]=1;
+	for(i=1;i<=m;i++){
+		b[i]=a[i];
+		a[i]+=a[i-1];
+		for(j=a[i-1];j<=sum;j++)
+		 for(k=0;k<=min(j,mx);k++)if(f[i-1][j][k])
+		  for(l=max(0,a[i]-j);l<=sum-j;l++){
+		  	val=max(0,l-b[i]);
+		  	if(k+val<=mx)(f[i][j+l][k+val]+=f[i-1][j][k])%=p;
+		  }
+	}
+	for(j=a[m];j<=sum;j++)
+	for(k=0;k<=min(mx,sum);k++)ans=(ans+f[m][j][k])%p;
+	printf("%d",ans);
+}
+
+Similar question 2 (Similarity score: 0.77):
+Name: p02636 AtCoder Grand Contest 046 - Secret Passage
+Tags: ['']
+Description: Given is a string S consisting of `0` and `1`. Find the number of strings, modulo 998244353, that can result from applying the following operation on S zero or more times:
+
+* Remove the two characters at the beginning of S, erase one of them, and reinsert the other somewhere in S. This operation can be applied only when S has two or more characters.
+
+Constraints
+
+* 1 \leq |S| \leq 300
+* S consists of `0` and `1`.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+S
+
+
+Output
+
+Print the number of strings, modulo 998244353, that can result from applying the operation on S zero or more times.
+
+Examples
+
+Input
+
+0001
+
+
+Output
+
+8
+
+
+Input
+
+110001
+
+
+Output
+
+24
+
+
+Input
+
+11101111011111000000000110000001111100011111000000001111111110000000111111111
+
+
+Output
+
+697354558
+Difficulty: 0
+Solutions: #include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+using namespace std;
+const int N=310,mod=998244353;
+int n,f[N][N][N],g[N][N][N],C[N*2][N*2];
+char s[N];
+void add(int &x,int y){x+=y;x>=mod?x-=mod:0;}
+int main(){
+//	freopen("a.in","r",stdin);
+	scanf("%s",s);n=strlen(s);
+	g[n][0][0]=1;
+	for(int i=0;i<=n;i++)C[i][0]=1;
+	for(int i=1;i<=n*2;i++)for(int j=1;j<=i;j++)C[i][j]=(C[i-1][j]+C[i-1][j-1])%mod;
+	for(int i=0;i<=n;i++)for(int j=0;j<=n;j++)g[n][i][j]=C[i+j][i];
+	for(int i=n-1;~i;i--)for(int j=0;j<=i;j++)for(int k=0;k<=i;k++){
+		g[i][j][k]=g[i+1][j][k];
+		if(s[i]=='0'&&k)add(g[i][j][k],g[i][j][k-1]);
+		if(s[i]=='1'&&j)add(g[i][j][k],g[i][j-1][k]);
+	}
+	f[0][0][0]=1;
+	for(int i=0;i<=n;i++)for(int j=i;~j;j--)for(int k=i;~k;k--){
+		if(j&&j+k>=2)f[i][j-1][k]|=f[i][j][k];
+		if(k&&j+k>=2)f[i][j][k-1]|=f[i][j][k];
+		if(i<n){if(j&&s[i]=='1')f[i+1][j-1][k+1]|=f[i][j][k];
+			if(k&&s[i]=='0')f[i+1][j+1][k-1]|=f[i][j][k];
+			if(j+k)f[i+1][j][k]|=f[i][j][k];
+		}
+		if(i+2<=n){
+			if(s[i]=='0'||s[i+1]=='0') f[i+2][j+1][k]|=f[i][j][k];
+			if(s[i]=='1'||s[i+1]=='1') f[i+2][j][k+1]|=f[i][j][k];
+		}
+	}
+	int ans=0;
+	for(int i=n;~i;i--)
+		for(int j=i;~j;j--) {
+			for(int k=i;~k;k--) {
+//				printf("%d %d %d : %d %d\n", i, j, k, f[i][j][k], dp[i][j][k]);
+				if( !f[i][j][k] ) continue;
+				add(ans,g[i][j][k]);
+				int cnt[2] = {};
+				for(int l=i-1;l>=0;l--) {
+					cnt[s[l]-'0']++;if(j<cnt[0]||k<cnt[1])break;
+					f[l][j-cnt[0]][k-cnt[1]]=0;
+				}
+			}
+	}
+	printf("%d\n", ans);
+}
+
+Similar question 3 (Similarity score: 0.76):
+Name: 165_C. Another Problem on Strings
+Tags: ['binary search', 'brute force', 'dp', 'math', 'strings', 'two pointers']
+Description: A string is binary, if it consists only of characters "0" and "1".
+
+String v is a substring of string w if it has a non-zero length and can be read starting from some position in string w. For example, string "010" has six substrings: "0", "1", "0", "01", "10", "010". Two substrings are considered different if their positions of occurrence are different. So, if some string occurs multiple times, we should consider it the number of times it occurs.
+
+You are given a binary string s. Your task is to find the number of its substrings, containing exactly k characters "1".
+
+Input
+
+The first line contains the single integer k (0 ≤ k ≤ 106). The second line contains a non-empty binary string s. The length of s does not exceed 106 characters.
+
+Output
+
+Print the single number — the number of substrings of the given string, containing exactly k characters "1".
+
+Please do not use the %lld specifier to read or write 64-bit integers in С++. It is preferred to use the cin, cout streams or the %I64d specifier.
+
+Examples
+
+Input
+
+1
+1010
+
+
+Output
+
+6
+
+
+Input
+
+2
+01010
+
+
+Output
+
+4
+
+
+Input
+
+100
+01010
+
+
+Output
+
+0
+
+Note
+
+In the first sample the sought substrings are: "1", "1", "10", "01", "10", "010".
+
+In the second sample the sought substrings are: "101", "0101", "1010", "01010".
+Difficulty: 9
+Solutions: def main():
+    k, s = lie(), input()
+    n = len(s)
+    dp = [-1]
+    for i in range(n):
+        if s[i] == '1':
+            dp.append(i)
+    dp.append(n)
+    if len(dp) - 2 < k:
+        print(0)
+    elif k == 0:
+        ans = 0
+        for i in range(1, len(dp)):
+            ans += (dp[i] - dp[i - 1] - 1) * (dp[i] - dp[i - 1]) // 2
+        print(ans)
+    else:
+        ans = 0
+        for i in range(k, len(dp) - 1):
+            ans += (dp[i + 1] - dp[i]) * (dp[i - k + 1] - dp[i - k])
+        print(ans)
+
+
+def fun(n, m, k):
+    pass
+
+from sys import *
+import inspect
+import re
+from math import *
+import threading
+from collections import *
+from pprint import pprint as pp
+mod = 998244353
+MAX = 10**5
+
+
+def lie():
+    return int(input())
+
+
+def liee():
+    return map(int, input().split())
+
+
+def array():
+    return list(map(int, input().split()))
+
+
+def deb(p):
+    for line in inspect.getframeinfo(inspect.currentframe().f_back)[3]:
+        m = re.search(r'\bdeb\s*\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)', line)
+        print('%s %d' % (m.group(1), p))
+
+
+def vector(size, val=0):
+    vec = [val for i in range(size)]
+    return vec
+
+
+def matrix(rowNum, colNum, val=0):
+    mat = []
+    for i in range(rowNum):
+        collumn = [val for j in range(colNum)]
+        mat.append(collumn)
+    return mat
+
+
+def dmain():
+    sys.setrecursionlimit(100000000)
+    threading.stack_size(40960000)
+    thread = threading.Thread(target=main)
+    thread.start()
+
+
+if __name__ == '__main__':
+    main()
+    # dmain()
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

@@ -1,0 +1,364 @@
+CURRENT QUESTION:
+Polycarp has come up with a new game to play with you. He calls it "A missing bigram".
+
+A bigram of a word is a sequence of two adjacent letters in it.
+
+For example, word "abbaaba" contains bigrams "ab", "bb", "ba", "aa", "ab" and "ba".
+
+The game goes as follows. First, Polycarp comes up with a word, consisting only of lowercase letters 'a' and 'b'. Then, he writes down all its bigrams on a whiteboard in the same order as they appear in the word. After that, he wipes one of them off the whiteboard.
+
+Finally, Polycarp invites you to guess what the word that he has come up with was.
+
+Your goal is to find any word such that it's possible to write down all its bigrams and remove one of them, so that the resulting sequence of bigrams is the same as the one Polycarp ended up with.
+
+The tests are generated in such a way that the answer exists. If there are multiple answers, you can print any of them.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 2000) — the number of testcases.
+
+The first line of each testcase contains a single integer n (3 ≤ n ≤ 100) — the length of the word Polycarp has come up with.
+
+The second line of each testcase contains n-2 bigrams of that word, separated by a single space. Each bigram consists of two letters, each of them is either 'a' or 'b'.
+
+Additional constraint on the input: there exists at least one string such that it is possible to write down all its bigrams, except one, so that the resulting sequence is the same as the sequence in the input. In other words, the answer exists.
+
+Output
+
+For each testcase print a word, consisting of n letters, each of them should be either 'a' or 'b'. It should be possible to write down all its bigrams and remove one of them, so that the resulting sequence of bigrams is the same as the one Polycarp ended up with.
+
+The tests are generated in such a way that the answer exists. If there are multiple answers, you can print any of them. 
+
+Example
+
+Input
+
+
+4
+7
+ab bb ba aa ba
+7
+ab ba aa ab ba
+3
+aa
+5
+bb ab bb
+
+
+Output
+
+
+abbaaba
+abaabaa
+baa
+bbabb
+
+Note
+
+The first two testcases from the example are produced from the word "abbaaba". As listed in the statement, it contains bigrams "ab", "bb", "ba", "aa", "ab" and "ba".
+
+In the first testcase, the 5-th bigram is removed. 
+
+In the second testcase, the 2-nd bigram is removed. However, that sequence could also have been produced from the word "abaabaa". It contains bigrams "ab", "ba", "aa", "ab", "ba" and "aa". The missing bigram is the 6-th one.
+
+In the third testcase, all of "baa", "aab" and "aaa" are valid answers.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 358_B. Dima and Text Messages
+Tags: ['brute force', 'strings']
+Description: Seryozha has a very changeable character. This time he refused to leave the room to Dima and his girlfriend (her hame is Inna, by the way). However, the two lovebirds can always find a way to communicate. Today they are writing text messages to each other.
+
+Dima and Inna are using a secret code in their text messages. When Dima wants to send Inna some sentence, he writes out all words, inserting a heart before each word and after the last word. A heart is a sequence of two characters: the "less" characters (<) and the digit three (3). After applying the code, a test message looks like that: <3word1<3word2<3 ... wordn<3.
+
+Encoding doesn't end here. Then Dima inserts a random number of small English characters, digits, signs "more" and "less" into any places of the message.
+
+Inna knows Dima perfectly well, so she knows what phrase Dima is going to send her beforehand. Inna has just got a text message. Help her find out if Dima encoded the message correctly. In other words, find out if a text message could have been received by encoding in the manner that is described above.
+
+Input
+
+The first line contains integer n (1 ≤ n ≤ 105) — the number of words in Dima's message. Next n lines contain non-empty words, one word per line. The words only consist of small English letters. The total length of all words doesn't exceed 105. 
+
+The last line contains non-empty text message that Inna has got. The number of characters in the text message doesn't exceed 105. A text message can contain only small English letters, digits and signs more and less.
+
+Output
+
+In a single line, print "yes" (without the quotes), if Dima decoded the text message correctly, and "no" (without the quotes) otherwise.
+
+Examples
+
+Input
+
+3
+i
+love
+you
+&lt;3i&lt;3love&lt;23you&lt;3
+
+
+Output
+
+yes
+
+
+Input
+
+7
+i
+am
+not
+main
+in
+the
+family
+&lt;3i&lt;&gt;3am&lt;3the&lt;3&lt;main&lt;3in&lt;3the&lt;3&gt;&lt;3family&lt;3
+
+
+Output
+
+no
+
+Note
+
+Please note that Dima got a good old kick in the pants for the second sample from the statement.
+Difficulty: 8
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+template <class T>
+inline T _abs(T n) {
+  return n < 0 ? -n : n;
+}
+template <class T>
+inline T _gcd(T a, T b) {
+  return b == 0 ? a : _gcd(b, a % b);
+}
+template <class T>
+inline T _lcm(T a, T b) {
+  return a / _gcd(a, b) * b;
+}
+int main() {
+  int n;
+  string in, temp;
+  string line;
+  while (scanf("%d", &n) == 1) {
+    temp = "<3";
+    for (int i = 1; i <= n; i++) {
+      cin >> in;
+      temp += in;
+      temp += "<3";
+    }
+    cin >> line;
+    int len = line.size();
+    int j = 0;
+    for (int i = 0; i < len; i++)
+      if (temp[j] == line[i]) j++;
+    if (j == temp.size())
+      printf("yes\n");
+    else
+      printf("no\n");
+  }
+  return 0;
+}
+
+
+Example question 2:
+Name: devhand
+Tags: []
+Description: As you have probably realized up to now that Devu is not a normal guy, he is a very weird and abnormal guy. Normally people have two hands, but Devu has three of them. So he wears three wrist watches on his hands.
+
+
+Devu loves to write name of his friends on his wrist watches. So he want to attach a string corresponding to name of his friends on each wrist watch. He is a quite particular about natural beauty, so he will not attach strings such that one of the string on a watch is prefix (not necessarily proper prefix) of some other string on other watch. Also alphabet size of characters in the string is equal to first K English Alphabets. (i.e. 1 ≤ K ≤ 26).
+
+
+Now Devu wonders in how many ways he can select three non empty strings of length less than or equal to N to attach with his wrist watches. As answer could be very large, he wants you to print answer modulo 10^9 + 7.
+
+
+Input
+First line of test case contains a single integer T corresponding to the number of test cases.
+For each test case, there will be a single line containing two space separated integers N, K. 
+
+Output
+For each test case, print a single line corresponding to the answer of the problem.
+
+Constraints
+
+Example
+Input:
+3
+1 2
+1 3
+2 2
+
+Output:
+0
+6
+36
+
+Explanation
+Example #1. 
+There is no valid arrangement of three strings to the watches, because at least one of the string will be equal to other which will violate the property stated in the problem.
+
+Example #2. 
+There are 6 possible arrangements of the strings to the watches. 
+
+{"a", "b", "c"} 
+{"a", "c", "b"} 
+{"b", "a", "c"} 
+{"b", "c", "a"} 
+{"c", "a", "b"} 
+{"c", "b", "a"}
+Difficulty: 3
+Solutions: def power(a,b):
+    x=1
+    while(b):
+        if(b&1):
+            x=(x*a)%m
+        a=(a*a)%m
+        b>>=1
+    return x
+m=10**9+7
+t=int(raw_input())
+while t>0:
+    t-=1
+    n,k=map(int,raw_input().split())
+    if k==1:
+        print 0
+        continue
+    inv=power(k-1,m-2)
+    inv=power(inv,3)
+    inv=(k*inv)%m
+    temp=power(k,n)
+    n1=(n*n)%m
+    t6=(((3*n1)%m+6*n+2)*temp)%m
+    t1=(2*((temp*k)%m)*(3*n1+3*n+2))%m
+    t2=(((temp*k*k)%m)*(3*n1-1))%m
+    temp1=power(k,2*n+1)
+    t3=(6*(n+1)*temp1)%m
+    t4=(6*k*((n*temp1)%m))%m
+    t5=power(k,3*n+2)
+    ans=(t6+t5-t4+t3+t2-t1-2*k-2)%m
+    ans=(ans*inv)%m
+    print ans
+
+Example question 3:
+Name: 322_E. Ciel the Commander
+Tags: ['constructive algorithms', 'dfs and similar', 'divide and conquer', 'greedy', 'trees']
+Description: Now Fox Ciel becomes a commander of Tree Land. Tree Land, like its name said, has n cities connected by n - 1 undirected roads, and for any two cities there always exists a path between them.
+
+Fox Ciel needs to assign an officer to each city. Each officer has a rank — a letter from 'A' to 'Z'. So there will be 26 different ranks, and 'A' is the topmost, so 'Z' is the bottommost.
+
+There are enough officers of each rank. But there is a special rule must obey: if x and y are two distinct cities and their officers have the same rank, then on the simple path between x and y there must be a city z that has an officer with higher rank. The rule guarantee that a communications between same rank officers will be monitored by higher rank officer.
+
+Help Ciel to make a valid plan, and if it's impossible, output "Impossible!".
+
+Input
+
+The first line contains an integer n (2 ≤ n ≤ 105) — the number of cities in Tree Land.
+
+Each of the following n - 1 lines contains two integers a and b (1 ≤ a, b ≤ n, a ≠ b) — they mean that there will be an undirected road between a and b. Consider all the cities are numbered from 1 to n.
+
+It guaranteed that the given graph will be a tree.
+
+Output
+
+If there is a valid plane, output n space-separated characters in a line — i-th character is the rank of officer in the city with number i. 
+
+Otherwise output "Impossible!".
+
+Examples
+
+Input
+
+4
+1 2
+1 3
+1 4
+
+
+Output
+
+A B B B
+
+
+Input
+
+10
+1 2
+2 3
+3 4
+4 5
+5 6
+6 7
+7 8
+8 9
+9 10
+
+
+Output
+
+D C B A D C B D C D
+
+Note
+
+In the first example, for any two officers of rank 'B', an officer with rank 'A' will be on the path between them. So it is a valid solution.
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int SIZE = 100009;
+vector<int> adj[SIZE];
+int N;
+bool pass[SIZE];
+char ans[SIZE];
+int table[SIZE];
+void assign(int, char, int);
+int build(int n, int p, char c, int total) {
+  table[n] = 1;
+  bool check = true;
+  for (vector<int>::iterator it = adj[n].begin(); it != adj[n].end(); it++)
+    if (*it != p && !pass[*it]) {
+      if (build(*it, n, c, total) == -1) return -1;
+      if (table[*it] > total / 2) check = false;
+      table[n] += table[*it];
+    }
+  if (total - table[n] > total / 2) check = false;
+  if (check) {
+    ans[n] = c;
+    pass[n] = true;
+    for (vector<int>::iterator it = adj[n].begin(); it != adj[n].end(); it++)
+      if (*it != p && !pass[*it]) assign(*it, c + 1, table[*it]);
+    if (p) assign(p, c + 1, total - table[n]);
+    return -1;
+  }
+  return table[n];
+}
+void assign(int n, char c, int total) { build(n, 0, c, total); }
+int main() {
+  scanf("%d", &N);
+  for (int i = 1; i < N; i++) {
+    int a, b;
+    scanf("%d%d", &a, &b);
+    adj[a].push_back(b);
+    adj[b].push_back(a);
+  }
+  assign(1, 'A', N);
+  for (int i = 1; i <= N; i++) {
+    if (i > 1) printf(" ");
+    printf("%c", ans[i]);
+  }
+  printf("\n");
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

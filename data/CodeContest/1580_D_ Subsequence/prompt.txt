@@ -1,0 +1,664 @@
+CURRENT QUESTION:
+Alice has an integer sequence a of length n and all elements are different. She will choose a subsequence of a of length m, and defines the value of a subsequence a_{b_1},a_{b_2},…,a_{b_m} as $$$∑_{i = 1}^m (m ⋅ a_{b_i}) - ∑_{i = 1}^m ∑_{j = 1}^m f(min(b_i, b_j), max(b_i, b_j)), where f(i, j) denotes \min(a_i, a_{i + 1}, \ldots, a_j)$$$.
+
+Alice wants you to help her to maximize the value of the subsequence she choose.
+
+A sequence s is a subsequence of a sequence t if s can be obtained from t by deletion of several (possibly, zero or all) elements.
+
+Input
+
+The first line contains two integers n and m (1 ≤ m ≤ n ≤ 4000).
+
+The second line contains n distinct integers a_1, a_2, …, a_n (1 ≤ a_i < 2^{31}).
+
+Output
+
+Print the maximal value Alice can get.
+
+Examples
+
+Input
+
+
+6 4
+15 2 18 12 13 4
+
+
+Output
+
+
+100
+
+
+Input
+
+
+11 5
+9 3 7 1 8 12 10 20 15 18 5
+
+
+Output
+
+
+176
+
+
+Input
+
+
+1 1
+114514
+
+
+Output
+
+
+0
+
+
+Input
+
+
+2 1
+666 888
+
+
+Output
+
+
+0
+
+Note
+
+In the first example, Alice can choose the subsequence [15, 2, 18, 13], which has the value 4 ⋅ (15 + 2 + 18 + 13) - (15 + 2 + 2 + 2) - (2 + 2 + 2 + 2) - (2 + 2 + 18 + 12) - (2 + 2 + 12 + 13) = 100. In the second example, there are a variety of subsequences with value 176, and one of them is [9, 7, 12, 20, 18].
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.75):
+Name: 1365_E. Maximum Subsequence Value
+Tags: ['brute force', 'constructive algorithms']
+Description: Ridhiman challenged Ashish to find the maximum valued subsequence of an array a of size n consisting of positive integers. 
+
+The value of a non-empty subsequence of k elements of a is defined as ∑ 2^i over all integers i ≥ 0 such that at least max(1, k - 2) elements of the subsequence have the i-th bit set in their binary representation (value x has the i-th bit set in its binary representation if ⌊ (x)/(2^i) ⌋ mod 2 is equal to 1). 
+
+Recall that b is a subsequence of a, if b can be obtained by deleting some(possibly zero) elements from a.
+
+Help Ashish find the maximum value he can get by choosing some subsequence of a.
+
+Input
+
+The first line of the input consists of a single integer n (1 ≤ n ≤ 500) — the size of a.
+
+The next line consists of n space-separated integers — the elements of the array (1 ≤ a_i ≤ 10^{18}).
+
+Output
+
+Print a single integer — the maximum value Ashish can get by choosing some subsequence of a.
+
+Examples
+
+Input
+
+
+3
+2 1 3
+
+
+Output
+
+
+3
+
+Input
+
+
+3
+3 1 4
+
+
+Output
+
+
+7
+
+Input
+
+
+1
+1
+
+
+Output
+
+
+1
+
+Input
+
+
+4
+7 7 1 1
+
+
+Output
+
+
+7
+
+Note
+
+For the first test case, Ashish can pick the subsequence \{{2, 3}\} of size 2. The binary representation of 2 is 10 and that of 3 is 11. Since max(k - 2, 1) is equal to 1, the value of the subsequence is 2^0 + 2^1 (both 2 and 3 have 1-st bit set in their binary representation and 3 has 0-th bit set in its binary representation). Note that he could also pick the subsequence \{{3\}} or \{{2, 1, 3\}}.
+
+For the second test case, Ashish can pick the subsequence \{{3, 4\}} with value 7.
+
+For the third test case, Ashish can pick the subsequence \{{1\}} with value 1.
+
+For the fourth test case, Ashish can pick the subsequence \{{7, 7\}} with value 7.
+Difficulty: 11
+Solutions: import java.io.*;
+import java.util.*;
+import java.math.*;
+
+public class E {
+    static final boolean RUN_TIMING = false;
+    static char[] inputBuffer = new char[1024];
+    static PushbackReader in = new PushbackReader(new BufferedReader(new InputStreamReader(System.in)), 1024);
+    static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+
+    public void go() throws IOException {
+        // in = new PushbackReader(new BufferedReader(new FileReader(new File("test.txt"))), 1024);
+        // out = new PrintWriter(new FileWriter(new File("output.txt")));
+        int n = ipar();
+        long[] arr = lapar(n);
+        // int max = 0;
+        // for (int x : arr) {
+        //     max = Math.max(max, Integer.highestOneBit(x));
+        // }
+        // ArrayList<Integer> listHigh = new ArrayList<>();
+        // ArrayList<Integer> listLow = new ArrayList<>();
+        // for (int x : arr) {
+        //     if (Integer.highestOneBit(x) == max) {
+        //         listHigh.add(x);
+        //     } else {
+        //         listLow.add(x);
+        //     }
+        // }
+        // Collections.sort(listHigh);
+        // Collections.sort(listLow);
+        // max = 0;
+        // HashSet<Integer> take = new HashSet<>();
+        // int one = 0, two = 0, three = 0;
+        // for (int i = 0; i < listHigh.size(); i++) {
+        //     for (int e = 0; e <= i; e++) {
+        //         three |= two & listHigh.get(e);
+        //         two |= one & listHigh.get(e);
+        //         one |= listHigh.get(e);
+        //     }
+        // }
+        long max = 0;
+        for (int i = 0; i < n; i++) {
+            max = Math.max(max, arr[i]);
+            for (int e = i+1; e < n; e++) {
+                max = Math.max(max, arr[i] | arr[e]);
+                for (int w = e+1; w < n; w++) {
+                    max = Math.max(arr[i] | arr[e] | arr[w], max);
+                }
+            }
+        }
+        out.println(max);
+    }
+
+    public int ipar() throws IOException {
+        return Integer.parseInt(spar());
+    }
+
+    public int[] iapar(int n) throws IOException {
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = ipar();
+        }
+        return arr;
+    }
+
+    public long lpar() throws IOException {
+        return Long.parseLong(spar());
+    }
+
+    public long[] lapar(int n) throws IOException {
+        long[] arr = new long[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = lpar();
+        }
+        return arr;
+    }
+
+    public double dpar() throws IOException {
+        return Double.parseDouble(spar());
+    }
+
+    public String spar() throws IOException {
+        int len = 0;
+        int c;
+        do {
+            c = in.read();
+        } while (Character.isWhitespace(c) && c != -1);
+        if (c == -1) {
+            throw new NoSuchElementException("Reached EOF");
+        }
+        do {
+            inputBuffer[len] = (char)c;
+            len++;
+            c = in.read();
+        } while (!Character.isWhitespace(c) && c != -1);
+        while (c != '\n' && Character.isWhitespace(c) && c != -1) {
+            c = in.read();
+        }
+        if (c != -1 && c != '\n') {
+            in.unread(c);
+        }
+        return new String(inputBuffer, 0, len);
+    }
+
+    public String linepar() throws IOException {
+        int len = 0;
+        int c;
+        while ((c = in.read()) != '\n' && c != -1) {
+            if (c == '\r') {
+                continue;
+            }
+            inputBuffer[len] = (char)c;
+            len++;
+        }
+        return new String(inputBuffer, 0, len);
+    }
+
+    public boolean haspar() throws IOException {
+        String line = linepar();
+        if (line.isEmpty()) {
+            return false;
+        }
+        in.unread('\n');
+        in.unread(line.toCharArray());
+        return true;
+    }
+
+    public static void main(String[] args) throws IOException {
+        long time = 0;
+        time -= System.nanoTime();
+        new E().go();
+        time += System.nanoTime();
+        if (RUN_TIMING) {
+            System.out.printf("%.3f ms%n", time / 1000000.0);
+        }
+        out.flush();
+        in.close();
+    }
+}
+
+
+Similar question 2 (Similarity score: 0.73):
+Name: 1227_D1. Optimal Subsequences (Easy Version)
+Tags: ['data structures', 'greedy']
+Description: This is the easier version of the problem. In this version 1 ≤ n, m ≤ 100. You can hack this problem only if you solve and lock both problems.
+
+You are given a sequence of integers a=[a_1,a_2,...,a_n] of length n. Its subsequence is obtained by removing zero or more elements from the sequence a (they do not necessarily go consecutively). For example, for the sequence a=[11,20,11,33,11,20,11]:
+
+  * [11,20,11,33,11,20,11], [11,20,11,33,11,20], [11,11,11,11], [20], [33,20] are subsequences (these are just some of the long list); 
+  * [40], [33,33], [33,20,20], [20,20,11,11] are not subsequences. 
+
+
+
+Suppose that an additional non-negative integer k (1 ≤ k ≤ n) is given, then the subsequence is called optimal if:
+
+  * it has a length of k and the sum of its elements is the maximum possible among all subsequences of length k; 
+  * and among all subsequences of length k that satisfy the previous item, it is lexicographically minimal. 
+
+
+
+Recall that the sequence b=[b_1, b_2, ..., b_k] is lexicographically smaller than the sequence c=[c_1, c_2, ..., c_k] if the first element (from the left) in which they differ less in the sequence b than in c. Formally: there exists t (1 ≤ t ≤ k) such that b_1=c_1, b_2=c_2, ..., b_{t-1}=c_{t-1} and at the same time b_t<c_t. For example:
+
+  * [10, 20, 20] lexicographically less than [10, 21, 1], 
+  * [7, 99, 99] is lexicographically less than [10, 21, 1], 
+  * [10, 21, 0] is lexicographically less than [10, 21, 1]. 
+
+
+
+You are given a sequence of a=[a_1,a_2,...,a_n] and m requests, each consisting of two numbers k_j and pos_j (1 ≤ k ≤ n, 1 ≤ pos_j ≤ k_j). For each query, print the value that is in the index pos_j of the optimal subsequence of the given sequence a for k=k_j.
+
+For example, if n=4, a=[10,20,30,20], k_j=2, then the optimal subsequence is [20,30] — it is the minimum lexicographically among all subsequences of length 2 with the maximum total sum of items. Thus, the answer to the request k_j=2, pos_j=1 is the number 20, and the answer to the request k_j=2, pos_j=2 is the number 30.
+
+Input
+
+The first line contains an integer n (1 ≤ n ≤ 100) — the length of the sequence a.
+
+The second line contains elements of the sequence a: integer numbers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^9).
+
+The third line contains an integer m (1 ≤ m ≤ 100) — the number of requests.
+
+The following m lines contain pairs of integers k_j and pos_j (1 ≤ k ≤ n, 1 ≤ pos_j ≤ k_j) — the requests.
+
+Output
+
+Print m integers r_1, r_2, ..., r_m (1 ≤ r_j ≤ 10^9) one per line: answers to the requests in the order they appear in the input. The value of r_j should be equal to the value contained in the position pos_j of the optimal subsequence for k=k_j.
+
+Examples
+
+Input
+
+
+3
+10 20 10
+6
+1 1
+2 1
+2 2
+3 1
+3 2
+3 3
+
+
+Output
+
+
+20
+10
+20
+10
+20
+10
+
+
+Input
+
+
+7
+1 2 1 3 1 2 1
+9
+2 1
+2 2
+3 1
+3 2
+3 3
+1 1
+7 1
+7 7
+7 4
+
+
+Output
+
+
+2
+3
+2
+3
+2
+3
+1
+1
+3
+
+Note
+
+In the first example, for a=[10,20,10] the optimal subsequences are: 
+
+  * for k=1: [20], 
+  * for k=2: [10,20], 
+  * for k=3: [10,20,10]. 
+Difficulty: 10
+Solutions: # class SegmentTree(): # adapted from https://www.geeksforgeeks.org/segment-tree-efficient-implementation/
+#     def __init__(self,arr,func,initialRes=0):
+#         self.f=func
+#         self.N=len(arr) 
+#         self.tree=[0 for _ in range(2*self.N)]
+#         self.initialRes=initialRes
+#         for i in range(self.N):
+#             self.tree[self.N+i]=arr[i]
+#         for i in range(self.N-1,0,-1):
+#             self.tree[i]=self.f(self.tree[i<<1],self.tree[i<<1|1])
+#     def updateTreeNode(self,idx,value): #update value at arr[idx]
+#         self.tree[idx+self.N]=value
+#         idx+=self.N
+#         i=idx
+#         while i>1:
+#             self.tree[i>>1]=self.f(self.tree[i],self.tree[i^1])
+#             i>>=1
+#     def query(self,l,r): #get sum (or whatever function) on interval [l,r] inclusive
+#         r+=1
+#         res=self.initialRes
+#         l+=self.N
+#         r+=self.N
+#         while l<r:
+#             if l&1:
+#                 res=self.f(res,self.tree[l])
+#                 l+=1
+#             if r&1:
+#                 r-=1
+#                 res=self.f(res,self.tree[r])
+#             l>>=1
+#             r>>=1
+#         return res
+# def getMaxSegTree(arr):
+#     return SegmentTree(arr,lambda a,b:max(a,b),initialRes=-float('inf'))
+# def getMinSegTree(arr):
+#     return SegmentTree(arr,lambda a,b:min(a,b),initialRes=float('inf'))
+# def getSumSegTree(arr):
+#     return SegmentTree(arr,lambda a,b:a+b,initialRes=0)
+from collections import Counter
+def main():
+    
+    # mlogn solution
+    n=int(input())
+    a=readIntArr()
+    
+    b=sorted(a,reverse=True)
+    
+    m=int(input())
+    allans=[]
+    for _ in range(m):
+        k,pos=readIntArr()
+        cnt=Counter(b[:k])
+        totalCnts=0
+        for x in a:
+            if cnt[x]>0:
+                cnt[x]-=1
+                totalCnts+=1
+                if totalCnts==pos:
+                    allans.append(x)
+                    break
+    multiLineArrayPrint(allans)
+    
+    return
+
+import sys
+input=sys.stdin.buffer.readline #FOR READING PURE INTEGER INPUTS (space separation ok)
+# input=lambda: sys.stdin.readline().rstrip("\r\n") #FOR READING STRING/TEXT INPUTS.
+ 
+def oneLineArrayPrint(arr):
+    print(' '.join([str(x) for x in arr]))
+def multiLineArrayPrint(arr):
+    print('\n'.join([str(x) for x in arr]))
+def multiLineArrayOfArraysPrint(arr):
+    print('\n'.join([' '.join([str(x) for x in y]) for y in arr]))
+ 
+def readIntArr():
+    return [int(x) for x in input().split()]
+# def readFloatArr():
+#     return [float(x) for x in input().split()]
+
+def makeArr(defaultValFactory,dimensionArr): # eg. makeArr(lambda:0,[n,m])
+    dv=defaultValFactory;da=dimensionArr
+    if len(da)==1:return [dv() for _ in range(da[0])]
+    else:return [makeArr(dv,da[1:]) for _ in range(da[0])]
+ 
+def queryInteractive(i,j):
+    print('? {} {}'.format(i,j))
+    sys.stdout.flush()
+    return int(input())
+ 
+def answerInteractive(ans):
+    print('! {}'.format(' '.join([str(x) for x in ans])))
+    sys.stdout.flush()
+ 
+inf=float('inf')
+MOD=10**9+7
+# MOD=998244353
+ 
+ 
+for _abc in range(1):
+    main()
+
+Similar question 3 (Similarity score: 0.73):
+Name: 1261_B1. Optimal Subsequences (Easy Version)
+Tags: ['data structures', 'greedy']
+Description: This is the easier version of the problem. In this version 1 ≤ n, m ≤ 100. You can hack this problem only if you solve and lock both problems.
+
+You are given a sequence of integers a=[a_1,a_2,...,a_n] of length n. Its subsequence is obtained by removing zero or more elements from the sequence a (they do not necessarily go consecutively). For example, for the sequence a=[11,20,11,33,11,20,11]:
+
+  * [11,20,11,33,11,20,11], [11,20,11,33,11,20], [11,11,11,11], [20], [33,20] are subsequences (these are just some of the long list); 
+  * [40], [33,33], [33,20,20], [20,20,11,11] are not subsequences. 
+
+
+
+Suppose that an additional non-negative integer k (1 ≤ k ≤ n) is given, then the subsequence is called optimal if:
+
+  * it has a length of k and the sum of its elements is the maximum possible among all subsequences of length k; 
+  * and among all subsequences of length k that satisfy the previous item, it is lexicographically minimal. 
+
+
+
+Recall that the sequence b=[b_1, b_2, ..., b_k] is lexicographically smaller than the sequence c=[c_1, c_2, ..., c_k] if the first element (from the left) in which they differ less in the sequence b than in c. Formally: there exists t (1 ≤ t ≤ k) such that b_1=c_1, b_2=c_2, ..., b_{t-1}=c_{t-1} and at the same time b_t<c_t. For example:
+
+  * [10, 20, 20] lexicographically less than [10, 21, 1], 
+  * [7, 99, 99] is lexicographically less than [10, 21, 1], 
+  * [10, 21, 0] is lexicographically less than [10, 21, 1]. 
+
+
+
+You are given a sequence of a=[a_1,a_2,...,a_n] and m requests, each consisting of two numbers k_j and pos_j (1 ≤ k ≤ n, 1 ≤ pos_j ≤ k_j). For each query, print the value that is in the index pos_j of the optimal subsequence of the given sequence a for k=k_j.
+
+For example, if n=4, a=[10,20,30,20], k_j=2, then the optimal subsequence is [20,30] — it is the minimum lexicographically among all subsequences of length 2 with the maximum total sum of items. Thus, the answer to the request k_j=2, pos_j=1 is the number 20, and the answer to the request k_j=2, pos_j=2 is the number 30.
+
+Input
+
+The first line contains an integer n (1 ≤ n ≤ 100) — the length of the sequence a.
+
+The second line contains elements of the sequence a: integer numbers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^9).
+
+The third line contains an integer m (1 ≤ m ≤ 100) — the number of requests.
+
+The following m lines contain pairs of integers k_j and pos_j (1 ≤ k ≤ n, 1 ≤ pos_j ≤ k_j) — the requests.
+
+Output
+
+Print m integers r_1, r_2, ..., r_m (1 ≤ r_j ≤ 10^9) one per line: answers to the requests in the order they appear in the input. The value of r_j should be equal to the value contained in the position pos_j of the optimal subsequence for k=k_j.
+
+Examples
+
+Input
+
+
+3
+10 20 10
+6
+1 1
+2 1
+2 2
+3 1
+3 2
+3 3
+
+
+Output
+
+
+20
+10
+20
+10
+20
+10
+
+
+Input
+
+
+7
+1 2 1 3 1 2 1
+9
+2 1
+2 2
+3 1
+3 2
+3 3
+1 1
+7 1
+7 7
+7 4
+
+
+Output
+
+
+2
+3
+2
+3
+2
+3
+1
+1
+3
+
+Note
+
+In the first example, for a=[10,20,10] the optimal subsequences are: 
+
+  * for k=1: [20], 
+  * for k=2: [10,20], 
+  * for k=3: [10,20,10]. 
+Difficulty: 8
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+bool cmp(pair<int, int> a, pair<int, int> b) {
+  return (a.first > b.first || (a.first == b.first && a.second < b.second));
+}
+int main() {
+  int n;
+  cin >> n;
+  vector<int> a(n);
+  vector<pair<int, int> > c;
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+    c.push_back({a[i], i});
+  }
+  int m;
+  cin >> m;
+  sort(c.begin(), c.end(), cmp);
+  for (int q = 0; q < m; q++) {
+    vector<int> ans;
+    int k, pos;
+    cin >> k >> pos;
+    pos--;
+    for (int i = 0; i < k; i++) {
+      ans.push_back(c[i].second);
+    }
+    sort(ans.begin(), ans.end());
+    cout << a[ans[pos]] << "\n";
+  }
+  cout << endl;
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

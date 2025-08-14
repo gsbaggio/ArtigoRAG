@@ -1,0 +1,2 @@
+2000
+['brute force', 'constructive algorithms', 'greedy']

@@ -1,0 +1,240 @@
+CURRENT QUESTION:
+The chef has cooked n dishes yet again: the i-th dish consists of a_i grams of fish and b_i grams of meat. 
+
+Banquet organizers consider two dishes i and j equal if a_i=a_j and b_i=b_j at the same time.
+
+The banquet organizers estimate the variety of n dishes as follows. The variety of a set of dishes is equal to the number of different dishes in it. The less variety is, the better.
+
+In order to reduce the variety, a taster was invited. He will eat exactly m_i grams of food from each dish. For each dish, the taster determines separately how much fish and how much meat he will eat. The only condition is that he will eat exactly m_i grams of the i-th dish in total.
+
+Determine how much of what type of food the taster should eat from each dish so that the value of variety is the minimum possible. If there are several correct answers, you may output any of them.
+
+Input
+
+The first line of input data contains an integer t (1 ≤ t ≤ 10^4) — the number of test cases.
+
+Each test case's description is preceded by a blank line. Next comes a line that contains an integer n (1 ≤ n ≤ 2 ⋅ 10^5) — the number of dishes. Then follows n lines, i-th of which contains three integers a_i, b_i and m_i (0 ≤ a_i, b_i ≤ 10^6; 0 ≤ m_i ≤ a_i+b_i) — the mass of fish in i-th dish, the mass of meat in i-th dish and how many grams in total the taster should eat in i-th dish.
+
+The sum of all n values for all input data sets in the test does not exceed 2 ⋅ 10^5.
+
+Output
+
+For each test case, print on the first line the minimum value of variety that can be achieved by eating exactly m_i grams of food (for all i from 1 to n) from a dish i.
+
+Then print n lines that describe a way to do this: the i-th line should contain two integers x_i and y_i (0 ≤ x_i ≤ a_i; 0 ≤ y_i ≤ b_i; x_i+y_i=m_i), where x_i is how many grams of fish the taster should eat from i-th dish, and y_i is how many grams of meat.
+
+If there are several ways to achieve a minimum balance, print any of them.
+
+Example
+
+Input
+
+
+5
+
+3
+10 10 2
+9 9 0
+10 9 1
+
+2
+3 4 1
+5 1 2
+
+3
+7 2 5
+6 5 4
+5 5 6
+
+1
+13 42 50
+
+5
+5 7 12
+3 1 4
+7 3 7
+0 0 0
+4 1 5
+
+
+Output
+
+
+1
+1 1
+0 0
+1 0
+2
+0 1
+1 1
+2
+3 2
+0 4
+1 5
+1
+8 42
+2
+5 7
+3 1
+4 3
+0 0
+4 1
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 813_F. Bipartite Checking
+Tags: ['data structures', 'dsu', 'graphs']
+Description: You are given an undirected graph consisting of n vertices. Initially there are no edges in the graph. Also you are given q queries, each query either adds one undirected edge to the graph or removes it. After each query you have to check if the resulting graph is bipartite (that is, you can paint all vertices of the graph into two colors so that there is no edge connecting two vertices of the same color).
+
+Input
+
+The first line contains two integers n and q (2 ≤ n, q ≤ 100000).
+
+Then q lines follow. ith line contains two numbers xi and yi (1 ≤ xi < yi ≤ n). These numbers describe ith query: if there is an edge between vertices xi and yi, then remove it, otherwise add it.
+
+Output
+
+Print q lines. ith line must contain YES if the graph is bipartite after ith query, and NO otherwise.
+
+Example
+
+Input
+
+3 5
+2 3
+1 3
+1 2
+1 2
+1 2
+
+
+Output
+
+YES
+YES
+NO
+YES
+NO
+Difficulty: 12
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int N = 2e5 + 10;
+map<pair<int, int>, int> ma;
+int n, q;
+int f[N], d[N], st[N], top, str[N], ran[N];
+inline int read() {
+  char ch = getchar();
+  int x = 0, f = 1;
+  while (ch < '0' || ch > '9') {
+    if (ch == '-') f = -1;
+    ch = getchar();
+  }
+  while (ch >= '0' && ch <= '9') {
+    x = (x << 1) + (x << 3) - '0' + ch;
+    ch = getchar();
+  }
+  return x * f;
+}
+int find(int x) {
+  for (; x != f[x]; x = f[x])
+    ;
+  return x;
+}
+int getd(int x) {
+  int ret = 0;
+  for (; x != f[x]; ret ^= d[x], x = f[x])
+    ;
+  return ret;
+}
+struct edge {
+  int l, r, s, t;
+};
+vector<edge> e;
+int cnt;
+int ans[N];
+int res[N];
+void merge(int u, int v, int w) {
+  ++top;
+  if (ran[u] < ran[v]) swap(u, v);
+  if (ran[u] == ran[v])
+    ++ran[u], str[top] = u;
+  else
+    str[top] = 0;
+  st[top] = v;
+  f[v] = u;
+  d[v] = w;
+}
+void clr() {
+  if (str[top]) --ran[str[top]];
+  f[st[top]] = st[top];
+  d[st[top]] = 0;
+  --top;
+}
+void solve(int l, int r, vector<edge> e) {
+  int mid = l + r >> 1, now = top;
+  vector<edge> L, R;
+  for (int i = 0; i < e.size(); i++) {
+    if (e[i].s <= l && e[i].t >= r) {
+      int fu = find(e[i].l), fv = find(e[i].r);
+      int w = getd(e[i].l) ^ getd(e[i].r) ^ 1;
+      if (fu != fv)
+        merge(fu, fv, w);
+      else if (w & 1) {
+        for (int i = l; i <= r; i++) ans[i] = false;
+        while (top > now) clr();
+        return;
+      }
+    } else {
+      if (e[i].s <= mid) L.push_back(e[i]);
+      if (e[i].t > mid) R.push_back(e[i]);
+    }
+  }
+  if (l == r) return;
+  solve(l, mid, L);
+  solve(mid + 1, r, R);
+  while (top > now) clr();
+}
+int main() {
+  n = read(), q = read();
+  for (int i = 1; i <= n; i++) f[i] = i;
+  for (int i = 1; i <= q; i++) {
+    ans[i] = 1;
+    int x = read(), y = read();
+    if (x > y) swap(x, y);
+    if (ma[{x, y}] == 0) {
+      ++cnt;
+      e.push_back({x, y, i});
+      ma[{x, y}] = cnt;
+    } else {
+      e[ma[{x, y}] - 1].t = i - 1;
+      ma[{x, y}] = 0;
+    }
+  }
+  for (auto &j : e) {
+    if (j.t == 0) {
+      j.t = q;
+    }
+  }
+  solve(1, q, e);
+  for (int i = 1; i <= q; i++) {
+    if (ans[i]) {
+      puts("YES");
+    } else {
+      puts("NO");
+    }
+  }
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

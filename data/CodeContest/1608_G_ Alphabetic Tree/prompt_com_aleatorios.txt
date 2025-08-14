@@ -1,0 +1,180 @@
+CURRENT QUESTION:
+You are given m strings and a tree on n nodes. Each edge has some letter written on it.
+
+You have to answer q queries. Each query is described by 4 integers u, v, l and r. The answer to the query is the total number of occurrences of str(u,v) in strings with indices from l to r. str(u,v) is defined as the string that is made by concatenating letters written on the edges on the shortest path from u to v (in order that they are traversed).
+
+Input
+
+The first line of the input contains three integers n, m and q (2 ≤ n ≤ 10^5, 1 ≤ m,q ≤ 10^5).
+
+The i-th of the following n-1 lines contains two integers u_i, v_i and a lowercase Latin letter c_i (1 ≤ u_i, v_i ≤ n, u_i ≠ v_i), denoting the edge between nodes u_i, v_i with a character c_i on it. 
+
+It's guaranteed that these edges form a tree.
+
+The following m lines contain the strings consisting of lowercase Latin letters. The total length of those strings does not exceed 10^5.
+
+Then q lines follow, each containing four integers u, v, l and r (1 ≤ u,v ≤ n, u ≠ v, 1 ≤ l ≤ r ≤ m), denoting the queries. 
+
+Output
+
+For each query print a single integer — the answer to the query.
+
+Examples
+
+Input
+
+
+2 5 3
+1 2 a
+aab
+abab
+aaa
+b
+a
+2 1 1 5
+1 2 1 3
+2 1 3 5
+
+
+Output
+
+
+8
+7
+4
+
+
+Input
+
+
+9 5 6
+1 2 a
+2 7 c
+1 3 b
+3 4 b
+4 6 b
+3 5 a
+5 8 b
+5 9 c
+ababa
+cabbb
+bac
+bbbac
+abacaba
+2 7 1 4
+2 5 1 5
+6 3 4 4
+6 9 4 5
+5 7 3 5
+5 3 1 5
+
+
+Output
+
+
+3
+4
+2
+1
+1
+10
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: p03370 AtCoder Beginner Contest 095 - Bitter Alchemy
+Tags: ['']
+Description: Akaki, a patissier, can make N kinds of doughnut using only a certain powder called "Okashi no Moto" (literally "material of pastry", simply called Moto below) as ingredient. These doughnuts are called Doughnut 1, Doughnut 2, ..., Doughnut N. In order to make one Doughnut i (1 ≤ i ≤ N), she needs to consume m_i grams of Moto. She cannot make a non-integer number of doughnuts, such as 0.5 doughnuts.
+
+Now, she has X grams of Moto. She decides to make as many doughnuts as possible for a party tonight. However, since the tastes of the guests differ, she will obey the following condition:
+
+* For each of the N kinds of doughnuts, make at least one doughnut of that kind.
+
+
+
+At most how many doughnuts can be made here? She does not necessarily need to consume all of her Moto. Also, under the constraints of this problem, it is always possible to obey the condition.
+
+Constraints
+
+* 2 ≤ N ≤ 100
+* 1 ≤ m_i ≤ 1000
+* m_1 + m_2 + ... + m_N ≤ X ≤ 10^5
+* All values in input are integers.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N X
+m_1
+m_2
+:
+m_N
+
+
+Output
+
+Print the maximum number of doughnuts that can be made under the condition.
+
+Examples
+
+Input
+
+3 1000
+120
+100
+140
+
+
+Output
+
+9
+
+
+Input
+
+4 360
+90
+90
+90
+90
+
+
+Output
+
+4
+
+
+Input
+
+5 3000
+150
+130
+150
+130
+110
+
+
+Output
+
+26
+Difficulty: 0
+Solutions: N,X = map(int, input().split())
+M = [int(input()) for _ in range(N)]
+
+X = X - sum(M)
+
+print(N + X//min(M))
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

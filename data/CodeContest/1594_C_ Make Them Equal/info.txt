@@ -1,0 +1,2 @@
+1200
+['brute force', 'greedy', 'math', 'strings']

@@ -1,0 +1,383 @@
+CURRENT QUESTION:
+You are given a sequence a_1, a_2, ..., a_n consisting of n pairwise distinct positive integers.
+
+Find \left⌊ \frac n 2 \right⌋ different pairs of integers x and y such that: 
+
+  * x ≠ y; 
+  * x and y appear in a; 
+  * x~mod~y doesn't appear in a. 
+
+
+
+Note that some x or y can belong to multiple pairs.
+
+⌊ x ⌋ denotes the floor function — the largest integer less than or equal to x. x~mod~y denotes the remainder from dividing x by y.
+
+If there are multiple solutions, print any of them. It can be shown that at least one solution always exists.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10^4) — the number of testcases.
+
+The first line of each testcase contains a single integer n (2 ≤ n ≤ 2 ⋅ 10^5) — the length of the sequence.
+
+The second line of each testcase contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^6).
+
+All numbers in the sequence are pairwise distinct. The sum of n over all testcases doesn't exceed 2 ⋅ 10^5.
+
+Output
+
+The answer for each testcase should contain \left⌊ \frac n 2 \right⌋ different pairs of integers x and y such that x ≠ y, x and y appear in a and x~mod~y doesn't appear in a. Print the pairs one after another.
+
+You can print the pairs in any order. However, the order of numbers in the pair should be exactly such that the first number is x and the second number is y. All pairs should be pairwise distinct.
+
+If there are multiple solutions, print any of them.
+
+Example
+
+Input
+
+
+4
+2
+1 4
+4
+2 8 3 4
+5
+3 8 5 9 7
+6
+2 7 5 3 4 8
+
+
+Output
+
+
+4 1
+8 2
+8 4
+9 5
+7 5
+8 7
+4 3
+5 2
+
+Note
+
+In the first testcase there are only two pairs: (1, 4) and (4, 1). \left⌊ \frac 2 2 \right⌋=1, so we have to find one pair. 1~mod~4=1, and 1 appears in a, so that pair is invalid. Thus, the only possible answer is a pair (4, 1).
+
+In the second testcase, we chose pairs 8~mod~2=0 and 8~mod~4=0. 0 doesn't appear in a, so that answer is valid. There are multiple possible answers for that testcase.
+
+In the third testcase, the chosen pairs are 9~mod~5=4 and 7~mod~5=2. Neither 4, nor 2, appears in a, so that answer is valid.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.75):
+Name: 1343_B. Balanced Array
+Tags: ['constructive algorithms', 'math']
+Description: You are given a positive integer n, it is guaranteed that n is even (i.e. divisible by 2).
+
+You want to construct the array a of length n such that: 
+
+  * The first n/2 elements of a are even (divisible by 2); 
+  * the second n/2 elements of a are odd (not divisible by 2); 
+  * all elements of a are distinct and positive; 
+  * the sum of the first half equals to the sum of the second half (∑_{i=1}^{n/2} a_i = ∑_{i=n/2 + 1}^{n} a_i). 
+
+
+
+If there are multiple answers, you can print any. It is not guaranteed that the answer exists.
+
+You have to answer t independent test cases.
+
+Input
+
+The first line of the input contains one integer t (1 ≤ t ≤ 10^4) — the number of test cases. Then t test cases follow.
+
+The only line of the test case contains one integer n (2 ≤ n ≤ 2 ⋅ 10^5) — the length of the array. It is guaranteed that that n is even (i.e. divisible by 2).
+
+It is guaranteed that the sum of n over all test cases does not exceed 2 ⋅ 10^5 (∑ n ≤ 2 ⋅ 10^5).
+
+Output
+
+For each test case, print the answer — "NO" (without quotes), if there is no suitable answer for the given test case or "YES" in the first line and any suitable array a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^9) satisfying conditions from the problem statement on the second line.
+
+Example
+
+Input
+
+
+5
+2
+4
+6
+8
+10
+
+
+Output
+
+
+NO
+YES
+2 4 1 5
+NO
+YES
+2 4 6 8 1 3 5 11
+NO
+Difficulty: 8
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+long long gcd(long long a, long long b) { return b ? gcd(b, a % b) : a; }
+const long long mod = 1e9 + 7;
+const long long N = 2e5 + 9;
+void raushan_kumar() {
+  long long d = 0, e = 0, f = 0, g = 0;
+  double f1 = 0.0, f2 = 0.0, f3 = 0.0;
+  long long flag = 0, ans = 0, res = 0, cnt = 0, sum = 0;
+  long long n;
+  cin >> n;
+  long long m = n / 2;
+  long long a[n / 2], b[n / 2];
+  if (n % 4 == 0) {
+    cout << "YES" << endl;
+    long long m = n / 2;
+    for (long long i = 0, iend = m; i < iend; i++) {
+      a[i] = 2 * (i + 1);
+      sum += a[i];
+    }
+    for (long long i = 0; i < m - 1; i++) {
+      b[i] = 2 * (i + 1) - 1;
+      cnt += b[i];
+    }
+    b[m - 1] = sum - cnt;
+    for (long long i = 0, iend = m; i < iend; i++) {
+      cout << a[i] << " ";
+    }
+    for (long long i = 0, iend = m; i < iend; i++) {
+      cout << b[i] << " ";
+    }
+    cout << endl;
+  } else {
+    cout << "NO" << endl;
+  }
+}
+int32_t main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+  cout.tie(0);
+  long long t = 1;
+  cin >> t;
+  while (t--) {
+    raushan_kumar();
+  }
+}
+
+
+Similar question 2 (Similarity score: 0.73):
+Name: 1497_C2. k-LCM (hard version)
+Tags: ['constructive algorithms', 'math']
+Description: It is the hard version of the problem. The only difference is that in this version 3 ≤ k ≤ n.
+
+You are given a positive integer n. Find k positive integers a_1, a_2, …, a_k, such that:
+
+  * a_1 + a_2 + … + a_k = n 
+  * LCM(a_1, a_2, …, a_k) ≤ n/2 
+
+
+
+Here LCM is the [least common multiple](https://en.wikipedia.org/wiki/Least_common_multiple) of numbers a_1, a_2, …, a_k.
+
+We can show that for given constraints the answer always exists.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10^4) — the number of test cases.
+
+The only line of each test case contains two integers n, k (3 ≤ n ≤ 10^9, 3 ≤ k ≤ n).
+
+It is guaranteed that the sum of k over all test cases does not exceed 10^5.
+
+Output
+
+For each test case print k positive integers a_1, a_2, …, a_k, for which all conditions are satisfied.
+
+Example
+
+Input
+
+
+2
+6 4
+9 5
+
+
+Output
+
+
+1 2 2 1 
+1 3 3 1 1 
+Difficulty: 9
+Solutions: import java.io.*;
+import java.lang.*;
+import java.util.*;
+public class KLCMEASY {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner s=new Scanner(System.in);
+		int t=s.nextInt();
+		while(t-->0) {
+			int n=s.nextInt();
+			int k=s.nextInt();
+			for(int i=0;i<k-3;i++)
+				{
+				System.out.print(1+" ");
+				n--;
+				}
+			
+			if(n%2==1) {
+				System.out.println(1+" "+n/2+" "+n/2);
+			}
+			else if(n%4!=0 && n%2==0) {
+				System.out.println(2+" "+(n/2-1)+" "+(n/2-1));
+			}
+			else {
+				System.out.println(n/2+" "+n/4+" "+n/4);
+			}
+		}
+	}
+
+}
+
+
+Similar question 3 (Similarity score: 0.72):
+Name: 1485_C. Floor and Mod
+Tags: ['binary search', 'brute force', 'math', 'number theory']
+Description: A pair of positive integers (a,b) is called special if ⌊ a/b ⌋ = a mod b. Here, ⌊ a/b ⌋ is the result of the integer division between a and b, while a mod b is its remainder.
+
+You are given two integers x and y. Find the number of special pairs (a,b) such that 1≤ a ≤ x and 1 ≤ b ≤ y.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 100) — the number of test cases.
+
+The only line of the description of each test case contains two integers x, y (1 ≤ x,y ≤ 10^9).
+
+Output
+
+For each test case print the answer on a single line.
+
+Example
+
+Input
+
+
+9
+3 4
+2 100
+4 3
+50 3
+12 4
+69 420
+12345 6789
+123456 789
+12345678 9
+
+
+Output
+
+
+1
+0
+2
+3
+5
+141
+53384
+160909
+36
+
+Note
+
+In the first test case, the only special pair is (3, 2).
+
+In the second test case, there are no special pairs.
+
+In the third test case, there are two special pairs: (3, 2) and (4, 3).
+Difficulty: 9
+Solutions: import java.io.*;
+import java.util.*;
+
+public class C {
+
+	public static void main(String[] args) {
+        FastScanner in = new FastScanner();
+        PrintWriter out = new PrintWriter(System.out);
+        int t = in.nextInt();
+        while(t-->0) { 
+        	long x = in.nextInt(), y = in.nextInt();
+        	long cnt = 0, min = Math.min(x,y);
+        	for(int rem=1;rem<min;rem++){
+   				if((Math.min(x,y*rem+rem)-rem)/rem>rem) cnt += (Math.min(x,y*rem+rem)-rem)/rem - rem;
+   				else break;                   				
+        	}
+        	out.println(cnt);
+        }
+        out.flush();
+	}
+	
+	static class FastScanner {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer("");
+		
+		String next() {
+			while(!st.hasMoreTokens())
+				try { st = new StringTokenizer(br.readLine()); }
+				catch(IOException e) {}
+			return st.nextToken();
+		}
+		
+		String nextLine(){
+			try{ return br.readLine(); } 
+			catch(IOException e) { } return "";
+		}
+		
+		int nextInt() {
+			return Integer.parseInt(next());
+		}
+		
+		long nextLong() {
+			return Long.parseLong(next());
+		}
+		
+		int[] readArray(int n) {
+			int a[] = new int[n];
+			for(int i=0;i<n;i++) a[i] = nextInt();
+			return a;
+		}
+	}
+
+	static final Random random = new Random();
+
+	static void ruffleSort(int[] a){
+		int n = a.length;
+		for(int i=0;i<n;i++){
+			int j = random.nextInt(n), temp = a[j];
+			a[j] = a[i]; a[i] = temp;
+		}
+		Arrays.sort(a); 	
+	}
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

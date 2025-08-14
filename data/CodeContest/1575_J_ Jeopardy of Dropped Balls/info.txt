@@ -1,0 +1,2 @@
+1500
+['binary search', 'brute force', 'dsu', 'implementation']

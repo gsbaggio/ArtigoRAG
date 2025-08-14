@@ -1,0 +1,611 @@
+CURRENT QUESTION:
+You are given two integer arrays of length N, A1 and A2. You are also given Q queries of 4 types: 
+
+1 k l r x: set Ak_i:=min(Ak_i, x) for each l ≤ i ≤ r.
+
+2 k l r x: set Ak_i:=max(Ak_i, x) for each l ≤ i ≤ r.
+
+3 k l r x: set Ak_i:=Ak_i+x for each l ≤ i ≤ r.
+
+4 l r: find the (∑_{i=l}^r F(A1_i+A2_i)) \% (10^9+7) where F(k) is the k-th Fibonacci number (F(0)=0, F(1)=1, F(k)=F(k-1)+F(k-2)), and x \% y denotes the remainder of the division of x by y.
+
+You should process these queries and answer each query of the fourth type.
+
+Input
+
+The first line contains two integers N and Q. (1 ≤ N, Q ≤ 5 × 10^4) 
+
+The second line contains N integers, array A1_1, A1_2, ... A1_N. (0 ≤ A1_i ≤ 10^6)
+
+The third line contains N integers, array A2_1, A2_2, ... A2_N. (0 ≤ A2_i ≤ 10^6)
+
+The next Q lines describe the queries. Each line contains 5 or 3 integers, where the first integer denotes the type of the query. (k ∈ \{1, 2\}, 1 ≤ l ≤ r ≤ N)
+
+For queries of type 1 and 2, 0 ≤ x ≤ 10^9 holds.
+
+For queries of type 3, −10^6 ≤ x ≤ 10^6 holds.
+
+It is guaranteed that after every query each number in arrays A1 and A2 will be nonnegative. 
+
+Output
+
+Print the answer to each query of the fourth type, in separate lines. 
+
+Examples
+
+Input
+
+
+3 4
+1 0 2
+2 1 0
+4 1 3
+3 2 2 2 3
+1 1 1 3 0
+4 1 3
+
+
+Output
+
+
+4
+4
+
+
+Input
+
+
+5 4
+1 3 5 3 2
+4 2 1 3 3
+4 1 3
+4 2 5
+2 1 2 4 6
+4 2 4
+
+
+Output
+
+
+18
+26
+68
+
+Note
+
+In the first example: The answer for the first query is F(1 + 2) + F(0 + 1) + F(2 + 0) = F(3) + F(1) + F(2) = 2 + 1 + 1 = 4. After the second query, the array A2 changes to [2, 4, 0]. After the third query, the array A1 changes to [0, 0, 0]. The answer for the fourth query is F(0 + 2) + F(0 + 4) + F(0 + 0) = F(2) + F(4) + F(0) = 1 + 3 + 0 = 4. 
+
+In the second example: The answer for the first query is F(1 + 4) + F(3 + 2) + F(5 + 1) = F(5) + F(5) + F(6) = 5 + 5 + 8 = 18. The answer for the second query is F(3 + 2) + F(5 + 1) + F(3 + 3) + F(2 + 3) = F(5) + F(6) + F(6) + F(5) = 5 + 8 + 8 + 5 = 26. After the third query, the array A1 changes to [1, 6, 6, 6, 2]. The answer for the fourth query is F(6 + 2) + F(6 + 1) + F(6 + 3) = F(8) + F(7) + F(9) = 21 + 13 + 34 = 68. 
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.72):
+Name: 719_E. Sasha and Array
+Tags: ['data structures', 'math', 'matrices']
+Description: Sasha has an array of integers a1, a2, ..., an. You have to perform m queries. There might be queries of two types:
+
+  1. 1 l r x — increase all integers on the segment from l to r by values x; 
+  2. 2 l r — find <image>, where f(x) is the x-th Fibonacci number. As this number may be large, you only have to find it modulo 109 + 7. 
+
+
+
+In this problem we define Fibonacci numbers as follows: f(1) = 1, f(2) = 1, f(x) = f(x - 1) + f(x - 2) for all x > 2.
+
+Sasha is a very talented boy and he managed to perform all queries in five seconds. Will you be able to write the program that performs as well as Sasha?
+
+Input
+
+The first line of the input contains two integers n and m (1 ≤ n ≤ 100 000, 1 ≤ m ≤ 100 000) — the number of elements in the array and the number of queries respectively.
+
+The next line contains n integers a1, a2, ..., an (1 ≤ ai ≤ 109).
+
+Then follow m lines with queries descriptions. Each of them contains integers tpi, li, ri and may be xi (1 ≤ tpi ≤ 2, 1 ≤ li ≤ ri ≤ n, 1 ≤ xi ≤ 109). Here tpi = 1 corresponds to the queries of the first type and tpi corresponds to the queries of the second type.
+
+It's guaranteed that the input will contains at least one query of the second type.
+
+Output
+
+For each query of the second type print the answer modulo 109 + 7.
+
+Examples
+
+Input
+
+5 4
+1 1 2 1 1
+2 1 5
+1 2 4 2
+2 2 4
+2 1 5
+
+
+Output
+
+5
+7
+9
+
+Note
+
+Initially, array a is equal to 1, 1, 2, 1, 1.
+
+The answer for the first query of the second type is f(1) + f(1) + f(2) + f(1) + f(1) = 1 + 1 + 1 + 1 + 1 = 5. 
+
+After the query 1 2 4 2 array a is equal to 1, 3, 4, 3, 1.
+
+The answer for the second query of the second type is f(3) + f(4) + f(3) = 2 + 3 + 2 = 7.
+
+The answer for the third query of the second type is f(1) + f(3) + f(4) + f(3) + f(1) = 1 + 2 + 3 + 2 + 1 = 9.
+Difficulty: 11
+Solutions: import java.util.*;
+import java.io.*;
+public class SashaandArray
+{
+
+
+	/************************ SOLUTION STARTS HERE ***********************/
+
+	static final Matrix unit = new Matrix(1, 0, 0, 1);
+	static final Matrix fib  = new Matrix(1, 1, 1, 0);
+	static final int mod = (int) (1e9) + 7; // Default
+	static Matrix DP0[] , DP1[] ;
+	static final int MAX = (1 << 16);
+	static {
+		DP0 = new Matrix[MAX];
+		DP1 = new Matrix[MAX];
+		DP0[0] = unit;
+		for(int i=1;i<MAX;i++)
+			DP0[i] = DP0[i - 1].multiply(fib);
+		for(int i=0;i<MAX;i++)
+			DP1[i] = Matrix.pow(DP0[i], MAX);
+	}
+	static class Matrix {
+
+		final long e00, e01, e10, e11;
+
+		Matrix(long a, long b, long c, long d) {
+			e00 = a;
+			e01 = b;
+			e10 = c;
+			e11 = d;
+		}
+
+		Matrix multiply(Matrix t) {
+			long a = (((e00 * t.e00) % mod) + ((e01 * t.e10) % mod)) % mod;
+			long b = (((e00 * t.e01) % mod) + ((e01 * t.e11) % mod)) % mod;
+			long c = (((e10 * t.e00) % mod) + ((e11 * t.e10) % mod)) % mod;
+			long d = (((e10 * t.e01) % mod) + ((e11 * t.e11) % mod)) % mod;
+			return new Matrix(a, b, c, d);
+		}
+
+		public String toString() {
+			return e00 + " " + e01 + "\n" + e10 + " " + e11 + "\n";
+		}
+		static Matrix add(Matrix a , Matrix b) {
+			return new Matrix((a.e00 + b.e00) % mod, 
+							  (a.e01 + b.e01) % mod, 
+							  (a.e10 + b.e10) % mod, 
+							  (a.e11 + b.e11) % mod);
+		}
+		public static Matrix pow(Matrix m, int b) {
+			if (b == 1)
+				return m;
+			else if(b == 0)
+				return unit;
+			else {
+				if ((b & 1) == 0)
+					return pow(m.multiply(m), b >> 1);
+				else
+					return m.multiply(pow(m.multiply(m), b >> 1));
+			}
+		}
+
+	}
+
+	static class SegmentTree {
+		Matrix tree[] , lazy[];
+		boolean changed[];
+		int size;
+		int len;
+
+		SegmentTree(int arr[]) // arr is one based indexing
+		{
+			len = arr.length - 1;
+			for (size = 1; size < len; size <<= 1)
+				;
+			size <<= 1;
+			tree = new Matrix[size];
+			lazy = new Matrix[size];
+			changed = new boolean[size];
+			Arrays.fill(lazy, unit);
+			build(arr, 1, 1, len);
+		}
+		private boolean isInternal(int node){
+			return 2*node < size && (2*node)+1 < size;
+		}
+
+		private Matrix query(int node , int L , int R, int nl, int nr)
+		{
+			upd(node);
+			int mid = (nl + nr) / 2;
+			if(nl == L && nr == R)
+				return tree[node];
+			else if(R <= mid)
+				return query(2 * node, L, R, nl, mid);
+			else if(L > mid)
+				return query((2*node)+1, L, R, mid + 1 , nr);
+			else
+				return Matrix.add(query(2*node, L, mid , nl , mid) ,  query((2*node)+1, mid+1, R , mid+1,nr));
+		}
+		public long query(int L , int R) {
+			return getFib(query(1, L, R, 1, len));
+		}
+		public void update(int L , int R , int x) {
+			update(1, L, R, 1, len, fibonacci(x));
+		}
+		private void upd(int node){
+			if(changed[node]) {
+				if(isInternal(node)){ 
+					lazy[2*node] = lazy[2*node].multiply(lazy[node]);
+					lazy[(2*node)+1] =  lazy[(2*node)+1].multiply(lazy[node]);
+					changed[2*node] = true;
+					changed[(2*node) + 1] = true;
+				}
+				tree[node] = tree[node].multiply(lazy[node]);
+				lazy[node] = unit;
+				changed[node] = false;
+			}
+		}
+
+		private Matrix update(int node,int L, int R,int nl,int nr ,Matrix inc)
+		{
+			// System.out.println("L " + L + " R " + R + " nl "+ nl + " nr " + nr);
+			if(L == nl && R == nr) {
+				lazy[node] = lazy[node].multiply(inc);
+				changed[node] = true;
+				upd(node);
+				return tree[node];
+			}
+			int mid = (nl + nr) / 2;
+			upd(node);
+			upd(2 * node);
+			upd((2 * node) + 1);
+			Matrix left = tree[2*node], right = tree[(2*node) + 1];
+			if(R <= mid)
+				left  = update(2*node, L, R , nl , mid , inc);
+			else if(L > mid)
+				right = update((2*node) + 1, L, R , mid + 1, nr , inc);
+			else
+			{
+				left  = update(2*node, L, mid , nl , mid , inc);
+				right = update((2*node)+1, mid+1, R , mid+1,nr , inc);
+			}
+			return tree[node] = Matrix.add(left, right);
+		}
+
+		private void build(int arr[], int node, int L, int R) {
+			if (L == R)
+				tree[node] = fibonacci(arr[L]);
+			else {
+				int mid = L + ((R - L) / 2);
+				build(arr, 2 * node, L, mid);
+				build(arr, (2 * node) + 1, mid + 1 , R);
+				tree[node] = Matrix.add(tree[2*node] , tree[(2*node)+1]);
+			}
+		}
+	}
+
+
+	static Matrix fibonacci(int n) {
+		Matrix ans = unit;
+		ans = ans.multiply(DP0[n % MAX]);
+		n /= MAX;
+		ans = ans.multiply(DP1[n % MAX]);
+		return ans;
+	}
+	static long getFib(Matrix mat) {
+		return mat.e10;
+	}
+
+	private static void solve(FastScanner s1, PrintWriter out){
+
+		int N = s1.nextInt();
+		int M = s1.nextInt();
+		int arr[] = s1.nextIntArrayOneBased(N);
+		SegmentTree tree = new SegmentTree(arr);
+		while(M-->0) {
+			if(s1.nextInt() == 1)
+				tree.update(s1.nextInt(), s1.nextInt(), s1.nextInt());
+			else
+				out.println(tree.query(s1.nextInt(), s1.nextInt()));
+		}
+	}
+
+
+
+	/************************ SOLUTION ENDS HERE ************************/
+
+
+
+
+
+	/************************ TEMPLATE STARTS HERE *********************/
+
+	public static void main(String []args) throws IOException {
+		FastScanner in  = new FastScanner(System.in);
+		PrintWriter out = 
+				new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false); 
+		solve(in, out);
+		in.close();
+		out.close();
+	}    
+
+	static class FastScanner{
+		BufferedReader reader;
+		StringTokenizer st;
+		FastScanner(InputStream stream){reader=new BufferedReader(new InputStreamReader(stream));st=null;}	
+		String next()
+		{while(st == null || !st.hasMoreTokens()){try{String line = reader.readLine();if(line == null){return null;}		    
+		st = new StringTokenizer(line);}catch (Exception e){throw new RuntimeException();}}return st.nextToken();}
+		String nextLine()  {String s=null;try{s=reader.readLine();}catch(IOException e){e.printStackTrace();}return s;}	    	  	
+		int    nextInt()   {return Integer.parseInt(next());}
+		long   nextLong()  {return Long.parseLong(next());}		
+		double nextDouble(){return Double.parseDouble(next());}
+		char   nextChar()  {return next().charAt(0);}
+		int[]  nextIntArray(int n)         {int[] arr= new int[n];   int i=0;while(i<n){arr[i++]=nextInt();}  return arr;}
+		long[] nextLongArray(int n)        {long[]arr= new long[n];  int i=0;while(i<n){arr[i++]=nextLong();} return arr;}	
+		int[]  nextIntArrayOneBased(int n) {int[] arr= new int[n+1]; int i=1;while(i<=n){arr[i++]=nextInt();} return arr;}	    	
+		long[] nextLongArrayOneBased(int n){long[]arr= new long[n+1];int i=1;while(i<=n){arr[i++]=nextLong();}return arr;}	    	
+		void   close(){try{reader.close();}catch(IOException e){e.printStackTrace();}}				
+	}
+
+	/************************ TEMPLATE ENDS HERE ************************/
+}
+
+Similar question 2 (Similarity score: 0.72):
+Name: 718_C. Sasha and Array
+Tags: ['data structures', 'math', 'matrices']
+Description: Sasha has an array of integers a1, a2, ..., an. You have to perform m queries. There might be queries of two types:
+
+  1. 1 l r x — increase all integers on the segment from l to r by values x; 
+  2. 2 l r — find <image>, where f(x) is the x-th Fibonacci number. As this number may be large, you only have to find it modulo 109 + 7. 
+
+
+
+In this problem we define Fibonacci numbers as follows: f(1) = 1, f(2) = 1, f(x) = f(x - 1) + f(x - 2) for all x > 2.
+
+Sasha is a very talented boy and he managed to perform all queries in five seconds. Will you be able to write the program that performs as well as Sasha?
+
+Input
+
+The first line of the input contains two integers n and m (1 ≤ n ≤ 100 000, 1 ≤ m ≤ 100 000) — the number of elements in the array and the number of queries respectively.
+
+The next line contains n integers a1, a2, ..., an (1 ≤ ai ≤ 109).
+
+Then follow m lines with queries descriptions. Each of them contains integers tpi, li, ri and may be xi (1 ≤ tpi ≤ 2, 1 ≤ li ≤ ri ≤ n, 1 ≤ xi ≤ 109). Here tpi = 1 corresponds to the queries of the first type and tpi corresponds to the queries of the second type.
+
+It's guaranteed that the input will contains at least one query of the second type.
+
+Output
+
+For each query of the second type print the answer modulo 109 + 7.
+
+Examples
+
+Input
+
+5 4
+1 1 2 1 1
+2 1 5
+1 2 4 2
+2 2 4
+2 1 5
+
+
+Output
+
+5
+7
+9
+
+Note
+
+Initially, array a is equal to 1, 1, 2, 1, 1.
+
+The answer for the first query of the second type is f(1) + f(1) + f(2) + f(1) + f(1) = 1 + 1 + 1 + 1 + 1 = 5. 
+
+After the query 1 2 4 2 array a is equal to 1, 3, 4, 3, 1.
+
+The answer for the second query of the second type is f(3) + f(4) + f(3) = 2 + 3 + 2 = 7.
+
+The answer for the third query of the second type is f(1) + f(3) + f(4) + f(3) + f(1) = 1 + 2 + 3 + 2 + 1 = 9.
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int N = 1e5 + 123;
+const int mod = 1e9 + 7;
+const int INF = 1e9 + 1;
+const long long INFL = 1e18 + 1;
+const double eps = 1e-9;
+const double pi = acos(-1.0);
+inline void add(long long &a, long long b) {
+  a += b;
+  if (a >= mod) a -= mod;
+}
+inline long long sum(long long a, long long b) {
+  add(a, b);
+  return a;
+}
+inline long long mult(int a, int b) { return 1ll * a * b % mod; }
+long long n, m, a[N];
+struct matrix {
+  long long a[5][5], n;
+  matrix() {
+    n = 2;
+    memset(a, 0, sizeof a);
+  }
+  matrix(int _n) {
+    n = _n;
+    memset(a, 0, sizeof a);
+  }
+  matrix operator*(matrix B) {
+    matrix C;
+    for (int i = 1; i <= 2; i++) {
+      for (int j = 1; j <= 2; j++) {
+        for (int k = 1; k <= 2; k++) {
+          C.a[i][j] += a[i][k] * B.a[k][j];
+        }
+      }
+    }
+    for (int i = 1; i <= 2; i++)
+      for (int j = 1; j <= 2; j++) C.a[i][j] %= mod;
+    return C;
+  }
+  matrix operator+(matrix B) {
+    matrix C;
+    for (int i = 1; i <= 2; i++) {
+      for (int j = 1; j <= 2; j++) {
+        for (int k = 1; k <= 2; k++) {
+          C.a[i][j] = sum(a[i][k], B.a[k][j]);
+        }
+      }
+    }
+    return C;
+  }
+  inline void mode() {
+    for (int i = 1; i <= 2; i++)
+      for (int j = 1; j <= 2; j++) a[i][j] %= mod;
+  }
+  inline void erase() { memset(a, 0, sizeof a); }
+} B;
+inline void paint(matrix &B) {
+  B.a[1][1] = 0;
+  B.a[2][1] = 1;
+  B.a[1][2] = 1;
+  B.a[2][2] = 1;
+}
+inline void make(matrix &B) {
+  B.a[1][2] = 0;
+  B.a[2][1] = 0;
+  B.a[1][1] = 1;
+  B.a[2][2] = 1;
+}
+struct node {
+  long long x, y;
+  matrix to;
+  bool need;
+  node() {
+    x = y = 0;
+    need = 0;
+    make(to);
+  }
+} T[4 * N];
+inline matrix binpow(matrix B, long long n) {
+  matrix ans;
+  ans.erase();
+  ans.a[1][1] = 1;
+  ans.a[1][2] = 1;
+  while (n) {
+    if (n & 1) ans = ans * B;
+    B = B * B;
+    n >>= 1;
+  }
+  return ans;
+}
+inline matrix Mypow(matrix B, long long n) {
+  matrix ans;
+  paint(ans);
+  while (n) {
+    if (n & 1) ans = ans * B;
+    B = B * B;
+    n >>= 1;
+  }
+  ans.mode();
+  return ans;
+}
+inline void build(int v = 1, int tl = 1, int tr = n) {
+  if (tl == tr) {
+    matrix aa = binpow(B, a[tl] - 1);
+    matrix bb = binpow(B, a[tl]);
+    T[v].x = aa.a[1][1];
+    T[v].y = bb.a[1][1];
+  } else {
+    int tm = (tl + tr) >> 1;
+    build(v + v, tl, tm);
+    build(v + v + 1, tm + 1, tr);
+    T[v].x = sum(T[v + v].x, T[v + v + 1].x);
+    T[v].y = sum(T[v + v].y, T[v + v + 1].y);
+  }
+}
+inline void push(int v, int tl, int tr) {
+  if (!T[v].need) return;
+  matrix too;
+  too.erase();
+  too.a[1][1] = T[v].x;
+  too.a[1][2] = T[v].y;
+  too = too * T[v].to;
+  T[v].x = too.a[1][1];
+  T[v].y = too.a[1][2];
+  if (tr != tl) {
+    T[v + v].to = T[v + v].to * T[v].to;
+    T[v + v + 1].to = T[v + v + 1].to * T[v].to;
+    T[v + v].need = T[v + v + 1].need = 1;
+  }
+  T[v].to.erase();
+  make(T[v].to);
+  T[v].need = 0;
+}
+inline void upd(int l, int r, matrix X, int v = 1, int tl = 1, int tr = n) {
+  push(v, tl, tr);
+  if (tl > r || tr < l) return;
+  if (l <= tl && tr <= r) {
+    T[v].to = T[v].to * X;
+    T[v].need = 1;
+    push(v, tl, tr);
+    return;
+  }
+  int tm = (tl + tr) >> 1;
+  upd(l, r, X, v + v, tl, tm);
+  upd(l, r, X, v + v + 1, tm + 1, tr);
+  T[v].x = sum(T[v + v].x, T[v + v + 1].x);
+  T[v].y = sum(T[v + v].y, T[v + v + 1].y);
+}
+inline long long get(int l, int r, int v = 1, int tl = 1, int tr = n) {
+  push(v, tl, tr);
+  if (tl > r || tr < l) return 0ll;
+  if (l <= tl && tr <= r) return T[v].x;
+  int tm = (tl + tr) >> 1;
+  return sum(get(l, r, v + v, tl, tm), get(l, r, v + v + 1, tm + 1, tr));
+}
+int main() {
+  scanf("%I64d%I64d", &n, &m);
+  for (int i = 1; i <= n; i++) scanf("%I64d", &a[i]);
+  paint(B);
+  build();
+  while (m--) {
+    long long tp, l, r, x;
+    scanf("%I64d", &tp);
+    if (tp == 1) {
+      scanf("%I64d%I64d%I64d", &l, &r, &x);
+      matrix X = Mypow(B, x - 1);
+      upd(l, r, X);
+    } else {
+      scanf("%I64d%I64d", &l, &r);
+      printf("%I64d\n", get(l, r));
+    }
+  }
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

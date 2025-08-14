@@ -1,0 +1,258 @@
+CURRENT QUESTION:
+You are given a sequence a_1, a_2, ..., a_n consisting of n pairwise distinct positive integers.
+
+Find \left⌊ \frac n 2 \right⌋ different pairs of integers x and y such that: 
+
+  * x ≠ y; 
+  * x and y appear in a; 
+  * x~mod~y doesn't appear in a. 
+
+
+
+Note that some x or y can belong to multiple pairs.
+
+⌊ x ⌋ denotes the floor function — the largest integer less than or equal to x. x~mod~y denotes the remainder from dividing x by y.
+
+If there are multiple solutions, print any of them. It can be shown that at least one solution always exists.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10^4) — the number of testcases.
+
+The first line of each testcase contains a single integer n (2 ≤ n ≤ 2 ⋅ 10^5) — the length of the sequence.
+
+The second line of each testcase contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^6).
+
+All numbers in the sequence are pairwise distinct. The sum of n over all testcases doesn't exceed 2 ⋅ 10^5.
+
+Output
+
+The answer for each testcase should contain \left⌊ \frac n 2 \right⌋ different pairs of integers x and y such that x ≠ y, x and y appear in a and x~mod~y doesn't appear in a. Print the pairs one after another.
+
+You can print the pairs in any order. However, the order of numbers in the pair should be exactly such that the first number is x and the second number is y. All pairs should be pairwise distinct.
+
+If there are multiple solutions, print any of them.
+
+Example
+
+Input
+
+
+4
+2
+1 4
+4
+2 8 3 4
+5
+3 8 5 9 7
+6
+2 7 5 3 4 8
+
+
+Output
+
+
+4 1
+8 2
+8 4
+9 5
+7 5
+8 7
+4 3
+5 2
+
+Note
+
+In the first testcase there are only two pairs: (1, 4) and (4, 1). \left⌊ \frac 2 2 \right⌋=1, so we have to find one pair. 1~mod~4=1, and 1 appears in a, so that pair is invalid. Thus, the only possible answer is a pair (4, 1).
+
+In the second testcase, we chose pairs 8~mod~2=0 and 8~mod~4=0. 0 doesn't appear in a, so that answer is valid. There are multiple possible answers for that testcase.
+
+In the third testcase, the chosen pairs are 9~mod~5=4 and 7~mod~5=2. Neither 4, nor 2, appears in a, so that answer is valid.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 470_D. Caesar Cipher
+Tags: ['*special']
+Description: Caesar cipher is one of the simplest encryption techniques. To transform the original message into encrypted one using key k, one has to replace each letter with a letter which is k positions later in the alphabet (if this takes the position beyond Z, the rest of it is counted from the start of the alphabet). In a more formal way, if letters of the alphabet are enumerated starting with 0, the result of encryption for character x will be <image> (26 is the number of letters in the Latin alphabet).
+
+You are given the original message and the encryption key k. Output the result of encryption.
+
+Input
+
+The first line of input contains an integer k (0 ≤ k ≤ 25) — the encryption key.
+
+The second line contains the original message — a sequence of uppercase Latin letters ('A'-'Z'). The length of the message is from 1 to 10, inclusive.
+
+Output
+
+Output the result of encryption.
+
+Examples
+
+Input
+
+5
+CODEFORCES
+
+
+Output
+
+HTIJKTWHJX
+
+
+Input
+
+13
+FALSERULEZ
+
+
+Output
+
+SNYFREHYRM
+Difficulty: 10
+Solutions: 
+
+Example question 2:
+Name: 27_B. Tournament
+Tags: ['bitmasks', 'brute force', 'dfs and similar', 'greedy']
+Description: The tournament «Sleepyhead-2010» in the rapid falling asleep has just finished in Berland. n best participants from the country have participated in it. The tournament consists of games, each of them is a match between two participants. n·(n - 1) / 2 games were played during the tournament, and each participant had a match with each other participant. 
+
+The rules of the game are quite simple — the participant who falls asleep first wins. The secretary made a record of each game in the form «xi yi», where xi and yi are the numbers of participants. The first number in each pair is a winner (i.e. xi is a winner and yi is a loser). There is no draws.
+
+Recently researches form the «Institute Of Sleep» have found that every person is characterized by a value pj — the speed of falling asleep. The person who has lower speed wins. Every person has its own value pj, constant during the life. 
+
+It is known that all participants of the tournament have distinct speeds of falling asleep. Also it was found that the secretary made records about all the games except one. You are to find the result of the missing game.
+
+Input
+
+The first line contains one integer n (3 ≤ n ≤ 50) — the number of participants. The following n·(n - 1) / 2 - 1 lines contain the results of the games. Each game is described in a single line by two integers xi, yi (1 ≤ xi, yi ≤ n, xi ≠ yi), where xi и yi are the numbers of the opponents in this game. It is known that during the tournament each of the n participants played n - 1 games, one game with each other participant.
+
+Output
+
+Output two integers x and y — the missing record. If there are several solutions, output any of them.
+
+Examples
+
+Input
+
+4
+4 2
+4 1
+2 3
+2 1
+3 1
+
+
+Output
+
+4 3
+Difficulty: 8
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+bool solve(const vector<vector<int> > &v, bool *visited, int s, int q) {
+  if (visited[s]) return false;
+  visited[s] = true;
+  for (int i = 1; i <= v.size(); i++) {
+    if (v[s][i] == 1) {
+      if (i == q) return true;
+      if (solve(v, visited, i, q)) return true;
+    }
+  }
+  return false;
+}
+int solve(const vector<vector<int> > &v, int s, int q) {
+  bool visited[v.size() + 1];
+  for (int i = 0; i < v.size() + 1; i++) visited[i] = false;
+  if (solve(v, visited, s, q)) return 1;
+  return -1;
+}
+int main(int argc, char *argv[]) {
+  int n;
+  cin >> n;
+  vector<vector<int> > v(n + 1);
+  for (int i = 0; i < n + 1; i++) {
+    for (int j = 0; j < n + 1; j++) v[i].push_back(0);
+  }
+  for (int i = 0; i < n * (n - 1) / 2 - 1; i++) {
+    int a, b;
+    cin >> a >> b;
+    v[a][b] = (1);
+    v[b][a] = (-1);
+  }
+  for (int i = 1; i <= n; i++) {
+    bool haveIt = false;
+    int j;
+    for (j = 1; j <= n; j++) {
+      if (i != j && v[i][j] == 0) {
+        if (solve(v, i, j) == 1) {
+          cout << i << " " << j << endl;
+        } else {
+          cout << j << " " << i << endl;
+        }
+        goto out;
+      }
+    }
+  }
+out:
+  return 0;
+}
+
+
+Example question 3:
+Name: p00057 The Number of Area
+Tags: ['']
+Description: If you draw a few infinitely long straight lines on an infinitely wide plane, this plane will be divided into several areas. For example, if you draw a straight line, the plane will be divided into two areas. Even if you draw the same number of straight lines, the number of areas obtained will differ depending on how you draw. For example, if you draw two straight lines in parallel, you get three areas, and if you draw two straight lines perpendicular to each other, you get four areas.
+
+<image>
+
+
+Create a program that outputs the maximum number of regions that can be obtained by drawing n straight lines.
+
+
+
+Input
+
+Given multiple datasets. Each dataset is given n (1 ≤ n ≤ 10,000) on one row. Please process until the end of the input.
+
+The number of datasets does not exceed 50.
+
+Output
+
+For each dataset, output the maximum number of divisions on one line.
+
+Example
+
+Input
+
+1
+3
+
+
+Output
+
+2
+7
+Difficulty: 0
+Solutions: #include <iostream>
+using namespace std;
+int main(){
+	int n;
+	while(cin>>n){
+		int area=(n*n+n+2)/2;
+		cout<<area<<endl;
+	}
+	return 0;
+}
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

@@ -1,0 +1,255 @@
+CURRENT QUESTION:
+Monocarp is playing a computer game. Now he wants to complete the first level of this game.
+
+A level is a rectangular grid of 2 rows and n columns. Monocarp controls a character, which starts in cell (1, 1) — at the intersection of the 1-st row and the 1-st column.
+
+Monocarp's character can move from one cell to another in one step if the cells are adjacent by side and/or corner. Formally, it is possible to move from cell (x_1, y_1) to cell (x_2, y_2) in one step if |x_1 - x_2| ≤ 1 and |y_1 - y_2| ≤ 1. Obviously, it is prohibited to go outside the grid.
+
+There are traps in some cells. If Monocarp's character finds himself in such a cell, he dies, and the game ends.
+
+To complete a level, Monocarp's character should reach cell (2, n) — at the intersection of row 2 and column n.
+
+Help Monocarp determine if it is possible to complete the level.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 100) — the number of test cases. Then the test cases follow. Each test case consists of three lines.
+
+The first line contains a single integer n (3 ≤ n ≤ 100) — the number of columns.
+
+The next two lines describe the level. The i-th of these lines describes the i-th line of the level — the line consists of the characters '0' and '1'. The character '0' corresponds to a safe cell, the character '1' corresponds to a trap cell.
+
+Additional constraint on the input: cells (1, 1) and (2, n) are safe.
+
+Output
+
+For each test case, output YES if it is possible to complete the level, and NO otherwise.
+
+Example
+
+Input
+
+
+4
+3
+000
+000
+4
+0011
+1100
+4
+0111
+1110
+6
+010101
+101010
+
+
+Output
+
+
+YES
+YES
+NO
+YES
+
+Note
+
+Consider the example from the statement.
+
+In the first test case, one of the possible paths is (1, 1) → (2, 2) → (2, 3).
+
+In the second test case, one of the possible paths is (1, 1) → (1, 2) → (2, 3) → (2, 4).
+
+In the fourth test case, one of the possible paths is (1, 1) → (2, 2) → (1, 3) → (2, 4) → (1, 5) → (2, 6).
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 1180_A. Alex and a Rhombus
+Tags: ['dp', 'implementation', 'math']
+Description: While playing with geometric figures Alex has accidentally invented a concept of a n-th order rhombus in a cell grid.
+
+A 1-st order rhombus is just a square 1 × 1 (i.e just a cell).
+
+A n-th order rhombus for all n ≥ 2 one obtains from a n-1-th order rhombus adding all cells which have a common side with it to it (look at the picture to understand it better).
+
+<image>
+
+Alex asks you to compute the number of cells in a n-th order rhombus.
+
+Input
+
+The first and only input line contains integer n (1 ≤ n ≤ 100) — order of a rhombus whose numbers of cells should be computed.
+
+Output
+
+Print exactly one integer — the number of cells in a n-th order rhombus.
+
+Examples
+
+Input
+
+
+1
+
+
+Output
+
+
+1
+
+Input
+
+
+2
+
+
+Output
+
+
+5
+
+Input
+
+
+3
+
+
+Output
+
+
+13
+
+Note
+
+Images of rhombus corresponding to the examples are given in the statement.
+Difficulty: 7
+Solutions: n = int(input())
+print(sum(range(n)) * 4 + 1)
+
+
+Example question 2:
+Name: 1400_A. String Similarity
+Tags: ['constructive algorithms', 'strings']
+Description: A binary string is a string where each character is either 0 or 1. Two binary strings a and b of equal length are similar, if they have the same character in some position (there exists an integer i such that a_i = b_i). For example:
+
+  * 10010 and 01111 are similar (they have the same character in position 4); 
+  * 10010 and 11111 are similar; 
+  * 111 and 111 are similar; 
+  * 0110 and 1001 are not similar. 
+
+
+
+You are given an integer n and a binary string s consisting of 2n-1 characters. Let's denote s[l..r] as the contiguous substring of s starting with l-th character and ending with r-th character (in other words, s[l..r] = s_l s_{l + 1} s_{l + 2} ... s_r).
+
+You have to construct a binary string w of length n which is similar to all of the following strings: s[1..n], s[2..n+1], s[3..n+2], ..., s[n..2n-1].
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of test cases.
+
+The first line of each test case contains a single integer n (1 ≤ n ≤ 50).
+
+The second line of each test case contains the binary string s of length 2n - 1. Each character s_i is either 0 or 1.
+
+Output
+
+For each test case, print the corresponding binary string w of length n. If there are multiple such strings — print any of them. It can be shown that at least one string w meeting the constraints always exists.
+
+Example
+
+Input
+
+
+4
+1
+1
+3
+00000
+4
+1110000
+2
+101
+
+
+Output
+
+
+1
+000
+1010
+00
+
+Note
+
+The explanation of the sample case (equal characters in equal positions are bold):
+
+The first test case: 
+
+  * 1 is similar to s[1..1] = 1. 
+
+
+
+The second test case: 
+
+  * 000 is similar to s[1..3] = 000; 
+  * 000 is similar to s[2..4] = 000; 
+  * 000 is similar to s[3..5] = 000. 
+
+
+
+The third test case: 
+
+  * 1010 is similar to s[1..4] = 1110; 
+  * 1010 is similar to s[2..5] = 1100; 
+  * 1010 is similar to s[3..6] = 1000; 
+  * 1010 is similar to s[4..7] = 0000. 
+
+
+
+The fourth test case: 
+
+  * 00 is similar to s[1..2] = 10; 
+  * 00 is similar to s[2..3] = 01. 
+Difficulty: 7
+Solutions: t = int(input())
+for _ in range(t):
+    n = int(input())
+    s = input()
+    print(s[0::2])
+
+Example question 3:
+Name: find-factorial
+Tags: []
+Description: You have been given a positive integer N. You need to find and print the Factorial  of this number. The Factorial of a positive integer N refers to the product of all number in the range from 1 to N. You can read more about the factorial of a number here.
+
+Input Format:
+The first and only line of the input contains a single integer N denoting the number whose factorial you need to find. 
+
+Output Format
+Output a single line denoting the factorial of the number N.
+
+Constraints
+ 1 ≤ N ≤ 10   
+
+SAMPLE INPUT
+2
+
+SAMPLE OUTPUT
+2
+Difficulty: 0
+Solutions: import math
+print math.factorial(int(raw_input()))
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

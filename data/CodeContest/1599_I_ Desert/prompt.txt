@@ -1,0 +1,421 @@
+CURRENT QUESTION:
+You are given an undirected graph of N nodes and M edges, E_1, E_2, ... E_M.
+
+A connected graph is a cactus if each of it's edges belogs to at most one simple cycle. A graph is a desert if each of it's connected components is a cactus. 
+
+Find the number of pairs (L, R), (1 ≤ L ≤ R ≤ M) such that, if we delete all the edges except for E_L, E_{L+1}, ... E_R, the graph is a desert. 
+
+Input
+
+The first line contains two integers N and M (2 ≤ N ≤ 2.5 × 10^5, 1 ≤ M ≤ 5 × 10^5). Each of the next M lines contains two integers. The i-th line describes the i-th edge. It contains integers U_i and V_i, the nodes connected by the i-th edge (E_i=(U_i, V_i)). It is guaranteed that 1 ≤ U_i, V_i ≤ N and U_i ≠ V_i. 
+
+Output
+
+The output contains one integer number – the answer.
+
+Examples
+
+Input
+
+
+5 6
+1 2
+2 3
+3 4
+4 5
+5 1
+2 4
+
+
+Output
+
+
+20
+
+Input
+
+
+2 3
+1 2
+1 2
+1 2
+
+
+Output
+
+
+5
+
+Note
+
+In the second example: Graphs for pairs (1, 1), (2, 2) and (3, 3) are deserts because they don't have any cycles. Graphs for pairs (1, 2) and (2, 3) have one cycle of length 2 so they are deserts.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.81):
+Name: 1268_E. Happy Cactus
+Tags: ['dp']
+Description: You are given a cactus graph, in this graph each edge lies on at most one simple cycle.
+
+It is given as m edges a_i, b_i, weight of i-th edge is i.
+
+Let's call a path in cactus increasing if the weights of edges on this path are increasing.
+
+Let's call a pair of vertices (u,v) happy if there exists an increasing path that starts in u and ends in v.
+
+For each vertex u find the number of other vertices v, such that pair (u,v) is happy.
+
+Input
+
+The first line of input contains two integers n,m (1 ≤ n, m ≤ 500 000): the number of vertices and edges in the given cactus.
+
+The next m lines contain a description of cactus edges, i-th of them contain two integers a_i, b_i (1 ≤ a_i, b_i ≤ n, a_i ≠ b_i).
+
+It is guaranteed that there are no multiple edges and the graph is connected.
+
+Output
+
+Print n integers, required values for vertices 1,2,…,n.
+
+Examples
+
+Input
+
+
+3 3
+1 2
+2 3
+3 1
+
+
+Output
+
+
+2 2 2 
+
+
+Input
+
+
+5 4
+1 2
+2 3
+3 4
+4 5
+
+
+Output
+
+
+4 4 3 2 1 
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+void read(int &x) {
+  char ch = getchar();
+  x = 0;
+  while (!isdigit(ch)) ch = getchar();
+  while (isdigit(ch)) x = x * 10 + ch - 48, ch = getchar();
+}
+const int N = 5e5 + 5, M = N << 1;
+int n, m, num, dfn[N], fa[N], up[N], dp[N], f[N];
+int cnt, c, mx[N], mn[N], q[M], in[N], k[N];
+struct edge {
+  int x, y;
+} e[N];
+vector<edge> g[N];
+void yxlove() {
+  int x = 0, y = 0;
+  mx[++cnt] = 0, mn[cnt] = 1e9;
+  for (int i = 1, o; i <= c; ++i) {
+    in[o = q[i]] = cnt;
+    if (o > mx[cnt]) mx[cnt] = o, y = i;
+    if (o < mn[cnt]) mn[cnt] = o, x = i;
+  }
+  for (int i = 1; i <= c; ++i) q[c + i] = q[i];
+  int tx = x, ty = y;
+  if (tx > ty) ty += c;
+  k[cnt] = 1;
+  for (int i = tx; i < ty; ++i)
+    if (q[i] > q[i + 1]) k[cnt] = 0;
+  tx = x, ty = y;
+  if (tx < ty) tx += c;
+  for (int i = tx; i > ty; --i)
+    if (q[i] > q[i - 1]) k[cnt] = 0;
+}
+void dfs(int u) {
+  dfn[u] = ++num;
+  dp[u] = 1;
+  for (edge i : g[u])
+    if (i.x != fa[u]) {
+      int v = i.x, w = i.y;
+      if (!dfn[v])
+        fa[v] = u, up[v] = w, dfs(v);
+      else if (dfn[v] < 0) {
+        c = 0;
+        for (int t = v; t != u; t = fa[t]) q[++c] = up[t];
+        q[++c] = w;
+        yxlove();
+      }
+    }
+  dfn[u] = -1;
+}
+signed main() {
+  read(n), read(m);
+  for (int i = 1, u, v; i <= m; ++i) {
+    read(u), read(v);
+    e[i] = {u, v};
+    g[u].push_back({v, i}), g[v].push_back({u, i});
+  }
+  dfs(1);
+  for (int i = m, x, y; i >= 1; --i) {
+    f[i] = dp[x = e[i].x] + dp[y = e[i].y];
+    if (k[in[i]] && i == mn[in[i]]) f[i] -= f[mx[in[i]]];
+    dp[x] = dp[y] = f[i];
+  }
+  for (int i = 1; i <= n; ++i) printf("%d ", dp[i] - 1);
+  return 0;
+}
+
+
+Similar question 2 (Similarity score: 0.71):
+Name: 915_D. Almost Acyclic Graph
+Tags: ['dfs and similar', 'graphs']
+Description: You are given a [directed graph](https://en.wikipedia.org/wiki/Directed_graph) consisting of n vertices and m edges (each edge is directed, so it can be traversed in only one direction). You are allowed to remove at most one edge from it.
+
+Can you make this graph [acyclic](https://en.wikipedia.org/wiki/Directed_acyclic_graph) by removing at most one edge from it? A directed graph is called acyclic iff it doesn't contain any cycle (a non-empty path that starts and ends in the same vertex).
+
+Input
+
+The first line contains two integers n and m (2 ≤ n ≤ 500, 1 ≤ m ≤ min(n(n - 1), 100000)) — the number of vertices and the number of edges, respectively.
+
+Then m lines follow. Each line contains two integers u and v denoting a directed edge going from vertex u to vertex v (1 ≤ u, v ≤ n, u ≠ v). Each ordered pair (u, v) is listed at most once (there is at most one directed edge from u to v).
+
+Output
+
+If it is possible to make this graph acyclic by removing at most one edge, print YES. Otherwise, print NO.
+
+Examples
+
+Input
+
+3 4
+1 2
+2 3
+3 2
+3 1
+
+
+Output
+
+YES
+
+
+Input
+
+5 6
+1 2
+2 3
+3 2
+3 1
+2 1
+4 5
+
+
+Output
+
+NO
+
+Note
+
+In the first example you can remove edge <image>, and the graph becomes acyclic.
+
+In the second example you have to remove at least two edges (for example, <image> and <image>) in order to make the graph acyclic.
+Difficulty: 10
+Solutions: import java.io.*;
+import java.util.*;
+
+public class CF915D
+{
+	static final boolean _DEBUG = true;
+
+	static class MyScanner {
+		BufferedReader br;
+		StringTokenizer st;
+
+		public MyScanner(BufferedReader _br) {
+			br = _br;
+		}
+
+		String next() {
+			while (st == null || !st.hasMoreElements()) {
+				try {
+					st = new StringTokenizer(br.readLine());
+				} catch (Exception e) {
+					e.printStackTrace();
+					return "";
+				}
+			}
+			return st.nextToken();
+		}
+
+		int nextInt() {
+			return Integer.parseInt(next());
+		}
+
+		long nextLong() {
+			return Long.parseLong(next());
+		}
+
+		double nextDouble() {
+			return Double.parseDouble(next());
+		}
+
+		String nextLine() {
+			String str = "";
+			try {
+				str = br.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return str;
+		}
+
+	}
+
+	static MyScanner   scan;
+	static PrintWriter out;
+
+	static int debugCount = 0;
+	static void debug(String msg) {
+		if (_DEBUG && debugCount < 200) {
+			out.println(msg);
+			out.flush();
+			debugCount++;
+		}
+	}
+	
+    public static void main (String args[]) throws IOException {
+//    	scan = new MyScanner(new BufferedReader(new FileReader("test.in")));
+    	scan = new MyScanner(new BufferedReader(new InputStreamReader(System.in)));
+    	out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+        CF915D inst = new CF915D();
+        inst.execute();
+        out.close();
+    }
+    
+    class Node {
+    	int id;
+    	ArrayList<Edge> nbs = new ArrayList<Edge>();
+    	boolean visited = false;
+    	boolean inStack = false;
+    	public Node(int _id) {
+    		id = _id;
+    	}
+    	boolean dfs1(Stack<Edge> cur) {
+    		if (inStack) return true;
+    		if (visited) return false;
+    		visited = true;
+    		inStack = true;
+    		for (Edge edge : nbs) {
+    			cur.push(edge);
+    			if (edge.b.dfs1(cur)) {
+    				return true;
+    			}    				
+    			cur.pop();
+    		}
+    		inStack = false;
+    		return false;
+    	}
+    	
+    	boolean dfs2() {
+    		if (inStack) return true;
+    		if (visited) return false;
+    		visited = true;
+    		inStack = true;
+    		for (Edge edge : nbs) {
+    			if (edge.disabled) continue;
+    			if (edge.b.dfs2()) {
+    				return true;
+    			}    				
+    		}
+    		inStack = false;
+    		return false;
+    	}
+    }
+    
+    class Edge {
+    	Node a, b;
+    	boolean disabled = false;
+    	public Edge(Node _a, Node _b) {
+    		a = _a;
+    		b = _b;
+    	}
+    	public String toString() {
+    		return (a.id + 1) + "->" + (b.id + 1);
+    	}
+    }
+    
+    void execute() throws IOException {
+    	int n = scan.nextInt();
+    	int m = scan.nextInt();
+    	Node[] nodes = new Node[n];
+    	Edge[] edges = new Edge[m];
+    	for (int i = 0; i < n; i++) {
+    		nodes[i] = new Node(i);
+    	}
+    	for (int i = 0; i < m; i++) {
+    		Node a = nodes[scan.nextInt() - 1];
+    		Node b = nodes[scan.nextInt() - 1];
+    		edges[i] = new Edge(a, b);
+    		a.nbs.add(edges[i]);
+    	}
+    	
+    	boolean isCycle = false;
+    	Stack<Edge> candidates = new Stack<Edge>();
+    	for (int i = 0; i < n && !isCycle; i++) {
+			candidates.clear();
+			isCycle = nodes[i].dfs1(candidates);
+    	}
+    	
+    	if (!isCycle) {
+    		out.println("YES");
+    		return;
+    	}
+    	
+//    	debug(candidates.toString());
+    	
+    	while (!candidates.isEmpty()) {
+    		Edge edge = candidates.pop();
+//    		debug("Test " + edge);
+    		edge.disabled = true;
+    		for (Node node : nodes) {
+    			node.visited = false;
+    			node.inStack = false;
+    		}
+    		isCycle = false;
+        	for (int i = 0; i < n && !isCycle; i++) {
+    			isCycle = nodes[i].dfs2();
+        	}
+        	if (!isCycle) {
+        		out.println("YES");
+        		return;        		
+        	}
+    		
+    		edge.disabled = false;
+    	}
+		out.println("NO");
+    }
+}
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

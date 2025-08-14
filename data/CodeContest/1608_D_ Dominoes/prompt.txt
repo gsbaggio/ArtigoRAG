@@ -1,0 +1,523 @@
+CURRENT QUESTION:
+You are given n dominoes. Each domino has a left and a right cell. Each cell can be colored either black or white. Some cells are already colored, while some aren't yet.
+
+The coloring is said to be valid if and only if it is possible to rearrange the dominoes in some order such that for each 1 ≤ i ≤ n the color of the right cell of the i-th domino is different from the color of the left cell of the ((i mod n)+1)-st domino. 
+
+Note that you can't rotate the dominoes, so the left cell always remains the left cell, and the right cell always remains the right cell.
+
+Count the number of valid ways to color the yet uncolored cells of dominoes. Two ways are considered different if there is a cell that is colored white in one way and black in the other. In particular, colorings BW WB and WB BW different (and both invalid).
+
+As this number can be very big, output it modulo 998 244 353.
+
+Input
+
+The first line of the input contains a single integer n (1 ≤ n ≤ 10^5) — the number of dominoes.
+
+The next n lines describe dominoes. Each line contains two characters which represent the left and the right cell. Character B means that the corresponding cell is black, character W means that the corresponding cell is white, and ? means that the cell is yet to be colored. 
+
+Output
+
+Print a single integer — the answer to the problem.
+
+Examples
+
+Input
+
+
+1
+?W
+
+
+Output
+
+
+1
+
+
+Input
+
+
+2
+??
+W?
+
+
+Output
+
+
+2
+
+
+Input
+
+
+4
+BB
+??
+W?
+??
+
+
+Output
+
+
+10
+
+Note
+
+In the first test case, there is only one domino, and we need the color of its right cell to be different from the color of its left cell. There is only one way to achieve this.
+
+In the second test case, there are only 2 such colorings:
+
+BB WW and WB WB.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.78):
+Name: 1511_E. Colorings and Dominoes
+Tags: ['combinatorics', 'dp', 'greedy', 'math']
+Description: You have a large rectangular board which is divided into n × m cells (the board has n rows and m columns). Each cell is either white or black.
+
+You paint each white cell either red or blue. Obviously, the number of different ways to paint them is 2^w, where w is the number of white cells.
+
+After painting the white cells of the board, you want to place the maximum number of dominoes on it, according to the following rules:
+
+  * each domino covers two adjacent cells; 
+  * each cell is covered by at most one domino; 
+  * if a domino is placed horizontally (it covers two adjacent cells in one of the rows), it should cover only red cells; 
+  * if a domino is placed vertically (it covers two adjacent cells in one of the columns), it should cover only blue cells. 
+
+
+
+Let the value of the board be the maximum number of dominoes you can place. Calculate the sum of values of the board over all 2^w possible ways to paint it. Since it can be huge, print it modulo 998 244 353.
+
+Input
+
+The first line contains two integers n and m (1 ≤ n, m ≤ 3 ⋅ 10^5; nm ≤ 3 ⋅ 10^5) — the number of rows and columns, respectively.
+
+Then n lines follow, each line contains a string of m characters. The j-th character in the i-th string is * if the j-th cell in the i-th row is black; otherwise, that character is o.
+
+Output
+
+Print one integer — the sum of values of the board over all 2^w possible ways to paint it, taken modulo 998 244 353.
+
+Examples
+
+Input
+
+
+3 4
+**oo
+oo*o
+**oo
+
+
+Output
+
+
+144
+
+
+Input
+
+
+3 4
+**oo
+oo**
+**oo
+
+
+Output
+
+
+48
+
+
+Input
+
+
+2 2
+oo
+o*
+
+
+Output
+
+
+4
+
+
+Input
+
+
+1 4
+oooo
+
+
+Output
+
+
+9
+Difficulty: 11
+Solutions: #include <algorithm>
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <map>
+#include <set>
+#include <unordered_map>
+
+using namespace std;
+typedef long long LL;
+const int N = 3e5 + 10, mod = 998244353;
+string g[N];
+int dp[N];
+
+int fastPow(int a, int k) {
+    int res = 1;
+    while (k) {
+        if (k & 1) res = (LL)res * a % mod;
+        k >>= 1;
+        a = (LL)a * a % mod;
+    }
+    return res;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    int n, m, sum = 0, res = 0;
+    n = 300000;
+    for (int i = 2; i <= n; i++) {
+        if (i & 1) sum = (sum + 1) % mod;
+        dp[i] = ((LL)dp[i - 1] * 2 % mod + sum + !(i & 1)) % mod;
+        sum = (sum << 1) % mod;
+    }
+    sum = 0;
+    cin >> n >> m;
+    for (int i = 0; i < n; i++) {
+        cin >> g[i];
+        for (auto c : g[i])
+            if (c == 'o') sum++;
+    }
+    for (int i = 0; i < n; i++) {
+        int cnt = 0, len = 0;
+        while (cnt <= m) {
+            if (cnt == m || g[i][cnt] == '*') {
+                if (len) {
+                    res = (res + (LL)dp[len] *
+                                     fastPow(2, sum - len) % mod) %
+                          mod;
+                    len = 0;
+                }
+            } else {
+                len++;
+            }
+            cnt++;
+        }
+    }
+    for (int i = 0; i < m; i++) {
+        int cnt = 0, len = 0;
+        while (cnt <= n) {
+            if (cnt == n || g[cnt][i] == '*') {
+                if (len) {
+                    res = (res + (LL)dp[len] *
+                                     fastPow(2, sum - len) % mod) %
+                          mod;
+                    len = 0;
+                }
+            } else {
+                len++;
+            }
+            cnt++;
+        }
+    }
+    cout << res << endl;
+    return 0;
+}
+
+Similar question 2 (Similarity score: 0.77):
+Name: p03626 AtCoder Beginner Contest 071 - Coloring Dominoes
+Tags: ['']
+Description: We have a board with a 2 \times N grid. Snuke covered the board with N dominoes without overlaps. Here, a domino can cover a 1 \times 2 or 2 \times 1 square.
+
+Then, Snuke decided to paint these dominoes using three colors: red, cyan and green. Two dominoes that are adjacent by side should be painted by different colors. Here, it is not always necessary to use all three colors.
+
+Find the number of such ways to paint the dominoes, modulo 1000000007.
+
+The arrangement of the dominoes is given to you as two strings S_1 and S_2 in the following manner:
+
+* Each domino is represented by a different English letter (lowercase or uppercase).
+* The j-th character in S_i represents the domino that occupies the square at the i-th row from the top and j-th column from the left.
+
+Constraints
+
+* 1 \leq N \leq 52
+* |S_1| = |S_2| = N
+* S_1 and S_2 consist of lowercase and uppercase English letters.
+* S_1 and S_2 represent a valid arrangement of dominoes.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N
+S_1
+S_2
+
+
+Output
+
+Print the number of such ways to paint the dominoes, modulo 1000000007.
+
+Examples
+
+Input
+
+3
+aab
+ccb
+
+
+Output
+
+6
+
+
+Input
+
+1
+Z
+Z
+
+
+Output
+
+3
+
+
+Input
+
+52
+RvvttdWIyyPPQFFZZssffEEkkaSSDKqcibbeYrhAljCCGGJppHHn
+RLLwwdWIxxNNQUUXXVVMMooBBaggDKqcimmeYrhAljOOTTJuuzzn
+
+
+Output
+
+958681902
+Difficulty: 0
+Solutions: #include<bits/stdc++.h>
+#define MOD 1000000007
+using namespace std;
+int i,n,a[52];
+long long x;
+string s,t;
+int main(){
+  cin>>n>>s>>t;
+  if(s[0]==s[1])i=2,x=6;
+  else i=1,x=3;
+  for(;i<s.size();){
+    if(s[i]==s[i+1]){
+      if(s[i-2]==s[i-1])x=x*3%MOD;
+      else x=x*2%MOD;
+      i+=2;
+    }
+    else if(s[i-1]==t[i-1])x=x*2%MOD,++i;
+    else ++i;
+  }
+  cout<<x<<endl;
+}
+
+
+Similar question 3 (Similarity score: 0.72):
+Name: 1237_F. Balanced Domino Placements
+Tags: ['combinatorics', 'dp']
+Description: Consider a square grid with h rows and w columns with some dominoes on it. Each domino covers exactly two cells of the grid that share a common side. Every cell is covered by at most one domino.
+
+Let's call a placement of dominoes on the grid perfectly balanced if no row and no column contains a pair of cells covered by two different dominoes. In other words, every row and column may contain no covered cells, one covered cell, or two covered cells that belong to the same domino.
+
+You are given a perfectly balanced placement of dominoes on a grid. Find the number of ways to place zero or more extra dominoes on this grid to keep the placement perfectly balanced. Output this number modulo 998 244 353.
+
+Input
+
+The first line contains three integers h, w, and n (1 ≤ h, w ≤ 3600; 0 ≤ n ≤ 2400), denoting the dimensions of the grid and the number of already placed dominoes. The rows are numbered from 1 to h, and the columns are numbered from 1 to w.
+
+Each of the next n lines contains four integers r_{i, 1}, c_{i, 1}, r_{i, 2}, c_{i, 2} (1 ≤ r_{i, 1} ≤ r_{i, 2} ≤ h; 1 ≤ c_{i, 1} ≤ c_{i, 2} ≤ w), denoting the row id and the column id of the cells covered by the i-th domino. Cells (r_{i, 1}, c_{i, 1}) and (r_{i, 2}, c_{i, 2}) are distinct and share a common side.
+
+The given domino placement is perfectly balanced.
+
+Output
+
+Output the number of ways to place zero or more extra dominoes on the grid to keep the placement perfectly balanced, modulo 998 244 353.
+
+Examples
+
+Input
+
+
+5 7 2
+3 1 3 2
+4 4 4 5
+
+
+Output
+
+
+8
+
+
+Input
+
+
+5 4 2
+1 2 2 2
+4 3 4 4
+
+
+Output
+
+
+1
+
+
+Input
+
+
+23 42 0
+
+
+Output
+
+
+102848351
+
+Note
+
+In the first example, the initial grid looks like this:
+
+<image>
+
+Here are 8 ways to place zero or more extra dominoes to keep the placement perfectly balanced:
+
+<image>
+
+In the second example, the initial grid looks like this:
+
+<image>
+
+No extra dominoes can be placed here.
+Difficulty: 12
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int mod = 998244353;
+int mult(int a, int b) { return (1LL * a * b) % mod; }
+int sum(int a, int b) {
+  int s = a + b;
+  if (s >= mod) s -= mod;
+  return s;
+}
+int sub(int a, int b) {
+  int s = a - b;
+  if (s < 0) s += mod;
+  return s;
+}
+int pw(int a, int b) {
+  if (b == 0) return 1;
+  if (b & 1) return mult(a, pw(a, b - 1));
+  int res = pw(a, b / 2);
+  return mult(res, res);
+}
+const int maxN = 3605;
+int c[maxN][maxN];
+int h, w, n;
+int dp[maxN][maxN];
+int f[2][maxN];
+void solve(vector<int>& X, int z) {
+  memset(dp, 0, sizeof dp);
+  sort(X.begin(), X.end());
+  int c = X.back() - 1;
+  vector<bool> bad(c + 2, false);
+  for (int v : X) bad[v] = true;
+  dp[0][0] = 1;
+  for (int i = 1; i <= c; i++) {
+    for (int cnt = 0; 2 * cnt <= i - 1; cnt++) {
+      dp[i][cnt] = sum(dp[i][cnt], dp[i - 1][cnt]);
+      if (i >= 2 && !bad[i] && !bad[i - 1]) {
+        dp[i][cnt + 1] = sum(dp[i][cnt + 1], dp[i - 2][cnt]);
+      }
+    }
+  }
+  for (int v = 0; v < maxN; v++) {
+    f[z][v] = dp[c][v];
+  }
+}
+int fact[maxN];
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cin >> h >> w >> n;
+  vector<int> badX, badY;
+  c[0][0] = 1;
+  fact[0] = 1;
+  for (int i = 1; i < maxN; i++) {
+    fact[i] = mult(fact[i - 1], i);
+    c[i][0] = 1;
+    for (int j = 1; j <= i; j++) c[i][j] = sum(c[i - 1][j], c[i - 1][j - 1]);
+  }
+  badX.emplace_back(0);
+  badX.emplace_back(h + 1);
+  badY.emplace_back(w + 1);
+  badY.emplace_back(0);
+  int freeX = h;
+  int freeY = w;
+  for (int i = 1; i <= n; i++) {
+    int r1, c1, r2, c2;
+    cin >> r1 >> c1 >> r2 >> c2;
+    if (r1 == r2) {
+      badX.emplace_back(r1);
+      badY.emplace_back(c1);
+      badY.emplace_back(c2);
+      freeX -= 1;
+      freeY -= 2;
+    } else {
+      badX.emplace_back(r1);
+      badX.emplace_back(r2);
+      badY.emplace_back(c1);
+      freeX -= 2;
+      freeY -= 1;
+    }
+  }
+  for (int z = 0; z < 2; z++) {
+    solve(badX, z);
+    swap(badX, badY);
+  }
+  int ans = 0;
+  for (int takeX = 0; 2 * takeX <= freeX; takeX++) {
+    for (int takeY = 0; 2 * takeY <= freeY; takeY++) {
+      int z = mult(
+          c[freeX - 2 * takeX][takeY],
+          mult(c[freeY - 2 * takeY][takeX], mult(f[0][takeX], f[1][takeY])));
+      ans = sum(ans, mult(fact[takeX],
+                          mult(fact[takeY],
+                               mult(c[freeX - 2 * takeX][takeY],
+                                    mult(c[freeY - 2 * takeY][takeX],
+                                         mult(f[0][takeX], f[1][takeY]))))));
+    }
+  }
+  cout << ans;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

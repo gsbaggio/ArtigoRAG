@@ -1,0 +1,328 @@
+CURRENT QUESTION:
+Petya has an array of integers a_1, a_2, …, a_n. He only likes sorted arrays. Unfortunately, the given array could be arbitrary, so Petya wants to sort it.
+
+Petya likes to challenge himself, so he wants to sort array using only 3-cycles. More formally, in one operation he can pick 3 pairwise distinct indices i, j, and k (1 ≤ i, j, k ≤ n) and apply i → j → k → i cycle to the array a. It simultaneously places a_i on position j, a_j on position k, and a_k on position i, without changing any other element.
+
+For example, if a is [10, 50, 20, 30, 40, 60] and he chooses i = 2, j = 1, k = 5, then the array becomes [\underline{50}, \underline{40}, 20, 30, \underline{10}, 60].
+
+Petya can apply arbitrary number of 3-cycles (possibly, zero). You are to determine if Petya can sort his array a, i. e. make it non-decreasing.
+
+Input
+
+Each test contains multiple test cases. The first line contains the number of test cases t (1 ≤ t ≤ 5 ⋅ 10^5). Description of the test cases follows.
+
+The first line of each test case contains a single integer n (1 ≤ n ≤ 5 ⋅ 10^5) — the length of the array a.
+
+The second line of each test case contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ n).
+
+It is guaranteed that the sum of n over all test cases does not exceed 5 ⋅ 10^5.
+
+Output
+
+For each test case, print "YES" (without quotes) if Petya can sort the array a using 3-cycles, and "NO" (without quotes) otherwise. You can print each letter in any case (upper or lower).
+
+Example
+
+Input
+
+
+7
+1
+1
+2
+2 2
+2
+2 1
+3
+1 2 3
+3
+2 1 3
+3
+3 1 2
+4
+2 1 4 3
+
+
+Output
+
+
+YES
+YES
+NO
+YES
+NO
+YES
+YES
+
+Note
+
+In the 6-th test case Petya can use the 3-cycle 1 → 3 → 2 → 1 to sort the array.
+
+In the 7-th test case Petya can apply 1 → 3 → 2 → 1 and make a = [1, 4, 2, 3]. Then he can apply 2 → 4 → 3 → 2 and finally sort the array.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.72):
+Name: 109_D. Lucky Sorting
+Tags: ['constructive algorithms', 'sortings']
+Description: Petya loves lucky numbers. We all know that lucky numbers are the positive integers whose decimal representations contain only the lucky digits 4 and 7. For example, numbers 47, 744, 4 are lucky and 5, 17, 467 are not.
+
+Petya got an array consisting of n numbers, it is the gift for his birthday. Now he wants to sort it in the non-decreasing order. However, a usual sorting is boring to perform, that's why Petya invented the following limitation: one can swap any two numbers but only if at least one of them is lucky. Your task is to sort the array according to the specified limitation. Find any possible sequence of the swaps (the number of operations in the sequence should not exceed 2n).
+
+Input
+
+The first line contains an integer n (1 ≤ n ≤ 105) — the number of elements in the array. The second line contains n positive integers, not exceeding 109 — the array that needs to be sorted in the non-decreasing order.
+
+Output
+
+On the first line print number k (0 ≤ k ≤ 2n) — the number of the swaps in the sorting. On the following k lines print one pair of distinct numbers (a pair per line) — the indexes of elements to swap. The numbers in the array are numbered starting from 1. If it is impossible to sort the given sequence, print the single number -1.
+
+If there are several solutions, output any. Note that you don't have to minimize k. Any sorting with no more than 2n swaps is accepted.
+
+Examples
+
+Input
+
+2
+4 7
+
+
+Output
+
+0
+
+
+Input
+
+3
+4 2 1
+
+
+Output
+
+1
+1 3
+
+
+Input
+
+7
+77 66 55 44 33 22 11
+
+
+Output
+
+7
+1 7
+7 2
+2 6
+6 7
+3 4
+5 3
+4 5
+Difficulty: 10
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int islucky(int n) {
+  while (n > 0) {
+    if (n % 10 == 4 || n % 10 == 7)
+      n = n / 10;
+    else
+      return 0;
+  }
+  return 1;
+}
+int a[100001];
+map<int, int> val;
+map<pair<int, int>, int> iden;
+map<int, pair<int, int> > rev;
+vector<pair<int, int> > ans;
+int idx = -1;
+int main() {
+  int n;
+  scanf("%d", &n);
+  int tmp;
+  for (int i = 0; i < n; i++) {
+    scanf("%d", &tmp);
+    a[i] = tmp;
+    if (val.find(tmp) == val.end()) {
+      if (islucky(tmp)) {
+        idx = tmp;
+      }
+      iden[make_pair(tmp, 0)] = i;
+      rev[i] = make_pair(tmp, 0);
+      val[tmp] = 1;
+    } else {
+      iden[make_pair(tmp, val[tmp])] = i;
+      rev[i] = make_pair(tmp, val[tmp]);
+      val[tmp] = val[tmp] + 1;
+    }
+  }
+  if (idx == -1) {
+    for (int i = 0; i < n - 1; i++) {
+      if (a[i + 1] < a[i]) {
+        cout << "-1" << endl;
+        return 0;
+      }
+    }
+  }
+  int cnt = 0;
+  tmp = idx;
+  for (map<pair<int, int>, int>::iterator it = iden.begin(); it != iden.end();
+       it++) {
+    int from = it->second;
+    int togo = cnt;
+    int idxpos = iden[make_pair(tmp, 0)];
+    if (from == togo) {
+      cnt++;
+      continue;
+    }
+    if (idxpos == from) {
+      cnt++;
+      continue;
+    }
+    if ((cnt + 1) != (idxpos + 1))
+      ans.push_back(make_pair(cnt + 1, idxpos + 1));
+    if ((cnt + 1) != (from + 1)) ans.push_back(make_pair(cnt + 1, from + 1));
+    pair<int, int> tomove = rev[cnt];
+    iden[tomove] = idxpos;
+    iden[make_pair(tmp, 0)] = from;
+    rev[from] = make_pair(tmp, 0);
+    rev[idxpos] = tomove;
+    cnt++;
+  }
+  cout << ans.size() << endl;
+  for (int i = 0; i < ans.size(); i++) {
+    printf("%d %d\n", ans[i].first, ans[i].second);
+  }
+}
+
+
+Similar question 2 (Similarity score: 0.70):
+Name: 362_C. Insertion Sort
+Tags: ['data structures', 'dp', 'implementation', 'math']
+Description: Petya is a beginner programmer. He has already mastered the basics of the C++ language and moved on to learning algorithms. The first algorithm he encountered was insertion sort. Petya has already written the code that implements this algorithm and sorts the given integer zero-indexed array a of size n in the non-decreasing order. 
+    
+    
+    for (int i = 1; i < n; i = i + 1)  
+    {  
+       int j = i;   
+       while (j > 0 && a[j] < a[j - 1])  
+       {  
+          swap(a[j], a[j - 1]); // swap elements a[j] and a[j - 1]  
+          j = j - 1;  
+       }  
+    }  
+    
+
+Petya uses this algorithm only for sorting of arrays that are permutations of numbers from 0 to n - 1. He has already chosen the permutation he wants to sort but he first decided to swap some two of its elements. Petya wants to choose these elements in such a way that the number of times the sorting executes function swap, was minimum. Help Petya find out the number of ways in which he can make the swap and fulfill this requirement.
+
+It is guaranteed that it's always possible to swap two elements of the input permutation in such a way that the number of swap function calls decreases.
+
+Input
+
+The first line contains a single integer n (2 ≤ n ≤ 5000) — the length of the permutation. The second line contains n different integers from 0 to n - 1, inclusive — the actual permutation.
+
+Output
+
+Print two integers: the minimum number of times the swap function is executed and the number of such pairs (i, j) that swapping the elements of the input permutation with indexes i and j leads to the minimum number of the executions.
+
+Examples
+
+Input
+
+5
+4 0 3 1 2
+
+
+Output
+
+3 2
+
+
+Input
+
+5
+1 2 3 4 0
+
+
+Output
+
+3 4
+
+Note
+
+In the first sample the appropriate pairs are (0, 3) and (0, 4). 
+
+In the second sample the appropriate pairs are (0, 4), (1, 4), (2, 4) and (3, 4).
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int v[5010];
+int n;
+int cont[5010][5010];
+int solve(int x, int y) {
+  int sum = 0;
+  sum += cont[v[x]][n - 1] - cont[v[x]][y];
+  sum += cont[v[y]][n - 1] - cont[v[y]][x];
+  int interval = y - x - 1;
+  int menores = cont[v[y]][y - 1] - cont[v[y]][x];
+  sum -= interval - menores;
+  menores = cont[v[x]][y - 1] - cont[v[x]][x];
+  sum += interval - menores;
+  return sum;
+}
+int main(void) {
+  cin >> n;
+  for (int i = 0; i < n; ++i) cin >> v[i];
+  memset(cont, 0, sizeof cont);
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      if (v[j] < i && j > 0) {
+        cont[i][j] = cont[i][j - 1] + 1;
+      } else if (j > 0)
+        cont[i][j] = cont[i][j - 1];
+      else
+        cont[i][j] = (v[j] < i);
+    }
+  }
+  int sum = 0;
+  for (int i = 0; i < n; ++i) {
+    for (int j = i + 1; j < n; ++j) {
+      if (v[j] < v[i]) {
+        sum++;
+      }
+    }
+  }
+  int maior = 0x3f3f3f3f;
+  int contador = 0;
+  for (int i = 0; i < n; ++i) {
+    for (int j = i + 1; j < n; ++j) {
+      int cop = sum;
+      cop -= cont[v[i]][n - 1] - cont[v[i]][i];
+      cop -= cont[v[j]][n - 1] - cont[v[j]][j];
+      cop += solve(i, j);
+      if (maior > cop) {
+        maior = cop;
+        contador = 1;
+      } else if (maior == cop) {
+        contador++;
+      }
+    }
+  }
+  printf("%d %d\n", maior, contador);
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

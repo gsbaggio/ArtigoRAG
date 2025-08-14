@@ -1,0 +1,151 @@
+CURRENT QUESTION:
+The chef has cooked n dishes yet again: the i-th dish consists of a_i grams of fish and b_i grams of meat. 
+
+Banquet organizers consider two dishes i and j equal if a_i=a_j and b_i=b_j at the same time.
+
+The banquet organizers estimate the variety of n dishes as follows. The variety of a set of dishes is equal to the number of different dishes in it. The less variety is, the better.
+
+In order to reduce the variety, a taster was invited. He will eat exactly m_i grams of food from each dish. For each dish, the taster determines separately how much fish and how much meat he will eat. The only condition is that he will eat exactly m_i grams of the i-th dish in total.
+
+Determine how much of what type of food the taster should eat from each dish so that the value of variety is the minimum possible. If there are several correct answers, you may output any of them.
+
+Input
+
+The first line of input data contains an integer t (1 ≤ t ≤ 10^4) — the number of test cases.
+
+Each test case's description is preceded by a blank line. Next comes a line that contains an integer n (1 ≤ n ≤ 2 ⋅ 10^5) — the number of dishes. Then follows n lines, i-th of which contains three integers a_i, b_i and m_i (0 ≤ a_i, b_i ≤ 10^6; 0 ≤ m_i ≤ a_i+b_i) — the mass of fish in i-th dish, the mass of meat in i-th dish and how many grams in total the taster should eat in i-th dish.
+
+The sum of all n values for all input data sets in the test does not exceed 2 ⋅ 10^5.
+
+Output
+
+For each test case, print on the first line the minimum value of variety that can be achieved by eating exactly m_i grams of food (for all i from 1 to n) from a dish i.
+
+Then print n lines that describe a way to do this: the i-th line should contain two integers x_i and y_i (0 ≤ x_i ≤ a_i; 0 ≤ y_i ≤ b_i; x_i+y_i=m_i), where x_i is how many grams of fish the taster should eat from i-th dish, and y_i is how many grams of meat.
+
+If there are several ways to achieve a minimum balance, print any of them.
+
+Example
+
+Input
+
+
+5
+
+3
+10 10 2
+9 9 0
+10 9 1
+
+2
+3 4 1
+5 1 2
+
+3
+7 2 5
+6 5 4
+5 5 6
+
+1
+13 42 50
+
+5
+5 7 12
+3 1 4
+7 3 7
+0 0 0
+4 1 5
+
+
+Output
+
+
+1
+1 1
+0 0
+1 0
+2
+0 1
+1 1
+2
+3 2
+0 4
+1 5
+1
+8 42
+2
+5 7
+3 1
+4 3
+0 0
+4 1
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.70):
+Name: recipe
+Tags: []
+Description: The chef has a recipe he wishes to use for his guests,
+but the recipe will make far more food than he can serve to the guests.
+The chef therefore would like to make a reduced version of the recipe which has the same ratios of ingredients, but makes less food.
+The chef, however, does not like fractions.
+The original recipe contains only whole numbers of ingredients,
+and the chef wants the reduced recipe to only contain whole numbers of ingredients as well.
+Help the chef determine how much of each ingredient to use in order to make as little food as possible.
+
+Input
+Input will begin with an integer T, the number of test cases.
+Each test case consists of a single line.
+The line begins with a positive integer N, the number of ingredients.
+N integers follow, each indicating the quantity of a particular ingredient that is used.
+
+Output
+For each test case, output exactly N space-separated integers on a line,
+giving the quantity of each ingredient that the chef should use in order to make as little food as possible.
+
+Sample Input
+3
+2 4 4
+3 2 3 4
+4 3 15 9 6
+
+
+Sample Output
+1 1
+2 3 4
+1 5 3 2
+
+
+Constraints
+T≤100
+2≤N≤50
+All ingredient quantities are between 1 and 1000, inclusive.
+Difficulty: 1
+Solutions: from fractions import gcd as g
+
+def gcdN(l):
+	l.sort()
+	temp=l[0]
+	for i in l[1:]:
+		temp=g(temp,i)
+	return temp
+
+# print gcdN([12,6,3,4,2])
+for testcases in xrange(int(raw_input())):
+	temp=map(int,raw_input().split())
+	n=gcdN(temp[1:])
+	for i in temp[1:]:
+		print (i/n),
+	print ''
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

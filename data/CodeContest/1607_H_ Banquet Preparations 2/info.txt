@@ -1,0 +1,2 @@
+2200
+['greedy', 'sortings', 'two pointers']

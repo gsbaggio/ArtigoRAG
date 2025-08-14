@@ -1,0 +1,97 @@
+CURRENT QUESTION:
+Polycarp had an array a of 3 positive integers. He wrote out the sums of all non-empty subsequences of this array, sorted them in non-decreasing order, and got an array b of 7 integers.
+
+For example, if a = \{1, 4, 3\}, then Polycarp wrote out 1, 4, 3, 1 + 4 = 5, 1 + 3 = 4, 4 + 3 = 7, 1 + 4 + 3 = 8. After sorting, he got an array b = \{1, 3, 4, 4, 5, 7, 8\}.
+
+Unfortunately, Polycarp lost the array a. He only has the array b left. Help him to restore the array a.
+
+Input
+
+The first line contains one integer t (1 ≤ t ≤ 5000) — the number of test cases.
+
+Each test case consists of one line which contains 7 integers b_1, b_2, ..., b_7 (1 ≤ b_i ≤ 10^9; b_i ≤ b_{i+1}). 
+
+Additional constraint on the input: there exists at least one array a which yields this array b as described in the statement.
+
+Output
+
+For each test case, print 3 integers — a_1, a_2 and a_3. If there can be several answers, print any of them.
+
+Example
+
+Input
+
+
+5
+1 3 4 4 5 7 8
+1 2 3 4 5 6 7
+300000000 300000000 300000000 600000000 600000000 600000000 900000000
+1 1 2 999999998 999999999 999999999 1000000000
+1 2 2 3 3 4 5
+
+
+Output
+
+
+1 4 3
+4 1 2
+300000000 300000000 300000000
+999999998 1 1
+1 2 2
+
+Note
+
+The subsequence of the array a is a sequence that can be obtained from a by removing zero or more of its elements.
+
+Two subsequences are considered different if index sets of elements included in them are different. That is, the values of the elements don't matter in the comparison of subsequences. In particular, any array of length 3 has exactly 7 different non-empty subsequences.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: choclate-weight
+Tags: []
+Description: Raju has a crush on girl of his class. He wanted to become close friend of her so he started trying to impress her. She came to know about raju and she also likes him but she is not ready to tell him about her feelings. She gave him a task,she will ask him a chocolate weighs x and raju has to get chocolate of exact weight from the series of chocolate stores which are present in the university. if he succeeds in it she will say "I Like You" else she will get anger and will tell "I Hate You". Raju came to know about his task and he don't want to loose his girl first impression so he wants a help from you to impress his crush.
+
+NOTE: X weight should be one or only 2 different weights of other chocolates. 
+
+SAMPLE INPUT
+5
+5 2 3 4 1
+4
+10
+4
+2
+12
+
+SAMPLE OUTPUT
+I Hate You
+I Like You
+I Like You
+I Hate You
+Difficulty: 0
+Solutions: T = int(raw_input())
+num = map(int,raw_input().split())
+N = len(num)
+for i in range(N):
+	for j in range(i + 1, N):
+		num.append(num[i] + num[j])
+
+N = int(raw_input())
+for i in range(N):
+	j = int(raw_input())
+	if j in num:
+		print "I Like You"
+	else:
+		print "I Hate You"
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

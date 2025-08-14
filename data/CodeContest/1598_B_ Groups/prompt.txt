@@ -1,0 +1,166 @@
+CURRENT QUESTION:
+n students attended the first meeting of the Berland SU programming course (n is even). All students will be divided into two groups. Each group will be attending exactly one lesson each week during one of the five working days (Monday, Tuesday, Wednesday, Thursday and Friday), and the days chosen for the groups must be different. Furthermore, both groups should contain the same number of students.
+
+Each student has filled a survey in which they told which days of the week are convenient for them to attend a lesson, and which are not. 
+
+Your task is to determine if it is possible to choose two different week days to schedule the lessons for the group (the first group will attend the lesson on the first chosen day, the second group will attend the lesson on the second chosen day), and divide the students into two groups, so the groups have equal sizes, and for each student, the chosen lesson day for their group is convenient.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10^4) — the number of testcases.
+
+Then the descriptions of t testcases follow.
+
+The first line of each testcase contains one integer n (2 ≤ n ≤ 1 000) — the number of students.
+
+The i-th of the next n lines contains 5 integers, each of them is 0 or 1. If the j-th integer is 1, then the i-th student can attend the lessons on the j-th day of the week. If the j-th integer is 0, then the i-th student cannot attend the lessons on the j-th day of the week. 
+
+Additional constraints on the input: for each student, at least one of the days of the week is convenient, the total number of students over all testcases doesn't exceed 10^5.
+
+Output
+
+For each testcase print an answer. If it's possible to divide the students into two groups of equal sizes and choose different days for the groups so each student can attend the lesson in the chosen day of their group, print "YES" (without quotes). Otherwise, print "NO" (without quotes). 
+
+Example
+
+Input
+
+
+2
+4
+1 0 0 1 0
+0 1 0 0 1
+0 0 0 1 0
+0 1 0 1 0
+2
+0 0 0 1 0
+0 0 0 1 0
+
+
+Output
+
+
+YES
+NO
+
+Note
+
+In the first testcase, there is a way to meet all the constraints. For example, the first group can consist of the first and the third students, they will attend the lessons on Thursday (the fourth day); the second group can consist of the second and the fourth students, and they will attend the lessons on Tuesday (the second day).
+
+In the second testcase, it is impossible to divide the students into groups so they attend the lessons on different days.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.77):
+Name: 1089_G. Guest Student
+Tags: ['math']
+Description: Berland State University invites people from all over the world as guest students. You can come to the capital of Berland and study with the best teachers in the country.
+
+Berland State University works every day of the week, but classes for guest students are held on the following schedule. You know the sequence of seven integers a_1, a_2, ..., a_7 (a_i = 0 or a_i = 1):
+
+  * a_1=1 if and only if there are classes for guest students on Sundays; 
+  * a_2=1 if and only if there are classes for guest students on Mondays; 
+  * ... 
+  * a_7=1 if and only if there are classes for guest students on Saturdays. 
+
+
+
+The classes for guest students are held in at least one day of a week.
+
+You want to visit the capital of Berland and spend the minimum number of days in it to study k days as a guest student in Berland State University. Write a program to find the length of the shortest continuous period of days to stay in the capital to study exactly k days as a guest student.
+
+Input
+
+The first line of the input contains integer t (1 ≤ t ≤ 10 000) — the number of test cases to process. For each test case independently solve the problem and print the answer. 
+
+Each test case consists of two lines. The first of them contains integer k (1 ≤ k ≤ 10^8) — the required number of days to study as a guest student. The second line contains exactly seven integers a_1, a_2, ..., a_7 (a_i = 0 or a_i = 1) where a_i=1 if and only if classes for guest students are held on the i-th day of a week.
+
+Output
+
+Print t lines, the i-th line should contain the answer for the i-th test case — the length of the shortest continuous period of days you need to stay to study exactly k days as a guest student.
+
+Example
+
+Input
+
+
+3
+2
+0 1 0 0 0 0 0
+100000000
+1 0 0 0 1 0 1
+1
+1 0 0 0 0 0 0
+
+
+Output
+
+
+8
+233333332
+1
+
+Note
+
+In the first test case you must arrive to the capital of Berland on Monday, have classes on this day, spend a week until next Monday and have classes on the next Monday. In total you need to spend 8 days in the capital of Berland.
+Difficulty: 13
+Solutions: import java.util.*;
+import java.io.*;
+
+public class Main {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+		int T = Integer.parseInt(br.readLine());
+		while (T-- > 0) {
+			long K = Long.parseLong(br.readLine());
+			boolean[] days = new boolean[7];
+
+			long classes = 0;
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			for (int i = 0; i < 7; i++) {
+				days[i] = (Integer.parseInt(st.nextToken()) == 1) ? true : false;
+				if (days[i])
+					classes++;
+			}
+
+			long answer = Integer.MAX_VALUE;
+			for (int i = 0, c = -1; i < 7; i++) {
+				if (!days[i])
+					continue;
+
+				c++;
+				long k = K + c;
+				long week = ((k % classes == 0) ? k / classes - 1 : k / classes);
+				for (int j = 1, d = 0; j <= 7; j++) {
+					if (!days[j - 1])
+						continue;
+
+					d++;
+					if (week * classes + d == k) {
+						answer = Math.min(answer, week * 7 + j - i);
+						break;
+					}
+				}
+			}
+
+			bw.write(String.valueOf(answer));
+			bw.write('\n');
+		}
+
+		bw.close();
+	}
+}
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

@@ -1,0 +1,600 @@
+CURRENT QUESTION:
+Mr. Chanek has an integer represented by a string s. Zero or more digits have been erased and are denoted by the character _. There are also zero or more digits marked by the character X, meaning they're the same digit.
+
+Mr. Chanek wants to count the number of possible integer s, where s is divisible by 25. Of course, s must not contain any leading zero. He can replace the character _ with any digit. He can also replace the character X with any digit, but it must be the same for every character X.
+
+As a note, a leading zero is any 0 digit that comes before the first nonzero digit in a number string in positional notation. For example, 0025 has two leading zeroes. An exception is the integer zero, (0 has no leading zero, but 0000 has three leading zeroes).
+
+Input
+
+One line containing the string s (1 ≤ |s| ≤ 8). The string s consists of the characters 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, _, and X.
+
+Output
+
+Output an integer denoting the number of possible integer s.
+
+Examples
+
+Input
+
+
+25
+
+
+Output
+
+
+1
+
+
+Input
+
+
+_00
+
+
+Output
+
+
+9
+
+
+Input
+
+
+_XX
+
+
+Output
+
+
+9
+
+
+Input
+
+
+0
+
+
+Output
+
+
+1
+
+
+Input
+
+
+0_25
+
+
+Output
+
+
+0
+
+Note
+
+In the first example, the only possible s is 25.
+
+In the second and third example, s ∈ \{100, 200,300,400,500,600,700,800,900\}.
+
+In the fifth example, all possible s will have at least one leading zero.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 42_A. Guilty — to the kitchen!
+Tags: ['greedy', 'implementation']
+Description: It's a very unfortunate day for Volodya today. He got bad mark in algebra and was therefore forced to do some work in the kitchen, namely to cook borscht (traditional Russian soup). This should also improve his algebra skills.
+
+According to the borscht recipe it consists of n ingredients that have to be mixed in proportion <image> litres (thus, there should be a1 ·x, ..., an ·x litres of corresponding ingredients mixed for some non-negative x). In the kitchen Volodya found out that he has b1, ..., bn litres of these ingredients at his disposal correspondingly. In order to correct his algebra mistakes he ought to cook as much soup as possible in a V litres volume pan (which means the amount of soup cooked can be between 0 and V litres). What is the volume of borscht Volodya will cook ultimately?
+
+Input
+
+The first line of the input contains two space-separated integers n and V (1 ≤ n ≤ 20, 1 ≤ V ≤ 10000). The next line contains n space-separated integers ai (1 ≤ ai ≤ 100). Finally, the last line contains n space-separated integers bi (0 ≤ bi ≤ 100).
+
+Output
+
+Your program should output just one real number — the volume of soup that Volodya will cook. Your answer must have a relative or absolute error less than 10 - 4.
+
+Examples
+
+Input
+
+1 100
+1
+40
+
+
+Output
+
+40.0
+
+
+Input
+
+2 100
+1 1
+25 30
+
+
+Output
+
+50.0
+
+
+Input
+
+2 100
+1 1
+60 60
+
+
+Output
+
+100.0
+Difficulty: 7
+Solutions: import java.io.*;
+import java.util.*;
+import java.math.*;
+import static java.lang.Math.*;
+
+public class Main implements Runnable {
+
+    public void solve() throws IOException {
+        int n = nextInt(), V = nextInt();
+        int[ ] a = new int[n];
+        for(int i = 0; i < n; ++i) {
+            a[i] = nextInt();
+        }
+        int[] b = new int[n];
+        for(int i = 0; i < n; ++i) {
+            b[i] = nextInt();
+        }
+        double left = 0, right = 1000000;
+        while (right - left > 1e-9) {
+            double c = (left + right) / 2;
+            double q = 0;
+            boolean can = true;
+            for(int i = 0; i < n;++i) {
+                can &= b[i] >= (a[i] * c);
+                q += a[i] * c;
+            }
+            can &= q < V;
+            if (!can)
+                right = c;
+            else if (q > V)
+                right = c;
+            else
+                left = c;
+        }
+        double ans = 0;
+        for(int i = 0; i < n; ++i)
+            ans += a[i] * right;
+        pw.printf(Locale.US, "%1.8f", ans);
+    }
+
+    static final String filename = "A";
+    static final boolean fromConsole = true;
+
+    public void run() {
+        try {
+            if (!fromConsole) {
+                in = new BufferedReader(new FileReader(filename + ".in"));
+                pw = new PrintWriter(filename + ".out");
+            } else {
+                in = new BufferedReader(new InputStreamReader(System.in));
+                pw = new PrintWriter(System.out);
+            }
+            st = new StringTokenizer("");
+            long st = System.currentTimeMillis();
+            solve();
+            //pw.printf("\nWorking time: %d ms\n", System.currentTimeMillis() - st);
+            pw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+    }
+
+    private StringTokenizer st;
+    private BufferedReader in;
+    private PrintWriter pw;
+
+    boolean hasNext() throws IOException {
+        while (!st.hasMoreTokens()) {
+            String line = in.readLine();
+            if (line == null) {
+                return false;
+            }
+            st = new StringTokenizer(line);
+        }
+        return st.hasMoreTokens();
+    }
+
+    String next() throws IOException {
+        return hasNext() ? st.nextToken() : null;
+    }
+
+    int nextInt() throws IOException {
+        return Integer.parseInt(next());
+    }
+
+    BigInteger nextBigInteger() throws IOException {
+        return new BigInteger(next());
+    }
+
+    long nextLong() throws IOException {
+        return Long.parseLong(next());
+    }
+
+    double nextDouble() throws IOException {
+        return Double.parseDouble(next());
+    }
+
+    public static void main(String[] args) {
+        new Thread(new Main()).start();
+    }
+}
+
+Example question 2:
+Name: 475_C. Kamal-ol-molk's Painting
+Tags: ['brute force', 'constructive algorithms', 'greedy']
+Description: Rumors say that one of Kamal-ol-molk's paintings has been altered. A rectangular brush has been moved right and down on the painting.
+
+Consider the painting as a n × m rectangular grid. At the beginning an x × y rectangular brush is placed somewhere in the frame, with edges parallel to the frame, (1 ≤ x ≤ n, 1 ≤ y ≤ m). Then the brush is moved several times. Each time the brush is moved one unit right or down. The brush has been strictly inside the frame during the painting. The brush alters every cell it has covered at some moment.
+
+You have found one of the old Kamal-ol-molk's paintings. You want to know if it's possible that it has been altered in described manner. If yes, you also want to know minimum possible area of the brush. 
+
+Input
+
+The first line of input contains two integers n and m, (1 ≤ n, m ≤ 1000), denoting the height and width of the painting.
+
+The next n lines contain the painting. Each line has m characters. Character 'X' denotes an altered cell, otherwise it's showed by '.'. There will be at least one altered cell in the painting.
+
+Output
+
+Print the minimum area of the brush in a line, if the painting is possibly altered, otherwise print  - 1.
+
+Examples
+
+Input
+
+4 4
+XX..
+XX..
+XXXX
+XXXX
+
+
+Output
+
+4
+
+
+Input
+
+4 4
+....
+.XXX
+.XXX
+....
+
+
+Output
+
+2
+
+
+Input
+
+4 5
+XXXX.
+XXXX.
+.XX..
+.XX..
+
+
+Output
+
+-1
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int getint() {
+  int s = 0, o = 1;
+  char c;
+  for (c = getchar(); c < '0' || c > '9'; c = getchar())
+    if (c == '-') o = -1;
+  for (; c >= '0' && c <= '9'; c = getchar()) s *= 10, s += c - '0';
+  return s * o;
+}
+const int maxn = 1010;
+int a[maxn][maxn], b[maxn][maxn], n, m, len;
+inline bool all(int x, int y, int lx, int ly) {
+  for (int i = x; i < x + lx; ++i)
+    for (int j = y; j < y + ly; ++j)
+      if (!a[i][j]) return 0;
+  return 1;
+}
+inline void paint(int x, int y, int lx, int ly) {
+  for (int i = x; i < x + lx; ++i)
+    for (int j = y; j < y + ly; ++j) b[i][j] = 1;
+}
+inline int chk(int x, int y, int lx, int ly) {
+  if (!all(x, y, lx, ly)) return 2;
+  memset(b, 0, sizeof(b));
+  paint(x, y, lx, ly);
+  for (int t = 0;;) {
+    int can[2];
+    can[0] = (y + ly < m) & all(x, y + ly, lx, 1);
+    can[1] = (x + lx < n) & all(x + lx, y, 1, ly);
+    if (!can[0] && !can[1]) break;
+    if (can[t]) {
+      if (t == 0) {
+        for (int i = 0; i < x; i++)
+          if (a[i][y + ly] == 1) return 0;
+        paint(x, y + ly, lx, 1);
+        ++y;
+      } else {
+        for (int i = 0; i < y; i++)
+          if (a[x + lx][i] == 1) return 0;
+        paint(x + lx, y, 1, ly);
+        ++x;
+      }
+      continue;
+    }
+    if (can[t ^ 1]) {
+      t ^= 1;
+      if (t == 0) {
+        for (int i = 0; i < x; i++)
+          if (a[i][y + ly] == 1) return 0;
+        paint(x, y + ly, lx, 1);
+        ++y;
+      } else {
+        for (int i = 0; i < y; i++)
+          if (a[x + lx][i] == 1) return 0;
+        paint(x + lx, y, 1, ly);
+        ++x;
+      }
+    }
+  }
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < m; j++)
+      if (a[i][j] != b[i][j]) return 2;
+  return 1;
+}
+int work() {
+  int x, y, lenx, l, r;
+  int fg = 0;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++)
+      if (a[i][j]) {
+        x = i, y = j, fg = 1;
+        break;
+      }
+    if (fg) break;
+  }
+  lenx = 1;
+  while (x + lenx < n && a[x + lenx][y] == 1) ++lenx;
+  l = 0, r = 1;
+  while (y + r < m && a[x][y + r] == 1) ++r;
+  ++r;
+  while (l + 1 < r) {
+    int mid = (l + r) >> 1;
+    if (chk(x, y, lenx, mid) == 0)
+      l = mid;
+    else
+      r = mid;
+  }
+  if (chk(x, y, lenx, r) == 2)
+    return n * m * 2;
+  else
+    return lenx * r;
+}
+char s[1001];
+int main(int argc, char const *argv[]) {
+  n = getint(), m = getint(), len = max(n, m);
+  for (int i = 0; i < n; i++) {
+    scanf("%s", s);
+    for (int j = 0; j < m; j++) a[i][j] = s[j] == 'X';
+  }
+  int r = work();
+  for (int i = 0; i < len; i++)
+    for (int j = 0; j < len; j++)
+      if (i < j) swap(a[i][j], a[j][i]);
+  swap(n, m);
+  r = min(r, work());
+  printf("%d\n", r > n * m ? -1 : r);
+  return 0;
+}
+
+
+Example question 3:
+Name: 300_E. Empire Strikes Back
+Tags: ['binary search', 'math', 'number theory']
+Description: In a far away galaxy there is war again. The treacherous Republic made k precision strikes of power ai on the Empire possessions. To cope with the republican threat, the Supreme Council decided to deal a decisive blow to the enemy forces. 
+
+To successfully complete the conflict, the confrontation balance after the blow should be a positive integer. The balance of confrontation is a number that looks like <image>, where p = n! (n is the power of the Imperial strike), <image>. After many years of war the Empire's resources are low. So to reduce the costs, n should be a minimum positive integer that is approved by the commanders.
+
+Help the Empire, find the minimum positive integer n, where the described fraction is a positive integer.
+
+Input
+
+The first line contains integer k (1 ≤ k ≤ 106). The second line contains k integers a1, a2, ..., ak (1 ≤ ai ≤ 107).
+
+Output
+
+Print the minimum positive integer n, needed for the Empire to win.
+
+Please, do not use the %lld to read or write 64-but integers in С++. It is preferred to use the cin, cout streams or the %I64d specificator.
+
+Examples
+
+Input
+
+2
+1000 1000
+
+
+Output
+
+2000
+
+Input
+
+1
+2
+
+
+Output
+
+2
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+template <typename T>
+bool MinPlace(T &a, const T &b) {
+  if (a > b) {
+    a = b;
+    return true;
+  }
+  return false;
+}
+template <typename T>
+bool MaxPlace(T &a, const T &b) {
+  if (a < b) {
+    a = b;
+    return true;
+  }
+  return false;
+}
+template <typename S, typename T>
+ostream &operator<<(ostream &out, const pair<S, T> &p) {
+  out << "{" << p.first << ", " << p.second << "}";
+  return out;
+}
+template <typename T>
+ostream &operator<<(ostream &out, const vector<T> &v) {
+  out << "[";
+  for (int i = 0; i < (int)v.size(); i++) {
+    out << v[i];
+    if (i != (int)v.size() - 1) out << ", ";
+  }
+  out << "]";
+  return out;
+}
+template <int maxm = 1000005>
+class sieve {
+ private:
+  bool doPhi, doMo;
+
+ public:
+  bitset<maxm + 10> isnp;
+  vector<int> prime, mo, phi, primes;
+  sieve(bool doPhi = false, bool doMo = false) : doPhi(doPhi), doMo(doMo) {
+    prime.resize(maxm + 10, 0);
+    if (doMo) mo.resize(maxm + 10);
+    if (doPhi) {
+      phi.resize(maxm + 10);
+      for (int i = 0; i <= maxm; i++) phi[i] = i;
+    }
+    if (doMo) {
+      mo[1] = 1;
+      mo[2] = mo[3] = -1;
+      mo[4] = 0;
+    }
+    if (doPhi) {
+      phi[1] = phi[2] = 1;
+      phi[3] = phi[4] = 2;
+    }
+    prime[1] = 1;
+    isnp[1] = true;
+    primeWork(2);
+    primeWork(3);
+    for (int i = 5; i <= maxm; i += 6) {
+      for (int j = i; j <= min(i + 2, maxm); j += 2)
+        if (!isnp[j]) primeWork(j);
+      if (doMo || doPhi)
+        for (int j = i; j <= min(i + 5, maxm); j++) {
+          bool rem = (j / prime[j]) % prime[j];
+          if (doMo) mo[j] = rem * (-mo[j / prime[j]]);
+          if (doPhi) phi[j] = phi[j / prime[j]] * (prime[j] - rem);
+        }
+    }
+  }
+  void primeWork(long long int pr) {
+    prime[pr] = pr;
+    primes.push_back(pr);
+    for (long long int k = pr * pr; k <= maxm; k += pr) {
+      if (!isnp[k]) {
+        prime[k] = pr;
+        isnp[k] = true;
+      }
+    }
+  }
+  bool isprime(int n) {
+    assert(n <= maxm);
+    return !isnp[n];
+  }
+};
+long long int cnt[int(1e7) + 1] = {};
+int a[int(1e7) + 1];
+int main() {
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  ;
+  long long int sum = 0;
+  int k, maxm = 0;
+  sieve<10000005> s;
+  cin >> k;
+  for (int i = 0; i < k; i++) {
+    cin >> a[i];
+    sum += a[i];
+  }
+  sort(a, a + k);
+  for (int i = 0, j = 2; i < k; i++) {
+    while (a[i] >= j) {
+      int no = j++;
+      while (no > 1) {
+        cnt[s.prime[no]] += (k - i);
+        no /= s.prime[no];
+      }
+    }
+  }
+  long long int l = 1, r = sum;
+  while (l <= r) {
+    long long int mid = (l + r) / 2;
+    bool cool = true;
+    for (auto pr : s.primes) {
+      if (pr > a[k - 1]) break;
+      long long int target = cnt[pr], test = mid, test_cnt = 0;
+      while (test) test_cnt += (test /= pr);
+      if (test_cnt < target) {
+        cool = false;
+        break;
+      }
+    }
+    if (cool)
+      r = mid - 1;
+    else
+      l = mid + 1;
+  }
+  cout << l;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

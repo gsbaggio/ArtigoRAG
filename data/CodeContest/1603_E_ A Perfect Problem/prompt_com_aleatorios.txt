@@ -1,0 +1,878 @@
+CURRENT QUESTION:
+A sequence of integers b_1, b_2, …, b_m is called good if max(b_1, b_2, …, b_m) ⋅ min(b_1, b_2, …, b_m) ≥ b_1 + b_2 + … + b_m.
+
+A sequence of integers a_1, a_2, …, a_n is called perfect if every non-empty subsequence of a is good.
+
+YouKn0wWho has two integers n and M, M is prime. Help him find the number, modulo M, of perfect sequences a_1, a_2, …, a_n such that 1 ≤ a_i ≤ n + 1 for each integer i from 1 to n.
+
+A sequence d is a subsequence of a sequence c if d can be obtained from c by deletion of several (possibly, zero or all) elements.
+
+Input
+
+The first and only line of the input contains two space-separated integers n and M (1 ≤ n ≤ 200; 10^8 ≤ M ≤ 10^9). It is guaranteed that M is prime.
+
+Output
+
+Print a single integer — the number of perfect sequences modulo M.
+
+Examples
+
+Input
+
+
+2 998244353
+
+
+Output
+
+
+4
+
+
+Input
+
+
+4 100000007
+
+
+Output
+
+
+32
+
+
+Input
+
+
+69 999999937
+
+
+Output
+
+
+456886663
+
+Note
+
+In the first test case, the perfect sequences are [2, 2], [2, 3], [3, 2] and [3, 3].
+
+In the second test case, some of the perfect sequences are [3, 4, 3, 5], [4, 5, 4, 4], [4, 5, 5, 5] etc. One example of a sequence which is not perfect is [2, 3, 3, 4], because, for example, the subsequence [2, 3, 4] is not an good as 2 ⋅ 4 < 2 + 3 + 4.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 771_A. Bear and Friendship Condition
+Tags: ['dfs and similar', 'dsu', 'graphs']
+Description: Bear Limak examines a social network. Its main functionality is that two members can become friends (then they can talk with each other and share funny pictures).
+
+There are n members, numbered 1 through n. m pairs of members are friends. Of course, a member can't be a friend with themselves.
+
+Let A-B denote that members A and B are friends. Limak thinks that a network is reasonable if and only if the following condition is satisfied: For every three distinct members (X, Y, Z), if X-Y and Y-Z then also X-Z.
+
+For example: if Alan and Bob are friends, and Bob and Ciri are friends, then Alan and Ciri should be friends as well.
+
+Can you help Limak and check if the network is reasonable? Print "YES" or "NO" accordingly, without the quotes.
+
+Input
+
+The first line of the input contain two integers n and m (3 ≤ n ≤ 150 000, <image>) — the number of members and the number of pairs of members that are friends.
+
+The i-th of the next m lines contains two distinct integers ai and bi (1 ≤ ai, bi ≤ n, ai ≠ bi). Members ai and bi are friends with each other. No pair of members will appear more than once in the input.
+
+Output
+
+If the given network is reasonable, print "YES" in a single line (without the quotes). Otherwise, print "NO" in a single line (without the quotes).
+
+Examples
+
+Input
+
+4 3
+1 3
+3 4
+1 4
+
+
+Output
+
+YES
+
+
+Input
+
+4 4
+3 1
+2 3
+3 4
+1 2
+
+
+Output
+
+NO
+
+
+Input
+
+10 4
+4 3
+5 10
+8 9
+1 2
+
+
+Output
+
+YES
+
+
+Input
+
+3 2
+1 2
+2 3
+
+
+Output
+
+NO
+
+Note
+
+The drawings below show the situation in the first sample (on the left) and in the second sample (on the right). Each edge represents two members that are friends. The answer is "NO" in the second sample because members (2, 3) are friends and members (3, 4) are friends, while members (2, 4) are not.
+
+<image>
+Difficulty: 7
+Solutions: import java.io.*;
+import java.util.*;
+import java.math.*;
+import java.util.stream.Collectors;
+import java.util.stream.*;
+
+public class Main { 
+
+    static HashSet<Integer>[] grp;
+    static boolean[] vis;
+    static ArrayList<Integer> al;
+
+    public static void main(String[] args) throws java.lang.Exception { 
+        Reader pm =new Reader(); 
+        //Scanner pm = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+        int t = 1;
+        while(t-- > 0){
+            int n = pm.nextInt();
+            int m = pm.nextInt();
+          	grp = new HashSet[n+1];
+          	vis = new boolean[n+1];
+          	for(int i=0;i<=n;i++) {
+          		grp[i] = new HashSet<>();
+          	}  
+            for(int i=0;i<m;i++) {
+            	int a = pm.nextInt();
+            	int b = pm.nextInt();
+            	grp[a].add(b);
+            	grp[b].add(a);
+            }
+            for(int j=1;j<=n;j++) {
+            	if(!vis[j]) {
+            		al= new ArrayList<>();
+            		dfs(j);
+            		for(int i=0;i<al.size();i++) {
+            			if(grp[al.get(i)].size() != al.size()-1) {
+            				System.out.println("NO");
+            				return;
+            			}
+            		}
+            	}
+            }
+            System.out.println("YES");
+        }
+        
+    }
+    static void dfs(int v) {
+    	vis[v] = true;
+    	al.add(v);
+    	for(int i:grp[v]) {
+    		if(!vis[i])
+    			dfs(i);
+    	}
+    }
+    // function to count elements within given range 
+    static int countInRange(int arr[], int n, int x, int y) { 
+        // initialize result 
+        int count = 0; 
+        count = upperIndex(arr, n, y) -  
+                lowerIndex(arr, n, x) + 1; 
+        return count; 
+    } 
+    
+    
+    static int lowerIndex(int arr[], int n, int x) { 
+        int l = 0, h = n - 1; 
+        while (l <= h)  
+        { 
+            int mid = (l + h) / 2; 
+            if (arr[mid] >= x) 
+                h = mid - 1; 
+            else
+                l = mid + 1; 
+        } 
+        return l; 
+    } 
+      
+    // function to find last index <= y 
+    static int upperIndex(int arr[], int n, int y) { 
+        int l = 0, h = n - 1; 
+        while (l <= h)  
+        { 
+            int mid = (l + h) / 2; 
+            if (arr[mid] <= y) 
+                l = mid + 1; 
+            else
+                h = mid - 1; 
+        } 
+        return h; 
+    }
+    
+    public static StringBuilder dec_to_bin(long n) {
+        // decimal to binary upto 30 binaries
+        if(n==0) {
+            StringBuilder str=new StringBuilder("");
+            for(int i=0;i<30;i++) {
+                str.append("0");
+            }
+            return str;
+        }
+        StringBuilder str=new StringBuilder("");
+        while(n!=0) {
+            str.append(n%2L);
+            n/=2L;
+        }
+        str=str.reverse();
+        StringBuilder tmp_str=new StringBuilder("");
+        int len=str.length();
+        while(len!=30) {
+            tmp_str.append("0");
+            len++;
+        }
+        tmp_str.append(str);
+        return tmp_str;
+    }
+    
+    private static int binarySearchPM(int[] arr, int key){
+        int n = arr.length;
+        int mid = -1;
+        int begin = 0,end=n;
+        while(begin <= end){
+            mid = (begin+end) / 2;
+            if(mid == n){
+                return n;
+            }
+            if(key < arr[mid]){
+                end = mid-1;
+            } else if(key > arr[mid]){
+                begin = mid+1;
+            } else {
+                return mid;
+            }
+        }
+        //System.out.println(begin+" "+end);
+        return -begin; //expected Index
+    }
+    
+    private static List<Integer> setToList(Set<Integer> s){
+        List<Integer> al = s.stream().collect(Collectors.toList());
+        return al;
+    }
+    
+    private static List<Integer> mapValToList(HashMap<Integer,Integer> map){
+        return map.values().stream().collect(Collectors.toList());
+    }
+    
+    private static List<Integer> mapKeyToList(HashMap<Integer,Integer> map){
+        return map.keySet().stream().collect(Collectors.toList());
+    }
+    
+    private static HashMap<Integer, Integer> sortByKey(HashMap<Integer,Integer> map){
+        return map
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey, 
+                    Map.Entry::getValue, 
+                    (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    }
+    
+    static class Reader { 
+        final private int BUFFER_SIZE = 1 << 16; 
+        private DataInputStream din; 
+        private byte[] buffer; 
+        private int bufferPointer, bytesRead; 
+  
+        public Reader() 
+        { 
+            din = new DataInputStream(System.in); 
+            buffer = new byte[BUFFER_SIZE]; 
+            bufferPointer = bytesRead = 0; 
+        } 
+  
+        public Reader(String file_name) throws IOException 
+        { 
+            din = new DataInputStream(new FileInputStream(file_name)); 
+            buffer = new byte[BUFFER_SIZE]; 
+            bufferPointer = bytesRead = 0; 
+        } 
+  
+        public String readLine() throws IOException 
+        { 
+            byte[] buf = new byte[64]; // line length 
+            int cnt = 0, c; 
+            while ((c = read()) != -1) 
+            { 
+                if (c == '\n') 
+                    break; 
+                buf[cnt++] = (byte) c; 
+            } 
+            return new String(buf, 0, cnt); 
+        } 
+  
+        public int nextInt() throws IOException 
+        { 
+            int ret = 0; 
+            byte c = read(); 
+            while (c <= ' ') 
+                c = read(); 
+            boolean neg = (c == '-'); 
+            if (neg) 
+                c = read(); 
+            do
+            { 
+                ret = ret * 10 + c - '0'; 
+            }  while ((c = read()) >= '0' && c <= '9'); 
+  
+            if (neg) 
+                return -ret; 
+            return ret; 
+        } 
+  
+        public long nextLong() throws IOException 
+        { 
+            long ret = 0; 
+            byte c = read(); 
+            while (c <= ' ') 
+                c = read(); 
+            boolean neg = (c == '-'); 
+            if (neg) 
+                c = read(); 
+            do { 
+                ret = ret * 10 + c - '0'; 
+            } 
+            while ((c = read()) >= '0' && c <= '9'); 
+            if (neg) 
+                return -ret; 
+            return ret; 
+        } 
+  
+        public double nextDouble() throws IOException 
+        { 
+            double ret = 0, div = 1; 
+            byte c = read(); 
+            while (c <= ' ') 
+                c = read(); 
+            boolean neg = (c == '-'); 
+            if (neg) 
+                c = read(); 
+  
+            do { 
+                ret = ret * 10 + c - '0'; 
+            } 
+            while ((c = read()) >= '0' && c <= '9'); 
+  
+            if (c == '.') 
+            { 
+                while ((c = read()) >= '0' && c <= '9') 
+                { 
+                    ret += (c - '0') / (div *= 10); 
+                } 
+            } 
+  
+            if (neg) 
+                return -ret; 
+            return ret; 
+        } 
+  
+        private void fillBuffer() throws IOException 
+        { 
+            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE); 
+            if (bytesRead == -1) 
+                buffer[0] = -1; 
+        } 
+  
+        private byte read() throws IOException 
+        { 
+            if (bufferPointer == bytesRead) 
+                fillBuffer(); 
+            return buffer[bufferPointer++]; 
+        } 
+  
+        public void close() throws IOException 
+        { 
+            if (din == null) 
+                return; 
+            din.close(); 
+        } 
+    }
+}    
+
+Example question 2:
+Name: 1444_E. Finding the Vertex
+Tags: ['brute force', 'dfs and similar', 'dp', 'interactive', 'trees']
+Description: This is an interactive problem.
+
+You are given a tree — connected undirected graph without cycles. One vertex of the tree is special, and you have to find which one. You can ask questions in the following form: given an edge of the tree, which endpoint is closer to the special vertex, meaning which endpoint's shortest path to the special vertex contains fewer edges. You have to find the special vertex by asking the minimum number of questions in the worst case for a given tree.
+
+Please note that the special vertex might not be fixed by the interactor in advance: it might change the vertex to any other one, with the requirement of being consistent with the previously given answers.
+
+Input
+
+You are given an integer n (2 ≤ n ≤ 100) — the number of vertices in a tree.
+
+The folloiwing n-1 lines contain two integers each, u and v (1 ≤ u, v ≤ n), that denote an edge in the tree connecting u and v. It is guaranteed that the given edges form a tree.
+
+Interaction
+
+After reading the input data, one can start making queries. There are two possible queries:
+
+  1. "? u v" — to ask for an edge (u, v) (1 ≤ u, v ≤ n) which of the endpoints is closer to the special vertex. The answer to this query is one of the endpoints. Note that, u and v must be connected by an edge, and hence they can not have the same distance to the special vertex.
+  2. "! u" — to indicate that you found the special vertex. After the program does that, it must immediately terminate. 
+
+
+
+Do not forget to output the end of line and flush the output. Otherwise you will get Idleness limit exceeded verdict. To flush the output, you can use: 
+
+  * fflush(stdout) or cout.flush() in C++; 
+  * System.out.flush() in Java; 
+  * flush(output) in Pascal; 
+  * sys.stdout.flush() in Python; 
+  * see documentation for other languages. 
+
+
+
+In case you ask more queries than needed in the worst case for a given tree, you will get verdict Wrong answer.
+
+Examples
+
+Input
+
+
+5
+1 2
+2 3
+3 4
+4 5
+3
+2
+1
+
+
+Output
+
+
+? 3 4
+? 2 3
+? 1 2
+! 1
+
+
+Input
+
+
+5
+2 1
+3 1
+4 1
+5 1
+1
+1
+4
+
+
+Output
+
+
+? 1 2
+? 1 3
+? 1 4
+! 4
+
+Note
+
+Hacks are forbidden in this task.
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int Maxn = 100;
+int n;
+bool t[Maxn + 5], vis[Maxn + 5];
+struct Bit {
+  bitset<Maxn + 5> a;
+  int id;
+  friend bool operator<(Bit a, Bit b) {
+    for (int i = n; i >= 0; i--) {
+      if (a.a[i] != b.a[i]) {
+        return a.a[i] < b.a[i];
+      }
+    }
+    return 0;
+  }
+  int count() {
+    for (int i = n; i >= 0; i--) {
+      if (a[i]) {
+        return i;
+      }
+    }
+    return -1;
+  }
+} f[Maxn + 5];
+struct Edge {
+  int u, v;
+} edge[Maxn + 5];
+map<pair<int, int>, int> col;
+priority_queue<Bit> q;
+vector<int> g[Maxn + 5];
+bool check(vector<Bit> a) {
+  if (a.empty()) {
+    return 1;
+  }
+  for (vector<Bit>::iterator it = a.begin(); it != a.end(); it++) {
+    q.push(*it);
+  }
+  for (int i = n; i >= 0; i--) {
+    if (t[i] == 0) {
+      continue;
+    }
+    Bit u = q.top();
+    q.pop();
+    int now = u.count();
+    if (now > i) {
+      break;
+    } else if (now == i) {
+      u.a[now] = 0;
+      q.push(u);
+    }
+    if (q.empty()) {
+      return 1;
+    }
+  }
+  while (!q.empty()) {
+    q.pop();
+  }
+  return 0;
+}
+void re_build(int x, vector<Bit> a) {
+  if (a.empty()) {
+    return;
+  }
+  for (vector<Bit>::iterator it = a.begin(); it != a.end(); it++) {
+    q.push(*it);
+  }
+  for (int i = n; i >= 0; i--) {
+    if (!t[i]) {
+      continue;
+    }
+    Bit u = q.top();
+    q.pop();
+    int now = u.count();
+    if (now == i) {
+      u.a[now] = 0;
+      q.push(u);
+    } else {
+      col[make_pair(u.id, x)] = col[make_pair(x, u.id)] = i;
+    }
+    if (q.empty()) {
+      return;
+    }
+  }
+  while (!q.empty()) {
+    q.pop();
+  }
+}
+void init_dfs(int u, int fa) {
+  vector<Bit> a;
+  f[u].id = u;
+  for (int i = 0; i < (int)g[u].size(); i++) {
+    int v = g[u][i];
+    if (v == fa) {
+      continue;
+    }
+    init_dfs(v, u);
+    a.push_back(f[v]);
+  }
+  for (int i = 0; i <= n; i++) {
+    t[i] = 1;
+  }
+  for (int i = n; i >= 0; i--) {
+    t[i] = 0;
+    if (!check(a)) {
+      t[i] = 1;
+    }
+  }
+  for (int i = 0; i <= n; i++) {
+    f[u].a[i] = t[i];
+  }
+  re_build(u, a);
+}
+int maxn;
+pair<int, int> id;
+void work_dfs(int u, int fa) {
+  for (int i = 0; i < (int)g[u].size(); i++) {
+    int v = g[u][i];
+    if (vis[v] || v == fa) {
+      continue;
+    }
+    int k = col[make_pair(u, v)];
+    if (k > maxn) {
+      maxn = k;
+      id = make_pair(u, v);
+    }
+    work_dfs(v, u);
+  }
+}
+void solve(int u, int fa) {
+  maxn = -1;
+  work_dfs(u, fa);
+  if (maxn == -1) {
+    printf("! %d\n", u);
+    fflush(stdout);
+    return;
+  }
+  printf("? %d %d\n", id.first, id.second);
+  fflush(stdout);
+  int r;
+  scanf("%d", &r);
+  if (r == id.first) {
+    vis[id.second] = 1;
+    solve(id.first, id.first);
+  } else {
+    vis[id.first] = 1;
+    solve(id.second, id.second);
+  }
+}
+int main() {
+  scanf("%d", &n);
+  for (int i = 1; i < n; i++) {
+    int u, v;
+    scanf("%d%d", &u, &v);
+    g[u].push_back(v);
+    g[v].push_back(u);
+  }
+  init_dfs(1, 1);
+  solve(1, 1);
+  return 0;
+}
+
+
+Example question 3:
+Name: 75_D. Big Maximum Sum
+Tags: ['data structures', 'dp', 'greedy', 'implementation', 'math', 'trees']
+Description: Ahmed and Mostafa used to compete together in many programming contests for several years. Their coach Fegla asked them to solve one challenging problem, of course Ahmed was able to solve it but Mostafa couldn't.
+
+This problem is similar to a standard problem but it has a different format and constraints.
+
+In the standard problem you are given an array of integers, and you have to find one or more consecutive elements in this array where their sum is the maximum possible sum.
+
+But in this problem you are given n small arrays, and you will create one big array from the concatenation of one or more instances of the small arrays (each small array could occur more than once). The big array will be given as an array of indexes (1-based) of the small arrays, and the concatenation should be done in the same order as in this array. Then you should apply the standard problem mentioned above on the resulting big array.
+
+For example let's suppose that the small arrays are {1, 6, -2}, {3, 3} and {-5, 1}. And the indexes in the big array are {2, 3, 1, 3}. So the actual values in the big array after formatting it as concatenation of the small arrays will be {3, 3, -5, 1, 1, 6, -2, -5, 1}. In this example the maximum sum is 9.
+
+Can you help Mostafa solve this problem?
+
+Input
+
+The first line contains two integers n and m, n is the number of the small arrays (1 ≤ n ≤ 50), and m is the number of indexes in the big array (1 ≤ m ≤ 250000). Then follow n lines, the i-th line starts with one integer l which is the size of the i-th array (1 ≤ l ≤ 5000), followed by l integers each one will be greater than or equal -1000 and less than or equal 1000. The last line contains m integers which are the indexes in the big array, and you should concatenate the small arrays in the same order, and each index will be greater than or equal to 1 and less than or equal to n.
+
+The small arrays are numbered from 1 to n in the same order as given in the input. Some of the given small arrays may not be used in big array.
+
+Note, that the array is very big. So if you try to build it straightforwardly, you will probably get time or/and memory limit exceeded.
+
+Output
+
+Print one line containing the maximum sum in the big array after formatting it as described above. You must choose at least one element for the sum, i. e. it cannot be empty.
+
+Please, do not use %lld specificator to write 64-bit integers in C++. It is preferred to use cout (also you may use %I64d).
+
+Examples
+
+Input
+
+3 4
+3 1 6 -2
+2 3 3
+2 -5 1
+2 3 1 3
+
+
+Output
+
+9
+
+
+Input
+
+6 1
+4 0 8 -3 -10
+8 3 -2 -5 10 8 -9 -5 -4
+1 0
+1 -3
+3 -8 5 6
+2 9 6
+1
+
+
+Output
+
+8
+Difficulty: 10
+Solutions: import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class BigMaximumSum {
+
+    public static int n, m;
+
+    public static class Node {
+        long ml, mr, m;
+        boolean rightAll;
+        long all;
+        public Node(long ml,long mr,long m,boolean rightAll,long all)
+        {
+            this.ml=ml;
+            this.mr=mr;
+            this.m=m;
+            this.rightAll=rightAll;
+            this.all=all;
+        }
+        @Override
+        public String toString() {
+            // TODO Auto-generated method stub
+            return "( "+ml+" "+m+" "+mr+" "+rightAll+" )";
+        }
+    }
+
+    public static Node nodes[];
+
+    public static long getMax(int a[]) {
+        int max_ending_here = 0;
+        int max_so_far = 0;
+        for (int i = 0; i < a.length; i++) {
+            max_ending_here = Math.max(0, max_ending_here + a[i]);
+            max_so_far = Math.max(max_so_far, max_ending_here);
+        }
+        return max_so_far;
+    }
+    
+    public static long getMaxLeft(int a[])
+    {
+        int max=-100000;
+        int sum=0;
+        for(int i=0;i<a.length;i++)
+        {
+            sum+=a[i];
+            max=Math.max(sum, max);
+        }
+        return max;
+    }
+    
+    public static long getMaxRight(int a[])
+    {
+        int max=-100000;
+        int sum=0;
+        for(int i=a.length-1;i>=0;i--)
+        {
+            sum+=a[i];
+            max=Math.max(sum, max);
+        }
+        return max;
+    }
+
+    public static Node getNode(int a[]) {
+        boolean found = false;
+        for (int i = 0; i < a.length && !found; i++) 
+            if (a[i] >= 0)
+                found = true;
+        
+        long max = -100000;
+//      System.out.println(found);
+        if (found) 
+            max = getMax(a);
+        else 
+            for(int i=0;i<a.length;i++)
+                max=Math.max(a[i], max);
+        
+        long ml=getMaxLeft( a);
+        long mr=getMaxRight(a);
+        
+        long sum=0;
+        for(int i=0;i<a.length;i++)
+            sum+=a[i];
+        
+//      System.out.println(ml+" "+mr+" "+max+" "+sum);
+        return new Node(ml, mr, max,sum==mr,sum);
+    }
+    public static Node concatinate(Node n1,Node n2)
+    {
+        long max=Math.max(n1.m, n2.m);
+        max=Math.max(max, n1.mr+n2.ml);
+        long nr=n2.mr;
+        if(n2.rightAll)
+            nr=Math.max(nr, n2.mr+n1.mr);
+        nr=Math.max(nr, n1.all+n2.all);
+        nr=Math.max(nr, n2.all+n1.mr);
+        max=Math.max(nr, max);
+        return new Node(n1.ml, nr, max, false,n1.all+n2.all);
+            
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                System.in));
+        String st[] = reader.readLine().split(" ");
+        n = Integer.parseInt(st[0]);
+        m = Integer.parseInt(st[1]);
+        nodes = new Node[n];
+        int a[];
+        for (int i = 0; i < n; i++) {
+            st = reader.readLine().split(" ");
+            a = new int[st.length - 1];
+            for (int j = 1; j < st.length; j++)
+                a[j - 1] = Integer.parseInt(st[j]);
+            nodes[i] = getNode(a);
+//          System.out.println(nodes[i]);
+        }
+        st=reader.readLine().split(" ");
+        int num=0;
+        Node prevn=nodes[Integer.parseInt(st[0])-1];
+        for(int i=1;i<m;i++)
+        {
+            num=Integer.parseInt(st[i])-1;
+            prevn=concatinate(prevn, nodes[num]);
+        }
+        System.out.println(prevn.m);
+    }
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

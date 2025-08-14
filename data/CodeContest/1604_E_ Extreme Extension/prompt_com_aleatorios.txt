@@ -1,0 +1,535 @@
+CURRENT QUESTION:
+For an array b of n integers, the extreme value of this array is the minimum number of times (possibly, zero) the following operation has to be performed to make b non-decreasing: 
+
+  * Select an index i such that 1 ≤ i ≤ |b|, where |b| is the current length of b. 
+  * Replace b_i with two elements x and y such that x and y both are positive integers and x + y = b_i. 
+  * This way, the array b changes and the next operation is performed on this modified array. 
+
+
+
+For example, if b = [2, 4, 3] and index 2 gets selected, then the possible arrays after this operation are [2, \underline{1}, \underline{3}, 3], [2, \underline{2}, \underline{2}, 3], or [2, \underline{3}, \underline{1}, 3]. And consequently, for this array, this single operation is enough to make it non-decreasing: [2, 4, 3] → [2, \underline{2}, \underline{2}, 3].
+
+It's easy to see that every array of positive integers can be made non-decreasing this way.
+
+YouKn0wWho has an array a of n integers. Help him find the sum of extreme values of all nonempty subarrays of a modulo 998 244 353. If a subarray appears in a multiple times, its extreme value should be counted the number of times it appears.
+
+An array d is a subarray of an array c if d can be obtained from c by deletion of several (possibly, zero or all) elements from the beginning and several (possibly, zero or all) elements from the end.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10 000) — the number of test cases.
+
+The first line of each test case contains a single integer n (1 ≤ n ≤ 10^5).
+
+The second line of each test case contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 10^5).
+
+It is guaranteed that the sum of n over all test cases doesn't exceed 10^5.
+
+Output
+
+For each test case, print a single integer — the sum of extreme values of all subarrays of a modulo 998 244 353.
+
+Example
+
+Input
+
+
+4
+3
+5 4 3
+4
+3 2 1 4
+1
+69
+8
+7264 40515 28226 92776 35285 21709 75124 48163
+
+
+Output
+
+
+5
+9
+0
+117
+
+Note
+
+Let f(l, r) denote the extreme value of [a_l, a_{l+1}, …, a_r].
+
+In the first test case, 
+
+  * f(1, 3) = 3, because YouKn0wWho can perform the following operations on the subarray [5, 4, 3] (the newly inserted elements are underlined):
+
+[5, 4, 3] → [\underline{3}, \underline{2}, 4, 3] → [3, 2, \underline{2}, \underline{2}, 3] → [\underline{1}, \underline{2}, 2, 2, 2, 3];
+
+  * f(1, 2) = 1, because [5, 4] → [\underline{2}, \underline{3}, 4];
+  * f(2, 3) = 1, because [4, 3] → [\underline{1}, \underline{3}, 3];
+  * f(1, 1) = f(2, 2) = f(3, 3) = 0, because they are already non-decreasing. 
+
+
+
+So the total sum of extreme values of all subarrays of a = 3 + 1 + 1 + 0 + 0 + 0 = 5.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 1315_E. Double Elimination
+Tags: ['dp', 'implementation']
+Description: The biggest event of the year – Cota 2 world championship "The Innernational" is right around the corner. 2^n teams will compete in a double-elimination format (please, carefully read problem statement even if you know what is it) to identify the champion. 
+
+Teams are numbered from 1 to 2^n and will play games one-on-one. All teams start in the upper bracket.
+
+All upper bracket matches will be held played between teams that haven't lost any games yet. Teams are split into games by team numbers. Game winner advances in the next round of upper bracket, losers drop into the lower bracket.
+
+Lower bracket starts with 2^{n-1} teams that lost the first upper bracket game. Each lower bracket round consists of two games. In the first game of a round 2^k teams play a game with each other (teams are split into games by team numbers). 2^{k-1} loosing teams are eliminated from the championship, 2^{k-1} winning teams are playing 2^{k-1} teams that got eliminated in this round of upper bracket (again, teams are split into games by team numbers). As a result of each round both upper and lower bracket have 2^{k-1} teams remaining. See example notes for better understanding.
+
+Single remaining team of upper bracket plays with single remaining team of lower bracket in grand-finals to identify championship winner.
+
+You are a fan of teams with numbers a_1, a_2, ..., a_k. You want the championship to have as many games with your favourite teams as possible. Luckily, you can affect results of every championship game the way you want. What's maximal possible number of championship games that include teams you're fan of?
+
+Input
+
+First input line has two integers n, k — 2^n teams are competing in the championship. You are a fan of k teams (2 ≤ n ≤ 17; 0 ≤ k ≤ 2^n).
+
+Second input line has k distinct integers a_1, …, a_k — numbers of teams you're a fan of (1 ≤ a_i ≤ 2^n).
+
+Output
+
+Output single integer — maximal possible number of championship games that include teams you're fan of.
+
+Examples
+
+Input
+
+
+3 1
+6
+
+
+Output
+
+
+6
+
+
+Input
+
+
+3 3
+1 7 8
+
+
+Output
+
+
+11
+
+
+Input
+
+
+3 4
+1 3 5 7
+
+
+Output
+
+
+14
+
+Note
+
+On the image, each game of the championship is denoted with an English letter (a to n). Winner of game i is denoted as Wi, loser is denoted as Li. Teams you're a fan of are highlighted with red background.
+
+In the first example, team 6 will play in 6 games if it looses the first upper bracket game (game c) and wins all lower bracket games (games h, j, l, m). 
+
+<image>
+
+In the second example, teams 7 and 8 have to play with each other in the first game of upper bracket (game d). Team 8 can win all remaining games in upper bracket, when teams 1 and 7 will compete in the lower bracket. 
+
+<image>
+
+In the third example, your favourite teams can play in all games of the championship. 
+
+<image>
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int si();
+long long sl();
+string ss(int);
+char sc();
+float sf();
+double sd();
+long double sld();
+template <typename T>
+void print(T, char = '\n');
+template <typename T, typename... Args>
+void print(T, Args...);
+void pi(const int&, char = '\n');
+void pl(const long long&, char = '\n');
+void pf(const float&, char = '\n');
+void pc(const char&, char = '\n');
+void pd(const double&, char = '\n');
+void pld(const long double&, char = '\n');
+void ps(const string&, char = '\n');
+template <typename T>
+void pv(const vector<T>& v, char = ' ', char = '\n');
+template <typename It>
+void out(It begin, It end, char = ' ', char = '\n');
+long long russian(long long, long long, long long);
+long long fastpow(long long, long long, long long);
+long long slowpow(long long, long long, long long);
+long long _gcd(long long, long long);
+long long _lcm(long long, long long);
+long long extgcd(long long, long long, long long&, long long&);
+long long _inv(long long, long long);
+const int INF = 1e9;
+const long long LINF = 1e18;
+const int N = (1 << 17) + 7;
+bool A[N];
+int DP[N][2][2];
+int main() {
+  int n = (1 << si()), k = si();
+  while (k--) A[si() - 1] = true;
+  for (int i = 1; i < n; ++i)
+    for (int t1 = 0; t1 < 2; ++t1)
+      for (int t2 = 0; t2 < 2; ++t2) DP[i][t1][t2] = -INF;
+  for (int i = 0; i < n; i += 2) {
+    int t1 = A[i], t2 = A[i + 1];
+    int idx = (i + n) >> 1;
+    int val = t1 || t2 ? 1 : 0;
+    DP[idx][t1][t2] = DP[idx][t2][t1] = val;
+  }
+  for (int i = (n >> 1) - 1; i > 0; --i) {
+    int left = i << 1;
+    int right = left + 1;
+    for (int t1 = 0; t1 < 2; ++t1)
+      for (int t2 = 0; t2 < 2; ++t2) {
+        for (int l1 = 0; l1 < 2; ++l1)
+          for (int l2 = 0; l2 < 2; ++l2)
+            for (int r1 = 0; r1 < 2; ++r1)
+              for (int r2 = 0; r2 < 2; ++r2) {
+                if (t1 != l1 && t1 != r1) continue;
+                int valup = l1 || r1 ? 1 : 0;
+                int down = t1 == l1 ? r1 : l1;
+                if (t2 != down && t2 != l2 && t2 != r2) continue;
+                int valdown = r2 || l2 ? 1 : 0;
+                int valadd =
+                    t2 == down ? (t2 || valdown ? 1 : 0) : (t2 || down ? 1 : 0);
+                DP[i][t1][t2] =
+                    max(DP[i][t1][t2], DP[left][l1][l2] + DP[right][r1][r2] +
+                                           valup + valdown + valadd);
+              }
+      }
+  }
+  int res = 0;
+  for (int t1 = 0; t1 < 2; ++t1)
+    for (int t2 = 0; t2 < 2; ++t2)
+      res = max(res, DP[1][t1][t2] + (t1 || t2 ? 1 : 0));
+  pi(res);
+  return 0;
+}
+template <typename T>
+T scanf_t(string&& token) {
+  T a;
+  scanf(token.c_str(), &a);
+  return a;
+}
+int si() { return scanf_t<int>("%d"); }
+long long sl() { return scanf_t<long long>("%lld"); }
+string ss(int n) {
+  char T[n + 7];
+  scanf("%s", T);
+  return string(T);
+}
+char sc() { return scanf_t<char>(" %c"); }
+float sf() { return scanf_t<float>("%f"); }
+double sd() { return scanf_t<double>("%lf"); }
+long double sld() { return scanf_t<long double>("%Lf"); }
+template <typename T>
+void print(T a, char sep) {
+  string token;
+  if (is_same<T, int>::value)
+    token = "%d";
+  else if (is_same<T, long long>::value)
+    token = "%lld";
+  else if (is_same<T, string>::value)
+    token = "%s";
+  else if (is_same<T, char>::value)
+    token = "%c";
+  else if (is_same<T, float>::value)
+    token = "%.6f";
+  else if (is_same<T, double>::value)
+    token = "%.8lf";
+  else if (is_same<T, long double>::value)
+    token = "%.10Lf";
+  token.push_back(sep);
+  printf(token.c_str(), a);
+}
+template <typename T, typename... Args>
+void print(T first, Args... rest) {
+  print(first, ' ');
+  print(rest...);
+}
+void pi(const int& a, char sep) { printf("%d%c", a, sep); }
+void pl(const long long& a, char sep) { printf("%lld%c", a, sep); }
+void pf(const float& a, char sep) { printf("%.6f%c", a, sep); }
+void pc(const char& a, char sep) { printf("%c%c", a, sep); }
+void pd(const double& a, char sep) { printf("%.8lf%c", a, sep); }
+void pld(const long double& a, char sep) { printf("%.12Lf%c", a, sep); }
+void ps(const string& a, char sep) { printf("%s%c", a.c_str(), sep); }
+template <typename It>
+void out(It begin, It end, char sep, char endl) {
+  if (begin == end) {
+    printf("%c", endl);
+    return;
+  }
+  while (begin + 1 != end) print(*begin, sep), ++begin;
+  if (begin != end) print(*begin, ' '), printf("%c", endl);
+}
+template <typename T>
+void pv(const vector<T>& v, char sep, char endl) {
+  out(v.begin(), v.end(), sep, endl);
+}
+long long russian(long long a, long long k, long long m) {
+  long long res = 0;
+  while (k) {
+    if (k & 1LL) res = (res + a) % m;
+    a = (a + a) % m;
+    k >>= 1LL;
+  }
+  return res;
+}
+long long fastpow(long long a, long long k, long long m) {
+  long long res = 1;
+  while (k) {
+    if (k & 1LL) res = (res * a) % m;
+    a = (a * a) % m;
+    k >>= 1LL;
+  }
+  return res;
+}
+long long slowpow(long long a, long long k, long long m) {
+  long long res = 1;
+  while (k) {
+    if (k & 1LL) res = russian(res, a, m);
+    a = russian(a, a, m);
+    k >>= 1LL;
+  }
+  return res;
+}
+long long _gcd(long long a, long long b) {
+  while (b) swap(a %= b, b);
+  return a;
+}
+long long _lcm(long long a, long long b) { return a / _gcd(a, b) * b; }
+long long extgcd(long long a, long long b, long long& k, long long& l) {
+  if (b == 0) {
+    k = 1;
+    l = 0;
+    return a;
+  }
+  long long res = extgcd(a, a % b, l, k);
+  l -= a / b * k;
+  return res;
+}
+long long _inv(long long a, long long p) { return fastpow(a, p - 2, p); }
+
+
+Example question 2:
+Name: 1300_C. Anu Has a Function
+Tags: ['brute force', 'greedy', 'math']
+Description: Anu has created her own function f: f(x, y) = (x | y) - y where | denotes the [bitwise OR operation](https://en.wikipedia.org/wiki/Bitwise_operation#OR). For example, f(11, 6) = (11|6) - 6 = 15 - 6 = 9. It can be proved that for any nonnegative numbers x and y value of f(x, y) is also nonnegative. 
+
+She would like to research more about this function and has created multiple problems for herself. But she isn't able to solve all of them and needs your help. Here is one of these problems.
+
+A value of an array [a_1, a_2, ..., a_n] is defined as f(f(... f(f(a_1, a_2), a_3), ... a_{n-1}), a_n) (see notes). You are given an array with not necessarily distinct elements. How should you reorder its elements so that the value of the array is maximal possible?
+
+Input
+
+The first line contains a single integer n (1 ≤ n ≤ 10^5).
+
+The second line contains n integers a_1, a_2, …, a_n (0 ≤ a_i ≤ 10^9). Elements of the array are not guaranteed to be different.
+
+Output
+
+Output n integers, the reordering of the array with maximum value. If there are multiple answers, print any.
+
+Examples
+
+Input
+
+
+4
+4 0 11 6
+
+
+Output
+
+
+11 6 4 0
+
+Input
+
+
+1
+13
+
+
+Output
+
+
+13 
+
+Note
+
+In the first testcase, value of the array [11, 6, 4, 0] is f(f(f(11, 6), 4), 0) = f(f(9, 4), 0) = f(9, 0) = 9.
+
+[11, 4, 0, 6] is also a valid answer.
+Difficulty: 9
+Solutions: import java.util.*;
+import java.io.*;
+
+public class Anu {
+	static BufferedReader br;
+	static StringTokenizer tokenizer;
+
+	public static void main(String[] args) throws Exception {
+		br = new BufferedReader(new InputStreamReader(System.in));
+		int n = nextInt();
+		Integer[] arr = new Integer[n];
+		for(int i = 0; i < n; i++)
+			arr[i] = nextInt();
+		Arrays.sort(arr, null);
+		int[] pre = new int[n + 1];
+		int[] suf = new int[n + 1];
+		pre[0] = arr[0];
+		suf[n - 1] = arr[n - 1];
+		for(int i = 1; i < n; i++)
+			pre[i] = pre[i - 1] | arr[i];
+		for(int i = n - 2; i >= 0; i--)
+			suf[i] = suf[i + 1] | arr[i];
+		int max = (arr[0] | suf[1]) - suf[1];
+		int id = 0;
+		for(int i = 1; i < n - 1; i++) {
+			if(max < (arr[i] | suf[i + 1] | pre[i - 1]) - (suf[i + 1] | pre[i - 1])) {
+				max = (arr[i] | suf[i + 1] | pre[i - 1]) - (suf[i + 1] | pre[i - 1]);
+				id = i;
+			}
+		}
+		if(n > 1 && (arr[n - 1] | pre[n - 2]) - pre[n - 2] > max)
+			 id = n - 1;
+		PrintWriter out = new PrintWriter(System.out);
+		out.print(arr[id] + " ");
+		for(int i = 0; i < n; i++)
+			if(i != id)
+				out.print(arr[i] + " ");
+		out.println();
+		out.close();
+	}
+
+	public static String next() throws IOException {
+		while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+			String line = br.readLine();
+			if (line == null)
+				throw new IOException();
+			tokenizer = new StringTokenizer(line);
+		}
+		return tokenizer.nextToken();
+	}
+
+	public static int nextInt() throws IOException {
+		return Integer.parseInt(next());
+	}
+
+	public static long nextLong() throws IOException {
+		return Long.parseLong(next());
+	}
+
+	public static double nextDouble() throws IOException {
+		return Double.parseDouble(next());
+	}
+}
+
+
+Example question 3:
+Name: 55_C. Pie or die
+Tags: ['games']
+Description: Volodya and Vlad play the following game. There are k pies at the cells of n × m board. Each turn Volodya moves one pie to the neighbouring (by side) cell. If the pie lies at the border of the board then Volodya can move it outside the board, get the pie and win. After Volodya's move, Vlad bans some edge at the border of the board of length 1 (between two knots of the board) so that Volodya is not able to move the pie outside the board through this edge anymore. The question is: will Volodya win this game? We suppose both players follow the optimal strategy.
+
+<image>
+
+Input
+
+First line contains 3 integers, separated by space: 1 ≤ n, m ≤ 100 — dimensions of the board and 0 ≤ k ≤ 100 — the number of pies. Each of the next k lines contains 2 integers, separated by space: 1 ≤ x ≤ n, 1 ≤ y ≤ m — coordinates of the corresponding pie. There could be more than one pie at a cell. 
+
+Output
+
+Output only one word: "YES" — if Volodya wins, "NO" — otherwise.
+
+Examples
+
+Input
+
+2 2 1
+1 2
+
+
+Output
+
+YES
+
+Input
+
+3 4 0
+
+
+Output
+
+NO
+
+Input
+
+100 50 2
+50 25
+50 25
+
+
+Output
+
+NO
+Difficulty: 9
+Solutions: import java.util.Scanner;
+
+public class C {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        int m=sc.nextInt();
+        int pies=sc.nextInt();
+        boolean win=false;
+        for(int i=0;i<pies;i++){
+            int r=sc.nextInt();
+            int c=sc.nextInt();
+            if(Math.abs(r-1)<=4||Math.abs(r-n)<=4||Math.abs(c-1)<=4||Math.abs(c-m)<=4)
+                win=true;
+        }
+        if(win) System.out.println("YES");
+        else System.out.println("NO");
+    }
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

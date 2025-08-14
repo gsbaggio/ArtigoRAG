@@ -1,0 +1,342 @@
+CURRENT QUESTION:
+You had n positive integers a_1, a_2, ..., a_n arranged in a circle. For each pair of neighboring numbers (a_1 and a_2, a_2 and a_3, ..., a_{n - 1} and a_n, and a_n and a_1), you wrote down: are the numbers in the pair equal or not.
+
+Unfortunately, you've lost a piece of paper with the array a. Moreover, you are afraid that even information about equality of neighboring elements may be inconsistent. So, you are wondering: is there any array a which is consistent with information you have about equality or non-equality of corresponding pairs?
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of test cases. Next t cases follow.
+
+The first and only line of each test case contains a non-empty string s consisting of characters E and/or N. The length of s is equal to the size of array n and 2 ≤ n ≤ 50. For each i from 1 to n: 
+
+  * if s_i = E then a_i is equal to a_{i + 1} (a_n = a_1 for i = n); 
+  * if s_i = N then a_i is not equal to a_{i + 1} (a_n ≠ a_1 for i = n). 
+
+Output
+
+For each test case, print YES if it's possible to choose array a that are consistent with information from s you know. Otherwise, print NO.
+
+It can be proved, that if there exists some array a, then there exists an array a of positive integers with values less or equal to 10^9.
+
+Example
+
+Input
+
+
+4
+EEE
+EN
+ENNEENE
+NENN
+
+
+Output
+
+
+YES
+NO
+YES
+YES
+
+Note
+
+In the first test case, you can choose, for example, a_1 = a_2 = a_3 = 5.
+
+In the second test case, there is no array a, since, according to s_1, a_1 is equal to a_2, but, according to s_2, a_2 is not equal to a_1.
+
+In the third test case, you can, for example, choose array a = [20, 20, 4, 50, 50, 50, 20].
+
+In the fourth test case, you can, for example, choose a = [1, 3, 3, 7].
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.77):
+Name: 1512_A. Spy Detected!
+Tags: ['brute force', 'implementation']
+Description: You are given an array a consisting of n (n ≥ 3) positive integers. It is known that in this array, all the numbers except one are the same (for example, in the array [4, 11, 4, 4] all numbers except one are equal to 4).
+
+Print the index of the element that does not equal others. The numbers in the array are numbered from one.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 100). Then t test cases follow.
+
+The first line of each test case contains a single integer n (3 ≤ n ≤ 100) — the length of the array a.
+
+The second line of each test case contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 100).
+
+It is guaranteed that all the numbers except one in the a array are the same.
+
+Output
+
+For each test case, output a single integer — the index of the element that is not equal to others.
+
+Example
+
+Input
+
+
+4
+4
+11 13 11 11
+5
+1 4 4 4 4
+10
+3 3 3 3 10 3 3 3 3 3
+3
+20 20 10
+
+
+Output
+
+
+2
+1
+5
+3
+Difficulty: 7
+Solutions: 
+
+
+import java.io.BufferedInputStream;
+import java.util.Scanner;
+
+public class main {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(new BufferedInputStream(System.in));
+        int t = input.nextInt();
+        int[] result = new int[t];
+        int p = 0;
+        for (int i = 0; i < t; i++) {
+            int n = input.nextInt();
+            int[] temp = new int[n];
+            for (int j = 0; j < n; j++) {
+                temp[j] = input.nextInt();
+            }
+            int count = 0;
+            for (int j = 1; j < n; j++) {
+                if (temp[0] == temp[j]){
+                    count++;
+                }
+            }
+            if (count>0){
+                for (int j = 1; j < n; j++) {
+                    if ((float)(temp[0]+temp[j])/2!=(float)temp[0]){
+                        result[p++] = j;
+                    }
+                }
+            }else {
+                result[p++] = 0;
+            }
+        }
+        for (int i = 0; i < p; i++) {
+            System.out.print(result[i]+1);
+            if (i<p-1){
+                System.out.println();
+            }
+        }
+
+    }
+}
+
+
+  		 	 	 			 	  								
+
+Similar question 2 (Similarity score: 0.74):
+Name: 1360_C. Similar Pairs
+Tags: ['constructive algorithms', 'graph matchings', 'greedy', 'sortings']
+Description: We call two numbers x and y similar if they have the same parity (the same remainder when divided by 2), or if |x-y|=1. For example, in each of the pairs (2, 6), (4, 3), (11, 7), the numbers are similar to each other, and in the pairs (1, 4), (3, 12), they are not.
+
+You are given an array a of n (n is even) positive integers. Check if there is such a partition of the array into pairs that each element of the array belongs to exactly one pair and the numbers in each pair are similar to each other.
+
+For example, for the array a = [11, 14, 16, 12], there is a partition into pairs (11, 12) and (14, 16). The numbers in the first pair are similar because they differ by one, and in the second pair because they are both even.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of test cases. Then t test cases follow.
+
+Each test case consists of two lines.
+
+The first line contains an even positive integer n (2 ≤ n ≤ 50) — length of array a.
+
+The second line contains n positive integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 100).
+
+Output
+
+For each test case print:
+
+  * YES if the such a partition exists, 
+  * NO otherwise. 
+
+
+
+The letters in the words YES and NO can be displayed in any case.
+
+Example
+
+Input
+
+
+7
+4
+11 14 16 12
+2
+1 8
+4
+1 1 1 1
+4
+1 2 5 6
+2
+12 13
+6
+1 6 3 10 5 8
+6
+1 12 3 10 5 8
+
+
+Output
+
+
+YES
+NO
+YES
+YES
+YES
+YES
+NO
+
+Note
+
+The first test case was explained in the statement.
+
+In the second test case, the two given numbers are not similar.
+
+In the third test case, any partition is suitable.
+Difficulty: 9
+Solutions: for i in range(int(input())):
+    k=int(input())
+    a=list(map(int,input().split()))
+    a.sort()
+    c,d=0,0
+    i=1
+    e=0
+    for j in range(len(a)):
+        if(a[j]%2==0):
+            c+=1
+        else:
+            d+=1
+    if(c%2==0 and d%2==0):
+        print("YES")
+    else:
+        c,d=0,0
+        while(i<len(a)):
+            if(a[i]-a[i-1]==1):
+                a.pop(i)
+                a.pop(i-1)
+                e+=2
+                break
+            i+=1
+        for i in range(len(a)):
+            if(a[i]%2==0):
+                c+=1
+            else:
+                d+=1
+        if(c%2==0 and d%2==0 and e+len(a)==k):
+            print("YES")
+        else:
+            print("NO")
+        
+    
+            
+            
+
+Similar question 3 (Similarity score: 0.73):
+Name: 1399_A. Remove Smallest
+Tags: ['greedy', 'sortings']
+Description: You are given the array a consisting of n positive (greater than zero) integers.
+
+In one move, you can choose two indices i and j (i ≠ j) such that the absolute difference between a_i and a_j is no more than one (|a_i - a_j| ≤ 1) and remove the smallest of these two elements. If two elements are equal, you can remove any of them (but exactly one).
+
+Your task is to find if it is possible to obtain the array consisting of only one element using several (possibly, zero) such moves or not.
+
+You have to answer t independent test cases.
+
+Input
+
+The first line of the input contains one integer t (1 ≤ t ≤ 1000) — the number of test cases. Then t test cases follow.
+
+The first line of the test case contains one integer n (1 ≤ n ≤ 50) — the length of a. The second line of the test case contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 100), where a_i is the i-th element of a.
+
+Output
+
+For each test case, print the answer: "YES" if it is possible to obtain the array consisting of only one element using several (possibly, zero) moves described in the problem statement, or "NO" otherwise.
+
+Example
+
+Input
+
+
+5
+3
+1 2 2
+4
+5 5 5 5
+3
+1 2 4
+4
+1 3 4 4
+1
+100
+
+
+Output
+
+
+YES
+YES
+NO
+NO
+YES
+
+Note
+
+In the first test case of the example, we can perform the following sequence of moves:
+
+  * choose i=1 and j=3 and remove a_i (so a becomes [2; 2]); 
+  * choose i=1 and j=2 and remove a_j (so a becomes [2]). 
+
+
+
+In the second test case of the example, we can choose any possible i and j any move and it doesn't matter which element we remove.
+
+In the third test case of the example, there is no way to get rid of 2 and 4.
+Difficulty: 7
+Solutions: def t(b):
+    if b:
+        print("YES")
+        return
+    print("NO")
+
+for _ in range(int(input())):
+    a = int(input())
+    l = sorted(list(map(int, input().split())))
+
+    for i in range(a - 1):
+        if l[i + 1] - l[i] >= 2:
+            t(False)
+            break
+    else:
+        t(True)
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

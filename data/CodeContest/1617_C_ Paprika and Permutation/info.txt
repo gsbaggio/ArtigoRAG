@@ -1,0 +1,2 @@
+1300
+['binary search', 'greedy', 'math', 'sortings']

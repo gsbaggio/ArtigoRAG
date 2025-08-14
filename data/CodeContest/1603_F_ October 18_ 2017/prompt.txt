@@ -1,0 +1,599 @@
+CURRENT QUESTION:
+It was October 18, 2017. Shohag, a melancholic soul, made a strong determination that he will pursue Competitive Programming seriously, by heart, because he found it fascinating. Fast forward to 4 years, he is happy that he took this road. He is now creating a contest on Codeforces. He found an astounding problem but has no idea how to solve this. Help him to solve the final problem of the round.
+
+You are given three integers n, k and x. Find the number, modulo 998 244 353, of integer sequences a_1, a_2, …, a_n such that the following conditions are satisfied: 
+
+  * 0 ≤ a_i < 2^k for each integer i from 1 to n. 
+  * There is no non-empty subsequence in a such that the [bitwise XOR](https://en.wikipedia.org/wiki/Bitwise_operation#XOR) of the elements of the subsequence is x. 
+
+
+
+A sequence b is a subsequence of a sequence c if b can be obtained from c by deletion of several (possibly, zero or all) elements.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10^5) — the number of test cases.
+
+The first and only line of each test case contains three space-separated integers n, k, and x (1 ≤ n ≤ 10^9, 0 ≤ k ≤ 10^7, 0 ≤ x < 2^{\operatorname{min}(20, k)}).
+
+It is guaranteed that the sum of k over all test cases does not exceed 5 ⋅ 10^7.
+
+Output
+
+For each test case, print a single integer — the answer to the problem.
+
+Example
+
+Input
+
+
+6
+2 2 0
+2 1 1
+3 2 3
+69 69 69
+2017 10 18
+5 7 0
+
+
+Output
+
+
+6
+1
+15
+699496932
+892852568
+713939942
+
+Note
+
+In the first test case, the valid sequences are [1, 2], [1, 3], [2, 1], [2, 3], [3, 1] and [3, 2].
+
+In the second test case, the only valid sequence is [0, 0].
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.72):
+Name: 467_E. Alex and Complicated Task
+Tags: ['data structures', 'dp', 'greedy']
+Description: After you have read all the problems, probably, you think Alex is genius person. That's true! One day he came up with the following task.
+
+Given a sequence of integer numbers a1, a2, ..., an. You are to find a longest sequence b1, b2, ..., b4m, that satisfies the following conditions:
+
+  * b4k + 1 = b4k + 3 for all valid integer k; 
+  * b4k + 2 = b4k + 4 for all valid integer k; 
+  * sequence b is subsequence of a (not necessarily contiguous subsequence). 
+
+
+
+And finally... Alex had given this complicated task to George, and George gave it to you. Help George to cope with the task.
+
+Input
+
+The first line contains a single integer n (1 ≤ n ≤ 5·105). The next line contains n integers a1, a2, ..., an (1 ≤ ai ≤ 109).
+
+Output
+
+In the first line print a single integer 4m — the maximal possible length of required sequence b. In the second line print 4m integers b1, b2, ..., b4m, that is required sequence.
+
+If there are multiple optimal answers you may print any of them.
+
+Examples
+
+Input
+
+4
+3 5 3 5
+
+
+Output
+
+4
+3 5 3 5
+
+
+Input
+
+10
+35 1 2 1 2 35 100 200 100 200
+
+
+Output
+
+8
+1 2 1 2 100 200 100 200
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int a[500005];
+map<int, int> pre;
+map<int, int> num;
+vector<int> ans;
+stack<int> st;
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+  int n;
+  while (cin >> n) {
+    for (int i = 1; i <= n; i++) {
+      cin >> a[i];
+      num[a[i]] = 0;
+    }
+    for (int k = 0; k <= n;) {
+      pre.clear();
+      int i;
+      for (i = k + 1; i <= n; i++) {
+        if (pre[a[i]]) {
+          for (int j = 0; j <= 1; j++) {
+            ans.push_back(pre[a[i]]);
+            ans.push_back(a[i]);
+          }
+          break;
+        } else {
+          if (num[a[i]] == 0)
+            st.push(a[i]);
+          else {
+            while (!st.empty()) {
+              int u = st.top();
+              st.pop();
+              if (u == a[i]) break;
+              pre[u] = a[i];
+            }
+            st.push(a[i]);
+          }
+          num[a[i]]++;
+          if (num[a[i]] == 4) {
+            for (int j = 0; j <= 3; j++) ans.push_back(a[i]);
+            break;
+          }
+        }
+      }
+      while (!st.empty()) st.pop();
+      for (int j = k + 1; j <= i; j++) num[a[j]] = 0;
+      k = i;
+    }
+    printf("%d\n", ans.size());
+    for (int u : ans) printf("%d ", u);
+    printf("\n");
+  }
+  return 0;
+}
+
+
+Similar question 2 (Similarity score: 0.71):
+Name: p03066 Tenka1 Programmer Contest 2019 - Banned X
+Tags: ['']
+Description: Find the number, modulo 998244353, of sequences of length N consisting of 0, 1 and 2 such that none of their contiguous subsequences totals to X.
+
+Constraints
+
+* 1 \leq N \leq 3000
+* 1 \leq X \leq 2N
+* N and X are integers.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N X
+
+
+Output
+
+Print the number, modulo 998244353, of sequences that satisfy the condition.
+
+Examples
+
+Input
+
+3 3
+
+
+Output
+
+14
+
+
+Input
+
+8 6
+
+
+Output
+
+1179
+
+
+Input
+
+10 1
+
+
+Output
+
+1024
+
+
+Input
+
+9 13
+
+
+Output
+
+18402
+
+
+Input
+
+314 159
+
+
+Output
+
+459765451
+Difficulty: 0
+Solutions: #include <iostream>
+#include <algorithm>
+#include <iomanip>
+#include <vector>
+#include <queue>
+#include <set>
+#include <map>
+#define N_MAX 6002
+
+using namespace std;
+typedef long long ll;
+const ll MOD = 998244353;
+ll inv[N_MAX],fac[N_MAX],finv[N_MAX];
+
+void init(){
+    fac[0]=fac[1]=1;
+    finv[0]=finv[1]=1;
+    inv[1]=1;
+    for(int i=2;i<N_MAX;i++){
+        inv[i]=MOD-inv[MOD%i]*(MOD/i)%MOD;
+        fac[i]=fac[i-1]*(ll) i%MOD;
+        finv[i]=finv[i-1]*inv[i]%MOD;
+    }
+}
+
+ll comb(ll n, ll r){
+  ll ans;
+  if(n < r){
+      ans = 0;
+  }else{
+      ans = (fac[n]*finv[r])%MOD;
+      ans = (ans*finv[n-r])%MOD;
+      ans = (ans+MOD)%MOD;
+  }
+  return ans;
+}
+
+int N, X;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout << setprecision(10) << fixed;
+    init();
+    cin >> N >> X;
+    ll ans = 0;
+    for(int i = 0; i <= 2*N; i++){
+        if(i < X){
+            for(int j = 0; j <= i; j++){
+                int r = i-j;
+                if(r%2 != 0) continue;
+                int cnt = j+r/2;
+                ll cb = comb(j+r/2, j);
+                ll hcb = comb(N, cnt);
+                ans += (cb*hcb)%MOD;
+                ans %= MOD;
+            }
+        }
+        else if(i%2 == X%2){
+            continue;
+        }else{
+            int m = 2*max((i-(X-1))/2, 0);
+            int rem = i-(m*2);
+            // cout << i << ' ' << rem << ' ' << m << endl;
+            if(rem < 0){
+                if(i%2 == 0){
+                    ll cb = comb(N, i/2);
+                    ans += cb;
+                    ans %= MOD;
+                }
+            }
+            for(int j = 0; j <= rem; j++){
+                int r = rem-j;
+                if(r%2 == 1 || r < 0) continue;
+                int cnt = m+j+r/2;
+                if(cnt > N) continue;
+                // cout << j << ' ' << cnt << endl;
+                ll cb = comb(j+r/2, j);
+                ll hcb = comb(N, cnt);
+                ans += (cb*hcb)%MOD;
+                ans %= MOD;
+            }
+        }
+        // cout << i << "->" << ans << endl;
+    }
+    cout << ans << endl;
+}
+
+Similar question 3 (Similarity score: 0.70):
+Name: 1407_B. Big Vova
+Tags: ['brute force', 'greedy', 'math', 'number theory']
+Description: Alexander is a well-known programmer. Today he decided to finally go out and play football, but with the first hit he left a dent on the new Rolls-Royce of the wealthy businessman Big Vova. Vladimir has recently opened a store on the popular online marketplace "Zmey-Gorynych", and offers Alex a job: if he shows his programming skills by solving a task, he'll work as a cybersecurity specialist. Otherwise, he'll be delivering some doubtful products for the next two years.
+
+You're given n positive integers a_1, a_2, ..., a_n. Using each of them exactly at once, you're to make such sequence b_1, b_2, ..., b_n that sequence c_1, c_2, ..., c_n is lexicographically maximal, where c_i=GCD(b_1,...,b_i) - the greatest common divisor of the first i elements of b. 
+
+Alexander is really afraid of the conditions of this simple task, so he asks you to solve it.
+
+A sequence a is lexicographically smaller than a sequence b if and only if one of the following holds:
+
+  * a is a prefix of b, but a ≠ b;
+  * in the first position where a and b differ, the sequence a has a smaller element than the corresponding element in b.
+
+Input
+
+Each test contains multiple test cases. The first line contains the number of test cases t (1 ≤ t ≤ 10^3). Description of the test cases follows.
+
+The first line of each test case contains a single integer n (1 ≤ n ≤ 10^3) — the length of the sequence a.
+
+The second line of each test case contains n integers a_1,...,a_n (1 ≤ a_i ≤ 10^3) — the sequence a.
+
+It is guaranteed that the sum of n over all test cases does not exceed 10^3.
+
+Output
+
+For each test case output the answer in a single line — the desired sequence b. If there are multiple answers, print any.
+
+Example
+
+Input
+
+
+7
+2
+2 5
+4
+1 8 2 3
+3
+3 8 9
+5
+64 25 75 100 50
+1
+42
+6
+96 128 88 80 52 7
+5
+2 4 8 16 17
+
+
+Output
+
+
+5 2 
+8 2 1 3 
+9 3 8 
+100 50 25 75 64 
+42 
+128 96 80 88 52 7 
+17 2 4 8 16 
+
+Note
+
+In the first test case of the example, there are only two possible permutations b — [2, 5] and [5, 2]: for the first one c=[2, 1], for the second one c=[5, 1].
+
+In the third test case of the example, number 9 should be the first in b, and GCD(9, 3)=3, GCD(9, 8)=1, so the second number of b should be 3.
+
+In the seventh test case of the example, first four numbers pairwise have a common divisor (a power of two), but none of them can be the first in the optimal permutation b.
+Difficulty: 8
+Solutions: import sys,bisect,string,math,time,functools,random,fractions
+from heapq import heappush,heappop,heapify
+from collections import deque,defaultdict,Counter
+from itertools import permutations,combinations,groupby
+rep=range;R=range
+def Golf():n,*t=map(int,open(0).read().split())
+def I():return int(input())
+def S_():return input()
+def IS():return input().split()
+def LS():return [i for i in input().split()]
+def MI():return map(int,input().split())
+def LI():return [int(i) for i in input().split()]
+def LI_():return [int(i)-1 for i in input().split()]
+def NI(n):return [int(input()) for i in range(n)]
+def NI_(n):return [int(input())-1 for i in range(n)]
+def NLI(n):return [[int(i) for i in input().split()] for i in range(n)]
+def NLI_(n):return [[int(i)-1 for i in input().split()] for i in range(n)]
+def StoLI():return [ord(i)-97 for i in input()]
+def ItoS(n):return chr(n+97)
+def LtoS(ls):return ''.join([chr(i+97) for i in ls])
+def RA():return map(int,open(0).read().split())
+def RLI(n=8,a=1,b=10):return [random.randint(a,b)for i in range(n)]
+def RI(a=1,b=10):return random.randint(a,b)
+def Rtest(T):
+    case,err=0,0
+    for i in range(T):
+        inp=INP()
+        a1,ls=naive(*inp)
+        a2=solve(*inp)
+        if a1!=a2:
+            print((a1,a2),inp)
+            err+=1
+        case+=1
+    print('Tested',case,'case with',err,'errors')
+def GI(V,E,ls=None,Directed=False,index=1):
+    org_inp=[];g=[[] for i in range(V)]
+    FromStdin=True if ls==None else False
+    for i in range(E):
+        if FromStdin:
+            inp=LI()
+            org_inp.append(inp)
+        else:
+            inp=ls[i]
+        if len(inp)==2:
+            a,b=inp;c=1
+        else:
+            a,b,c=inp
+        if index==1:a-=1;b-=1
+        aa=(a,c);bb=(b,c);g[a].append(bb)
+        if not Directed:g[b].append(aa)
+    return g,org_inp
+def GGI(h,w,search=None,replacement_of_found='.',mp_def={'#':1,'.':0},boundary=1):
+    #h,w,g,sg=GGI(h,w,search=['S','G'],replacement_of_found='.',mp_def={'#':1,'.':0},boundary=1) # sample usage
+    mp=[boundary]*(w+2);found={}
+    for i in R(h):
+        s=input()
+        for char in search:
+            if char in s:
+                found[char]=((i+1)*(w+2)+s.index(char)+1)
+                mp_def[char]=mp_def[replacement_of_found]
+        mp+=[boundary]+[mp_def[j] for j in s]+[boundary]
+    mp+=[boundary]*(w+2)
+    return h+2,w+2,mp,found
+def TI(n):return GI(n,n-1)
+def accum(ls):
+    rt=[0]
+    for i in ls:rt+=[rt[-1]+i]
+    return rt
+def bit_combination(n,base=2):
+    rt=[]
+    for tb in R(base**n):s=[tb//(base**bt)%base for bt in R(n)];rt+=[s]
+    return rt
+def gcd(x,y):
+    if y==0:return x
+    if x%y==0:return y
+    while x%y!=0:x,y=y,x%y
+    return y
+def YN(x):print(['NO','YES'][x])
+def Yn(x):print(['No','Yes'][x])
+def show(*inp,end='\n'):
+    if show_flg:print(*inp,end=end)
+
+mo=10**9+7
+#mo=998244353
+inf=float('inf')
+FourNb=[(-1,0),(1,0),(0,1),(0,-1)];EightNb=[(-1,0),(1,0),(0,1),(0,-1),(1,1),(-1,-1),(1,-1),(-1,1)];compas=dict(zip('WENS',FourNb));cursol=dict(zip('LRUD',FourNb))
+l_alp=string.ascii_lowercase
+#sys.setrecursionlimit(10**9)
+read=sys.stdin.buffer.read;readline=sys.stdin.buffer.readline;input=lambda:sys.stdin.readline().rstrip()
+
+
+## return prime factors of N as dictionary {prime p:power of p}
+## within 2 sec for N = 2*10**20+7
+def primeFactor(N):
+    i,n=2,N
+    ret={}
+    d,sq=2,99
+    while i<=sq:
+        k=0
+        while n%i==0:
+            n,k,ret[i]=n//i,k+1,k+1
+        if k>0 or i==97:
+            sq=int(n**(1/2)+0.5)
+        if i<4:
+            i=i*2-1
+        else:
+            i,d=i+d,d^6
+    if n>1:
+        ret[n]=1
+    return ret
+
+## return divisors of n as list
+def divisor(n):
+    div=[1]
+    for i,j in primeFactor(n).items():
+        div=[(i**k)*d for d in div for k in range(j+1)]
+    return div
+
+## return the list of prime numbers in [2,N], using eratosthenes sieve
+## around 800 ms for N = 10**6  by PyPy3 (7.3.0) @ AtCoder
+def PrimeNumSet(N):
+    M=int(N**0.5)
+    seachList=[i for i in range(2,N+1)]
+    primes=[]
+    while seachList:
+        if seachList[0]>M:
+            break
+        primes.append(seachList[0])
+        tmp=seachList[0]
+        seachList=[i for i in seachList if i%tmp!=0]
+    return primes+seachList
+
+
+## retrun LCM of numbers in list b
+## within 2sec for no of B = 10*5  and  Bi < 10**6
+def LCM(b,mo=10**9+7):
+    prs=PrimeNumSet(max(b))
+    M=dict(zip(prs,[0]*len(prs)))
+    for i in b:
+        dc=primeFactor(i)
+        for j,k in dc.items():
+            M[j]=max(M[j],k)
+    
+    r=1
+    for j,k in M.items():
+        if k!=0:
+            r*=pow(j,k,mo)
+            r%=mo
+    return r
+
+show_flg=False
+show_flg=True
+
+ans=0
+
+
+for _ in range(I()):
+    n=I()
+    a=LI()
+    a=sorted(a)
+    m=a.pop()
+    ans=[m]
+    v=[0]*(n-1)
+    ko=[[]for i in range(m+1)]
+    for i in range(n-1):
+        c=a[i]
+        for j in divisor(c):
+            ko[j]+=i,
+    #show(ko)
+    #for i in range(n):
+    ans=[]
+    g=m
+    while g>1:
+        dm=sorted(divisor(g))[::-1]
+        tmp=[]
+        for d in dm:
+            if ko[d]:
+                for x in ko[d]:
+                    if v[x]==0:
+                        v[x]=1
+                        tmp+=x,
+                if tmp:
+                    g=gcd(g,a[tmp[0]])
+                    ans+=tmp
+                    break
+        if sum(v)==n-1:
+            break
+    t=[m]+[a[i] for i in ans]
+    print(*t)
+    #show(a)
+
+
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

@@ -1,0 +1,362 @@
+CURRENT QUESTION:
+Alice and Bob are playing a game. They are given an array A of length N. The array consists of integers. They are building a sequence together. In the beginning, the sequence is empty. In one turn a player can remove a number from the left or right side of the array and append it to the sequence. The rule is that the sequence they are building must be strictly increasing. The winner is the player that makes the last move. Alice is playing first. Given the starting array, under the assumption that they both play optimally, who wins the game?
+
+Input
+
+The first line contains one integer N (1 ≤ N ≤ 2*10^5) - the length of the array A.
+
+The second line contains N integers A_1, A_2,...,A_N (0 ≤ A_i ≤ 10^9)
+
+Output
+
+The first and only line of output consists of one string, the name of the winner. If Alice won, print "Alice", otherwise, print "Bob".
+
+Examples
+
+Input
+
+
+1
+5
+
+
+Output
+
+
+Alice
+
+
+Input
+
+
+3
+5 4 5
+
+
+Output
+
+
+Alice
+
+
+Input
+
+
+6
+5 8 2 1 10 9
+
+
+Output
+
+
+Bob
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.81):
+Name: 1147_C. Thanos Nim
+Tags: ['games']
+Description: Alice and Bob are playing a game with n piles of stones. It is guaranteed that n is an even number. The i-th pile has a_i stones.
+
+Alice and Bob will play a game alternating turns with Alice going first.
+
+On a player's turn, they must choose exactly n/2 nonempty piles and independently remove a positive number of stones from each of the chosen piles. They can remove a different number of stones from the piles in a single turn. The first player unable to make a move loses (when there are less than n/2 nonempty piles).
+
+Given the starting configuration, determine who will win the game.
+
+Input
+
+The first line contains one integer n (2 ≤ n ≤ 50) — the number of piles. It is guaranteed that n is an even number.
+
+The second line contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 50) — the number of stones in the piles.
+
+Output
+
+Print a single string "Alice" if Alice wins; otherwise, print "Bob" (without double quotes).
+
+Examples
+
+Input
+
+
+2
+8 8
+
+
+Output
+
+
+Bob
+
+
+Input
+
+
+4
+3 1 4 1
+
+
+Output
+
+
+Alice
+
+Note
+
+In the first example, each player can only remove stones from one pile (2/2=1). Alice loses, since Bob can copy whatever Alice does on the other pile, so Alice will run out of moves first.
+
+In the second example, Alice can remove 2 stones from the first pile and 3 stones from the third pile on her first move to guarantee a win.
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int main() {
+  ios::sync_with_stdio(0);
+  cin.tie(0), cout.tie(0);
+  int n;
+  cin >> n;
+  vector<int> a(n);
+  for (int &x : a) cin >> x;
+  const int m = *min_element(a.begin(), a.end());
+  const int c = count(a.begin(), a.end(), m);
+  cout << (c > n / 2 ? "Bob" : "Alice");
+  return 0;
+}
+
+
+Similar question 2 (Similarity score: 0.81):
+Name: 1162_E. Thanos Nim
+Tags: ['games']
+Description: Alice and Bob are playing a game with n piles of stones. It is guaranteed that n is an even number. The i-th pile has a_i stones.
+
+Alice and Bob will play a game alternating turns with Alice going first.
+
+On a player's turn, they must choose exactly n/2 nonempty piles and independently remove a positive number of stones from each of the chosen piles. They can remove a different number of stones from the piles in a single turn. The first player unable to make a move loses (when there are less than n/2 nonempty piles).
+
+Given the starting configuration, determine who will win the game.
+
+Input
+
+The first line contains one integer n (2 ≤ n ≤ 50) — the number of piles. It is guaranteed that n is an even number.
+
+The second line contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 50) — the number of stones in the piles.
+
+Output
+
+Print a single string "Alice" if Alice wins; otherwise, print "Bob" (without double quotes).
+
+Examples
+
+Input
+
+
+2
+8 8
+
+
+Output
+
+
+Bob
+
+
+Input
+
+
+4
+3 1 4 1
+
+
+Output
+
+
+Alice
+
+Note
+
+In the first example, each player can only remove stones from one pile (2/2=1). Alice loses, since Bob can copy whatever Alice does on the other pile, so Alice will run out of moves first.
+
+In the second example, Alice can remove 2 stones from the first pile and 3 stones from the third pile on her first move to guarantee a win.
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int maxn = 100;
+int a[maxn];
+int n;
+int main() {
+  int n;
+  cin >> n;
+  for (int i = 1; i <= n; i++) {
+    cin >> a[i];
+  }
+  sort(a + 1, a + n + 1);
+  for (int i = 2; i <= n / 2 + 1; i++) {
+    if (a[i] != a[i - 1]) {
+      cout << "Alice" << endl;
+      return 0;
+    }
+  }
+  cout << "Bob" << endl;
+  return 0;
+}
+
+
+Similar question 3 (Similarity score: 0.80):
+Name: 1033_C. Permutation Game
+Tags: ['brute force', 'dp', 'games']
+Description: After a long day, Alice and Bob decided to play a little game. The game board consists of n cells in a straight line, numbered from 1 to n, where each cell contains a number a_i between 1 and n. Furthermore, no two cells contain the same number. 
+
+A token is placed in one of the cells. They take alternating turns of moving the token around the board, with Alice moving first. The current player can move from cell i to cell j only if the following two conditions are satisfied: 
+
+  * the number in the new cell j must be strictly larger than the number in the old cell i (i.e. a_j > a_i), and 
+  * the distance that the token travels during this turn must be a multiple of the number in the old cell (i.e. |i-j|mod a_i = 0). 
+
+
+
+Whoever is unable to make a move, loses. For each possible starting position, determine who wins if they both play optimally. It can be shown that the game is always finite, i.e. there always is a winning strategy for one of the players.
+
+Input
+
+The first line contains a single integer n (1 ≤ n ≤ 10^5) — the number of numbers.
+
+The second line contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ n). Furthermore, there are no pair of indices i ≠ j such that a_i = a_j.
+
+Output
+
+Print s — a string of n characters, where the i-th character represents the outcome of the game if the token is initially placed in the cell i. If Alice wins, then s_i has to be equal to "A"; otherwise, s_i has to be equal to "B". 
+
+Examples
+
+Input
+
+8
+3 6 5 4 2 7 1 8
+
+
+Output
+
+BAAAABAB
+
+
+Input
+
+15
+3 11 2 5 10 9 7 13 15 8 4 12 6 1 14
+
+
+Output
+
+ABAAAABBBAABAAB
+
+Note
+
+In the first sample, if Bob puts the token on the number (not position): 
+
+  * 1: Alice can move to any number. She can win by picking 7, from which Bob has no move. 
+  * 2: Alice can move to 3 and 5. Upon moving to 5, Bob can win by moving to 8. If she chooses 3 instead, she wins, as Bob has only a move to 4, from which Alice can move to 8. 
+  * 3: Alice can only move to 4, after which Bob wins by moving to 8. 
+  * 4, 5, or 6: Alice wins by moving to 8. 
+  * 7, 8: Alice has no move, and hence she loses immediately. 
+Difficulty: 9
+Solutions: import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class C {
+	
+	public static void main(String[] args) {
+		FastScanner fs=new FastScanner();
+		int n=fs.nextInt();
+		int[] board=fs.readArray(n);
+		Space[] spaces=new Space[n];
+		for (int i=0; i<n; i++) spaces[i]=new Space(board[i], i);
+		Arrays.sort(spaces);
+		boolean[] losingSpaces=new boolean[n];
+		for (int i=n-1; i>=0; i--) {
+			Space cur=spaces[i];
+			boolean canHitLose=false;
+			for (int dx=0; dx<=n; dx+=spaces[i].value) {
+				int newPos=cur.pos+dx;
+				if (newPos<0||newPos>=n) continue;
+				if (board[newPos]>cur.value && losingSpaces[newPos]) {
+					canHitLose=true;
+				}
+			}
+			for (int dx=0; dx<=n; dx+=spaces[i].value) {
+				int newPos=cur.pos-dx;
+				if (newPos<0||newPos>=n) continue;
+				if (board[newPos]>cur.value && losingSpaces[newPos]) {
+					canHitLose=true;
+				}
+			}
+			losingSpaces[cur.pos]=!canHitLose;
+		}
+		for (int i=0; i<n; i++) {
+			System.out.print(losingSpaces[i]?"B":"A");
+		}
+		System.out.println();
+	}
+	
+	static class Space implements Comparable<Space>{
+		int value, pos;
+		public Space(int value, int pos) {
+			this.value=value;
+			this.pos=pos;
+		}
+		
+		public int compareTo(Space o) {
+			return Integer.compare(value, o.value);
+		}
+	}
+
+	static class FastScanner {
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st=new StringTokenizer("");
+		
+		public String next() {
+			while (!st.hasMoreElements())
+				try {
+					st=new StringTokenizer(br.readLine());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			return st.nextToken();
+		}
+		
+		public int nextInt() {
+			return Integer.parseInt(next());
+		}
+		
+		public long nextLong() {
+			return Long.parseLong(next());
+		}
+		
+		public int[] readArray(int n) {
+			int[] a=new int[n];
+			for (int i=0; i<n; i++) {
+				a[i]=nextInt();
+			}
+			return a;
+		}
+		
+		public double nextDouble() {
+			return Double.parseDouble(next());
+		}
+		
+	}
+
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

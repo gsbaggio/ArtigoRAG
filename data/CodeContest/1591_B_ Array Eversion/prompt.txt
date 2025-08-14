@@ -1,0 +1,313 @@
+CURRENT QUESTION:
+You are given an array a of length n.
+
+Let's define the eversion operation. Let x = a_n. Then array a is partitioned into two parts: left and right. The left part contains the elements of a that are not greater than x (≤ x). The right part contains the elements of a that are strictly greater than x (> x). The order of elements in each part is kept the same as before the operation, i. e. the partition is stable. Then the array is replaced with the concatenation of the left and the right parts.
+
+For example, if the array a is [2, 4, 1, 5, 3], the eversion goes like this: [2, 4, 1, 5, 3] → [2, 1, 3], [4, 5] → [2, 1, 3, 4, 5].
+
+We start with the array a and perform eversions on this array. We can prove that after several eversions the array a stops changing. Output the minimum number k such that the array stops changing after k eversions.
+
+Input
+
+Each test contains multiple test cases. The first line contains the number of test cases t (1 ≤ t ≤ 100). Description of the test cases follows.
+
+The first line contains a single integer n (1 ≤ n ≤ 2 ⋅ 10^5).
+
+The second line contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^9).
+
+It is guaranteed that the sum of n over all test cases does not exceed 2 ⋅ 10^5.
+
+Output
+
+For each test case print a single integer k — the number of eversions after which the array stops changing.
+
+Example
+
+Input
+
+
+3
+5
+2 4 1 5 3
+5
+5 3 2 4 1
+4
+1 1 1 1
+
+
+Output
+
+
+1
+2
+0
+
+Note
+
+Consider the fist example.
+
+  * The first eversion: a = [1, 4, 2, 5, 3], x = 3. [2, 4, 1, 5, 3] → [2, 1, 3], [4, 5] → [2, 1, 3, 4, 5]. 
+  * The second and following eversions: a = [2, 1, 3, 4, 5], x = 5. [2, 1, 3, 4, 5] → [2, 1, 3, 4, 5], [] → [2, 1, 3, 4, 5]. This eversion does not change the array, so the answer is 1. 
+
+
+
+Consider the second example. 
+
+  * The first eversion: a = [5, 3, 2, 4, 1], x = 1. [5, 3, 2, 4, 1] → [1], [5, 3, 2, 4] → [1, 5, 3, 2, 4]. 
+  * The second eversion: a = [1, 5, 3, 2, 4], x = 4. [1, 5, 3, 2, 4] → [1, 3, 2, 4], [5] → [1, 3, 2, 4, 5]. 
+  * The third and following eversions: a = [1, 3, 2, 4, 5], x = 5. [1, 3, 2, 4, 5] → [1, 3, 2, 4, 5], [] → [1, 3, 2, 4, 5]. This eversion does not change the array, so the answer is 2. 
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.78):
+Name: 1374_F. Cyclic Shifts Sorting
+Tags: ['brute force', 'constructive algorithms', 'implementation', 'sortings']
+Description: You are given an array a consisting of n integers.
+
+In one move, you can choose some index i (1 ≤ i ≤ n - 2) and shift the segment [a_i, a_{i + 1}, a_{i + 2}] cyclically to the right (i.e. replace the segment [a_i, a_{i + 1}, a_{i + 2}] with [a_{i + 2}, a_i, a_{i + 1}]). 
+
+Your task is to sort the initial array by no more than n^2 such operations or say that it is impossible to do that.
+
+You have to answer t independent test cases.
+
+Input
+
+The first line of the input contains one integer t (1 ≤ t ≤ 100) — the number of test cases. Then t test cases follow.
+
+The first line of the test case contains one integer n (3 ≤ n ≤ 500) — the length of a. The second line of the test case contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 500), where a_i is the i-th element a.
+
+It is guaranteed that the sum of n does not exceed 500.
+
+Output
+
+For each test case, print the answer: -1 on the only line if it is impossible to sort the given array using operations described in the problem statement, or the number of operations ans on the first line and ans integers idx_1, idx_2, ..., idx_{ans} (1 ≤ idx_i ≤ n - 2), where idx_i is the index of left border of the segment for the i-th operation. You should print indices in order of performing operations.
+
+Example
+
+Input
+
+
+5
+5
+1 2 3 4 5
+5
+5 4 3 2 1
+8
+8 4 5 2 3 6 7 3
+7
+5 2 1 6 4 7 3
+6
+1 2 3 3 6 4
+
+
+Output
+
+
+0
+
+6
+3 1 3 2 2 3 
+13
+2 1 1 6 4 2 4 3 3 4 4 6 6 
+-1
+4
+3 3 4 4 
+Difficulty: 12
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int v[505];
+vector<int> rasp;
+void mov(int poz) {
+  rasp.push_back(poz + 1);
+  swap(v[poz], v[poz + 1]);
+  swap(v[poz], v[poz + 2]);
+}
+int main() {
+  int t, i1, n, i, j;
+  scanf("%d", &t);
+  for (i1 = 1; i1 <= t; i1++) {
+    scanf("%d", &n);
+    for (i = 0; i < n; i++) scanf("%d", &v[i]);
+    rasp.clear();
+    for (i = 2; i < n; i++) {
+      for (j = 0; j < n - i; j++)
+        if (v[j] > v[j + 1] && v[j] > v[j + 2]) mov(j);
+      if (v[n - i] > v[n - i + 1]) mov(n - i - 1);
+    }
+    for (i = 0; i < n - 2; i++)
+      while (v[i] > v[i + 1] || v[i] > v[i + 2]) mov(i);
+    for (i = 0; i < n - 1; i++)
+      if (v[i] > v[i + 1]) {
+        printf("-1\n");
+        break;
+      }
+    if (i == n - 1) {
+      printf("%d\n", rasp.size());
+      for (auto it : rasp) printf("%d ", it);
+      printf("\n");
+    }
+  }
+  return 0;
+}
+
+
+Similar question 2 (Similarity score: 0.77):
+Name: 1512_A. Spy Detected!
+Tags: ['brute force', 'implementation']
+Description: You are given an array a consisting of n (n ≥ 3) positive integers. It is known that in this array, all the numbers except one are the same (for example, in the array [4, 11, 4, 4] all numbers except one are equal to 4).
+
+Print the index of the element that does not equal others. The numbers in the array are numbered from one.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 100). Then t test cases follow.
+
+The first line of each test case contains a single integer n (3 ≤ n ≤ 100) — the length of the array a.
+
+The second line of each test case contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 100).
+
+It is guaranteed that all the numbers except one in the a array are the same.
+
+Output
+
+For each test case, output a single integer — the index of the element that is not equal to others.
+
+Example
+
+Input
+
+
+4
+4
+11 13 11 11
+5
+1 4 4 4 4
+10
+3 3 3 3 10 3 3 3 3 3
+3
+20 20 10
+
+
+Output
+
+
+2
+1
+5
+3
+Difficulty: 7
+Solutions: 
+
+
+import java.io.BufferedInputStream;
+import java.util.Scanner;
+
+public class main {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(new BufferedInputStream(System.in));
+        int t = input.nextInt();
+        int[] result = new int[t];
+        int p = 0;
+        for (int i = 0; i < t; i++) {
+            int n = input.nextInt();
+            int[] temp = new int[n];
+            for (int j = 0; j < n; j++) {
+                temp[j] = input.nextInt();
+            }
+            int count = 0;
+            for (int j = 1; j < n; j++) {
+                if (temp[0] == temp[j]){
+                    count++;
+                }
+            }
+            if (count>0){
+                for (int j = 1; j < n; j++) {
+                    if ((float)(temp[0]+temp[j])/2!=(float)temp[0]){
+                        result[p++] = j;
+                    }
+                }
+            }else {
+                result[p++] = 0;
+            }
+        }
+        for (int i = 0; i < p; i++) {
+            System.out.print(result[i]+1);
+            if (i<p-1){
+                System.out.println();
+            }
+        }
+
+    }
+}
+
+
+  		 	 	 			 	  								
+
+Similar question 3 (Similarity score: 0.75):
+Name: subinc
+Tags: []
+Description: Given an array A1, A2, ..., AN, count the number of subarrays of array A which are non-decreasing.
+A subarray A[i, j], where 1 ≤ i ≤ j ≤ N is a sequence of integers Ai, Ai+1, ..., Aj.
+A subarray A[i, j] is non-decreasing if Ai ≤ Ai+1 ≤ Ai+2 ≤ ... ≤ Aj. You have to count the total number of such subarrays.
+
+Input
+The first line of input contains an integer T denoting the number of test cases. The description of T test cases follows.
+The first line of each test case contains a single integer N denoting the size of array.
+The second line contains N space-separated integers A1, A2, ..., AN denoting the elements of the array.
+
+Output
+For each test case, output in a single line the required answer.
+
+
+Constraints
+
+1 ≤ T ≤ 5
+1 ≤ N ≤ 10^5
+1 ≤ Ai ≤ 10^9
+
+
+Example
+Input:
+2
+4
+1 4 2 3
+1
+5
+
+Output:
+6
+1
+
+Explanation
+Example case 1.
+All valid subarrays are A[1, 1], A[1, 2], A[2, 2], A[3, 3], A[3, 4], A[4, 4].
+Note that singleton subarrays are identically non-decreasing.
+
+Example case 2.
+Only single subarray A[1, 1] is non-decreasing.
+Difficulty: 1
+Solutions: n = int(raw_input())
+for i in xrange(n):
+	l = int(raw_input())
+	list_a = [0]
+	prev = -1
+	numList = [int(x) for x in raw_input().split()]
+	for num in numList:
+		if num >= prev:
+			list_a.append(list_a[-1] + 1)
+		else:
+			list_a.append(1)
+		prev = num
+	print sum(list_a)
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

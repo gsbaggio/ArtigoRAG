@@ -1,0 +1,617 @@
+CURRENT QUESTION:
+Theofanis has a string s_1 s_2 ... s_n and a character c. He wants to make all characters of the string equal to c using the minimum number of operations.
+
+In one operation he can choose a number x (1 ≤ x ≤ n) and for every position i, where i is not divisible by x, replace s_i with c. 
+
+Find the minimum number of operations required to make all the characters equal to c and the x-s that he should use in his operations.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10^4) — the number of test cases.
+
+The first line of each test case contains the integer n (3 ≤ n ≤ 3 ⋅ 10^5) and a lowercase Latin letter c — the length of the string s and the character the resulting string should consist of.
+
+The second line of each test case contains a string s of lowercase Latin letters — the initial string.
+
+It is guaranteed that the sum of n over all test cases does not exceed 3 ⋅ 10^5.
+
+Output
+
+For each test case, firstly print one integer m — the minimum number of operations required to make all the characters equal to c.
+
+Next, print m integers x_1, x_2, ..., x_m (1 ≤ x_j ≤ n) — the x-s that should be used in the order they are given.
+
+It can be proved that under given constraints, an answer always exists. If there are multiple answers, print any.
+
+Example
+
+Input
+
+
+3
+4 a
+aaaa
+4 a
+baaa
+4 b
+bzyx
+
+
+Output
+
+
+0
+1
+2
+2 
+2 3
+
+Note
+
+Let's describe what happens in the third test case: 
+
+  1. x_1 = 2: we choose all positions that are not divisible by 2 and replace them, i. e. bzyx → bzbx; 
+  2. x_2 = 3: we choose all positions that are not divisible by 3 and replace them, i. e. bzbx → bbbb. 
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.75):
+Name: 1363_F. Rotating Substrings
+Tags: ['dp', 'strings']
+Description: You are given two strings s and t, each of length n and consisting of lowercase Latin alphabets. You want to make s equal to t. 
+
+You can perform the following operation on s any number of times to achieve it — 
+
+  * Choose any substring of s and rotate it clockwise once, that is, if the selected substring is s[l,l+1...r], then it becomes s[r,l,l + 1 ... r - 1]. All the remaining characters of s stay in their position. 
+
+For example, on rotating the substring [2,4] , string "abcde" becomes "adbce". 
+
+
+
+
+A string a is a substring of a string b if a can be obtained from b by deletion of several (possibly, zero or all) characters from the beginning and several (possibly, zero or all) characters from the end.
+
+Find the minimum number of operations required to convert s to t, or determine that it's impossible.
+
+Input
+
+The first line of the input contains a single integer t (1≤ t ≤ 2000) — the number of test cases. The description of the test cases follows.
+
+The first line of each test case contains a single integer n (1≤ n ≤ 2000) — the length of the strings. 
+
+The second and the third lines contain strings s and t respectively.
+
+The sum of n over all the test cases does not exceed 2000.
+
+Output
+
+For each test case, output the minimum number of operations to convert s to t. If it is not possible to convert s to t, output -1 instead.
+
+Example
+
+Input
+
+
+6
+1
+a
+a
+2
+ab
+ba
+3
+abc
+cab
+3
+abc
+cba
+4
+abab
+baba
+4
+abcc
+aabc
+
+
+Output
+
+
+0
+1
+1
+2
+1
+-1
+
+Note
+
+For the 1-st test case, since s and t are equal, you don't need to apply any operation.
+
+For the 2-nd test case, you only need to apply one operation on the entire string ab to convert it to ba.
+
+For the 3-rd test case, you only need to apply one operation on the entire string abc to convert it to cab.
+
+For the 4-th test case, you need to apply the operation twice: first on the entire string abc to convert it to cab and then on the substring of length 2 beginning at the second character to convert it to cba.
+
+For the 5-th test case, you only need to apply one operation on the entire string abab to convert it to baba.
+
+For the 6-th test case, it is not possible to convert string s to t.
+Difficulty: 12
+Solutions: import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Prob6 {
+	
+	static class FastReader {
+		BufferedReader br;
+		StringTokenizer st;
+
+		public FastReader() {
+			br = new BufferedReader(new InputStreamReader(System.in));
+		}
+
+		public String next() {
+			while (st == null || !st.hasMoreElements()) {
+				try {
+					st = new StringTokenizer(br.readLine());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			return st.nextToken();
+		}
+
+		public int nextInt() {
+			return Integer.parseInt(next());
+		}
+
+		public long nextLong() {
+			return Long.parseLong(next());
+		}
+
+		public double nextDouble() {
+			return Double.parseDouble(next());
+		}
+
+		public String nextLine() {
+			String str = "";
+			try {
+				str = br.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return str;
+		}
+	}
+
+
+	public static void main(String[] args) {
+		FastReader fr = new FastReader();
+		int z = fr.nextInt();
+		for (int o = 0; o < z; o++) {
+			int n = fr.nextInt();
+			String s = fr.nextLine();
+			String t = fr.nextLine();
+			int[][] charFreqS = new int[256][n];
+			int[][] charFreqT = new int[256][n];
+			for (int i = 0; i < n; i++) {
+				charFreqS[s.charAt(i)][i] += i-1 >= 0 ? charFreqS[s.charAt(i)][i - 1] + 1 : 1;
+				charFreqT[t.charAt(i)][i] += i-1 >= 0 ? charFreqT[t.charAt(i)][i - 1] + 1 : 1;
+				for (int j=0; j<256; j++) {
+					char charJ = (char)(j);
+					if (s.charAt(i) != charJ) {
+						charFreqS[j][i] = i-1 >= 0 ? charFreqS[j][i-1]  : 0;
+					}
+					if (t.charAt(i) != charJ) {
+						charFreqT[j][i] = i-1 >= 0 ? charFreqT[j][i-1] : 0;
+					}
+				}
+			}
+			int[][] dp = new int[n + 1][n + 1];
+			for (int i=1; i<=n; i++) {
+				Arrays.fill(dp[i], Integer.MAX_VALUE - 1);
+			}
+			dp[0][0] = 0;
+			boolean possible = true;
+			for (int i=0; i<256; i++) {
+				if (charFreqS[(char)i][n-1] != charFreqT[(char)i][n-1]) {
+					possible = false;
+				}
+			}
+			if (possible) {
+				for (int i=0; i<n; i++) {
+					for (int j=i; j<n; j++) {
+						dp[i+1][j+1] = dp[i][j+1] + 1;
+						if (charFreqS[t.charAt(j)][n - 1] - charFreqS[t.charAt(j)][i] > (charFreqT[t.charAt(j)][n - 1]
+								- charFreqT[t.charAt(j)][j])) {
+							dp[i+1][j+1] = Math.min(dp[i+1][j], dp[i+1][j+1]);
+						} 
+						if (s.charAt(i) == t.charAt(j)) {
+							dp[i+1][j+1] = Math.min(dp[i][j], dp[i+1][j+1]);
+						}
+					}
+				}
+				System.out.println(dp[n][n]);
+			} else {
+				System.out.println(""+-1);
+			}
+		}
+	}
+
+}
+
+
+Similar question 2 (Similarity score: 0.72):
+Name: p03140 NIKKEI Programming Contest 2019 - Touitsu
+Tags: ['']
+Description: You are given three strings A, B and C. Each of these is a string of length N consisting of lowercase English letters.
+
+Our objective is to make all these three strings equal. For that, you can repeatedly perform the following operation:
+
+* Operation: Choose one of the strings A, B and C, and specify an integer i between 1 and N (inclusive). Change the i-th character from the beginning of the chosen string to some other lowercase English letter.
+
+
+
+What is the minimum number of operations required to achieve the objective?
+
+Constraints
+
+* 1 \leq N \leq 100
+* Each of the strings A, B and C is a string of length N.
+* Each character in each of the strings A, B and C is a lowercase English letter.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N
+A
+B
+C
+
+
+Output
+
+Print the minimum number of operations required.
+
+Examples
+
+Input
+
+4
+west
+east
+wait
+
+
+Output
+
+3
+
+
+Input
+
+9
+different
+different
+different
+
+
+Output
+
+0
+
+
+Input
+
+7
+zenkoku
+touitsu
+program
+
+
+Output
+
+13
+Difficulty: 0
+Solutions: import java.io.PrintWriter;
+import java.util.*;
+
+public class Main {
+	public static String implementation(List<String> array){
+		int n = Integer.parseInt(array.get(0));
+		String a = array.get(1);
+		String b = array.get(2);
+		String c = array.get(3);
+
+		int count = 0;
+		for(int i=0; i<n; i++){
+			if(a.charAt(i)==b.charAt(i) && a.charAt(i)==c.charAt(i)){
+				// Do nothing
+			} else if (a.charAt(i)==b.charAt(i) || b.charAt(i)==c.charAt(i) || c.charAt(i)==a.charAt(i)) {
+				count += 1;
+			} else {
+				count +=2;
+			}
+		}
+		return String.valueOf(count);
+	}
+
+	public static void main(String[] args){
+		// Input
+		Scanner sc = new Scanner(System.in);
+
+		// Read input and execute method
+		String tmp;
+		List<String> array = new ArrayList<String>();
+		while(true) {
+			try {
+				tmp = sc.nextLine();
+				if (tmp.length() == 0) {
+					exec(array);
+					array.clear();
+				} else {
+					array.add(tmp);
+				}
+			} catch (Exception e){
+				exec(array);
+				break;
+			}
+		}
+	}
+
+	public static void exec(List<String> array){
+		// Output variable
+		String out = implementation(array);
+
+		// Output
+		PrintWriter stdOut = new PrintWriter(System.out);
+		stdOut.println(out);
+		stdOut.flush();
+
+		// Debug
+		if(array.get(array.size()-1).startsWith("a:")) {
+			if (!array.get(array.size() - 1).substring(2).equals(out)) {
+				System.out.println("error included");
+				System.out.println("output : " + out);
+				System.out.println("expected : " + array.get(array.size()-1).substring(2));
+			} else {
+				System.out.println("correct answer!!");
+			}
+			System.out.println("");
+		}
+	}
+}
+
+
+Similar question 3 (Similarity score: 0.71):
+Name: 1076_A. Minimizing the String
+Tags: ['greedy', 'strings']
+Description: You are given a string s consisting of n lowercase Latin letters.
+
+You have to remove at most one (i.e. zero or one) character of this string in such a way that the string you obtain will be lexicographically smallest among all strings that can be obtained using this operation.
+
+String s = s_1 s_2 ... s_n is lexicographically smaller than string t = t_1 t_2 ... t_m if n < m and s_1 = t_1, s_2 = t_2, ..., s_n = t_n or there exists a number p such that p ≤ min(n, m) and s_1 = t_1, s_2 = t_2, ..., s_{p-1} = t_{p-1} and s_p < t_p.
+
+For example, "aaa" is smaller than "aaaa", "abb" is smaller than "abc", "pqr" is smaller than "z".
+
+Input
+
+The first line of the input contains one integer n (2 ≤ n ≤ 2 ⋅ 10^5) — the length of s.
+
+The second line of the input contains exactly n lowercase Latin letters — the string s.
+
+Output
+
+Print one string — the smallest possible lexicographically string that can be obtained by removing at most one character from the string s.
+
+Examples
+
+Input
+
+
+3
+aaa
+
+
+Output
+
+
+aa
+
+
+Input
+
+
+5
+abcda
+
+
+Output
+
+
+abca
+
+Note
+
+In the first example you can remove any character of s to obtain the string "aa".
+
+In the second example "abca" < "abcd" < "abcda" < "abda" < "acda" < "bcda".
+Difficulty: 7
+Solutions: import java.io.OutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.IOException;
+import java.util.InputMismatchException;
+import java.io.InputStreamReader;
+import java.io.BufferedOutputStream;
+import java.util.StringTokenizer;
+import java.io.Closeable;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.Flushable;
+
+/**
+ * Built using CHelper plug-in
+ * Actual solution is at the top
+ */
+public class Main {
+	static class TaskAdapter implements Runnable {
+		@Override
+		public void run() {
+			InputStream inputStream = System.in;
+			OutputStream outputStream = System.out;
+			Input in = new Input(inputStream);
+			Output out = new Output(outputStream);
+			AMinimizingTheString solver = new AMinimizingTheString();
+			solver.solve(1, in, out);
+			out.close();
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		Thread thread = new Thread(null, new TaskAdapter(), "", 1<<29);
+		thread.start();
+		thread.join();
+	}
+	static class AMinimizingTheString {
+		public AMinimizingTheString() {
+		}
+
+		public void solve(int kase, Input in, Output pw) {
+			int n = in.nextInt();
+			String s = in.next();
+			for(int i = 0; i<n-1; i++) {
+				if(s.charAt(i)>s.charAt(i+1)) {
+					pw.println(s.substring(0, i)+s.substring(i+1, n));
+					return;
+				}
+			}
+			pw.println(s.substring(0, n-1));
+		}
+
+	}
+
+	static class Input {
+		BufferedReader br;
+		StringTokenizer st;
+
+		public Input(InputStream is) {
+			this(is, 1<<20);
+		}
+
+		public Input(InputStream is, int bs) {
+			br = new BufferedReader(new InputStreamReader(is), bs);
+			st = null;
+		}
+
+		public boolean hasNext() {
+			try {
+				while(st==null||!st.hasMoreTokens()) {
+					String s = br.readLine();
+					if(s==null) {
+						return false;
+					}
+					st = new StringTokenizer(s);
+				}
+				return true;
+			}catch(Exception e) {
+				return false;
+			}
+		}
+
+		public String next() {
+			if(!hasNext()) {
+				throw new InputMismatchException();
+			}
+			return st.nextToken();
+		}
+
+		public int nextInt() {
+			return Integer.parseInt(next());
+		}
+
+	}
+
+	static class Output implements Closeable, Flushable {
+		public StringBuilder sb;
+		public OutputStream os;
+		public int BUFFER_SIZE;
+		public boolean autoFlush;
+		public String LineSeparator;
+
+		public Output(OutputStream os) {
+			this(os, 1<<16);
+		}
+
+		public Output(OutputStream os, int bs) {
+			BUFFER_SIZE = bs;
+			sb = new StringBuilder(BUFFER_SIZE);
+			this.os = new BufferedOutputStream(os, 1<<17);
+			autoFlush = false;
+			LineSeparator = System.lineSeparator();
+		}
+
+		public void println(String s) {
+			sb.append(s);
+			println();
+			if(autoFlush) {
+				flush();
+			}else if(sb.length()>BUFFER_SIZE >> 1) {
+				flushToBuffer();
+			}
+		}
+
+		public void println() {
+			sb.append(LineSeparator);
+		}
+
+		private void flushToBuffer() {
+			try {
+				os.write(sb.toString().getBytes());
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+			sb = new StringBuilder(BUFFER_SIZE);
+		}
+
+		public void flush() {
+			try {
+				flushToBuffer();
+				os.flush();
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void close() {
+			flush();
+			try {
+				os.close();
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+}
+
+
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

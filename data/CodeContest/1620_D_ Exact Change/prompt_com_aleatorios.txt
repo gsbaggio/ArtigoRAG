@@ -1,0 +1,454 @@
+CURRENT QUESTION:
+One day, early in the morning, you decided to buy yourself a bag of chips in the nearby store. The store has chips of n different flavors. A bag of the i-th flavor costs a_i burles.
+
+The store may run out of some flavors, so you'll decide which one to buy after arriving there. But there are two major flaws in this plan: 
+
+  1. you have only coins of 1, 2 and 3 burles; 
+  2. since it's morning, the store will ask you to pay in exact change, i. e. if you choose the i-th flavor, you'll have to pay exactly a_i burles. 
+
+
+
+Coins are heavy, so you'd like to take the least possible number of coins in total. That's why you are wondering: what is the minimum total number of coins you should take with you, so you can buy a bag of chips of any flavor in exact change?
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of test cases.
+
+The first line of each test case contains the single integer n (1 ≤ n ≤ 100) — the number of flavors in the store.
+
+The second line of each test case contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^9) — the cost of one bag of each flavor.
+
+Output
+
+For each test case, print one integer — the minimum number of coins you need to buy one bag of any flavor you'll choose in exact change.
+
+Example
+
+Input
+
+
+4
+1
+1337
+3
+10 8 10
+5
+1 2 3 4 5
+3
+7 77 777
+
+
+Output
+
+
+446
+4
+3
+260
+
+Note
+
+In the first test case, you should, for example, take with you 445 coins of value 3 and 1 coin of value 2. So, 1337 = 445 ⋅ 3 + 1 ⋅ 2.
+
+In the second test case, you should, for example, take 2 coins of value 3 and 2 coins of value 2. So you can pay either exactly 8 = 2 ⋅ 3 + 1 ⋅ 2 or 10 = 2 ⋅ 3 + 2 ⋅ 2.
+
+In the third test case, it's enough to take 1 coin of value 3 and 2 coins of value 1.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 1440_C1. Binary Table (Easy Version)
+Tags: ['constructive algorithms', 'implementation']
+Description: This is the easy version of the problem. The difference between the versions is in the number of possible operations that can be made. You can make hacks if and only if you solved both versions of the problem.
+
+You are given a binary table of size n × m. This table consists of symbols 0 and 1.
+
+You can make such operation: select 3 different cells that belong to one 2 × 2 square and change the symbols in these cells (change 0 to 1 and 1 to 0).
+
+Your task is to make all symbols in the table equal to 0. You are allowed to make at most 3nm operations. You don't need to minimize the number of operations.
+
+It can be proved that it is always possible.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 5000) — the number of test cases. The next lines contain descriptions of test cases.
+
+The first line of the description of each test case contains two integers n, m (2 ≤ n, m ≤ 100).
+
+Each of the next n lines contains a binary string of length m, describing the symbols of the next row of the table.
+
+It is guaranteed that the sum of nm for all test cases does not exceed 20000.
+
+Output
+
+For each test case print the integer k (0 ≤ k ≤ 3nm) — the number of operations.
+
+In the each of the next k lines print 6 integers x_1, y_1, x_2, y_2, x_3, y_3 (1 ≤ x_1, x_2, x_3 ≤ n, 1 ≤ y_1, y_2, y_3 ≤ m) describing the next operation. This operation will be made with three cells (x_1, y_1), (x_2, y_2), (x_3, y_3). These three cells should be different. These three cells should belong into some 2 × 2 square.
+
+Example
+
+Input
+
+
+5
+2 2
+10
+11
+3 3
+011
+101
+110
+4 4
+1111
+0110
+0110
+1111
+5 5
+01011
+11001
+00010
+11011
+10000
+2 3
+011
+101
+
+
+Output
+
+
+1
+1 1 2 1 2 2
+2 
+2 1 3 1 3 2
+1 2 1 3 2 3
+4
+1 1 1 2 2 2 
+1 3 1 4 2 3
+3 2 4 1 4 2
+3 3 4 3 4 4
+4
+1 2 2 1 2 2 
+1 4 1 5 2 5 
+4 1 4 2 5 1
+4 4 4 5 3 4
+2
+1 3 2 2 2 3
+1 2 2 1 2 2
+
+Note
+
+In the first test case, it is possible to make only one operation with cells (1, 1), (2, 1), (2, 2). After that, all symbols will be equal to 0.
+
+In the second test case:
+
+  * operation with cells (2, 1), (3, 1), (3, 2). After it the table will be: 
+    
+          
+    011  
+    001  
+    000  
+    
+
+  * operation with cells (1, 2), (1, 3), (2, 3). After it the table will be: 
+    
+          
+    000  
+    000  
+    000  
+    
+
+
+
+
+In the fifth test case:
+
+  * operation with cells (1, 3), (2, 2), (2, 3). After it the table will be: 
+    
+          
+    010  
+    110  
+    
+
+  * operation with cells (1, 2), (2, 1), (2, 2). After it the table will be: 
+    
+          
+    000  
+    000  
+    
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+void setIO(string name = "") {
+  ios_base::sync_with_stdio(NULL);
+  cin.tie(NULL);
+  cout.tie(NULL);
+  if ((int)(name).size()) {
+    freopen((name + ".in").c_str(), "r", stdin);
+    freopen((name + ".out").c_str(), "w", stdout);
+  }
+}
+const int inf = 1e9;
+const ll INF = 1e18;
+const int mod = 1e9 + 7;
+const int MAXN = 1e6 + 5;
+struct point {
+  int x, y;
+};
+int n, m;
+bool col[105][105];
+vector<point> res;
+void add(point a) {
+  col[a.x][a.y] ^= 1;
+  res.push_back(a);
+}
+void fix(point a, point b, point c, point d) {
+  vector<point> black;
+  if (col[a.x][a.y]) black.push_back(a);
+  if (col[b.x][b.y]) black.push_back(b);
+  if (col[c.x][c.y]) black.push_back(c);
+  if (col[d.x][d.y]) black.push_back(d);
+  if ((int)(black).size() == 0) return;
+  if ((int)(black).size() >= 3) {
+    int j = 0;
+    for (point i : black) {
+      add(i);
+      j++;
+      if (j == 3) break;
+    }
+    if ((int)(black).size() > 3) fix(a, b, c, d);
+    return;
+  }
+  if ((int)(black).size() == 2) {
+    map<pair<int, int>, bool> used;
+    for (point i : black) {
+      add(i);
+      used[make_pair(i.x, i.y)] = 1;
+    }
+    if (used[make_pair(a.x, a.y)] == 0) {
+      add(a);
+      fix(a, b, c, d);
+      return;
+    }
+    if (used[make_pair(b.x, b.y)] == 0) {
+      add(b);
+      fix(a, b, c, d);
+      return;
+    }
+    if (used[make_pair(c.x, c.y)] == 0) {
+      add(c);
+      fix(a, b, c, d);
+      return;
+    }
+    if (used[make_pair(d.x, d.y)] == 0) {
+      add(d);
+      fix(a, b, c, d);
+      return;
+    }
+  }
+  if ((int)(black).size() == 1) {
+    if (col[a.x][a.y]) {
+      add(a);
+      add(b);
+      add(c);
+      add(a);
+      add(b);
+      add(d);
+      add(a);
+      add(c);
+      add(d);
+      return;
+    }
+    if (col[b.x][b.y]) {
+      add(a);
+      add(b);
+      add(d);
+      add(a);
+      add(b);
+      add(c);
+      add(b);
+      add(c);
+      add(d);
+      return;
+    }
+    if (col[c.x][c.y]) {
+      add(a);
+      add(c);
+      add(d);
+      add(a);
+      add(c);
+      add(b);
+      add(b);
+      add(c);
+      add(d);
+      return;
+    }
+    if (col[d.x][d.y]) {
+      add(b);
+      add(c);
+      add(d);
+      add(a);
+      add(c);
+      add(d);
+      add(a);
+      add(b);
+      add(d);
+      return;
+    }
+  }
+}
+void solve() {
+  cin >> n >> m;
+  res.clear();
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+      char c;
+      cin >> c;
+      if (c == '1')
+        col[i][j] = 1;
+      else
+        col[i][j] = 0;
+    }
+  }
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+      if (i < n && j < m) {
+        point a, b, c, d;
+        a.x = i;
+        a.y = j;
+        b.x = i;
+        b.y = j + 1;
+        c.x = i + 1;
+        c.y = j;
+        d.x = i + 1;
+        d.y = j + 1;
+        fix(a, b, c, d);
+      }
+    }
+  }
+  cout << (int)(res).size() / 3 << '\n';
+  for (int i = 0; i < (int)(res).size(); i += 3) {
+    cout << res[i].x << ' ' << res[i].y << ' ' << res[i + 1].x << ' '
+         << res[i + 1].y << ' ' << res[i + 2].x << ' ' << res[i + 2].y << '\n';
+  }
+}
+int main() {
+  setIO();
+  int tt = 1;
+  cin >> tt;
+  while (tt--) {
+    solve();
+  }
+  return 0;
+}
+
+
+Example question 2:
+Name: p03009 diverta 2019 Programming Contest 2 - Balanced Piles
+Tags: ['']
+Description: There are N squares arranged in a row, numbered 1 to N from left to right. Takahashi will stack building blocks on these squares, on which there are no blocks yet.
+
+He wants to stack blocks on the squares evenly, so he will repeat the following operation until there are H blocks on every square:
+
+* Let M and m be the maximum and minimum numbers of blocks currently stacked on a square, respectively. Choose a square on which m blocks are stacked (if there are multiple such squares, choose any one of them), and add a positive number of blocks on that square so that there will be at least M and at most M + D blocks on that square.
+
+
+
+Tell him how many ways there are to have H blocks on every square by repeating this operation. Since there can be extremely many ways, print the number modulo 10^9+7.
+
+Constraints
+
+* 2 \leq N \leq 10^6
+* 1 \leq D \leq H \leq 10^6
+* All values in input are integers.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N H D
+
+
+Output
+
+Print the number of ways to have H blocks on every square, modulo 10^9+7.
+
+Examples
+
+Input
+
+2 2 1
+
+
+Output
+
+6
+
+
+Input
+
+2 30 15
+
+
+Output
+
+94182806
+
+
+Input
+
+31415 9265 3589
+
+
+Output
+
+312069529
+Difficulty: 0
+Solutions: #pragma GCC optimize("Ofast,no-stack-protector,unroll-loops,fast-math")
+#include <bits/stdc++.h>
+using namespace std;
+template<class t> inline t read(t &x){
+	char c=getchar();bool f=0;x=0;
+	while(!isdigit(c)) f|=c=='-',c=getchar();
+	while(isdigit(c)) x=(x<<1)+(x<<3)+(c^48),c=getchar();
+	if(f) x=-x;return x;
+}
+template<class t,class ...A> inline void read(t &x,A &...a){
+	read(x);read(a...);
+}
+template<class t> inline void write(t x){
+	if(x<0) putchar('-'),write(-x);
+	else{if(x>9) write(x/10);putchar('0'+x%10);}
+}
+
+const int mod=1e9+7,N=1e6+5;
+int pre[N],f[N],fac[N],sum,n,h,d;
+
+int calc(int l,int r){
+	return l>0?(pre[r]-pre[l-1]+mod)%mod:pre[r];
+}
+
+signed main(){
+	read(n,h,d);
+	fac[0]=1;for(int i=1;i<=n;i++) fac[i]=1ll*fac[i-1]*i%mod,sum=(sum+fac[i])%mod;
+	pre[0]=f[0]=fac[n];
+	for(int i=1;i<h;i++){
+		f[i]=1ll*calc(i-d,i-1)*sum%mod;
+		pre[i]=(pre[i-1]+f[i])%mod;
+	}
+	write(calc(h-d,h-1));
+}
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

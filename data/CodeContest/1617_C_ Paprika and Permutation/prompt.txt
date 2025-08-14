@@ -1,0 +1,496 @@
+CURRENT QUESTION:
+Paprika loves permutations. She has an array a_1, a_2, ..., a_n. She wants to make the array a permutation of integers 1 to n.
+
+In order to achieve this goal, she can perform operations on the array. In each operation she can choose two integers i (1 ≤ i ≤ n) and x (x > 0), then perform a_i := a_i mod x (that is, replace a_i by the remainder of a_i divided by x). In different operations, the chosen i and x can be different.
+
+Determine the minimum number of operations needed to make the array a permutation of integers 1 to n. If it is impossible, output -1.
+
+A permutation is an array consisting of n distinct integers from 1 to n in arbitrary order. For example, [2,3,1,5,4] is a permutation, but [1,2,2] is not a permutation (2 appears twice in the array) and [1,3,4] is also not a permutation (n=3 but there is 4 in the array).
+
+Input
+
+Each test contains multiple test cases. The first line contains a single integer t (1 ≤ t ≤ 10^4) — the number of test cases. Description of the test cases follows.
+
+The first line of each test case contains an integer n (1 ≤ n ≤ 10^5).
+
+The second line of each test case contains n integers a_1, a_2, ..., a_n. (1 ≤ a_i ≤ 10^9).
+
+It is guaranteed that the sum of n over all test cases does not exceed 2 ⋅ 10^5.
+
+Output
+
+For each test case, output the minimum number of operations needed to make the array a permutation of integers 1 to n, or -1 if it is impossible.
+
+Example
+
+Input
+
+
+4
+2
+1 7
+3
+1 5 4
+4
+12345678 87654321 20211218 23571113
+9
+1 2 3 4 18 19 5 6 7
+
+
+Output
+
+
+1
+-1
+4
+2
+
+Note
+
+For the first test, the only possible sequence of operations which minimizes the number of operations is: 
+
+  * Choose i=2, x=5. Perform a_2 := a_2 mod 5 = 2. 
+
+
+
+For the second test, it is impossible to obtain a permutation of integers from 1 to n.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.75):
+Name: 1525_B. Permutation Sort
+Tags: ['constructive algorithms', 'greedy']
+Description: You are given a permutation a consisting of n numbers 1, 2, ..., n (a permutation is an array in which each element from 1 to n occurs exactly once).
+
+You can perform the following operation: choose some subarray (contiguous subsegment) of a and rearrange the elements in it in any way you want. But this operation cannot be applied to the whole array.
+
+For example, if a = [2, 1, 4, 5, 3] and we want to apply the operation to the subarray a[2, 4] (the subarray containing all elements from the 2-nd to the 4-th), then after the operation, the array can become a = [2, 5, 1, 4, 3] or, for example, a = [2, 1, 5, 4, 3].
+
+Your task is to calculate the minimum number of operations described above to sort the permutation a in ascending order.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 2000) — the number of test cases.
+
+The first line of the test case contains a single integer n (3 ≤ n ≤ 50) — the number of elements in the permutation.
+
+The second line of the test case contains n distinct integers from 1 to n — the given permutation a.
+
+Output
+
+For each test case, output a single integer — the minimum number of operations described above to sort the array a in ascending order.
+
+Example
+
+Input
+
+
+3
+4
+1 3 2 4
+3
+1 2 3
+5
+2 1 4 5 3
+
+
+Output
+
+
+1
+0
+2
+
+Note
+
+In the explanations, a[i, j] defines the subarray of a that starts from the i-th element and ends with the j-th element.
+
+In the first test case of the example, you can select the subarray a[2, 3] and swap the elements in it.
+
+In the second test case of the example, the permutation is already sorted, so you don't need to apply any operations.
+
+In the third test case of the example, you can select the subarray a[3, 5] and reorder the elements in it so a becomes [2, 1, 3, 4, 5], and then select the subarray a[1, 2] and swap the elements in it, so a becomes [1, 2, 3, 4, 5].
+Difficulty: 8
+Solutions: k = int(input())
+a = []
+import math
+def nhap():
+	r = input()
+	r = r.split()
+	r =[int(i) for i in r]
+	return r
+def kq(a):
+	minn = min(a)
+	maxx = max(a)
+	b = sorted(a)
+	if(b == a): return 0
+	if(a[0]== maxx and a[-1]== minn): return 3
+	if(a[0]== minn or a[-1]== maxx): return 1
+	return 2
+for i in range(k):
+	num = int(input())
+	a.append(nhap())
+for i in a:
+	print(kq(i))
+
+Similar question 2 (Similarity score: 0.73):
+Name: 1256_B. Minimize the Permutation
+Tags: ['greedy']
+Description: You are given a permutation of length n. Recall that the permutation is an array consisting of n distinct integers from 1 to n in arbitrary order. For example, [2, 3, 1, 5, 4] is a permutation, but [1, 2, 2] is not a permutation (2 appears twice in the array) and [1, 3, 4] is also not a permutation (n=3 but there is 4 in the array).
+
+You can perform at most n-1 operations with the given permutation (it is possible that you don't perform any operations at all). The i-th operation allows you to swap elements of the given permutation on positions i and i+1. Each operation can be performed at most once. The operations can be performed in arbitrary order.
+
+Your task is to find the lexicographically minimum possible permutation obtained by performing some of the given operations in some order.
+
+You can see the definition of the lexicographical order in the notes section.
+
+You have to answer q independent test cases.
+
+For example, let's consider the permutation [5, 4, 1, 3, 2]. The minimum possible permutation we can obtain is [1, 5, 2, 4, 3] and we can do it in the following way:
+
+  1. perform the second operation (swap the second and the third elements) and obtain the permutation [5, 1, 4, 3, 2]; 
+  2. perform the fourth operation (swap the fourth and the fifth elements) and obtain the permutation [5, 1, 4, 2, 3]; 
+  3. perform the third operation (swap the third and the fourth elements) and obtain the permutation [5, 1, 2, 4, 3]. 
+  4. perform the first operation (swap the first and the second elements) and obtain the permutation [1, 5, 2, 4, 3]; 
+
+
+
+Another example is [1, 2, 4, 3]. The minimum possible permutation we can obtain is [1, 2, 3, 4] by performing the third operation (swap the third and the fourth elements).
+
+Input
+
+The first line of the input contains one integer q (1 ≤ q ≤ 100) — the number of test cases. Then q test cases follow.
+
+The first line of the test case contains one integer n (1 ≤ n ≤ 100) — the number of elements in the permutation.
+
+The second line of the test case contains n distinct integers from 1 to n — the given permutation.
+
+Output
+
+For each test case, print the answer on it — the lexicograhically minimum possible permutation obtained by performing some of the given operations in some order.
+
+Example
+
+Input
+
+
+4
+5
+5 4 1 3 2
+4
+1 2 4 3
+1
+1
+4
+4 3 2 1
+
+
+Output
+
+
+1 5 2 4 3 
+1 2 3 4 
+1 
+1 4 3 2 
+
+Note
+
+Recall that the permutation p of length n is lexicographically less than the permutation q of length n if there is such index i ≤ n that for all j from 1 to i - 1 the condition p_j = q_j is satisfied, and p_i < q_i. For example:
+
+  * p = [1, 3, 5, 2, 4] is less than q = [1, 3, 5, 4, 2] (such i=4 exists, that p_i < q_i and for each j < i holds p_j = q_j), 
+  * p = [1, 2] is less than q = [2, 1] (such i=1 exists, that p_i < q_i and for each j < i holds p_j = q_j). 
+Difficulty: 8
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int main() {
+  int q;
+  cin >> q;
+  for (int i = 0; i < q; ++i) {
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int j = 0; j < n; ++j) {
+      cin >> a[j];
+      --a[j];
+    }
+    int pos = 0;
+    while (pos < n) {
+      int nxt = min_element(a.begin() + pos, a.end()) - a.begin();
+      int el = a[nxt];
+      a.erase(a.begin() + nxt);
+      a.insert(a.begin() + pos, el);
+      if (pos == nxt)
+        pos = nxt + 1;
+      else
+        pos = nxt;
+    }
+    for (auto it : a) cout << it + 1 << " ";
+    cout << endl;
+  }
+  return 0;
+}
+
+
+Similar question 3 (Similarity score: 0.72):
+Name: 1521_C. Nastia and a Hidden Permutation
+Tags: ['constructive algorithms', 'interactive']
+Description: This is an interactive problem!
+
+Nastia has a hidden permutation p of length n consisting of integers from 1 to n. You, for some reason, want to figure out the permutation. To do that, you can give her an integer t (1 ≤ t ≤ 2), two different indices i and j (1 ≤ i, j ≤ n, i ≠ j), and an integer x (1 ≤ x ≤ n - 1). 
+
+Depending on t, she will answer: 
+
+  * t = 1: max{(min{(x, p_i)}, min{(x + 1, p_j)})}; 
+  * t = 2: min{(max{(x, p_i)}, max{(x + 1, p_j)})}. 
+
+
+
+You can ask Nastia at most ⌊ \frac {3 ⋅ n} { 2} ⌋ + 30 times. It is guaranteed that she will not change her permutation depending on your queries. Can you guess the permutation?
+
+Input
+
+The input consists of several test cases. In the beginning, you receive the integer T (1 ≤ T ≤ 10 000) — the number of test cases.
+
+At the beginning of each test case, you receive an integer n (3 ≤ n ≤ 10^4) — the length of the permutation p.
+
+It's guaranteed that the permutation is fixed beforehand and that the sum of n in one test doesn't exceed 2 ⋅ 10^4.
+
+Interaction
+
+To ask a question, print "? t i j x" (t = 1 or t = 2, 1 ≤ i, j ≤ n, i ≠ j, 1 ≤ x ≤ n - 1) Then, you should read the answer.
+
+If we answer with −1 instead of a valid answer, that means you exceeded the number of queries or made an invalid query. Exit immediately after receiving −1 and you will see the Wrong Answer verdict. Otherwise, you can get an arbitrary verdict because your solution will continue to read from a closed stream.
+
+To print the answer, print "! p_1 p_2 … p_{n} (without quotes). Note that answering doesn't count as one of the ⌊ \frac {3 ⋅ n} {2} ⌋ + 30 queries.
+
+After printing a query or printing the answer, do not forget to output end of line and flush the output. Otherwise, you will get Idleness limit exceeded. To do this, use:
+
+  * fflush(stdout) or cout.flush() in C++; 
+  * System.out.flush() in Java; 
+  * flush(output) in Pascal; 
+  * stdout.flush() in Python; 
+  * See the documentation for other languages. 
+
+
+
+Hacks
+
+To hack the solution, use the following test format.
+
+The first line should contain a single integer T (1 ≤ T ≤ 10 000) — the number of test cases.
+
+For each test case in the first line print a single integer n (3 ≤ n ≤ 10^4) — the length of the hidden permutation p.
+
+In the second line print n space-separated integers p_1, p_2, …, p_n (1 ≤ p_i ≤ n), where p is permutation.
+
+Note that the sum of n over all test cases should not exceed 2 ⋅ 10^4.
+
+Example
+
+Input
+
+
+2
+4
+
+3
+
+2
+
+5
+
+3
+
+Output
+
+
+? 2 4 1 3
+
+? 1 2 4 2
+
+! 3 1 4 2
+
+? 2 3 4 2
+
+! 2 5 3 4 1
+
+Note
+
+Consider the first test case.
+
+The hidden permutation is [3, 1, 4, 2].
+
+We print: "? 2 4 1 3" and get back min{(max{(3, p_4}), max{(4, p_1)})} = 3.
+
+We print: "? 1 2 4 2" and get back max{(min{(2, p_2)}, min{(3, p_4)})} = 2.
+
+Consider the second test case.
+
+The hidden permutation is [2, 5, 3, 4, 1].
+
+We print: "? 2 3 4 2" and get back min{(max{(2, p_3}), max{(3, p_4)})} = 3.
+Difficulty: 9
+Solutions: import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class SolutionC extends Thread {
+    static class FastReader {
+        BufferedReader br;
+        StringTokenizer st;
+
+        public FastReader() {
+            br = new BufferedReader(new
+                                            InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        double nextDouble() {
+            return Double.parseDouble(next());
+        }
+
+        String nextLine() {
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return str;
+        }
+    }
+
+    private static final FastReader scanner = new FastReader();
+    private static final PrintWriter out = new PrintWriter(System.out);
+
+    public static void main(String[] args) {
+        new Thread(null, new SolutionC(), "Main", 1 << 28).start();
+    }
+
+    public void run() {
+        int t = scanner.nextInt();
+        for (int i = 0; i < t; i++) {
+            solve();
+        }
+        out.close();
+    }
+
+    private static void solve() {
+        int n = scanner.nextInt();
+
+        int oneIndex = findOne(n);
+        int[] p = findOther(oneIndex, n);
+
+        System.out.println("! " + Arrays.stream(p).mapToObj(String::valueOf).collect(Collectors.joining(" ")));
+    }
+
+    private static int findOne(int n) {
+        System.out.println("? 2 " + (n) + " " + (n-1) + " 1");
+        int answerL = scanner.nextInt();
+        if (answerL == 1) {
+            return n-1;
+        }
+
+        int oneIndex = -1;
+        int[] twos = new int[2];
+        twos[1] = n-1;
+        int pointer = 0;
+
+        for (int i = 0; i < n; i += 2) {
+            if (i+1 == n) {
+                continue;
+            }
+            System.out.println("? 2 " + (i + 1) + " " + (i + 2) + " 1");
+            int answer = scanner.nextInt();
+
+            if (answer == 1) {
+                oneIndex = i;
+            } else if (answer == 2) {
+                twos[pointer++] = i + 1;
+            }
+        }
+
+        if (oneIndex != -1) {
+            return oneIndex;
+        }
+
+        System.out.println("? 2 " + (twos[0] + 1) + " " + (twos[1] + 1) + " 1");
+        int answer = scanner.nextInt();
+
+        if (answer == 1) {
+            return twos[0];
+        } else {
+            return twos[1];
+        }
+    }
+
+
+    private static int[] findOther(int oneIndex, int n) {
+        int[] p = new int[n];
+        p[oneIndex] = 1;
+
+        int[] bigIndices = new int[2];
+        int pointer = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (i == oneIndex) {
+                continue;
+            }
+
+            System.out.println("? 1 " + (oneIndex+1) + " " + (i+1) + " " + (n-1));
+            int answer = scanner.nextInt();
+
+            if (answer < n - 1) {
+                p[i] = answer;
+            } else {
+                bigIndices[pointer++] = i;
+            }
+        }
+
+        System.out.println("? 1 " + (bigIndices[0]+1) + " " + (bigIndices[1]+1) + " " + (n-1));
+        int answer = scanner.nextInt();
+
+        if (answer == n-1) {
+            p[bigIndices[0]] = n;
+            p[bigIndices[1]] = n-1;
+        } else {
+            p[bigIndices[0]] = n-1;
+            p[bigIndices[1]] = n;
+        }
+
+        return p;
+    }
+}
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

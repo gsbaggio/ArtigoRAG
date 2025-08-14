@@ -1,0 +1,244 @@
+CURRENT QUESTION:
+Monocarp is the coach of the Berland State University programming teams. He decided to compose a problemset for a training session for his teams.
+
+Monocarp has n problems that none of his students have seen yet. The i-th problem has a topic a_i (an integer from 1 to n) and a difficulty b_i (an integer from 1 to n). All problems are different, that is, there are no two tasks that have the same topic and difficulty at the same time.
+
+Monocarp decided to select exactly 3 problems from n problems for the problemset. The problems should satisfy at least one of two conditions (possibly, both):
+
+  * the topics of all three selected problems are different; 
+  * the difficulties of all three selected problems are different. 
+
+
+
+Your task is to determine the number of ways to select three problems for the problemset.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 50000) — the number of testcases.
+
+The first line of each testcase contains an integer n (3 ≤ n ≤ 2 ⋅ 10^5) — the number of problems that Monocarp have.
+
+In the i-th of the following n lines, there are two integers a_i and b_i (1 ≤ a_i, b_i ≤ n) — the topic and the difficulty of the i-th problem.
+
+It is guaranteed that there are no two problems that have the same topic and difficulty at the same time.
+
+The sum of n over all testcases doesn't exceed 2 ⋅ 10^5.
+
+Output
+
+Print the number of ways to select three training problems that meet either of the requirements described in the statement.
+
+Example
+
+Input
+
+
+2
+4
+2 4
+3 4
+2 1
+1 3
+5
+1 5
+2 4
+3 3
+4 2
+5 1
+
+
+Output
+
+
+3
+10
+
+Note
+
+In the first example, you can take the following sets of three problems:
+
+  * problems 1, 2, 4; 
+  * problems 1, 3, 4; 
+  * problems 2, 3, 4. 
+
+
+
+Thus, the number of ways is equal to three.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.73):
+Name: 1211_A. Three Problems
+Tags: ['*special', 'implementation']
+Description: Polycarp is choosing three problems for creating a programming test. Totally he has n problems in his list. The complexity of the i-th problem equals r_i. All problems are numerated from 1 to n.
+
+Help Polycarp to choose such three problems a, b and c, so that the complexity of the first problem strictly less than the complexity of second problem and the complexity of the second problem is strictly less than the complexity of the third problem. So, for chosen problems a, b and c it should be true that r_a < r_b < r_c.
+
+If Polycarp can choose three problems in different ways, you can print any of them.
+
+Input
+
+The first line of the input contains one integer n (3 ≤ n ≤ 3000) — the number of problems in Polycarp's list.
+
+The second line of the input contains n integers r_1, r_2, ..., r_n (1 ≤ r_i ≤ 10^9), where r_i is the complexity of the i-th problem.
+
+Output
+
+If Polycarp has no ways to choose three problems, you should print three numbers -1. Ih there is a way to choose them, you should print three different integers a, b, c (1 ≤ a, b, c ≤ n), where a is the number of the first chosen problem, b is the number of the second chosen problem and c is the number of the third chosen problem.
+
+Examples
+
+Input
+
+
+6
+3 1 4 1 5 9
+
+
+Output
+
+
+4 1 3 
+
+Input
+
+
+5
+1 1000000000 1 1000000000 1
+
+
+Output
+
+
+-1 -1 -1
+
+
+Input
+
+
+9
+10 10 11 10 10 10 10 10 1
+
+
+Output
+
+
+9 8 3 
+Difficulty: 7
+Solutions: 
+
+Similar question 2 (Similarity score: 0.71):
+Name: 1077_E. Thematic Contests
+Tags: ['greedy', 'sortings']
+Description: Polycarp has prepared n competitive programming problems. The topic of the i-th problem is a_i, and some problems' topics may coincide.
+
+Polycarp has to host several thematic contests. All problems in each contest should have the same topic, and all contests should have pairwise distinct topics. He may not use all the problems. It is possible that there are no contests for some topics.
+
+Polycarp wants to host competitions on consecutive days, one contest per day. Polycarp wants to host a set of contests in such a way that:
+
+  * number of problems in each contest is exactly twice as much as in the previous contest (one day ago), the first contest can contain arbitrary number of problems; 
+  * the total number of problems in all the contests should be maximized. 
+
+
+
+Your task is to calculate the maximum number of problems in the set of thematic contests. Note, that you should not maximize the number of contests.
+
+Input
+
+The first line of the input contains one integer n (1 ≤ n ≤ 2 ⋅ 10^5) — the number of problems Polycarp has prepared.
+
+The second line of the input contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^9) where a_i is the topic of the i-th problem.
+
+Output
+
+Print one integer — the maximum number of problems in the set of thematic contests.
+
+Examples
+
+Input
+
+
+18
+2 1 2 10 2 10 10 2 2 1 10 10 10 10 1 1 10 10
+
+
+Output
+
+
+14
+
+
+Input
+
+
+10
+6 6 6 3 6 1000000000 3 3 6 6
+
+
+Output
+
+
+9
+
+
+Input
+
+
+3
+1337 1337 1337
+
+
+Output
+
+
+3
+
+Note
+
+In the first example the optimal sequence of contests is: 2 problems of the topic 1, 4 problems of the topic 2, 8 problems of the topic 10.
+
+In the second example the optimal sequence of contests is: 3 problems of the topic 3, 6 problems of the topic 6.
+
+In the third example you can take all the problems with the topic 1337 (the number of such problems is 3 so the answer is 3) and host a single contest.
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int main() {
+  long long n, a;
+  map<long long, long long> m;
+  scanf("%lld", &n);
+  for (long long i = 0; i < n; ++i) {
+    scanf("%lld", &a);
+    ++m[a];
+  }
+  vector<long long> v;
+  for (auto e : m) {
+    v.push_back(e.second);
+  }
+  sort(v.begin(), v.end());
+  reverse(v.begin(), v.end());
+  long long ans = v[0], tmp, now = v[0], kal = 2;
+  for (long long i = 1; i < v.size(); ++i) {
+    now >>= 1;
+    now = min(now, v[i]);
+    if (!now) break;
+    kal <<= 1;
+    tmp = now * (kal - 1);
+    ans = max(ans, tmp);
+  }
+  printf("%lld\n", ans);
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

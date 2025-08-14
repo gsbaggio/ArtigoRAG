@@ -1,0 +1,1347 @@
+{
+  "total_test_problems": 165,
+  "processed_problems": 81,
+  "skipped_problems": 84,
+  "output_directory": "data/CodeContest",
+  "timestamp": "2025-08-13T18:50:15.564065",
+  "results": [
+    {
+      "test_problem_name": "1575_C. Cyclic Sum",
+      "safe_directory_name": "1575_C_ Cyclic Sum",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7429106831550598,
+        0.7420879602432251,
+        0.7334997653961182
+      ],
+      "cf_rating": 3000,
+      "cf_tags": [
+        "data structures",
+        "fft",
+        "number theory"
+      ]
+    },
+    {
+      "test_problem_name": "1575_D. Divisible by Twenty-Five",
+      "safe_directory_name": "1575_D_ Divisible by Twenty-Five",
+      "similar_questions_count": 2,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7025604248046875,
+        0.7006341218948364
+      ],
+      "cf_rating": 1800,
+      "cf_tags": [
+        "brute force",
+        "dfs and similar",
+        "dp"
+      ]
+    },
+    {
+      "test_problem_name": "1575_G. GCD Festival",
+      "safe_directory_name": "1575_G_ GCD Festival",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7535561323165894,
+        0.740462064743042,
+        0.7325376272201538
+      ],
+      "cf_rating": 2200,
+      "cf_tags": [
+        "math",
+        "number theory"
+      ]
+    },
+    {
+      "test_problem_name": "1575_H. Holiday Wall Ornaments",
+      "safe_directory_name": "1575_H_ Holiday Wall Ornaments",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7281451225280762,
+        0.725213348865509,
+        0.7124173045158386
+      ],
+      "cf_rating": 2200,
+      "cf_tags": [
+        "dp",
+        "strings"
+      ]
+    },
+    {
+      "test_problem_name": "1575_J. Jeopardy of Dropped Balls",
+      "safe_directory_name": "1575_J_ Jeopardy of Dropped Balls",
+      "similar_questions_count": 1,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7019662261009216
+      ],
+      "cf_rating": 1500,
+      "cf_tags": [
+        "binary search",
+        "brute force",
+        "dsu",
+        "implementation"
+      ]
+    },
+    {
+      "test_problem_name": "1575_L. Longest Array Deconstruction",
+      "safe_directory_name": "1575_L_ Longest Array Deconstruction",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.8313300013542175,
+        0.7915480136871338,
+        0.7865794897079468
+      ],
+      "cf_rating": 2100,
+      "cf_tags": [
+        "data structures",
+        "divide and conquer",
+        "dp",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1580_B. Mathematics Curriculum",
+      "safe_directory_name": "1580_B_ Mathematics Curriculum",
+      "similar_questions_count": 1,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7125913500785828
+      ],
+      "cf_rating": 2600,
+      "cf_tags": [
+        "brute force",
+        "combinatorics",
+        "dp",
+        "trees"
+      ]
+    },
+    {
+      "test_problem_name": "1580_D. Subsequence",
+      "safe_directory_name": "1580_D_ Subsequence",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7532214522361755,
+        0.7300935387611389,
+        0.7300935387611389
+      ],
+      "cf_rating": 2900,
+      "cf_tags": [
+        "brute force",
+        "divide and conquer",
+        "dp",
+        "greedy",
+        "trees"
+      ]
+    },
+    {
+      "test_problem_name": "1582_B. Luntik and Subsequences",
+      "safe_directory_name": "1582_B_ Luntik and Subsequences",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7289493083953857,
+        0.7258260846138,
+        0.7249029278755188
+      ],
+      "cf_rating": 900,
+      "cf_tags": [
+        "combinatorics",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1582_D. Vupsen, Pupsen and 0",
+      "safe_directory_name": "1582_D_ Vupsen_ Pupsen and 0",
+      "similar_questions_count": 1,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7005815505981445
+      ],
+      "cf_rating": 1600,
+      "cf_tags": [
+        "constructive algorithms",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1582_F1. Korney Korneevich and XOR (easy version)",
+      "safe_directory_name": "1582_F1_ Korney Korneevich and XOR (easy version)",
+      "similar_questions_count": 1,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7056899666786194
+      ],
+      "cf_rating": 1800,
+      "cf_tags": [
+        "bitmasks",
+        "dp",
+        "greedy"
+      ]
+    },
+    {
+      "test_problem_name": "1591_A. Life of a Flower",
+      "safe_directory_name": "1591_A_ Life of a Flower",
+      "similar_questions_count": 1,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7448618412017822
+      ],
+      "cf_rating": 800,
+      "cf_tags": [
+        "implementation"
+      ]
+    },
+    {
+      "test_problem_name": "1591_B. Array Eversion",
+      "safe_directory_name": "1591_B_ Array Eversion",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7825300097465515,
+        0.771569013595581,
+        0.7548809051513672
+      ],
+      "cf_rating": 900,
+      "cf_tags": [
+        "greedy"
+      ]
+    },
+    {
+      "test_problem_name": "1591_D. Yet Another Sorting Problem",
+      "safe_directory_name": "1591_D_ Yet Another Sorting Problem",
+      "similar_questions_count": 2,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7154794335365295,
+        0.7011529207229614
+      ],
+      "cf_rating": 1900,
+      "cf_tags": [
+        "constructive algorithms",
+        "data structures",
+        "math",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1591_F. Non-equal Neighbours",
+      "safe_directory_name": "1591_F_ Non-equal Neighbours",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.8264801502227783,
+        0.7941564321517944,
+        0.7820121049880981
+      ],
+      "cf_rating": 2400,
+      "cf_tags": [
+        "combinatorics",
+        "data structures",
+        "dp",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1594_B. Special Numbers",
+      "safe_directory_name": "1594_B_ Special Numbers",
+      "similar_questions_count": 1,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7293762564659119
+      ],
+      "cf_rating": 1100,
+      "cf_tags": [
+        "bitmasks",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1594_C. Make Them Equal",
+      "safe_directory_name": "1594_C_ Make Them Equal",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.750644326210022,
+        0.7220648527145386,
+        0.714550793170929
+      ],
+      "cf_rating": 1200,
+      "cf_tags": [
+        "brute force",
+        "greedy",
+        "math",
+        "strings"
+      ]
+    },
+    {
+      "test_problem_name": "1598_A. Computer Game",
+      "safe_directory_name": "1598_A_ Computer Game",
+      "similar_questions_count": 1,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7103230953216553
+      ],
+      "cf_rating": 800,
+      "cf_tags": [
+        "brute force",
+        "dfs and similar",
+        "dp",
+        "implementation"
+      ]
+    },
+    {
+      "test_problem_name": "1598_B. Groups",
+      "safe_directory_name": "1598_B_ Groups",
+      "similar_questions_count": 1,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7673177719116211
+      ],
+      "cf_rating": 1000,
+      "cf_tags": [
+        "brute force",
+        "implementation"
+      ]
+    },
+    {
+      "test_problem_name": "1598_C. Delete Two Elements",
+      "safe_directory_name": "1598_C_ Delete Two Elements",
+      "similar_questions_count": 1,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7114628553390503
+      ],
+      "cf_rating": 1200,
+      "cf_tags": [
+        "data structures",
+        "dp",
+        "implementation",
+        "math",
+        "two pointers"
+      ]
+    },
+    {
+      "test_problem_name": "1598_D. Training Session",
+      "safe_directory_name": "1598_D_ Training Session",
+      "similar_questions_count": 2,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7323801517486572,
+        0.7103922963142395
+      ],
+      "cf_rating": 1700,
+      "cf_tags": [
+        "combinatorics",
+        "data structures",
+        "geometry",
+        "implementation",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1598_F. RBS",
+      "safe_directory_name": "1598_F_ RBS",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.8268795013427734,
+        0.7688934803009033,
+        0.767931342124939
+      ],
+      "cf_rating": 2400,
+      "cf_tags": [
+        "binary search",
+        "bitmasks",
+        "brute force",
+        "data structures",
+        "dp"
+      ]
+    },
+    {
+      "test_problem_name": "1599_E. Two Arrays",
+      "safe_directory_name": "1599_E_ Two Arrays",
+      "similar_questions_count": 2,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7221914529800415,
+        0.7221914529800415
+      ],
+      "cf_rating": 3200,
+      "cf_tags": [
+        "data structures",
+        "matrices"
+      ]
+    },
+    {
+      "test_problem_name": "1599_G. Shortest path",
+      "safe_directory_name": "1599_G_ Shortest path",
+      "similar_questions_count": 1,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7189791202545166
+      ],
+      "cf_rating": 2700,
+      "cf_tags": [
+        "brute force",
+        "geometry",
+        "math",
+        "shortest paths"
+      ]
+    },
+    {
+      "test_problem_name": "1599_I. Desert",
+      "safe_directory_name": "1599_I_ Desert",
+      "similar_questions_count": 2,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.8129732608795166,
+        0.7081465721130371
+      ],
+      "cf_rating": 2700,
+      "cf_tags": [
+        "data structures",
+        "graphs"
+      ]
+    },
+    {
+      "test_problem_name": "1600_E. Array Game",
+      "safe_directory_name": "1600_E_ Array Game",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.8096681833267212,
+        0.8096681833267212,
+        0.8034553527832031
+      ],
+      "cf_rating": 1900,
+      "cf_tags": [
+        "games",
+        "greedy",
+        "two pointers"
+      ]
+    },
+    {
+      "test_problem_name": "1600_F. Party Organization",
+      "safe_directory_name": "1600_F_ Party Organization",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7254636883735657,
+        0.7169507741928101,
+        0.7169507741928101
+      ],
+      "cf_rating": 2300,
+      "cf_tags": [
+        "brute force",
+        "math",
+        "probabilities"
+      ]
+    },
+    {
+      "test_problem_name": "1601_C. Optimal Insertion",
+      "safe_directory_name": "1601_C_ Optimal Insertion",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7283926606178284,
+        0.7161856889724731,
+        0.7122570276260376
+      ],
+      "cf_rating": 2300,
+      "cf_tags": [
+        "data structures",
+        "divide and conquer",
+        "dp",
+        "greedy",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1601_F. Two Sorts",
+      "safe_directory_name": "1601_F_ Two Sorts",
+      "similar_questions_count": 2,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7374216318130493,
+        0.7272123694419861
+      ],
+      "cf_rating": 3400,
+      "cf_tags": [
+        "binary search",
+        "dfs and similar",
+        "math",
+        "meet-in-the-middle"
+      ]
+    },
+    {
+      "test_problem_name": "1603_D. Artistic Partition",
+      "safe_directory_name": "1603_D_ Artistic Partition",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7422972917556763,
+        0.7414177656173706,
+        0.7187381982803345
+      ],
+      "cf_rating": 3000,
+      "cf_tags": [
+        "divide and conquer",
+        "dp",
+        "number theory"
+      ]
+    },
+    {
+      "test_problem_name": "1603_E. A Perfect Problem",
+      "safe_directory_name": "1603_E_ A Perfect Problem",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7266250848770142,
+        0.7110151052474976,
+        0.7057548761367798
+      ],
+      "cf_rating": 3200,
+      "cf_tags": [
+        "combinatorics",
+        "dp",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1603_F. October 18, 2017",
+      "safe_directory_name": "1603_F_ October 18_ 2017",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7212768793106079,
+        0.7105667591094971,
+        0.7034209966659546
+      ],
+      "cf_rating": 2700,
+      "cf_tags": [
+        "combinatorics",
+        "dp",
+        "implementation",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1604_A. Era",
+      "safe_directory_name": "1604_A_ Era",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7384263873100281,
+        0.7376750707626343,
+        0.7374260425567627
+      ],
+      "cf_rating": 800,
+      "cf_tags": [
+        "greedy"
+      ]
+    },
+    {
+      "test_problem_name": "1604_B. XOR Specia-LIS-t",
+      "safe_directory_name": "1604_B_ XOR Specia-LIS-t",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7370793223381042,
+        0.7015384435653687,
+        0.7009966373443604
+      ],
+      "cf_rating": 1100,
+      "cf_tags": [
+        "constructive algorithms"
+      ]
+    },
+    {
+      "test_problem_name": "1604_D. Moderate Modular Mode",
+      "safe_directory_name": "1604_D_ Moderate Modular Mode",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.8136565685272217,
+        0.7302836179733276,
+        0.7222760319709778
+      ],
+      "cf_rating": 1600,
+      "cf_tags": [
+        "math",
+        "number theory"
+      ]
+    },
+    {
+      "test_problem_name": "1604_E. Extreme Extension",
+      "safe_directory_name": "1604_E_ Extreme Extension",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7818170189857483,
+        0.734363317489624,
+        0.734363317489624
+      ],
+      "cf_rating": 2300,
+      "cf_tags": [
+        "dp",
+        "greedy",
+        "number theory"
+      ]
+    },
+    {
+      "test_problem_name": "1606_A. AB Balance",
+      "safe_directory_name": "1606_A_ AB Balance",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7240902185440063,
+        0.720025897026062,
+        0.717528223991394
+      ],
+      "cf_rating": 900,
+      "cf_tags": [
+        "strings"
+      ]
+    },
+    {
+      "test_problem_name": "1606_D. Red-Blue Matrix",
+      "safe_directory_name": "1606_D_ Red-Blue Matrix",
+      "similar_questions_count": 1,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7024875283241272
+      ],
+      "cf_rating": 2400,
+      "cf_tags": [
+        "brute force",
+        "constructive algorithms",
+        "implementation",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1606_E. Arena",
+      "safe_directory_name": "1606_E_ Arena",
+      "similar_questions_count": 1,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7167812585830688
+      ],
+      "cf_rating": 2100,
+      "cf_tags": [
+        "combinatorics",
+        "dp",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1606_F. Tree Queries",
+      "safe_directory_name": "1606_F_ Tree Queries",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7598798871040344,
+        0.75118088722229,
+        0.75118088722229
+      ],
+      "cf_rating": 2800,
+      "cf_tags": [
+        "brute force",
+        "dp",
+        "trees"
+      ]
+    },
+    {
+      "test_problem_name": "1607_B. Odd Grasshopper",
+      "safe_directory_name": "1607_B_ Odd Grasshopper",
+      "similar_questions_count": 2,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7253245115280151,
+        0.715485155582428
+      ],
+      "cf_rating": 900,
+      "cf_tags": [
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1607_D. Blue-Red Permutation",
+      "safe_directory_name": "1607_D_ Blue-Red Permutation",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7739709615707397,
+        0.7179550528526306,
+        0.7140117287635803
+      ],
+      "cf_rating": 1300,
+      "cf_tags": [
+        "greedy",
+        "math",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1607_E. Robot on the Board 1",
+      "safe_directory_name": "1607_E_ Robot on the Board 1",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7987262010574341,
+        0.7655519247055054,
+        0.7502537965774536
+      ],
+      "cf_rating": 1600,
+      "cf_tags": [
+        "implementation"
+      ]
+    },
+    {
+      "test_problem_name": "1607_F. Robot on the Board 2",
+      "safe_directory_name": "1607_F_ Robot on the Board 2",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7661534547805786,
+        0.7596186399459839,
+        0.7520585060119629
+      ],
+      "cf_rating": 2300,
+      "cf_tags": [
+        "brute force",
+        "dfs and similar",
+        "dp",
+        "graphs",
+        "implementation"
+      ]
+    },
+    {
+      "test_problem_name": "1607_H. Banquet Preparations 2",
+      "safe_directory_name": "1607_H_ Banquet Preparations 2",
+      "similar_questions_count": 1,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7035560011863708
+      ],
+      "cf_rating": 2200,
+      "cf_tags": [
+        "greedy",
+        "sortings",
+        "two pointers"
+      ]
+    },
+    {
+      "test_problem_name": "1608_A. Find Array",
+      "safe_directory_name": "1608_A_ Find Array",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.8287857174873352,
+        0.8035720586776733,
+        0.8035720586776733
+      ],
+      "cf_rating": 800,
+      "cf_tags": [
+        "constructive algorithms",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1608_B. Build the Permutation",
+      "safe_directory_name": "1608_B_ Build the Permutation",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7744748592376709,
+        0.7739283442497253,
+        0.7616437673568726
+      ],
+      "cf_rating": 1200,
+      "cf_tags": [
+        "constructive algorithms",
+        "greedy"
+      ]
+    },
+    {
+      "test_problem_name": "1608_C. Game Master",
+      "safe_directory_name": "1608_C_ Game Master",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.748893141746521,
+        0.7486392855644226,
+        0.7288608551025391
+      ],
+      "cf_rating": 1700,
+      "cf_tags": [
+        "data structures",
+        "dfs and similar",
+        "dp",
+        "graphs",
+        "greedy",
+        "two pointers"
+      ]
+    },
+    {
+      "test_problem_name": "1608_D. Dominoes",
+      "safe_directory_name": "1608_D_ Dominoes",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.780880868434906,
+        0.7746754288673401,
+        0.7159152030944824
+      ],
+      "cf_rating": 2400,
+      "cf_tags": [
+        "combinatorics",
+        "fft",
+        "graphs",
+        "math",
+        "number theory"
+      ]
+    },
+    {
+      "test_problem_name": "1608_E. The Cells on the Paper",
+      "safe_directory_name": "1608_E_ The Cells on the Paper",
+      "similar_questions_count": 1,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7000242471694946
+      ],
+      "cf_rating": 2800,
+      "cf_tags": [
+        "binary search",
+        "implementation",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1608_F. MEX counting",
+      "safe_directory_name": "1608_F_ MEX counting",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7855207920074463,
+        0.7732469439506531,
+        0.7610421180725098
+      ],
+      "cf_rating": 3200,
+      "cf_tags": [
+        "combinatorics",
+        "dp",
+        "implementation"
+      ]
+    },
+    {
+      "test_problem_name": "1608_G. Alphabetic Tree",
+      "safe_directory_name": "1608_G_ Alphabetic Tree",
+      "similar_questions_count": 2,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7463743686676025,
+        0.7302401065826416
+      ],
+      "cf_rating": 3500,
+      "cf_tags": [
+        "binary search",
+        "data structures",
+        "dfs and similar",
+        "hashing",
+        "string suffix structures",
+        "strings",
+        "trees"
+      ]
+    },
+    {
+      "test_problem_name": "1613_B. Absent Remainder",
+      "safe_directory_name": "1613_B_ Absent Remainder",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7510272264480591,
+        0.7287217974662781,
+        0.7192399501800537
+      ],
+      "cf_rating": 1000,
+      "cf_tags": [
+        "greedy",
+        "implementation",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1613_D. MEX Sequences",
+      "safe_directory_name": "1613_D_ MEX Sequences",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7548983097076416,
+        0.7244285941123962,
+        0.7139430046081543
+      ],
+      "cf_rating": 1900,
+      "cf_tags": [
+        "dp",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1613_E. Crazy Robot",
+      "safe_directory_name": "1613_E_ Crazy Robot",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7486216425895691,
+        0.7237449884414673,
+        0.722898542881012
+      ],
+      "cf_rating": 2000,
+      "cf_tags": [
+        "dfs and similar",
+        "graphs"
+      ]
+    },
+    {
+      "test_problem_name": "1613_F. Tree Coloring",
+      "safe_directory_name": "1613_F_ Tree Coloring",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7693562507629395,
+        0.7633318901062012,
+        0.7618326544761658
+      ],
+      "cf_rating": 2600,
+      "cf_tags": [
+        "combinatorics",
+        "divide and conquer",
+        "fft"
+      ]
+    },
+    {
+      "test_problem_name": "1615_B. And It's Non-Zero",
+      "safe_directory_name": "1615_B_ And It_s Non-Zero",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7593330144882202,
+        0.754262387752533,
+        0.7430095672607422
+      ],
+      "cf_rating": 1300,
+      "cf_tags": [
+        "bitmasks",
+        "greedy",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1615_G. Maximum Adjacent Pairs",
+      "safe_directory_name": "1615_G_ Maximum Adjacent Pairs",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.8137467503547668,
+        0.792631983757019,
+        0.7762289047241211
+      ],
+      "cf_rating": 3300,
+      "cf_tags": [
+        "constructive algorithms",
+        "graph matchings"
+      ]
+    },
+    {
+      "test_problem_name": "1617_A. Forbidden Subsequence",
+      "safe_directory_name": "1617_A_ Forbidden Subsequence",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.8122181296348572,
+        0.7869315147399902,
+        0.7828678488731384
+      ],
+      "cf_rating": 800,
+      "cf_tags": [
+        "constructive algorithms",
+        "greedy",
+        "sortings",
+        "strings"
+      ]
+    },
+    {
+      "test_problem_name": "1617_B. GCD Problem",
+      "safe_directory_name": "1617_B_ GCD Problem",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.8129249215126038,
+        0.8074307441711426,
+        0.8009365797042847
+      ],
+      "cf_rating": 900,
+      "cf_tags": [
+        "brute force",
+        "constructive algorithms",
+        "math",
+        "number theory"
+      ]
+    },
+    {
+      "test_problem_name": "1617_C. Paprika and Permutation",
+      "safe_directory_name": "1617_C_ Paprika and Permutation",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7467418909072876,
+        0.7267851829528809,
+        0.7173457145690918
+      ],
+      "cf_rating": 1300,
+      "cf_tags": [
+        "binary search",
+        "greedy",
+        "math",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1618_A. Polycarp and Sums of Subsequences",
+      "safe_directory_name": "1618_A_ Polycarp and Sums of Subsequences",
+      "similar_questions_count": 2,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7444515824317932,
+        0.7368236780166626
+      ],
+      "cf_rating": 800,
+      "cf_tags": [
+        "math",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1618_B. Missing Bigram",
+      "safe_directory_name": "1618_B_ Missing Bigram",
+      "similar_questions_count": 1,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7040718197822571
+      ],
+      "cf_rating": 800,
+      "cf_tags": [
+        "implementation"
+      ]
+    },
+    {
+      "test_problem_name": "1618_C. Paint the Array",
+      "safe_directory_name": "1618_C_ Paint the Array",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7685530185699463,
+        0.7338051199913025,
+        0.7190554141998291
+      ],
+      "cf_rating": 1100,
+      "cf_tags": [
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1618_D. Array and Operations",
+      "safe_directory_name": "1618_D_ Array and Operations",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7472902536392212,
+        0.7400779724121094,
+        0.7279071807861328
+      ],
+      "cf_rating": 1300,
+      "cf_tags": [
+        "dp",
+        "greedy",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1618_F. Reverse",
+      "safe_directory_name": "1618_F_ Reverse",
+      "similar_questions_count": 2,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7097235918045044,
+        0.708369255065918
+      ],
+      "cf_rating": 2000,
+      "cf_tags": [
+        "bitmasks",
+        "constructive algorithms",
+        "dfs and similar",
+        "implementation",
+        "math",
+        "strings"
+      ]
+    },
+    {
+      "test_problem_name": "1619_B. Squares and Cubes",
+      "safe_directory_name": "1619_B_ Squares and Cubes",
+      "similar_questions_count": 2,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7343361973762512,
+        0.7166095972061157
+      ],
+      "cf_rating": 800,
+      "cf_tags": [
+        "implementation",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1619_E. MEX and Increments",
+      "safe_directory_name": "1619_E_ MEX and Increments",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.8591910600662231,
+        0.7959192395210266,
+        0.7959192395210266
+      ],
+      "cf_rating": 1700,
+      "cf_tags": [
+        "constructive algorithms",
+        "data structures",
+        "dp",
+        "greedy",
+        "implementation",
+        "math",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1619_H. Permutation and Queries",
+      "safe_directory_name": "1619_H_ Permutation and Queries",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7712738513946533,
+        0.7686494588851929,
+        0.7568556070327759
+      ],
+      "cf_rating": 2400,
+      "cf_tags": [
+        "brute force",
+        "data structures",
+        "divide and conquer",
+        "two pointers"
+      ]
+    },
+    {
+      "test_problem_name": "1620_A. Equal or Not Equal",
+      "safe_directory_name": "1620_A_ Equal or Not Equal",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7746361494064331,
+        0.7386803030967712,
+        0.7306017875671387
+      ],
+      "cf_rating": 800,
+      "cf_tags": [
+        "constructive algorithms",
+        "dsu",
+        "implementation"
+      ]
+    },
+    {
+      "test_problem_name": "1620_C. BA-String",
+      "safe_directory_name": "1620_C_ BA-String",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7752931118011475,
+        0.7617064714431763,
+        0.754565954208374
+      ],
+      "cf_rating": 1800,
+      "cf_tags": [
+        "brute force",
+        "dp",
+        "greedy",
+        "implementation",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1620_D. Exact Change",
+      "safe_directory_name": "1620_D_ Exact Change",
+      "similar_questions_count": 2,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7292136549949646,
+        0.7000763416290283
+      ],
+      "cf_rating": 2000,
+      "cf_tags": [
+        "brute force",
+        "constructive algorithms",
+        "greedy"
+      ]
+    },
+    {
+      "test_problem_name": "1620_E. Replace the Numbers",
+      "safe_directory_name": "1620_E_ Replace the Numbers",
+      "similar_questions_count": 3,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7602745294570923,
+        0.7602745294570923,
+        0.7406284809112549
+      ],
+      "cf_rating": 1900,
+      "cf_tags": [
+        "constructive algorithms",
+        "data structures",
+        "dsu",
+        "implementation"
+      ]
+    },
+    {
+      "test_problem_name": "1620_F. Bipartite Array",
+      "safe_directory_name": "1620_F_ Bipartite Array",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7500159740447998,
+        0.7183394432067871,
+        0.7093530893325806
+      ],
+      "cf_rating": 2800,
+      "cf_tags": [
+        "dp",
+        "greedy"
+      ]
+    },
+    {
+      "test_problem_name": "1622_A. Construct a Rectangle",
+      "safe_directory_name": "1622_A_ Construct a Rectangle",
+      "similar_questions_count": 3,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7730615735054016,
+        0.7147810459136963,
+        0.7028989791870117
+      ],
+      "cf_rating": 800,
+      "cf_tags": [
+        "geometry",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1622_C. Set or Decrease",
+      "safe_directory_name": "1622_C_ Set or Decrease",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.8587607741355896,
+        0.8579899668693542,
+        0.8579899668693542
+      ],
+      "cf_rating": 1600,
+      "cf_tags": [
+        "binary search",
+        "brute force",
+        "greedy",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1622_D. Shuffle",
+      "safe_directory_name": "1622_D_ Shuffle",
+      "similar_questions_count": 3,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.787022054195404,
+        0.7748996019363403,
+        0.756488561630249
+      ],
+      "cf_rating": 2000,
+      "cf_tags": [
+        "combinatorics",
+        "math",
+        "two pointers"
+      ]
+    },
+    {
+      "test_problem_name": "1623_A. Robot Cleaner",
+      "safe_directory_name": "1623_A_ Robot Cleaner",
+      "similar_questions_count": 1,
+      "random_questions_count": 3,
+      "similarity_scores": [
+        0.7387108206748962
+      ],
+      "cf_rating": 800,
+      "cf_tags": [
+        "brute force",
+        "implementation",
+        "math"
+      ]
+    },
+    {
+      "test_problem_name": "1623_B. Game on Ranges",
+      "safe_directory_name": "1623_B_ Game on Ranges",
+      "similar_questions_count": 1,
+      "random_questions_count": 2,
+      "similarity_scores": [
+        0.7077467441558838
+      ],
+      "cf_rating": 1100,
+      "cf_tags": [
+        "brute force",
+        "dfs and similar",
+        "implementation",
+        "sortings"
+      ]
+    },
+    {
+      "test_problem_name": "1623_C. Balanced Stone Heaps",
+      "safe_directory_name": "1623_C_ Balanced Stone Heaps",
+      "similar_questions_count": 1,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.8077884912490845
+      ],
+      "cf_rating": 1600,
+      "cf_tags": [
+        "binary search",
+        "greedy"
+      ]
+    },
+    {
+      "test_problem_name": "1623_D. Robot Cleaner Revisit",
+      "safe_directory_name": "1623_D_ Robot Cleaner Revisit",
+      "similar_questions_count": 1,
+      "random_questions_count": 1,
+      "similarity_scores": [
+        0.7209492325782776
+      ],
+      "cf_rating": 2300,
+      "cf_tags": [
+        "implementation",
+        "math",
+        "probabilities"
+      ]
+    }
+  ]
+}

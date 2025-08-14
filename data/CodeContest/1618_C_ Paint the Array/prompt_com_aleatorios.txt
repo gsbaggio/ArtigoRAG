@@ -1,0 +1,407 @@
+CURRENT QUESTION:
+You are given an array a consisting of n positive integers. You have to choose a positive integer d and paint all elements into two colors. All elements which are divisible by d will be painted red, and all other elements will be painted blue.
+
+The coloring is called beautiful if there are no pairs of adjacent elements with the same color in the array. Your task is to find any value of d which yields a beautiful coloring, or report that it is impossible.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of testcases.
+
+The first line of each testcase contains one integer n (2 ≤ n ≤ 100) — the number of elements of the array.
+
+The second line of each testcase contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^{18}).
+
+Output
+
+For each testcase print a single integer. If there is no such value of d that yields a beautiful coloring, print 0. Otherwise, print any suitable value of d (1 ≤ d ≤ 10^{18}).
+
+Example
+
+Input
+
+
+5
+5
+1 2 3 4 5
+3
+10 5 15
+3
+100 10 200
+10
+9 8 2 6 6 2 8 6 5 4
+2
+1 3
+
+
+Output
+
+
+2
+0
+100
+0
+3
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: p00762 Biased Dice
+Tags: ['']
+Description: Professor Random, known for his research on randomized algorithms, is now conducting an experiment on biased dice. His experiment consists of dropping a number of dice onto a plane, one after another from a fixed position above the plane. The dice fall onto the plane or dice already there, without rotating, and may roll and fall according to their property. Then he observes and records the status of the stack formed on the plane, specifically, how many times each number appears on the faces visible from above. All the dice have the same size and their face numbering is identical, which we show in Figure C-1.
+
+<image>
+
+Figure C-1: Numbering of a die
+
+The dice have very special properties, as in the following.
+
+(1) Ordinary dice can roll in four directions, but the dice used in this experiment never roll in the directions of faces 1, 2 and 3; they can only roll in the directions of faces 4, 5 and 6. In the situation shown in Figure C-2, our die can only roll to one of two directions.
+
+<image>
+
+Figure C-2: An ordinary die and a biased die
+
+(2) The die can only roll when it will fall down after rolling, as shown in Figure C-3. When multiple possibilities exist, the die rolls towards the face with the largest number among those directions it can roll to.
+
+<image>
+
+Figure C-3: A die can roll only when it can fall
+
+(3) When a die rolls, it rolls exactly 90 degrees, and then falls straight down until its bottom face touches another die or the plane, as in the case [B] or [C] of Figure C-4.
+
+(4) After rolling and falling, the die repeatedly does so according to the rules (1) to (3) above.
+
+<image>
+
+Figure C-4: Example stacking of biased dice
+
+For example, when we drop four dice all in the same orientation, 6 at the top and 4 at the front, then a stack will be formed as shown in Figure C-4.
+
+<image>
+
+Figure C-5: Example records
+
+After forming the stack, we count the numbers of faces with 1 through 6 visible from above and record them. For example, in the left case of Figure C-5, the record will be "0 2 1 0 0 0", and in the right case, "0 1 1 0 0 1".
+
+Input
+
+The input consists of several datasets each in the following format.
+
+> n
+>  t1  f1
+>  t2  f2
+>  ...
+>  tn  fn
+>
+
+Here, n (1 ≤ n ≤ 100) is an integer and is the number of the dice to be dropped. ti and fi (1 ≤ ti, fi ≤ 6) are two integers separated by a space and represent the numbers on the top and the front faces of the i-th die, when it is released, respectively.
+
+The end of the input is indicated by a line containing a single zero.
+
+Output
+
+For each dataset, output six integers separated by a space. The integers represent the numbers of faces with 1 through 6 correspondingly, visible from above. There may not be any other characters in the output.
+
+Sample Input
+
+
+4
+6 4
+6 4
+6 4
+6 4
+2
+5 3
+5 3
+8
+4 2
+4 2
+4 2
+4 2
+4 2
+4 2
+4 2
+4 2
+6
+4 6
+1 5
+2 3
+5 3
+2 4
+4 2
+0
+
+
+Output for the Sample Input
+
+
+0 1 1 0 0 1
+1 0 0 0 1 0
+1 2 2 1 0 0
+2 3 0 0 0 0
+
+
+
+
+
+
+Example
+
+Input
+
+4
+6 4
+6 4
+6 4
+6 4
+2
+5 3
+5 3
+8
+4 2
+4 2
+4 2
+4 2
+4 2
+4 2
+4 2
+4 2
+6
+4 6
+1 5
+2 3
+5 3
+2 4
+4 2
+0
+
+
+Output
+
+0 1 1 0 0 1
+1 0 0 0 1 0
+1 2 2 1 0 0
+2 3 0 0 0 0
+Difficulty: 0
+Solutions: #include <bits/stdc++.h>
+#define chmin(a, b) ((a)=min((a), (b)))
+#define chmax(a, b) ((a)=max((a), (b)))
+#define fs first
+#define sc second
+#define eb emplace_back
+using namespace std;
+ 
+typedef long long ll;
+typedef pair<int, int> P;
+typedef tuple<int, int, int> T;
+ 
+const ll MOD=1e9+7;
+const ll INF=1e18;
+ 
+int dx[]={0, 1, 0, -1};
+int dy[]={-1, 0, 1, 0};
+
+
+int n,h[405][405],num[405][405];
+int ss[][7] = {
+	{ 0,0,0,0,0,0,0, },
+	{ 0,0,3,5,2,4,0, },
+	{ 0,4,0,1,6,0,3, },
+	{ 0,2,6,0,0,1,5, },
+	{ 0,5,1,0,0,6,2, },
+	{ 0,3,0,6,1,0,4, },
+	{ 0,0,4,2,5,3,0, },
+};
+
+int main(){
+	while(true){
+		cin >> n;
+    	if(n == 0)break;
+    	for(int i = 0;i < 400;i++){
+      		for(int j = 0;j < 400;j++){
+        		h[i][j] = 0;
+        		num[i][j] = -1;
+      		}
+    	}
+		for(int ii = 0;ii < n;ii++){
+			int t,f;
+			cin >> t >> f;
+			int s = ss[t][f];
+			int side[] = {f,s,7-f,7-s};
+			int nmax = -1,rot = -1;
+			int x = 200,y = 200;
+			bool flag = false;
+			for(int k = 0;k < 4;k++){
+				if(side[k] >= 4 && side[k] > nmax && h[x][y] > h[x+dx[k]][y+dy[k]]){
+					rot = k;
+					nmax = side[k];
+					flag = true;
+				}
+			}
+			while(flag == true){
+				flag = false;
+				x = x + dx[rot]; y = y + dy[rot];
+				if(rot == 0){
+					int f_tmp = f;
+					f = t;
+					t = 7 - f_tmp;
+				}else if(rot == 1){
+					int s_tmp = s;
+					s = t;
+					t = 7 - s_tmp;
+				}else if(rot == 2){
+					int t_tmp = t;
+					t = f;
+					f = 7 - t_tmp;
+				}else{
+					int t_tmp = t;
+					t = s;
+					s = 7 - t_tmp;
+				}
+				nmax = -1; 
+				rot = -1;
+				side[0] = f; side[1] = s; side[2] = 7-f; side[3] = 7-s;
+				for(int k = 0;k < 4;k++){
+					if(side[k] >= 4 && side[k] > nmax && h[x][y] > h[x+dx[k]][y+dy[k]]){
+						rot = k;
+						nmax = side[k];
+						flag = true;
+					}
+				}
+			}
+			h[x][y]++;
+			num[x][y] = t;
+		}
+		int ans[7];
+		for(int i = 1;i <= 6;i++) ans[i] = 0;
+		for(int i = 0;i < 400;i++){
+			for(int j = 0;j < 400;j++){
+				if(num[i][j] >= 1) ans[num[i][j]]++;
+
+			}
+		}
+		cout << ans[1];
+		for(int i = 2;i <= 6;i++){
+			cout << " " << ans[i];
+		}
+		cout << endl;
+  	}
+}
+
+
+Example question 2:
+Name: 774_F. Pens And Days Of Week
+Tags: ['*special', 'binary search', 'number theory']
+Description: Stepan has n pens. Every day he uses them, and on the i-th day he uses the pen number i. On the (n + 1)-th day again he uses the pen number 1, on the (n + 2)-th — he uses the pen number 2 and so on.
+
+On every working day (from Monday to Saturday, inclusive) Stepan spends exactly 1 milliliter of ink of the pen he uses that day. On Sunday Stepan has a day of rest, he does not stend the ink of the pen he uses that day. 
+
+Stepan knows the current volume of ink in each of his pens. Now it's the Monday morning and Stepan is going to use the pen number 1 today. Your task is to determine which pen will run out of ink before all the rest (that is, there will be no ink left in it), if Stepan will use the pens according to the conditions described above.
+
+Input
+
+The first line contains the integer n (1 ≤ n ≤ 50 000) — the number of pens Stepan has.
+
+The second line contains the sequence of integers a1, a2, ..., an (1 ≤ ai ≤ 109), where ai is equal to the number of milliliters of ink which the pen number i currently has.
+
+Output
+
+Print the index of the pen which will run out of ink before all (it means that there will be no ink left in it), if Stepan will use pens according to the conditions described above. 
+
+Pens are numbered in the order they are given in input data. The numeration begins from one. 
+
+Note that the answer is always unambiguous, since several pens can not end at the same time.
+
+Examples
+
+Input
+
+3
+3 3 3
+
+
+Output
+
+2
+
+
+Input
+
+5
+5 4 5 4 4
+
+
+Output
+
+5
+
+Note
+
+In the first test Stepan uses ink of pens as follows: 
+
+  1. on the day number 1 (Monday) Stepan will use the pen number 1, after that there will be 2 milliliters of ink in it; 
+  2. on the day number 2 (Tuesday) Stepan will use the pen number 2, after that there will be 2 milliliters of ink in it; 
+  3. on the day number 3 (Wednesday) Stepan will use the pen number 3, after that there will be 2 milliliters of ink in it; 
+  4. on the day number 4 (Thursday) Stepan will use the pen number 1, after that there will be 1 milliliters of ink in it; 
+  5. on the day number 5 (Friday) Stepan will use the pen number 2, after that there will be 1 milliliters of ink in it; 
+  6. on the day number 6 (Saturday) Stepan will use the pen number 3, after that there will be 1 milliliters of ink in it; 
+  7. on the day number 7 (Sunday) Stepan will use the pen number 1, but it is a day of rest so he will not waste ink of this pen in it; 
+  8. on the day number 8 (Monday) Stepan will use the pen number 2, after that this pen will run out of ink. 
+
+
+
+So, the first pen which will not have ink is the pen number 2.
+Difficulty: 12
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const long long int maxN = 5e4 + 226;
+long long int N, _time[maxN][7], ct, covered, arr[maxN], narr[maxN],
+    currentMinus[maxN];
+signed main() {
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  ;
+  cin >> N;
+  for (long long int i = 0; i < N; i++) {
+    cin >> arr[i];
+  }
+  if (N % 7 == 0) {
+    long long int ans = 0;
+    for (long long int i = 0; i < N; i++) {
+      if ((i % 7) == 6) continue;
+      if ((arr[i] - 1) * (N) + i < (arr[ans] - 1) * (N) + i) ans = i;
+    }
+    cout << ans + 1 << endl;
+    return 0;
+  }
+  for (long long int t = 0; t < 7 * N; t++) {
+    if (t % 7 == 6) continue;
+    currentMinus[t % N]++;
+    _time[t % N][currentMinus[t % N]] = t;
+  }
+  _time[N - 1][0] = -1 - N;
+  for (long long int i = 0; i < N - 1; i++) _time[i][0] = i - N;
+  long long int ans = 0;
+  long long int ti, ta;
+  for (long long int i = 0; i < N; i++) {
+    ti = arr[i] / 6 * (7 * N) + _time[i][arr[i] % 6];
+    if (arr[i] % 6 == 0) ti = (arr[i] - 6) / 6 * (7 * N) + _time[i][6];
+    ta = arr[ans] / 6 * (7 * N) + _time[ans][arr[ans] % 6];
+    if (arr[ans] % 6 == 0) ta = (arr[ans] - 6) / 6 * (7 * N) + _time[ans][6];
+    if (ti < ta) ans = i;
+  }
+  cout << ans + 1 << endl;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

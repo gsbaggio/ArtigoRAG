@@ -1,0 +1,2 @@
+1600
+['binary search', 'greedy']

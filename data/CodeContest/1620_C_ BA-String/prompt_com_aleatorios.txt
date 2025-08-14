@@ -1,0 +1,383 @@
+CURRENT QUESTION:
+You are given an integer k and a string s that consists only of characters 'a' (a lowercase Latin letter) and '*' (an asterisk).
+
+Each asterisk should be replaced with several (from 0 to k inclusive) lowercase Latin letters 'b'. Different asterisk can be replaced with different counts of letter 'b'.
+
+The result of the replacement is called a BA-string.
+
+Two strings a and b are different if they either have different lengths or there exists such a position i that a_i ≠ b_i.
+
+A string a is lexicographically smaller than a string b if and only if one of the following holds: 
+
+  * a is a prefix of b, but a ≠ b; 
+  * in the first position where a and b differ, the string a has a letter that appears earlier in the alphabet than the corresponding letter in b. 
+
+
+
+Now consider all different BA-strings and find the x-th lexicographically smallest of them.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 2000) — the number of testcases.
+
+The first line of each testcase contains three integers n, k and x (1 ≤ n ≤ 2000; 0 ≤ k ≤ 2000; 1 ≤ x ≤ 10^{18}). n is the length of string s.
+
+The second line of each testcase is a string s. It consists of n characters, each of them is either 'a' (a lowercase Latin letter) or '*' (an asterisk).
+
+The sum of n over all testcases doesn't exceed 2000. For each testcase x doesn't exceed the total number of different BA-strings. String s contains at least one character 'a'.
+
+Output
+
+For each testcase, print a single string, consisting only of characters 'b' and 'a' (lowercase Latin letters) — the x-th lexicographically smallest BA-string.
+
+Example
+
+Input
+
+
+3
+2 4 3
+a*
+4 1 3
+a**a
+6 3 20
+**a***
+
+
+Output
+
+
+abb
+abba
+babbbbbbbbb
+
+Note
+
+In the first testcase of the example, BA-strings ordered lexicographically are: 
+
+  1. a
+  2. ab
+  3. abb
+  4. abbb
+  5. abbbb
+
+
+
+In the second testcase of the example, BA-strings ordered lexicographically are: 
+
+  1. aa
+  2. aba
+  3. abba
+
+
+
+Note that string "aba" is only counted once, even though there are two ways to replace asterisks with characters 'b' to get it.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 66_E. Petya and Post
+Tags: ['data structures', 'dp']
+Description: Little Vasya's uncle is a postman. The post offices are located on one circular road. Besides, each post office has its own gas station located next to it. Petya's uncle works as follows: in the morning he should leave the house and go to some post office. In the office he receives a portion of letters and a car. Then he must drive in the given car exactly one round along the circular road and return to the starting post office (the uncle can drive along the circle in any direction, counterclockwise or clockwise). Besides, since the car belongs to the city post, it should also be fuelled with gasoline only at the Post Office stations. 
+
+The total number of stations equals to n. One can fuel the car at the i-th station with no more than ai liters of gasoline. Besides, one can fuel the car no more than once at each station. Also, the distance between the 1-st and the 2-nd station is b1 kilometers, the distance between the 2-nd and the 3-rd one is b2 kilometers, ..., between the (n - 1)-th and the n-th ones the distance is bn - 1 kilometers and between the n-th and the 1-st one the distance is bn kilometers. Petya's uncle's high-tech car uses only one liter of gasoline per kilometer. It is known that the stations are located so that the sum of all ai is equal to the sum of all bi. The i-th gas station and i-th post office are very close, so the distance between them is 0 kilometers.
+
+Thus, it becomes clear that if we start from some post offices, then it is not always possible to drive one round along a circular road. The uncle faces the following problem: to what stations can he go in the morning to be able to ride exactly one circle along the circular road and visit all the post offices that are on it?
+
+Petya, who used to attend programming classes, has volunteered to help his uncle, but his knowledge turned out to be not enough, so he asks you to help him write the program that will solve the posed problem.
+
+Input
+
+The first line contains integer n (1 ≤ n ≤ 105). The second line contains n integers ai — amount of gasoline on the i-th station. The third line contains n integers b1, b2, ..., bn. They are the distances between the 1-st and the 2-nd gas stations, between the 2-nd and the 3-rd ones, ..., between the n-th and the 1-st ones, respectively. The sum of all bi equals to the sum of all ai and is no more than 109. Each of the numbers ai, bi is no less than 1 and no more than 109.
+
+Output
+
+Print on the first line the number k — the number of possible post offices, from which the car can drive one circle along a circular road. Print on the second line k numbers in the ascending order — the numbers of offices, from which the car can start.
+
+Examples
+
+Input
+
+4
+1 7 2 3
+8 1 1 3
+
+
+Output
+
+2
+2 4
+
+
+Input
+
+8
+1 2 1 2 1 2 1 2
+2 1 2 1 2 1 2 1
+
+
+Output
+
+8
+1 2 3 4 5 6 7 8
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int main() {
+  int n;
+  cin >> n;
+  int a[100000];
+  for (int i = 0; i < n; i++) cin >> a[i];
+  int b[100000];
+  for (int i = 0; i < n; i++) cin >> b[i];
+  int r[100000], l[100000];
+  int min = 0;
+  int tmp = 0;
+  for (int i = 1; i < n; i++) {
+    tmp -= b[i - 1];
+    if (tmp < min) min = tmp;
+    tmp += a[i];
+  }
+  tmp -= b[n - 1];
+  if (tmp < min) min = tmp;
+  r[0] = -min;
+  min = 0;
+  tmp = 0;
+  for (int i = n - 2; i >= 0; i--) {
+    tmp -= b[i];
+    if (tmp < min) min = tmp;
+    tmp += a[i];
+  }
+  tmp -= b[n - 1];
+  if (tmp < min) min = tmp;
+  l[n - 1] = -min;
+  for (int i = 1; i < n; i++) {
+    r[i] = r[i - 1] + a[i] - b[i - 1];
+  }
+  for (int i = n - 2; i >= 0; i--) {
+    l[i] = l[i + 1] + a[i] - b[i];
+  }
+  int ans[100000];
+  int k = 0;
+  for (int i = 0; i < n; i++)
+    if (l[i] <= a[i] || r[i] <= a[i]) ans[k++] = i + 1;
+  cout << k << endl;
+  for (int i = 0; i < k; i++) cout << ans[i] << ' ';
+  return 0;
+}
+
+
+Example question 2:
+Name: p00069 Drawing Lots II
+Tags: ['']
+Description: There are n vertical lines in the Amidakuji. This Amidakuji meets the following conditions.
+
+* Draw a horizontal line right next to it. Do not pull diagonally.
+* Horizontal lines always connect adjacent vertical lines. In other words, the horizontal line does not cross the vertical line.
+* For any vertical line, horizontal lines will not appear at the same time on the left and right from the same point. That is, the horizontal line does not cross the vertical line.
+* There is only one hit.
+
+
+
+The figure below shows an example of Amidakuji when n = 5. The numbers on the top represent the vertical line numbers (1, 2, 3, 4, 5 from the left). ☆ is a hit.
+
+<image>
+
+
+Create a program that reads the number of vertical lines n, the number m of the selected vertical line, the location of the Amidakuji hit, and the presence or absence of horizontal lines in each row, and outputs a judgment as to whether or not the hit can be reached. However, only one horizontal line can be added at any position in the given Amidakuji (it is not necessary to add it). The Amidakuji after adding one horizontal line must also meet the above conditions.
+
+
+
+Input
+
+Given multiple datasets. Each dataset is as follows:
+
+The number of vertical lines n (1 <n ≤ 10) is written on the first line.
+On the second line, the number m (1 ≤ m ≤ n) of the selected vertical line is written.
+On the third line, the number of the hit place (☆ in the figure) is written counting from the left.
+On the 4th line, the number of stages d (1 ≤ d ≤ 30) of Amidakuji is written.
+From the 5th line onward, n-1 numbers are lined up in order from the top of the Amidakuji, with 1 being the horizontal line between each vertical line and 0 being the absence, as in the sequence of numbers corresponding to the figure. is.
+
+
+The input ends on a line with a single 0.
+
+Output
+
+For each dataset, output the following values ​​depending on whether you can reach the hit from the selected vertical line number m.
+
+* Output 0 if you can reach the hit without drawing a horizontal line.
+* If you can reach the hit by drawing one horizontal line, output the position of the horizontal line closest to the starting side (upper in the figure). Please output the number of steps (see the figure) counting from the departure side and the number of vertical lines counting from the left to draw the horizontal line to the right, separated by a half-width space.
+* If you cannot reach the hit even if you draw one horizontal line, output 1.
+
+Example
+
+Input
+
+5
+2
+3
+9
+1010
+1001
+0100
+1001
+0010
+1000
+0100
+0101
+1010
+0
+
+
+Output
+
+6 4
+Difficulty: 0
+Solutions: #include <vector>
+#include <iostream>
+class level {
+	int num;
+	int size;
+	int to_b(const int &n) {
+		if (n == 0)
+			return 0;
+		else
+			return (to_b(n / 10) << 1) + (n % 10);
+	}
+public:
+	int test(const int &n) {
+		return (((num << (n + 1)) >> size) & 1) - (((num  << n) >> size) & 1);
+	}
+	level(const int &n = 0, const int &d = 0) :size(d) {
+		num = to_b(n);
+	};
+};
+class Lot {
+	std::vector<level> levels;
+	std::vector<int> down;
+	std::vector<int> up;
+	void solve() {
+		for (auto i = 0; i < down.size() - 1; ++i) {
+			down.at(i + 1) = down.at(i) + levels.at(i).test(down.at(i));
+		}
+	}
+	void solve_inv() {
+		for (auto i = up.size() - 1; i > 0; --i) {
+			up.at(i - 1) = up.at(i) + levels.at(i - 1).test(up.at(i));
+		}
+	}
+public:
+	const int choice;
+	const int hit;
+	Lot(const int &n, const int &m, const int &h, const int &d) :choice(m), hit(h), levels(d), down(d + 1, 0), up(d + 1, 0) {
+		for (auto &l : levels) {
+			int i;
+			std::cin >> i;
+			l = level(i, n);
+		}
+		down.at(0) = m;
+		up.at(d) = h;
+		solve();
+		solve_inv();
+	}
+	void show() {
+		if (down.at(0) == up.at(0)) {
+			std::cout << 0 << std::endl;
+		}
+		else {
+			bool flag = true;
+			for (auto i = 0; i < down.size() - 1; ++i) {
+				if (((down.at(i) - up.at(i)) * (down.at(i) - up.at(i)) == 1) && (down.at(i) == down.at(i + 1)) && (up.at(i) == up.at(i + 1))) {
+					std::cout << i + 1 << " " << ((down.at(i) < up.at(i)) ? down.at(i) : up.at(i)) << std::endl;
+					i = down.size();
+					flag = false;
+				}
+			}
+			if (flag) {
+				std::cout << 1 << std::endl;
+			}
+		}
+	}
+	void inspect() {
+		std::cout << "down" << std::endl;
+		for (const auto &d : down) {
+			std::cout << d << '\n';
+		}
+		std::cout << "up" << std::endl;
+		for (const auto &u : up) {
+			std::cout << u << '\n';
+		}
+	}
+};
+int main() {
+	int n;
+	std::cin >> n;
+	while (n != 0) {
+		int m, h, d;
+		std::cin >> m >> h >> d;
+		Lot lot(n, m, h, d);
+		lot.show();
+		std::cin >> n;
+	}
+	return 0;
+}
+
+Example question 3:
+Name: the-castle-gate-july-easy
+Tags: []
+Description: Gudi, a fun loving girl from the city of Dun, travels to Azkahar - a strange land beyond the mountains. She arrives at the gates of Castle Grey, owned by Puchi,the lord of Azkahar to claim the treasure that it guards.  However, destiny has other plans for her as she has to move through floors, crossing obstacles on her way to reach the treasure.
+The gates of the castle are closed. An integer N is engraved on the gates. A writing on the wall says 
+Tap the gates as many times as there are unordered pairs of distinct integers from 1 to N whose bit-wise XOR does not exceed N.
+
+Help her find the number of the times she has to tap.
+
+Input:
+First line contains an integer T, T testcases follow.
+Each testcase consists of an integer N.  
+
+Output:
+Print the answer to each testcase in a newline.  
+
+Constraints:
+ 1 ≤ T ≤ 100
+ 2 ≤ N ≤ 2000  
+
+SAMPLE INPUT
+3
+4
+6
+8
+
+SAMPLE OUTPUT
+3
+12
+21
+
+Explanation
+
+For N=4,  pairs are (1,2) , (1,3) and (2,3)
+Difficulty: 0
+Solutions: from operator import xor
+tests = int(raw_input())
+
+for test in range(tests):
+	number = int(raw_input())
+
+	count = 0
+	for i in range(1, number):
+		for j in range(i+1, number+1):
+			if xor(i, j) <= number:
+				count +=1
+	print count
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

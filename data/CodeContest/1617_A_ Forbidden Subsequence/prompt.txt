@@ -1,0 +1,656 @@
+CURRENT QUESTION:
+You are given strings S and T, consisting of lowercase English letters. It is guaranteed that T is a permutation of the string abc. 
+
+Find string S', the lexicographically smallest permutation of S such that T is not a subsequence of S'.
+
+String a is a permutation of string b if the number of occurrences of each distinct character is the same in both strings.
+
+A string a is a subsequence of a string b if a can be obtained from b by deletion of several (possibly, zero or all) elements.
+
+A string a is lexicographically smaller than a string b if and only if one of the following holds:
+
+  * a is a prefix of b, but a ≠ b;
+  * in the first position where a and b differ, the string a has a letter that appears earlier in the alphabet than the corresponding letter in b.
+
+Input
+
+Each test contains multiple test cases. The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of test cases. Description of the test cases follows.
+
+The first line of each test case contains a string S (1 ≤ |S| ≤ 100), consisting of lowercase English letters.
+
+The second line of each test case contains a string T that is a permutation of the string abc. (Hence, |T| = 3).
+
+Note that there is no limit on the sum of |S| across all test cases.
+
+Output
+
+For each test case, output a single string S', the lexicographically smallest permutation of S such that T is not a subsequence of S'.
+
+Example
+
+Input
+
+
+7
+abacaba
+abc
+cccba
+acb
+dbsic
+bac
+abracadabra
+abc
+dddddddddddd
+cba
+bbc
+abc
+ac
+abc
+
+
+Output
+
+
+aaaacbb
+abccc
+bcdis
+aaaaacbbdrr
+dddddddddddd
+bbc
+ac
+
+Note
+
+In the first test case, both aaaabbc and aaaabcb are lexicographically smaller than aaaacbb, but they contain abc as a subsequence.
+
+In the second test case, abccc is the smallest permutation of cccba and does not contain acb as a subsequence.
+
+In the third test case, bcdis is the smallest permutation of dbsic and does not contain bac as a subsequence.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.81):
+Name: 1450_A. Avoid Trygub
+Tags: ['constructive algorithms', 'sortings']
+Description: A string b is a subsequence of a string a if b can be obtained from a by deletion of several (possibly, zero or all) characters. For example, "xy" is a subsequence of "xzyw" and "xy", but not "yx".
+
+You are given a string a. Your task is to reorder the characters of a so that "trygub" is not a subsequence of the resulting string.
+
+In other words, you should find a string b which is a permutation of symbols of the string a and "trygub" is not a subsequence of b.
+
+We have a truly marvelous proof that any string can be arranged not to contain "trygub" as a subsequence, but this problem statement is too short to contain it.
+
+Input
+
+The first line contains a single integer t (1≤ t≤ 100) — the number of test cases.
+
+The first line of each test case contains a single integer n (1≤ n≤ 200) — the length of a.
+
+The next line contains the string a of length n, consisting of lowercase English letters.
+
+Output
+
+For each test case, output a string b of length n which is a permutation of characters of the string a, and such that "trygub" is not a subsequence of it.
+
+If there exist multiple possible strings b, you can print any.
+
+Example
+
+Input
+
+
+3
+11
+antontrygub
+15
+bestcoordinator
+19
+trywatchinggurabruh
+
+
+Output
+
+
+bugyrtnotna
+bestcoordinator
+bruhtrywatchinggura
+
+Note
+
+In the first test case, "bugyrtnotna" does not contain "trygub" as a subsequence. It does contain the letters of "trygub", but not in the correct order, so it is not a subsequence.
+
+In the second test case, we did not change the order of characters because it is not needed.
+
+In the third test case, "bruhtrywatchinggura" does contain "trygu" as a subsequence, but not "trygub".
+Difficulty: 7
+Solutions: t = int(input())
+for i in range(t):
+    n = int(input())
+    a = input()
+    check = []
+    trygub = "trygub"
+    k = 0
+    for j in range(len(trygub)):
+        for m in range(k,len(a)):
+            if(trygub[j] == a[m]):
+                check.append(a[m])
+                k = m+1
+                break
+            else:
+                continue
+
+    c =""
+    if(len(trygub)==len(check)):
+        c = a[a.find("b"):]+a[:a.find("b")]
+        add = c.count("b")
+        b = c.replace("b", "")
+        for k in range(add):
+            b = "b" + b
+        print(b)
+    else:
+        print(a)
+
+        
+
+
+
+
+Similar question 2 (Similarity score: 0.79):
+Name: astring
+Tags: []
+Description: Akhil comes across a string S of length N. He started wondering about the smallest lexicographical subsequence of string S of length K.
+A subsequence of a string is formed by deleting some characters (possibly none) from it's original string.
+A string A is said to be lexicographically smaller than the string B of the same length if at the first position where A and B differ, A contains a letter which appears earlier in the dictionary than the corresponding letter in B.
+
+Input
+
+The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows:
+First line of each test case will contain string S
+Second line of each test case will contain an integer K.
+
+
+Output
+
+For each test case, output a single line containing the lexicographically smallest subsequence of S of length K.
+
+
+Constraints
+
+1 ≤ T ≤ 5
+1 ≤ K ≤ N
+S consists of lowercase English alphabet characters, i.e. from 'a' to 'z'.
+
+
+Example
+Input:
+2
+abdc
+3
+bacb
+2
+
+Output:
+abc
+ab
+
+Explanation
+Example case 1. "abc" is the smallest lexicographical subsequence out of ["abd", "bdc", "abc", "adc"].
+Example case 2. "ab" is the smallest lexicographical subsequence of length 2.
+Difficulty: 2
+Solutions: import heapq
+    
+def solve(s, k):
+    res = []
+    start_index = -1
+    end_index = len(s) - k
+    #choose the staring window
+    h = [(y, x) for x, y in enumerate(s[:end_index])]
+    heapq.heapify(h)
+
+    for _ in range(k):
+        # enlarge the window by increamenting one (character, pos_of_haracter) from right
+        heapq.heappush(h, (s[end_index], end_index))
+        end_index += 1
+        # get the min from s[start_index : end_index] by using heappop (O(logN)) 
+        while True:
+            val, ind = heapq.heappop(h)
+            if ind > start_index: break
+        # save the min, shorten the window
+        res.append(val)
+        start_index = ind
+    return ''.join(res)
+
+def astring():
+    T = int(raw_input())
+    for t in range(T):
+        s = raw_input()
+        k = int(raw_input())
+        print solve(s,k)
+
+if __name__ == "__main__":
+  astring()
+
+Similar question 3 (Similarity score: 0.78):
+Name: 1360_F. Spy-string
+Tags: ['bitmasks', 'brute force', 'constructive algorithms', 'dp', 'hashing', 'strings']
+Description: You are given n strings a_1, a_2, …, a_n: all of them have the same length m. The strings consist of lowercase English letters.
+
+Find any string s of length m such that each of the given n strings differs from s in at most one position. Formally, for each given string a_i, there is no more than one position j such that a_i[j] ≠ s[j].
+
+Note that the desired string s may be equal to one of the given strings a_i, or it may differ from all the given strings.
+
+For example, if you have the strings abac and zbab, then the answer to the problem might be the string abab, which differs from the first only by the last character, and from the second only by the first.
+
+Input
+
+The first line contains an integer t (1 ≤ t ≤ 100) — the number of test cases. Then t test cases follow.
+
+Each test case starts with a line containing two positive integers n (1 ≤ n ≤ 10) and m (1 ≤ m ≤ 10) — the number of strings and their length.
+
+Then follow n strings a_i, one per line. Each of them has length m and consists of lowercase English letters.
+
+Output
+
+Print t answers to the test cases. Each answer (if it exists) is a string of length m consisting of lowercase English letters. If there are several answers, print any of them. If the answer does not exist, print "-1" ("minus one", without quotes).
+
+Example
+
+Input
+
+
+5
+2 4
+abac
+zbab
+2 4
+aaaa
+bbbb
+3 3
+baa
+aaa
+aab
+2 2
+ab
+bb
+3 1
+a
+b
+c
+
+
+Output
+
+
+abab
+-1
+aaa
+ab
+z
+
+Note
+
+The first test case was explained in the statement.
+
+In the second test case, the answer does not exist.
+Difficulty: 12
+Solutions: import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.*;
+import java.io.*;
+public class Main {
+InputStream is;
+	PrintWriter out;
+	String INPUT = ""; 
+//class  Declaration
+
+static class pair implements Comparable<pair>{
+	int x;
+	int y;
+
+	
+	pair (int i,int j)
+	{ x=i; y=j;
+	
+		
+	}
+	public int compareTo(pair p){
+		if(this.x!=p.x) { return this.x-p.x;}
+		else { return this.y-p.y;}
+	}
+	public int hashCode() { return (x+" "+y).hashCode();}
+	public String toString(){ return x+" "+y;} 
+	public boolean equals(Object o){ 
+		pair x = (pair) o ;
+		return (x.x==this.x&&x.y==this.y);}
+}
+
+
+
+int inf = (int)1e9 + 5;
+void solve() throws Exception{
+int t=ni();
+while(t-->0){
+	int n=ni(),m=ni();
+	char[][] str = new char[n][m];
+	for(int i=0;i<n;++i){
+		str[i] = ns().toCharArray();
+	}
+	boolean pos = false ;
+	String ans = "";
+	 outer : for(int i=0;i<n;++i){
+		 
+		String x = new String(str[i]);
+		//print("trying "+x);
+		char[] chk = x.toCharArray();
+		for(int j=0;j<m;++j){
+			for(int k=0;k<26;++k){
+				chk[j] = (char)('a'+k );
+
+				boolean use = true ;
+				for(int l= 0;l<n;++l){
+					int cost =0;
+					for(int jj =0;jj<m;++jj){
+						if(chk[jj]!= str[l][jj]) cost++;
+					}
+					if(cost>1){
+						use = false;
+						 break ;
+					}
+
+				}
+				if(use){
+					pos =true ;
+					ans = new String(chk);
+					break  outer ;
+				}
+
+
+			}
+			chk[j] = str[i][j];
+		}
+	}
+	if(pos){
+		pn(ans);
+	}
+	else{
+		pn(-1);
+	}
+
+}
+}
+
+void print(Object o){
+System.out.println(o);
+System.out.flush();
+}
+
+long gcd(long a, long b) 
+{ 
+if (b == 0) 
+return a; 
+return gcd(b, a % b);  
+}
+void run() throws Exception{
+		is = INPUT.isEmpty() ? System.in : new ByteArrayInputStream(INPUT.getBytes());
+out = new PrintWriter(System.out);
+		
+		long s = System.currentTimeMillis();
+		solve();
+		out.flush();
+		if(!INPUT.isEmpty())tr(System.currentTimeMillis()-s+"ms");
+}
+	
+	
+public static void main(String[] args) throws Exception { new Main().run(); }
+	
+//output methods
+private void pn(Object o)
+{
+	out.println(o);
+}
+private void p(Object o)
+{
+	out.print(o);
+}
+
+
+
+//input methods
+		private byte[] inbuf = new byte[1024];
+	public int lenbuf = 0, ptrbuf = 0;
+	
+
+	private int readByte()
+	{
+		if(lenbuf == -1)throw new InputMismatchException();
+		if(ptrbuf >= lenbuf){
+			ptrbuf = 0;
+			try { lenbuf = is.read(inbuf); } catch (IOException e) { throw new InputMismatchException(); }
+			if(lenbuf <= 0)return -1;
+		}
+		return inbuf[ptrbuf++];
+	}
+	
+	
+	
+	
+	private boolean isSpaceChar(int c) { return !(c >= 33 && c <= 126); }
+	private int skip() { int b; while((b = readByte()) != -1 && isSpaceChar(b)); return b; }
+	
+	private double nd() { return Double.parseDouble(ns()); }
+	private char nc() { return (char)skip(); }
+	
+	private String ns()
+	{
+		int b = skip();
+		StringBuilder sb = new StringBuilder();
+		while(!(isSpaceChar(b))){ // when nextLine, (isSpaceChar(b) && b != ' ')
+			sb.appendCodePoint(b);
+			b = readByte();
+		}
+		return sb.toString();
+	}
+	
+	private char[] ns(int n)
+	{
+		char[] buf = new char[n];
+		int b = skip(), p = 0;
+		while(p < n && !(isSpaceChar(b))){
+			buf[p++] = (char)b;
+			b = readByte();
+		}
+		return n == p ? buf : Arrays.copyOf(buf, p);
+	}
+		
+	private char[][] nm(int n, int m)
+	{
+		char[][] map = new char[n][];
+		for(int i = 0;i < n;i++)map[i] = ns(m);
+		return map;
+	}
+	
+	private int[] na(int n)
+	{
+		int[] a = new int[n];
+		for(int i = 0;i < n;i++)a[i] = ni();
+		return a;
+	}
+	
+	private int ni()
+	{
+		int num = 0, b;
+		boolean minus = false;
+		while((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+		if(b == '-'){
+			minus = true;
+			b = readByte();
+		}
+		
+		while(true){
+			if(b >= '0' && b <= '9'){
+				num = num * 10 + (b - '0');
+			}else{
+				return minus ? -num : num;
+			}
+			b = readByte();
+		}
+	}
+	
+	private long nl()
+	{
+		long num = 0;
+		int b;
+		boolean minus = false;
+		while((b = readByte()) != -1 && !((b >= '0' && b <= '9') || b == '-'));
+		if(b == '-'){
+			minus = true;
+			b = readByte();
+		}
+		
+		while(true){
+			if(b >= '0' && b <= '9'){
+				num = num * 10 + (b - '0');
+			}else{
+				return minus ? -num : num;
+			}
+			b = readByte();
+		}
+	}
+	
+	private void tr(Object... o) { if(INPUT.length() > 0)System.out.println(Arrays.deepToString(o)); }
+	void watch(Object ... a) throws Exception{
+		int i=1;
+		print("watch starts :");
+		for(Object o : a ) {
+			//print(o);
+			boolean notfound = true;
+			if(o.getClass().isArray()){
+				
+				String type = o.getClass().getName().toString();
+				//print("type is "+type);
+				switch (type) {
+					case "[I":{
+						int[] test = (int[])o ;
+						print(i+" "+Arrays.toString(test));
+						break;
+					}
+					case "[[I":{
+						int[][] obj = (int[][])o;
+						
+						print(i+" "+Arrays.deepToString(obj));
+						break;
+					}
+					case "[J" : {
+						
+						long[] obj  = (long[])o ;
+						print(i+" "+Arrays.toString(obj));
+						break;
+					}
+					case "[[J": {
+						
+						long[][] obj = (long[][])o;
+						print(i+" "+Arrays.deepToString(obj));
+						break;
+					}
+					case "[D" :{
+						
+						double[] obj= (double[])o;
+						print(i+" "+Arrays.toString(obj));
+						break;
+					}
+					case "[[D" :{
+						
+						double[][] obj = (double[][])o;
+						print(i+" "+Arrays.deepToString(obj));
+						break;
+					}
+					case "[Ljava.lang.String": {
+						
+						String[] obj = (String[])o ;
+						print(i+" "+Arrays.toString(obj));
+						break;
+					}
+					case "[[Ljava.lang.String": {
+						
+						String[][] obj = (String[][])o ;
+						print(i+" "+Arrays.deepToString(obj));
+						break ; 
+					}
+					case "[C" :{
+						char[] obj = (char[])o ;
+						print(i+" "+Arrays.toString(obj));
+						break;
+					}
+					case "[[C" :{
+						
+						char[][] obj = (char[][])o;
+						print(i+" "+Arrays.deepToString(obj));
+						break;
+					}
+
+						
+				
+					default:{
+						print(i+" type not identified");
+						break;
+					}
+				}
+				notfound = false;
+				
+			}
+			if(o.getClass() == ArrayList.class){
+				print(i+" al: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == HashSet.class){
+				print(i+" hs: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == TreeSet.class){
+				print(i+" ts: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == TreeMap.class){
+				print(i+" tm: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == HashMap.class){
+				print(i+" hm: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == LinkedList.class){
+				print(i+" ll: "+o);
+				notfound = false;
+			}
+			if(o.getClass() == PriorityQueue.class){
+				print(i+" pq : "+o);
+				notfound = false;
+			}
+			if(o.getClass() == pair.class){
+				print(i+" pq : "+o);
+				notfound = false;
+			}
+			
+			if(notfound){
+				print(i+" unknown: "+o);
+			}
+			i++;
+		}
+		print("watch ends ");
+	}
+
+}	
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

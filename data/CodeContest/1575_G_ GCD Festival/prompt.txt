@@ -1,0 +1,594 @@
+CURRENT QUESTION:
+Mr. Chanek has an array a of n integers. The prettiness value of a is denoted as:
+
+$$$∑_{i=1}^{n} {∑_{j=1}^{n} {\gcd(a_i, a_j) ⋅ \gcd(i, j)}}$$$
+
+where \gcd(x, y) denotes the greatest common divisor (GCD) of integers x and y.
+
+In other words, the prettiness value of an array a is the total sum of \gcd(a_i, a_j) ⋅ \gcd(i, j) for all pairs (i, j).
+
+Help Mr. Chanek find the prettiness value of a, and output the result modulo 10^9 + 7!
+
+Input
+
+The first line contains an integer n (2 ≤ n ≤ 10^5).
+
+The second line contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 10^5).
+
+Output
+
+Output an integer denoting the prettiness value of a modulo 10^9 + 7.
+
+Example
+
+Input
+
+
+5
+3 6 2 1 4
+
+
+Output
+
+
+77
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.75):
+Name: 1366_D. Two Divisors
+Tags: ['constructive algorithms', 'math', 'number theory']
+Description: You are given n integers a_1, a_2, ..., a_n.
+
+For each a_i find its two divisors d_1 > 1 and d_2 > 1 such that \gcd(d_1 + d_2, a_i) = 1 (where \gcd(a, b) is the greatest common divisor of a and b) or say that there is no such pair.
+
+Input
+
+The first line contains single integer n (1 ≤ n ≤ 5 ⋅ 10^5) — the size of the array a.
+
+The second line contains n integers a_1, a_2, ..., a_n (2 ≤ a_i ≤ 10^7) — the array a.
+
+Output
+
+To speed up the output, print two lines with n integers in each line.
+
+The i-th integers in the first and second lines should be corresponding divisors d_1 > 1 and d_2 > 1 such that \gcd(d_1 + d_2, a_i) = 1 or -1 and -1 if there is no such pair. If there are multiple answers, print any of them.
+
+Example
+
+Input
+
+
+10
+2 3 4 5 6 7 8 9 10 24
+
+
+Output
+
+
+-1 -1 -1 -1 3 -1 -1 -1 2 2 
+-1 -1 -1 -1 2 -1 -1 -1 5 3 
+
+Note
+
+Let's look at a_7 = 8. It has 3 divisors greater than 1: 2, 4, 8. As you can see, the sum of any pair of divisors is divisible by 2 as well as a_7.
+
+There are other valid pairs of d_1 and d_2 for a_{10}=24, like (3, 4) or (8, 3). You can print any of them.
+Difficulty: 10
+Solutions: import java.io.OutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.io.Writer;
+import java.io.OutputStreamWriter;
+import java.util.InputMismatchException;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * Built using CHelper plug-in
+ * Actual solution is at the top
+ *
+ * @author sumit
+ */
+public class Main {
+      public static void main(String[] args) {
+            InputStream inputStream = System.in;
+            OutputStream outputStream = System.out;
+            InputReader in = new InputReader(inputStream);
+            OutputWriter out = new OutputWriter(outputStream);
+            DTwoDivisors solver = new DTwoDivisors();
+            solver.solve(1, in, out);
+            out.close();
+      }
+
+      static class DTwoDivisors {
+            int[] findMinDiv() {
+                  int n = 10000001;
+                  int[] arr = new int[n];
+                  for (int i = 2; i < n; i++) {
+                        if (arr[i] == 0) {
+                              for (int j = 2 * i; j < n; j += i) {
+                                    arr[j] = i;
+                              }
+                        }
+                  }
+                  return arr;
+            }
+
+            int seprate(int val, int a) {
+                  while (val % a == 0 && val != 0) {
+                        val = val / a;
+                  }
+                  return val;
+            }
+
+            public void solve(int testNumber, InputReader in, OutputWriter out) {
+                  int n = in.nextInt();
+
+                  int[] arr = in.nextIntArray(n);
+                  int[] minDiv = findMinDiv();
+
+                  StringBuilder sb1 = new StringBuilder();
+                  StringBuilder sb2 = new StringBuilder();
+                  for (int i = 0; i < n; i++) {
+                        int mD = minDiv[arr[i]];
+                        if (mD == 0) {
+                              sb1.append("-1 ");
+                              sb2.append("-1 ");
+                        } else {
+                              int vv = seprate(arr[i], mD);
+                              if (vv <= 1) {
+                                    sb1.append("-1 ");
+                                    sb2.append("-1 ");
+                              } else {
+                                    sb1.append(mD + " ");
+                                    sb2.append(vv + " ");
+                              }
+                        }
+                  }
+
+                  out.printLine(sb1.toString());
+                  out.printLine(sb2.toString());
+
+
+            }
+
+      }
+
+      static class InputReader {
+            private InputStream stream;
+            private byte[] buf = new byte[1024];
+            private int curChar;
+            private int numChars;
+
+            public InputReader(InputStream stream) {
+                  this.stream = stream;
+            }
+
+            public int read() {
+                  if (numChars == -1)
+                        throw new InputMismatchException();
+
+                  if (curChar >= numChars) {
+                        curChar = 0;
+                        try {
+                              numChars = stream.read(buf);
+                        } catch (IOException e) {
+                              throw new InputMismatchException();
+                        }
+                        if (numChars <= 0)
+                              return -1;
+                  }
+
+                  return buf[curChar++];
+            }
+
+            public int nextInt() {
+                  int c = read();
+
+                  while (isSpaceChar(c))
+                        c = read();
+
+                  int sgn = 1;
+
+                  if (c == '-') {
+                        sgn = -1;
+                        c = read();
+                  }
+
+                  int res = 0;
+
+                  do {
+                        if (c < '0' || c > '9')
+                              throw new InputMismatchException();
+
+                        res *= 10;
+                        res += c & 15;
+
+                        c = read();
+                  } while (!isSpaceChar(c));
+
+                  return res * sgn;
+            }
+
+            public int[] nextIntArray(int arraySize) {
+                  int array[] = new int[arraySize];
+
+                  for (int i = 0; i < arraySize; i++)
+                        array[i] = nextInt();
+
+                  return array;
+            }
+
+            public boolean isSpaceChar(int c) {
+                  return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
+            }
+
+      }
+
+      static class OutputWriter {
+            private final PrintWriter writer;
+
+            public OutputWriter(OutputStream outputStream) {
+                  writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream)));
+            }
+
+            public OutputWriter(Writer writer) {
+                  this.writer = new PrintWriter(writer);
+            }
+
+            public void print(Object... objects) {
+                  for (int i = 0; i < objects.length; i++) {
+                        if (i != 0) {
+                              writer.print(' ');
+                        }
+                        writer.print(objects[i]);
+                  }
+            }
+
+            public void printLine(Object... objects) {
+                  print(objects);
+                  writer.println();
+            }
+
+            public void close() {
+                  writer.close();
+            }
+
+      }
+}
+
+
+
+Similar question 2 (Similarity score: 0.74):
+Name: 1114_F. Please, another Queries on Array?
+Tags: ['bitmasks', 'data structures', 'divide and conquer', 'math', 'number theory']
+Description: You are given an array a_1, a_2, …, a_n.
+
+You need to perform q queries of the following two types:
+
+  1. "MULTIPLY l r x" — for every i (l ≤ i ≤ r) multiply a_i by x.
+  2. "TOTIENT l r" — print \varphi(∏ _{i=l}^{r} a_i) taken modulo 10^9+7, where \varphi denotes Euler's totient function. 
+
+
+
+The [Euler's totient function](http://gg.gg/euler_totient) of a positive integer n (denoted as \varphi(n)) is the number of integers x (1 ≤ x ≤ n) such that \gcd(n,x) = 1.
+
+Input
+
+The first line contains two integers n and q (1 ≤ n ≤ 4 ⋅ 10^5, 1 ≤ q ≤ 2 ⋅ 10^5) — the number of elements in array a and the number of queries.
+
+The second line contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 300) — the elements of array a.
+
+Then q lines follow, describing queries in the format given in the statement.
+
+  1. "MULTIPLY l r x" (1 ≤ l ≤ r ≤ n, 1 ≤ x ≤ 300) — denotes a multiplication query.
+  2. "TOTIENT l r" (1 ≤ l ≤ r ≤ n) — denotes a query on the value of Euler's totient function. 
+
+
+
+It is guaranteed that there is at least one "TOTIENT" query.
+
+Output
+
+For each "TOTIENT" query, print the answer to it.
+
+Example
+
+Input
+
+4 4
+5 9 1 2
+TOTIENT 3 3
+TOTIENT 3 4
+MULTIPLY 4 4 3
+TOTIENT 4 4
+
+
+Output
+
+1
+1
+2
+
+Note
+
+In the first example, \varphi(1) = 1 for the first query, \varphi(2) = 1 for the second query and \varphi(6) = 2 for the third one.
+Difficulty: 12
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+template <typename T>
+void maxtt(T &t1, T t2) {
+  t1 = max(t1, t2);
+}
+template <typename T>
+void mintt(T &t1, T t2) {
+  t1 = min(t1, t2);
+}
+bool debug = 0;
+int n, m, k;
+int dx[4] = {0, 1, 0, -1}, dy[4] = {1, 0, -1, 0};
+string direc = "URDL";
+long long ln, lk, lm;
+void etp(bool f = 0) {
+  puts(f ? "YES" : "NO");
+  exit(0);
+}
+void addmod(int &x, int y, int mod = 1000000007) {
+  assert(y >= 0);
+  x += y;
+  if (x >= mod) x -= mod;
+  assert(x >= 0 && x < mod);
+}
+void et(int x = -1) {
+  printf("%d\n", x);
+  exit(0);
+}
+long long fastPow(long long x, long long y, int mod = 1000000007) {
+  long long ans = 1;
+  while (y > 0) {
+    if (y & 1) ans = (x * ans) % mod;
+    x = x * x % mod;
+    y >>= 1;
+  }
+  return ans;
+}
+long long gcd1(long long x, long long y) { return y ? gcd1(y, x % y) : x; }
+vector<int> ps;
+long long fp[303], invp[66];
+bool isp(int x) {
+  for (int i = 2; i < x; i++)
+    if (x % i == 0) return 0;
+  return 1;
+}
+void init() {
+  for (int i = 2; i < 300; i++)
+    if (isp(i)) ps.push_back(i);
+  for (int i = 2; i <= 300; i++) {
+    for (int(j) = 0; (j) < (int)(62); (j)++)
+      if (i % ps[j] == 0) fp[i] |= 1LL << j;
+  }
+  for (int(j) = 0; (j) < (int)(62); (j)++) {
+    invp[j] =
+        (long long)(ps[j] - 1) * fastPow(ps[j], 1000000007 - 2) % 1000000007;
+  }
+}
+struct nd {
+  int ss;
+  long long bs;
+  nd() {
+    ss = 1;
+    bs = 0;
+  }
+  friend nd operator+(const nd &x, const nd &y) {
+    nd res = nd();
+    res.ss = (long long)x.ss * y.ss % 1000000007;
+    res.bs = x.bs | y.bs;
+    return res;
+  }
+} T[400135 << 2];
+int lz[400135 << 2];
+long long lzb[400135 << 2];
+int a[400135];
+void Up(int rt, int l, int r) { T[rt] = T[(rt << 1)] + T[(rt << 1 | 1)]; }
+void Down(int rt, int l, int r) {
+  if (l + 1 == r) return;
+  int mid = (l + r) / 2;
+  if (lz[rt] != 1) {
+    T[(rt << 1)].ss =
+        (long long)T[(rt << 1)].ss * fastPow(lz[rt], mid - l) % 1000000007;
+    lz[(rt << 1)] = (long long)lz[(rt << 1)] * lz[rt] % 1000000007;
+    T[(rt << 1 | 1)].ss =
+        (long long)T[(rt << 1 | 1)].ss * fastPow(lz[rt], r - mid) % 1000000007;
+    lz[(rt << 1 | 1)] = (long long)lz[(rt << 1 | 1)] * lz[rt] % 1000000007;
+    lz[rt] = 1;
+  }
+  if (lzb[rt] != 0) {
+    T[(rt << 1)].bs |= lzb[rt];
+    lzb[(rt << 1)] |= lzb[rt];
+    T[(rt << 1 | 1)].bs |= lzb[rt];
+    lzb[(rt << 1 | 1)] |= lzb[rt];
+    lzb[rt] = 0;
+  }
+}
+void upt(int rt, int l, int r, int L, int R, int val) {
+  if (R <= l || r <= L) return;
+  if (L <= l && r <= R) {
+    T[rt].ss = (long long)T[rt].ss * fastPow(val, r - l) % 1000000007;
+    lz[rt] = (long long)lz[rt] * val % 1000000007;
+    T[rt].bs |= fp[val];
+    lzb[rt] |= fp[val];
+    return;
+  }
+  Down(rt, l, r);
+  int mid = (l + r) / 2;
+  upt((rt << 1), l, mid, L, R, val);
+  upt((rt << 1 | 1), mid, r, L, R, val);
+  Up(rt, l, r);
+}
+nd qy(int rt, int l, int r, int L, int R) {
+  if (L <= l && r <= R) {
+    return T[rt];
+  }
+  Down(rt, l, r);
+  int mid = (l + r) / 2;
+  if (R <= mid)
+    return qy((rt << 1), l, mid, L, R);
+  else if (L >= mid)
+    return qy((rt << 1 | 1), mid, r, L, R);
+  else
+    return qy((rt << 1), l, mid, L, mid) + qy((rt << 1 | 1), mid, r, mid, R);
+}
+void build(int rt, int l, int r) {
+  if (l + 1 == r) {
+    T[rt].ss = a[r];
+    T[rt].bs = fp[a[r]];
+    return;
+  }
+  int mid = (l + r) / 2;
+  build((rt << 1), l, mid);
+  build((rt << 1 | 1), mid, r);
+  Up(rt, l, r);
+}
+void fmain(int tid) {
+  scanf("%d%d", &n, &m);
+  init();
+  for (int(i) = 1; (i) <= (int)(n); (i)++) scanf("%d", a + i);
+  for (int(i) = 0; (i) < (int)(400135 * 4); (i)++) lz[i] = 1;
+  build(1, 0, n);
+  char s[20];
+  for (int(i) = 1; (i) <= (int)(m); (i)++) {
+    int l, r, x;
+    scanf("%s%d%d", s, &l, &r);
+    if (s[0] == 'M') {
+      scanf("%d", &x);
+      upt(1, 0, n, l - 1, r, x);
+    } else {
+      nd z = qy(1, 0, n, l - 1, r);
+      int ans = z.ss;
+      for (int(j) = 0; (j) < (int)(62); (j)++)
+        if (z.bs & (1LL << j)) {
+          ans = (long long)ans * invp[j] % 1000000007;
+        }
+      printf("%d\n", ans);
+    }
+  }
+}
+int main() {
+  int t = 1;
+  for (int(i) = 1; (i) <= (int)(t); (i)++) {
+    fmain(i);
+  }
+  return 0;
+}
+
+
+Similar question 3 (Similarity score: 0.73):
+Name: p02715 AtCoder Beginner Contest 162 - Sum of gcd of Tuples (Hard)
+Tags: ['']
+Description: Consider sequences \\{A_1,...,A_N\\} of length N consisting of integers between 1 and K (inclusive).
+
+There are K^N such sequences. Find the sum of \gcd(A_1, ..., A_N) over all of them.
+
+Since this sum can be enormous, print the value modulo (10^9+7).
+
+Here \gcd(A_1, ..., A_N) denotes the greatest common divisor of A_1, ..., A_N.
+
+Constraints
+
+* 2 \leq N \leq 10^5
+* 1 \leq K \leq 10^5
+* All values in input are integers.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N K
+
+
+Output
+
+Print the sum of \gcd(A_1, ..., A_N) over all K^N sequences, modulo (10^9+7).
+
+Examples
+
+Input
+
+3 2
+
+
+Output
+
+9
+
+
+Input
+
+3 200
+
+
+Output
+
+10813692
+
+
+Input
+
+100000 100000
+
+
+Output
+
+742202979
+Difficulty: 0
+Solutions: #include <bits/stdc++.h>
+
+#define rep(i, n) for (int i = 0; i < (n); i++)
+using namespace std;
+typedef long long ll;
+const ll mod = 1e9 + 7;
+
+int n, k;
+
+ll modpow(ll a, ll b) {
+  ll r = 1;
+  while (b) {
+    if (b & 1) r = r * a % mod;
+    a = a * a % mod;
+    b >>= 1;
+  }
+  return r;
+}
+
+ll dp[200005];
+
+int main() {
+  cin >> n >> k;
+  ll ans = 0;
+  for (int i = 1; i <= k; i++) dp[i] = modpow(k / i, n);
+
+  for (int i = k; i > 0; --i)
+    for (int j = 2; j < k / i + 1; ++j) dp[i] -= dp[i * j];
+
+  rep(i, k + 1) ans += dp[i] * i, ans %= mod;
+
+  cout << ans << endl;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

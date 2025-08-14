@@ -1,0 +1,640 @@
+CURRENT QUESTION:
+YouKn0wWho has an integer sequence a_1, a_2, … a_n. Now he will split the sequence a into one or more consecutive subarrays so that each element of a belongs to exactly one subarray. Let k be the number of resulting subarrays, and h_1, h_2, …, h_k be the lengths of the longest increasing subsequences of corresponding subarrays.
+
+For example, if we split [2, 5, 3, 1, 4, 3, 2, 2, 5, 1] into [2, 5, 3, 1, 4], [3, 2, 2, 5], [1], then h = [3, 2, 1].
+
+YouKn0wWho wonders if it is possible to split the sequence a in such a way that the [bitwise XOR](https://en.wikipedia.org/wiki/Bitwise_operation#XOR) of h_1, h_2, …, h_k is equal to 0. You have to tell whether it is possible.
+
+The longest increasing subsequence (LIS) of a sequence b_1, b_2, …, b_m is the longest sequence of valid indices i_1, i_2, …, i_k such that i_1 < i_2 < … < i_k and b_{i_1} < b_{i_2} < … < b_{i_k}. For example, the LIS of [2, 5, 3, 3, 5] is [2, 3, 5], which has length 3.
+
+An array c is a subarray of an array b if c can be obtained from b by deletion of several (possibly, zero or all) elements from the beginning and several (possibly, zero or all) elements from the end.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10 000) — the number of test cases.
+
+The first line of each test case contains a single integer n (2 ≤ n ≤ 10^5).
+
+The second line of each test case contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 10^9).
+
+It is guaranteed that the sum of n over all test cases doesn't exceed 3 ⋅ 10^5.
+
+Output
+
+For each test case, print "YES" (without quotes) if it is possible to split into subarrays in the desired way, print "NO" (without quotes) otherwise. You can print each letter in any register (upper or lower).
+
+Example
+
+Input
+
+
+4
+7
+1 3 4 2 2 1 5
+3
+1 3 4
+5
+1 3 2 4 2
+4
+4 3 2 1
+
+
+Output
+
+
+YES
+NO
+YES
+YES
+
+Note
+
+In the first test case, YouKn0wWho can split the sequence in the following way: [1, 3, 4], [2, 2], [1, 5]. This way, the LIS lengths are h = [3, 1, 2], and the bitwise XOR of the LIS lengths is 3 ⊕ 1 ⊕ 2 = 0.
+
+In the second test case, it can be shown that it is impossible to split the sequence into subarrays that will satisfy the condition.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.74):
+Name: 977_F. Consecutive Subsequence
+Tags: ['dp']
+Description: You are given an integer array of length n.
+
+You have to choose some subsequence of this array of maximum length such that this subsequence forms a increasing sequence of consecutive integers. In other words the required sequence should be equal to [x, x + 1, ..., x + k - 1] for some value x and length k.
+
+Subsequence of an array can be obtained by erasing some (possibly zero) elements from the array. You can erase any elements, not necessarily going successively. The remaining elements preserve their order. For example, for the array [5, 3, 1, 2, 4] the following arrays are subsequences: [3], [5, 3, 1, 2, 4], [5, 1, 4], but the array [1, 3] is not.
+
+Input
+
+The first line of the input containing integer number n (1 ≤ n ≤ 2 ⋅ 10^5) — the length of the array. The second line of the input containing n integer numbers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^9) — the array itself.
+
+Output
+
+On the first line print k — the maximum length of the subsequence of the given array that forms an increasing sequence of consecutive integers.
+
+On the second line print the sequence of the indices of the any maximum length subsequence of the given array that forms an increasing sequence of consecutive integers.
+
+Examples
+
+Input
+
+7
+3 3 4 7 5 6 8
+
+
+Output
+
+4
+2 3 5 6 
+
+
+Input
+
+6
+1 3 5 2 4 6
+
+
+Output
+
+2
+1 4 
+
+
+Input
+
+4
+10 9 8 7
+
+
+Output
+
+1
+1 
+
+
+Input
+
+9
+6 7 8 3 4 5 9 10 11
+
+
+Output
+
+6
+1 2 3 7 8 9 
+
+Note
+
+All valid answers for the first example (as sequences of indices): 
+
+  * [1, 3, 5, 6] 
+  * [2, 3, 5, 6] 
+
+
+
+All valid answers for the second example: 
+
+  * [1, 4] 
+  * [2, 5] 
+  * [3, 6] 
+
+
+
+All valid answers for the third example: 
+
+  * [1] 
+  * [2] 
+  * [3] 
+  * [4] 
+
+
+
+All valid answers for the fourth example: 
+
+  * [1, 2, 3, 7, 8, 9] 
+Difficulty: 12
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+void printReverse(int u, vector<int> &tr) {
+  if (u == -1) {
+    return;
+  }
+  printReverse(tr[u] - 1, tr);
+  cout << u + 1 << ' ';
+}
+int main() {
+  ios_base::sync_with_stdio(0);
+  int n;
+  cin >> n;
+  vector<int> a(n), tr(n);
+  pair<int, int> mx = {0, 0};
+  for (int i = 0; i < n; ++i) {
+    cin >> a[i];
+  }
+  map<int, pair<int, int> > f;
+  for (int i = 0; i < n; ++i) {
+    if (!f.count(a[i] - 1)) {
+      if (!f.count(a[i])) {
+        f[a[i]] = {1, i};
+      }
+    } else if (!f.count(a[i]) || f[a[i]].first < f[a[i] - 1].first + 1) {
+      f[a[i]] = {f[a[i] - 1].first + 1, i};
+      tr[i] = f[a[i] - 1].second + 1;
+    }
+    if (mx.first < f[a[i]].first) {
+      mx = {f[a[i]].first, i};
+    }
+  }
+  cout << mx.first << '\n';
+  printReverse(mx.second, tr);
+}
+
+
+Similar question 2 (Similarity score: 0.70):
+Name: 1365_E. Maximum Subsequence Value
+Tags: ['brute force', 'constructive algorithms']
+Description: Ridhiman challenged Ashish to find the maximum valued subsequence of an array a of size n consisting of positive integers. 
+
+The value of a non-empty subsequence of k elements of a is defined as ∑ 2^i over all integers i ≥ 0 such that at least max(1, k - 2) elements of the subsequence have the i-th bit set in their binary representation (value x has the i-th bit set in its binary representation if ⌊ (x)/(2^i) ⌋ mod 2 is equal to 1). 
+
+Recall that b is a subsequence of a, if b can be obtained by deleting some(possibly zero) elements from a.
+
+Help Ashish find the maximum value he can get by choosing some subsequence of a.
+
+Input
+
+The first line of the input consists of a single integer n (1 ≤ n ≤ 500) — the size of a.
+
+The next line consists of n space-separated integers — the elements of the array (1 ≤ a_i ≤ 10^{18}).
+
+Output
+
+Print a single integer — the maximum value Ashish can get by choosing some subsequence of a.
+
+Examples
+
+Input
+
+
+3
+2 1 3
+
+
+Output
+
+
+3
+
+Input
+
+
+3
+3 1 4
+
+
+Output
+
+
+7
+
+Input
+
+
+1
+1
+
+
+Output
+
+
+1
+
+Input
+
+
+4
+7 7 1 1
+
+
+Output
+
+
+7
+
+Note
+
+For the first test case, Ashish can pick the subsequence \{{2, 3}\} of size 2. The binary representation of 2 is 10 and that of 3 is 11. Since max(k - 2, 1) is equal to 1, the value of the subsequence is 2^0 + 2^1 (both 2 and 3 have 1-st bit set in their binary representation and 3 has 0-th bit set in its binary representation). Note that he could also pick the subsequence \{{3\}} or \{{2, 1, 3\}}.
+
+For the second test case, Ashish can pick the subsequence \{{3, 4\}} with value 7.
+
+For the third test case, Ashish can pick the subsequence \{{1\}} with value 1.
+
+For the fourth test case, Ashish can pick the subsequence \{{7, 7\}} with value 7.
+Difficulty: 11
+Solutions: import java.io.*;
+import java.util.*;
+import java.math.*;
+
+public class E {
+    static final boolean RUN_TIMING = false;
+    static char[] inputBuffer = new char[1024];
+    static PushbackReader in = new PushbackReader(new BufferedReader(new InputStreamReader(System.in)), 1024);
+    static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+
+    public void go() throws IOException {
+        // in = new PushbackReader(new BufferedReader(new FileReader(new File("test.txt"))), 1024);
+        // out = new PrintWriter(new FileWriter(new File("output.txt")));
+        int n = ipar();
+        long[] arr = lapar(n);
+        // int max = 0;
+        // for (int x : arr) {
+        //     max = Math.max(max, Integer.highestOneBit(x));
+        // }
+        // ArrayList<Integer> listHigh = new ArrayList<>();
+        // ArrayList<Integer> listLow = new ArrayList<>();
+        // for (int x : arr) {
+        //     if (Integer.highestOneBit(x) == max) {
+        //         listHigh.add(x);
+        //     } else {
+        //         listLow.add(x);
+        //     }
+        // }
+        // Collections.sort(listHigh);
+        // Collections.sort(listLow);
+        // max = 0;
+        // HashSet<Integer> take = new HashSet<>();
+        // int one = 0, two = 0, three = 0;
+        // for (int i = 0; i < listHigh.size(); i++) {
+        //     for (int e = 0; e <= i; e++) {
+        //         three |= two & listHigh.get(e);
+        //         two |= one & listHigh.get(e);
+        //         one |= listHigh.get(e);
+        //     }
+        // }
+        long max = 0;
+        for (int i = 0; i < n; i++) {
+            max = Math.max(max, arr[i]);
+            for (int e = i+1; e < n; e++) {
+                max = Math.max(max, arr[i] | arr[e]);
+                for (int w = e+1; w < n; w++) {
+                    max = Math.max(arr[i] | arr[e] | arr[w], max);
+                }
+            }
+        }
+        out.println(max);
+    }
+
+    public int ipar() throws IOException {
+        return Integer.parseInt(spar());
+    }
+
+    public int[] iapar(int n) throws IOException {
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = ipar();
+        }
+        return arr;
+    }
+
+    public long lpar() throws IOException {
+        return Long.parseLong(spar());
+    }
+
+    public long[] lapar(int n) throws IOException {
+        long[] arr = new long[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = lpar();
+        }
+        return arr;
+    }
+
+    public double dpar() throws IOException {
+        return Double.parseDouble(spar());
+    }
+
+    public String spar() throws IOException {
+        int len = 0;
+        int c;
+        do {
+            c = in.read();
+        } while (Character.isWhitespace(c) && c != -1);
+        if (c == -1) {
+            throw new NoSuchElementException("Reached EOF");
+        }
+        do {
+            inputBuffer[len] = (char)c;
+            len++;
+            c = in.read();
+        } while (!Character.isWhitespace(c) && c != -1);
+        while (c != '\n' && Character.isWhitespace(c) && c != -1) {
+            c = in.read();
+        }
+        if (c != -1 && c != '\n') {
+            in.unread(c);
+        }
+        return new String(inputBuffer, 0, len);
+    }
+
+    public String linepar() throws IOException {
+        int len = 0;
+        int c;
+        while ((c = in.read()) != '\n' && c != -1) {
+            if (c == '\r') {
+                continue;
+            }
+            inputBuffer[len] = (char)c;
+            len++;
+        }
+        return new String(inputBuffer, 0, len);
+    }
+
+    public boolean haspar() throws IOException {
+        String line = linepar();
+        if (line.isEmpty()) {
+            return false;
+        }
+        in.unread('\n');
+        in.unread(line.toCharArray());
+        return true;
+    }
+
+    public static void main(String[] args) throws IOException {
+        long time = 0;
+        time -= System.nanoTime();
+        new E().go();
+        time += System.nanoTime();
+        if (RUN_TIMING) {
+            System.out.printf("%.3f ms%n", time / 1000000.0);
+        }
+        out.flush();
+        in.close();
+    }
+}
+
+
+Similar question 3 (Similarity score: 0.70):
+Name: 1272_D. Remove One Element
+Tags: ['brute force', 'dp']
+Description: You are given an array a consisting of n integers.
+
+You can remove at most one element from this array. Thus, the final length of the array is n-1 or n.
+
+Your task is to calculate the maximum possible length of the strictly increasing contiguous subarray of the remaining array.
+
+Recall that the contiguous subarray a with indices from l to r is a[l ... r] = a_l, a_{l + 1}, ..., a_r. The subarray a[l ... r] is called strictly increasing if a_l < a_{l+1} < ... < a_r.
+
+Input
+
+The first line of the input contains one integer n (2 ≤ n ≤ 2 ⋅ 10^5) — the number of elements in a.
+
+The second line of the input contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^9), where a_i is the i-th element of a.
+
+Output
+
+Print one integer — the maximum possible length of the strictly increasing contiguous subarray of the array a after removing at most one element.
+
+Examples
+
+Input
+
+
+5
+1 2 5 3 4
+
+
+Output
+
+
+4
+
+
+Input
+
+
+2
+1 2
+
+
+Output
+
+
+2
+
+
+Input
+
+
+7
+6 5 4 3 2 4 3
+
+
+Output
+
+
+2
+
+Note
+
+In the first example, you can delete a_3=5. Then the resulting array will be equal to [1, 2, 3, 4] and the length of its largest increasing subarray will be equal to 4.
+Difficulty: 10
+Solutions: # ------------------- fast io --------------------
+import os
+import sys
+from io import BytesIO, IOBase
+ 
+BUFSIZE = 8192
+ 
+class FastIO(IOBase):
+    newlines = 0
+    def __init__(self, file):
+        self._fd = file.fileno()
+        self.buffer = BytesIO()
+        self.writable = "x" in file.mode or "r" not in file.mode
+        self.write = self.buffer.write if self.writable else None
+ 
+    def read(self):
+        while True:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            if not b:
+                break
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines = 0
+        return self.buffer.read()
+ 
+    def readline(self):
+        while self.newlines == 0:
+            b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))
+            self.newlines = b.count(b"\n") + (not b)
+            ptr = self.buffer.tell()
+            self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)
+        self.newlines -= 1
+        return self.buffer.readline()
+ 
+    def flush(self):
+        if self.writable:
+            os.write(self._fd, self.buffer.getvalue())
+            self.buffer.truncate(0), self.buffer.seek(0)
+ 
+ 
+class IOWrapper(IOBase):
+    def __init__(self, file):
+        self.buffer = FastIO(file)
+        self.flush = self.buffer.flush
+        self.writable = self.buffer.writable
+        self.write = lambda s: self.buffer.write(s.encode("ascii"))
+        self.read = lambda: self.buffer.read().decode("ascii")
+        self.readline = lambda: self.buffer.readline().decode("ascii")
+ 
+ 
+sys.stdin, sys.stdout = IOWrapper(sys.stdin), IOWrapper(sys.stdout)
+input = lambda: sys.stdin.readline().rstrip("\r\n")
+ 
+# ------------------- fast io --------------------
+
+n=int(input())
+vals=list(map(int,input().split()))
+#find the continous increasing
+chain=1
+chains=[]
+left=0
+right=0
+for s in range(1,n):
+    if vals[s]>vals[s-1]:
+        chain+=1
+        right=s
+    else:
+        if chain>=1:
+            chains.append((left,right))
+        left=s
+        right=s
+        chain=1
+if len(chains)>0:
+    if chains[-1][1]!=n-1:
+        chains.append((left,right))
+else:
+    chains.append((left,right))
+#then we loop throughthe chains
+length=0
+if len(chains)>=2:
+    for s in range(len(chains)):
+        int1=chains[s]
+        #we need to look at
+        need=int1[0]-2
+        if need>=0:
+            int2=chains[s-1]
+            if int2[0]<=need and need<=int2[1]:
+                if vals[need]<vals[int1[0]]:
+                    d1=(int1[1]+1-int1[0])+(need+1-int2[0])
+                    if d1>length:
+                        length=d1
+                else:
+                    d1=int1[1]+1-int1[0]
+                    if d1>length:
+                        length=d1
+            else:
+                int3=chains[s-2]
+                if int3[0]<=need and need<=int3[1]:
+                    if vals[need]<vals[int1[0]]:
+                        d1=(int1[1]+1-int1[0])+(need+1-int3[0])
+                        if d1>length:
+                            length=d1
+                    else:
+                        d1=int1[1]+1-int1[0]
+                        if d1>length:
+                            length=d1
+                else:
+                    d1=int1[1]+1-int1[0]
+                    if d1>length:
+                        length=d1
+        else:
+            d1=int1[1]+1-int1[0]
+            if d1>length:
+                length=d1
+        need1=int1[1]+2
+        if need1<=len(vals)-1:
+            int2=chains[s+1]
+            if int2[0]<=need1 and need1<=int2[1]:
+                if vals[int1[1]]<vals[need1]:
+                    d1=(int2[1]+1-need1)+(int1[1]+1-int1[0])
+                    if d1>length:
+                        length=d1
+                else:
+                    d1=int1[1]+1-int1[0]
+                    if d1>length:
+                        length=d1
+            else:
+                int3=chains[s+2]
+                if int3[0]<=need1 and need1<=int3[1]:
+                    if vals[int1[1]]<vals[need1]:
+                        d1=(int3[1]+1-need1)+(int1[1]+1-int1[0])
+                        if d1>length:
+                            length=d1
+                    else:
+                        d1=int1[1]+1-int1[0]
+                        if d1>length:
+                            length=d1
+                else:
+                    d1=int1[1]+1-int1[0]
+                    if d1>length:
+                        length=d1
+        else:
+            d1=int1[1]+1-int1[0]
+            if d1>length:
+                length=d1
+            
+else:
+    length=chains[0][1]+1-chains[0][0]
+print(length)
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

@@ -1,0 +1,259 @@
+CURRENT QUESTION:
+For two positive integers l and r (l ≤ r) let c(l, r) denote the number of integer pairs (i, j) such that l ≤ i ≤ j ≤ r and \operatorname{gcd}(i, j) ≥ l. Here, \operatorname{gcd}(i, j) is the [greatest common divisor (GCD)](https://en.wikipedia.org/wiki/Greatest_common_divisor) of integers i and j.
+
+YouKn0wWho has two integers n and k where 1 ≤ k ≤ n. Let f(n, k) denote the minimum of ∑_{i=1}^{k}{c(x_i+1,x_{i+1})} over all integer sequences 0=x_1 < x_2 < … < x_{k} < x_{k+1}=n.
+
+Help YouKn0wWho find f(n, k). 
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 3 ⋅ 10^5) — the number of test cases.
+
+The first and only line of each test case contains two integers n and k (1 ≤ k ≤ n ≤ 10^5). 
+
+Output
+
+For each test case, print a single integer — f(n, k).
+
+Example
+
+Input
+
+
+4
+6 2
+4 4
+3 1
+10 3
+
+
+Output
+
+
+8
+4
+6
+11
+
+Note
+
+In the first test case, YouKn0wWho can select the sequence [0, 2, 6]. So f(6, 2) = c(1, 2) + c(3, 6) = 3 + 5 = 8 which is the minimum possible.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.74):
+Name: 1370_A. Maximum GCD
+Tags: ['greedy', 'implementation', 'math', 'number theory']
+Description: Let's consider all integers in the range from 1 to n (inclusive).
+
+Among all pairs of distinct integers in this range, find the maximum possible greatest common divisor of integers in pair. Formally, find the maximum value of gcd(a, b), where 1 ≤ a < b ≤ n.
+
+The greatest common divisor, gcd(a, b), of two positive integers a and b is the biggest integer that is a divisor of both a and b.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 100) — the number of test cases. The description of the test cases follows.
+
+The only line of each test case contains a single integer n (2 ≤ n ≤ 10^6).
+
+Output
+
+For each test case, output the maximum value of gcd(a, b) among all 1 ≤ a < b ≤ n.
+
+Example
+
+Input
+
+
+2
+3
+5
+
+
+Output
+
+
+1
+2
+
+Note
+
+In the first test case, gcd(1, 2) = gcd(2, 3) = gcd(1, 3) = 1.
+
+In the second test case, 2 is the maximum possible value, corresponding to gcd(2, 4).
+Difficulty: 7
+Solutions: n = int(input())
+for i in range(n):
+    print(int(input())//2)
+
+Similar question 2 (Similarity score: 0.74):
+Name: generating-sequence-5
+Tags: []
+Description: You are given a number g. Find a sequence A of length n which satisfies the following condition: 
+
+GCD ( A0, A1, A2, .... ,Ai, ..... ,An-1 ) = g.
+
+Ai > g,  ∀ 0 ≤ i < n.
+
+Ai ≥ Aj, ∀ j ≤ i
+
+Define a function, *sum(A) = A0 + A1 + .... + An-1. 
+If multiple sequences satisfy first three properties, print the one which minimizes sum(A) function.*INPUT
+
+The first line will contain T, the number of test cases. Next T lines follow. The i^th line will contain two space separated integers, g and n, for the i^th test case.
+
+OUTPUT
+
+For each test case, print a line containing n space separated integers of sequence A.
+
+CONSTRAINTS
+
+1 ≤ T ≤ 1000 
+1 ≤ g ≤ 10^14
+2 ≤ n ≤ 1000
+
+SAMPLE INPUT
+1
+1 2
+
+SAMPLE OUTPUT
+2 3
+Difficulty: 0
+Solutions: '''
+# Read input from stdin and provide input before running code
+
+name = raw_input('What is your name?\n')
+print 'Hi, %s.' % name
+'''
+#print 'Hello World!'
+T = input()
+for i in range(T):
+	[g,n] = map(int,raw_input().split())
+	if g!=0:
+		for i in range(n-1):
+			print g*2,
+		print g*3
+
+Similar question 3 (Similarity score: 0.72):
+Name: 1538_C. Number of Pairs
+Tags: ['binary search', 'data structures', 'math', 'two pointers']
+Description: You are given an array a of n integers. Find the number of pairs (i, j) (1 ≤ i < j ≤ n) where the sum of a_i + a_j is greater than or equal to l and less than or equal to r (that is, l ≤ a_i + a_j ≤ r).
+
+For example, if n = 3, a = [5, 1, 2], l = 4 and r = 7, then two pairs are suitable: 
+
+  * i=1 and j=2 (4 ≤ 5 + 1 ≤ 7); 
+  * i=1 and j=3 (4 ≤ 5 + 2 ≤ 7). 
+
+Input
+
+The first line contains an integer t (1 ≤ t ≤ 10^4). Then t test cases follow.
+
+The first line of each test case contains three integers n, l, r (1 ≤ n ≤ 2 ⋅ 10^5, 1 ≤ l ≤ r ≤ 10^9) — the length of the array and the limits on the sum in the pair.
+
+The second line contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 10^9).
+
+It is guaranteed that the sum of n overall test cases does not exceed 2 ⋅ 10^5.
+
+Output
+
+For each test case, output a single integer — the number of index pairs (i, j) (i < j), such that l ≤ a_i + a_j ≤ r.
+
+Example
+
+Input
+
+
+4
+3 4 7
+5 1 2
+5 5 8
+5 1 2 4 3
+4 100 1000
+1 1 1 1
+5 9 13
+2 5 5 1 1
+
+
+Output
+
+
+2
+7
+0
+1
+Difficulty: 9
+Solutions: # Author: Javier Bórquez
+
+import os
+import sys
+import bisect
+
+def main():
+  fastReadInt = sys.stdin.buffer.readline
+  def fastReadStr(): return sys.stdin.buffer.readline().decode('utf-8').strip()
+  def fastWrite(ans): return sys.stdout.buffer.write(str(str(ans) + "\n").encode('utf-8'))
+  def fastWriteList(ans): return sys.stdout.buffer.write(str(" ".join(map(str, ans)) + "\n").encode('utf-8'))
+
+  DEBUG = 'DEBUG' in os.environ
+  def debug(*args):
+    if DEBUG:
+      print(">", *args)
+
+  def find_le(a, x):
+      'Find rightmost value less than or equal to x'
+      i = bisect.bisect_right(a, x)
+      if i:
+          return i - 1
+      return -1
+
+  def find_ge(a, x):
+      'Find leftmost item greater than or equal to x'
+      i = bisect.bisect_left(a, x)
+      if i != len(a):
+          return i
+      return -1
+
+  def solution(n, l, r, value):
+    debug("")
+    value.sort()
+    debug(n, l, r, value)
+
+
+    res = 0
+
+    for ni in range(0, len(value)):
+      n = value[ni]
+
+      upper = find_le(value, r - n)
+      lower = find_ge(value, l - n)
+
+      if upper != -1 and lower != -1:
+        debug(ni, [lower, upper])
+        res += upper - lower + 1
+        if ni >= lower and ni <= upper:
+          res -= 1
+
+    fastWrite(res // 2)
+
+  # N lines, then N int
+  for t in range(int(fastReadInt())):
+    nlr = list(map(int, fastReadInt().split()))
+    n = nlr[0]
+    l = nlr[1]
+    r = nlr[2]
+    solution(n, l, r, list(map(int, fastReadInt().split())))
+
+main()
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

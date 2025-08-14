@@ -1,0 +1,348 @@
+CURRENT QUESTION:
+There is a grid, consisting of n rows and m columns. Each cell of the grid is either free or blocked. One of the free cells contains a lab. All the cells beyond the borders of the grid are also blocked.
+
+A crazy robot has escaped from this lab. It is currently in some free cell of the grid. You can send one of the following commands to the robot: "move right", "move down", "move left" or "move up". Each command means moving to a neighbouring cell in the corresponding direction.
+
+However, as the robot is crazy, it will do anything except following the command. Upon receiving a command, it will choose a direction such that it differs from the one in command and the cell in that direction is not blocked. If there is such a direction, then it will move to a neighbouring cell in that direction. Otherwise, it will do nothing.
+
+We want to get the robot to the lab to get it fixed. For each free cell, determine if the robot can be forced to reach the lab starting in this cell. That is, after each step of the robot a command can be sent to a robot such that no matter what different directions the robot chooses, it will end up in a lab.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of testcases.
+
+The first line of each testcase contains two integers n and m (1 ≤ n, m ≤ 10^6; n ⋅ m ≤ 10^6) — the number of rows and the number of columns in the grid.
+
+The i-th of the next n lines provides a description of the i-th row of the grid. It consists of m elements of one of three types: 
+
+  * '.' — the cell is free; 
+  * '#' — the cell is blocked; 
+  * 'L' — the cell contains a lab. 
+
+
+
+The grid contains exactly one lab. The sum of n ⋅ m over all testcases doesn't exceed 10^6.
+
+Output
+
+For each testcase find the free cells that the robot can be forced to reach the lab from. Given the grid, replace the free cells (marked with a dot) with a plus sign ('+') for the cells that the robot can be forced to reach the lab from. Print the resulting grid.
+
+Example
+
+Input
+
+
+4
+3 3
+...
+.L.
+...
+4 5
+#....
+..##L
+...#.
+.....
+1 1
+L
+1 9
+....L..#.
+
+
+Output
+
+
+...
+.L.
+...
+#++++
+..##L
+...#+
+...++
+L
+++++L++#.
+
+Note
+
+In the first testcase there is no free cell that the robot can be forced to reach the lab from. Consider a corner cell. Given any direction, it will move to a neighbouring border grid that's not a corner. Now consider a non-corner free cell. No matter what direction you send to the robot, it can choose a different direction such that it ends up in a corner.
+
+In the last testcase, you can keep sending the command that is opposite to the direction to the lab and the robot will have no choice other than move towards the lab.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 1071_C. Triple Flips
+Tags: ['constructive algorithms']
+Description: You are given an array a of length n that consists of zeros and ones.
+
+You can perform the following operation multiple times. The operation consists of two steps: 
+
+  1. Choose three integers 1 ≤ x < y < z ≤ n, that form an arithmetic progression (y - x = z - y). 
+  2. Flip the values a_x, a_y, a_z (i.e. change 1 to 0, change 0 to 1). 
+
+
+
+Determine if it is possible to make all elements of the array equal to zero. If yes, print the operations that lead the the all-zero state. Your solution should not contain more than (⌊ n/3 ⌋ + 12) operations. Here ⌊ q ⌋ denotes the number q rounded down. We can show that it is possible to make all elements equal to zero in no more than this number of operations whenever it is possible to do so at all.
+
+Input
+
+The first line contains a single integer n (3 ≤ n ≤ 10^5) — the length of the array.
+
+The second line contains n integers a_1, a_2, …, a_n (0 ≤ a_i ≤ 1) — the elements of the array.
+
+Output
+
+Print "YES" (without quotes) if the answer exists, otherwise print "NO" (without quotes). You can print each letter in any case (upper or lower).
+
+If there is an answer, in the second line print an integer m (0 ≤ m ≤ (⌊ n/3 ⌋ + 12)) — the number of operations in your answer.
+
+After that in (i + 2)-th line print the i-th operations — the integers x_i, y_i, z_i. You can print them in arbitrary order.
+
+Examples
+
+Input
+
+5
+1 1 0 1 1
+
+
+Output
+
+YES
+2
+1 3 5
+2 3 4
+
+
+Input
+
+3
+0 1 0
+
+
+Output
+
+NO
+
+Note
+
+In the first sample the shown output corresponds to the following solution: 
+
+  * 1 1 0 1 1 (initial state); 
+  * 0 1 1 1 0 (the flipped positions are the first, the third and the fifth elements); 
+  * 0 0 0 0 0 (the flipped positions are the second, the third and the fourth elements). 
+
+
+
+Other answers are also possible. In this test the number of operations should not exceed ⌊ 5/3 ⌋ + 12 = 1 + 12 = 13.
+
+In the second sample the only available operation is to flip all the elements. This way it is only possible to obtain the arrays 0 1 0 and 1 0 1, but it is impossible to make all elements equal to zero.
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int maxn = 100010;
+int n;
+int a[maxn];
+struct Ans {
+  int x, y, z;
+} ans[maxn];
+int nnm;
+int que[maxn];
+void fan(int x, int y, int z) {
+  if (x > z) swap(x, z);
+  nnm++;
+  ans[nnm].x = x;
+  ans[nnm].y = y;
+  ans[nnm].z = z;
+  a[x] ^= 1;
+  a[y] ^= 1;
+  a[z] ^= 1;
+}
+int main() {
+  scanf("%d", &n);
+  for (int i = 1; i <= n; i++) scanf("%d", &a[i]);
+  int l = 1, r = n;
+  int op = 0;
+  while (r - l + 1 > 6) {
+    if (op == 0) {
+      while (l <= r && a[l] == 0) l++;
+      if (r - l + 1 <= 6) break;
+      if (a[l + 1] == 1 && a[l + 2] == 1)
+        fan(l, l + 1, l + 2);
+      else if (a[l + 1] == 1 && a[l + 2] == 0)
+        op = 1;
+      else if (a[l + 1] == 0 && a[l + 2] == 1)
+        fan(l, l + 2, l + 4);
+      else if (a[l + 1] == 0 && a[l + 2] == 0)
+        fan(l, l + 3, l + 6);
+      continue;
+    } else {
+      while (l <= r && a[r] == 0) r--;
+      if (r - l + 1 <= 6) break;
+      if (a[r - 1] == 1 && a[r - 2] == 1)
+        fan(r - 2, r - 1, r);
+      else if (a[r - 1] == 1 && a[r - 2] == 0) {
+        if ((l + r) & 1) {
+          fan(l, (l + r - 1) / 2, r - 1);
+          fan(l + 1, (l + r + 1) / 2, r);
+        } else {
+          fan(l, (l + r) / 2, r);
+          fan(l + 1, (l + r) / 2, r - 1);
+        }
+        op = 0;
+      } else if (a[r - 1] == 0 && a[r - 2] == 1)
+        fan(r - 4, r - 2, r);
+      else if (a[r - 1] == 0 && a[r - 2] == 0)
+        fan(r - 6, r - 3, r);
+    }
+  }
+  if (l <= r) {
+    int cnt = 0;
+    for (int i = l; i <= r; i++) que[++cnt] = a[i];
+    for (int i = cnt + 1; i <= 6; i++) que[i] = 0;
+    cnt = 6;
+    for (int i = 6; i >= 4; i--)
+      if (que[i] == 1) {
+        fan(l + i - 3, l + i - 2, l + i - 1);
+        que[i] ^= 1;
+        que[i - 1] ^= 1;
+        que[i - 2] ^= 1;
+      }
+    int sum = 0;
+    for (int i = 1; i <= 3; i++) sum += que[i];
+    if (sum >= 2) {
+      fan(l, l + 1, l + 2);
+      que[1] ^= 1;
+      que[2] ^= 1;
+      que[3] ^= 1;
+    }
+    if (sum != 3 && sum != 0) {
+      int pos;
+      for (int i = 1; i <= 3; i++)
+        if (que[i] == 1) pos = i;
+      pos = pos + l - 1;
+      int tl = pos - 1;
+      int tr = n - pos;
+      if (tl == 2 && tr == 5) {
+        fan(pos - 2, pos + 1, pos + 4);
+        fan(pos - 1, pos + 2, pos + 5);
+        fan(pos - 2, pos - 1, pos);
+        fan(pos + 1, pos + 2, pos + 3);
+        fan(pos + 3, pos + 4, pos + 5);
+      } else if (tl == 5 && tr == 2) {
+        fan(pos + 2, pos - 1, pos - 4);
+        fan(pos + 1, pos - 2, pos - 5);
+        fan(pos + 2, pos + 1, pos);
+        fan(pos - 1, pos - 2, pos - 3);
+        fan(pos - 3, pos - 4, pos - 5);
+      } else {
+        if (tr >= 6) {
+          fan(pos, pos + 1, pos + 2);
+          fan(pos + 1, pos + 2, pos + 3);
+          tr -= 3;
+          tl += 3;
+          pos += 3;
+        } else if (tl >= 6) {
+          fan(pos - 2, pos - 1, pos);
+          fan(pos - 3, pos - 2, pos - 1);
+          tl -= 3, tr += 3;
+          pos -= 3;
+        }
+        if (tl >= 3 && tr >= 3) {
+          fan(pos - 1, pos, pos + 1);
+          fan(pos - 3, pos - 2, pos - 1);
+          fan(pos + 3, pos + 2, pos + 1);
+          fan(pos - 3, pos, pos + 3);
+          fan(pos - 2, pos, pos + 2);
+        }
+      }
+    }
+  }
+  for (int i = 1; i <= n; i++)
+    if (a[i] == 1) {
+      printf("NO\n");
+      return 0;
+    }
+  printf("YES\n");
+  printf("%d\n", nnm);
+  for (int i = 1; i <= nnm; i++)
+    printf("%d %d %d\n", ans[i].x, ans[i].y, ans[i].z);
+  return 0;
+}
+
+
+Example question 2:
+Name: 340_C. Tourist Problem
+Tags: ['combinatorics', 'implementation', 'math']
+Description: Iahub is a big fan of tourists. He wants to become a tourist himself, so he planned a trip. There are n destinations on a straight road that Iahub wants to visit. Iahub starts the excursion from kilometer 0. The n destinations are described by a non-negative integers sequence a1, a2, ..., an. The number ak represents that the kth destination is at distance ak kilometers from the starting point. No two destinations are located in the same place. 
+
+Iahub wants to visit each destination only once. Note that, crossing through a destination is not considered visiting, unless Iahub explicitly wants to visit it at that point. Also, after Iahub visits his last destination, he doesn't come back to kilometer 0, as he stops his trip at the last destination. 
+
+The distance between destination located at kilometer x and next destination, located at kilometer y, is |x - y| kilometers. We call a "route" an order of visiting the destinations. Iahub can visit destinations in any order he wants, as long as he visits all n destinations and he doesn't visit a destination more than once. 
+
+Iahub starts writing out on a paper all possible routes and for each of them, he notes the total distance he would walk. He's interested in the average number of kilometers he would walk by choosing a route. As he got bored of writing out all the routes, he asks you to help him.
+
+Input
+
+The first line contains integer n (2 ≤ n ≤ 105). Next line contains n distinct integers a1, a2, ..., an (1 ≤ ai ≤ 107).
+
+Output
+
+Output two integers — the numerator and denominator of a fraction which is equal to the wanted average number. The fraction must be irreducible.
+
+Examples
+
+Input
+
+3
+2 3 5
+
+
+Output
+
+22 3
+
+Note
+
+Consider 6 possible routes:
+
+  * [2, 3, 5]: total distance traveled: |2 – 0| + |3 – 2| + |5 – 3| = 5; 
+  * [2, 5, 3]: |2 – 0| + |5 – 2| + |3 – 5| = 7; 
+  * [3, 2, 5]: |3 – 0| + |2 – 3| + |5 – 2| = 7; 
+  * [3, 5, 2]: |3 – 0| + |5 – 3| + |2 – 5| = 8; 
+  * [5, 2, 3]: |5 – 0| + |2 – 5| + |3 – 2| = 9; 
+  * [5, 3, 2]: |5 – 0| + |3 – 5| + |2 – 3| = 8. 
+
+
+
+The average travel distance is <image> = <image> = <image>.
+Difficulty: 9
+Solutions: import math 
+n = int(input())
+l = [int(x) for x in input().split()]
+a1 = sum(l)
+a2 = n
+a3 = 0
+temp = 0
+l.sort()
+for i in range(n):
+    temp += l[n-i-1] 
+    a3-=(a1-temp)
+    a3+=(n-i-1)*(l[n-i-1])
+
+a1 = a1+a3+a3
+a4 = math.gcd(a1, a2)
+print(a1//a4, a2//a4)
+
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

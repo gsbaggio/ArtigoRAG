@@ -1,0 +1,336 @@
+CURRENT QUESTION:
+There are three sticks with integer lengths l_1, l_2 and l_3.
+
+You are asked to break exactly one of them into two pieces in such a way that: 
+
+  * both pieces have positive (strictly greater than 0) integer length; 
+  * the total length of the pieces is equal to the original length of the stick; 
+  * it's possible to construct a rectangle from the resulting four sticks such that each stick is used as exactly one of its sides. 
+
+
+
+A square is also considered a rectangle.
+
+Determine if it's possible to do that.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 10^4) — the number of testcases.
+
+The only line of each testcase contains three integers l_1, l_2, l_3 (1 ≤ l_i ≤ 10^8) — the lengths of the sticks.
+
+Output
+
+For each testcase, print "YES" if it's possible to break one of the sticks into two pieces with positive integer length in such a way that it's possible to construct a rectangle from the resulting four sticks. Otherwise, print "NO".
+
+You may print every letter in any case you want (so, for example, the strings yEs, yes, Yes and YES are all recognized as a positive answer).
+
+Example
+
+Input
+
+
+4
+6 1 5
+2 5 2
+2 4 2
+5 5 4
+
+
+Output
+
+
+YES
+NO
+YES
+YES
+
+Note
+
+In the first testcase, the first stick can be broken into parts of length 1 and 5. We can construct a rectangle with opposite sides of length 1 and 5.
+
+In the second testcase, breaking the stick of length 2 can only result in sticks of lengths 1, 1, 2, 5, which can't be made into a rectangle. Breaking the stick of length 5 can produce results 2, 3 or 1, 4 but neither of them can't be put into a rectangle.
+
+In the third testcase, the second stick can be broken into parts of length 2 and 2. The resulting rectangle has opposite sides 2 and 2 (which is a square).
+
+In the fourth testcase, the third stick can be broken into parts of length 2 and 2. The resulting rectangle has opposite sides 2 and 5.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.77):
+Name: 1027_C. Minimum Value Rectangle
+Tags: ['greedy']
+Description: You have n sticks of the given lengths.
+
+Your task is to choose exactly four of them in such a way that they can form a rectangle. No sticks can be cut to pieces, each side of the rectangle must be formed by a single stick. No stick can be chosen multiple times. It is guaranteed that it is always possible to choose such sticks.
+
+Let S be the area of the rectangle and P be the perimeter of the rectangle. 
+
+The chosen rectangle should have the value (P^2)/(S) minimal possible. The value is taken without any rounding.
+
+If there are multiple answers, print any of them.
+
+Each testcase contains several lists of sticks, for each of them you are required to solve the problem separately.
+
+Input
+
+The first line contains a single integer T (T ≥ 1) — the number of lists of sticks in the testcase.
+
+Then 2T lines follow — lines (2i - 1) and 2i of them describe the i-th list. The first line of the pair contains a single integer n (4 ≤ n ≤ 10^6) — the number of sticks in the i-th list. The second line of the pair contains n integers a_1, a_2, ..., a_n (1 ≤ a_j ≤ 10^4) — lengths of the sticks in the i-th list.
+
+It is guaranteed that for each list there exists a way to choose four sticks so that they form a rectangle.
+
+The total number of sticks in all T lists doesn't exceed 10^6 in each testcase.
+
+Output
+
+Print T lines. The i-th line should contain the answer to the i-th list of the input. That is the lengths of the four sticks you choose from the i-th list, so that they form a rectangle and the value (P^2)/(S) of this rectangle is minimal possible. You can print these four lengths in arbitrary order.
+
+If there are multiple answers, print any of them.
+
+Example
+
+Input
+
+3
+4
+7 2 2 7
+8
+2 8 1 4 8 2 1 5
+5
+5 5 5 5 5
+
+
+Output
+
+2 7 7 2
+2 2 1 1
+5 5 5 5
+
+Note
+
+There is only one way to choose four sticks in the first list, they form a rectangle with sides 2 and 7, its area is 2 ⋅ 7 = 14, perimeter is 2(2 + 7) = 18. (18^2)/(14) ≈ 23.143.
+
+The second list contains subsets of four sticks that can form rectangles with sides (1, 2), (2, 8) and (1, 8). Their values are (6^2)/(2) = 18, (20^2)/(16) = 25 and (18^2)/(8) = 40.5, respectively. The minimal one of them is the rectangle (1, 2).
+
+You can choose any four of the 5 given sticks from the third list, they will form a square with side 5, which is still a rectangle with sides (5, 5).
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+map<int, int> freq;
+map<int, int>::iterator it, it2;
+int f[10100], val[10100];
+int main() {
+  double melhorV, l1, l2, p, s;
+  int v, noCases, ans1, n, ans2, po, a1, a2, d, melhorD, fra1, fra2;
+  scanf("%d", &noCases);
+  while (noCases--) {
+    freq.clear();
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) {
+      scanf("%d", &v);
+      if (freq.count(v) == 0)
+        freq[v] = 1;
+      else
+        freq[v]++;
+    }
+    po = 0;
+    for (it = freq.begin(); it != freq.end(); ++it) {
+      a1 = (*it).first;
+      fra1 = (*it).second;
+      if (fra1 > 1) {
+        val[po] = a1;
+        f[po++] = fra1;
+      }
+    }
+    melhorV = 2e9;
+    melhorD = 2e9;
+    ans1 = ans2 = -1;
+    for (int i = 0; i < po; i++) {
+      a1 = val[i];
+      fra1 = f[i];
+      if (fra1 >= 4) {
+        ans1 = a1;
+        ans2 = a1;
+        break;
+      }
+      if (i == po - 1) break;
+      a2 = val[i + 1];
+      fra2 = f[i + 1];
+      if (fra2 >= 4) {
+        ans1 = a2;
+        ans2 = a2;
+        break;
+      }
+      if (fra1 >= 2 and fra2 >= 2) {
+        l1 = a1;
+        l2 = a2;
+        p = l1 * 2 + l2 * 2;
+        p *= p;
+        s = l1 * l2;
+        p /= s;
+        if (p < melhorV) {
+          melhorV = p;
+          ans1 = a1;
+          ans2 = a2;
+        }
+      }
+    }
+    assert(ans1 != -1 and ans2 != -1);
+    printf("%d %d %d %d\n", ans1, ans1, ans2, ans2);
+  }
+  return 0;
+}
+
+
+Similar question 2 (Similarity score: 0.71):
+Name: 1371_A. Magical Sticks
+Tags: ['math']
+Description: A penguin Rocher has n sticks. He has exactly one stick with length i for all 1 ≤ i ≤ n.
+
+He can connect some sticks. If he connects two sticks that have lengths a and b, he gets one stick with length a + b. Two sticks, that were used in the operation disappear from his set and the new connected stick appears in his set and can be used for the next connections.
+
+He wants to create the maximum number of sticks that have the same length. It is not necessary to make all sticks have the same length, some sticks can have the other length. How many sticks with the equal length he can create?
+
+Input
+
+The input consists of multiple test cases. The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of test cases. Next t lines contain descriptions of test cases.
+
+For each test case, the only line contains a single integer n (1 ≤ n ≤ 10^{9}).
+
+Output
+
+For each test case, print a single integer — the answer to the problem.
+
+Example
+
+Input
+
+
+4
+1
+2
+3
+4
+
+
+Output
+
+
+1
+1
+2
+2
+
+Note
+
+In the third case, he can connect two sticks with lengths 1 and 2 and he will get one stick with length 3. So, he will have two sticks with lengths 3.
+
+In the fourth case, he can connect two sticks with lengths 1 and 3 and he will get one stick with length 4. After that, he will have three sticks with lengths \{2, 4, 4\}, so two sticks have the same length, and one stick has the other length.
+Difficulty: 7
+Solutions: for _ in range(int(input())):
+	n=int(input())
+	print(max(1,n//2 + int(n%2)))
+
+Similar question 3 (Similarity score: 0.70):
+Name: sticks
+Tags: []
+Description: Chef and his little brother are playing with sticks. They have total N sticks. Length of i-th stick is Ai. 
+Chef asks his brother to choose any four sticks and to make a rectangle with those sticks its sides. Chef warns his brother to not to break any of the sticks, he has to use sticks as a whole. Also, he wants that the rectangle formed should have the maximum possible area among all the rectangles that Chef's brother can make. 
+
+
+Chef's little brother takes this challenge up and overcomes it. Can you also do so? That is, you have to tell whether it is even possible to create a rectangle? If yes, then you have to tell the maximum possible area of rectangle.
+
+
+Input
+The first line contains a single integer T denoting the number of test-cases. T test cases follow.
+The first line of each test case contains a single integer N denoting the number of sticks.
+The second line of each test case contains N space-separated integers A1, A2, ..., AN denoting the lengths of sticks.
+
+Output
+For each test case, output a single line containing an integer representing the maximum possible area for rectangle or -1 if it's impossible to form any rectangle using the available sticks.
+
+Constraints
+
+1 ≤ T ≤ 100
+1 ≤ N ≤ 10^3
+1 ≤ sum of N's over all test-cases in a single test file ≤ 10^3
+1 ≤ Ai ≤ 10^3
+
+
+Example
+Input:
+2
+5
+1 2 3 1 2
+4
+1 2 2 3
+
+Output:
+2
+-1
+
+
+Explanation
+Example case 1. Chef's brother can choose sticks of lengths 1, 2, 1, 2. He can create a rectangle with area 1 * 2 = 2.
+Example case 2. It's impossible to choose 4 sticks so that they form a rectangle.
+Difficulty: 1
+Solutions: import sys
+T=int(raw_input())
+
+for i in range(T):
+	n=int(raw_input())
+	a=raw_input().split()
+	a=[int(x) for x in a]
+	a.sort()
+	b=tuple(a)
+	if n<=3:
+		print "-1"
+		continue
+	A=0
+	B=0
+	C=0
+	D=0
+	possible1=False
+	possible2=False
+	next=0
+	for j in range(n+1):
+		if j==n:
+			break
+		A=b[-j]
+		B=b[-(j+1)]
+		if A==B:
+			next=j+1
+			possible1=True
+			break
+
+	if possible1==False:
+		print "-1"
+		continue
+
+	for j in range(next+1,n+1):
+		if j==n:
+			break
+		C=b[-j]
+		D=b[-(j+1)]
+		if C==D:
+			possible2=True
+			break
+
+	if possible2==False:
+		print "-1"
+		continue
+
+	print A*D
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

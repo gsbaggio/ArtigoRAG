@@ -1,0 +1,318 @@
+CURRENT QUESTION:
+You are given two positive integers x and y. You can perform the following operation with x: write it in its binary form without leading zeros, add 0 or 1 to the right of it, reverse the binary form and turn it into a decimal number which is assigned as the new value of x.
+
+For example: 
+
+  * 34 can be turned into 81 via one operation: the binary form of 34 is 100010, if you add 1, reverse it and remove leading zeros, you will get 1010001, which is the binary form of 81. 
+  * 34 can be turned into 17 via one operation: the binary form of 34 is 100010, if you add 0, reverse it and remove leading zeros, you will get 10001, which is the binary form of 17. 
+  * 81 can be turned into 69 via one operation: the binary form of 81 is 1010001, if you add 0, reverse it and remove leading zeros, you will get 1000101, which is the binary form of 69. 
+  * 34 can be turned into 69 via two operations: first you turn 34 into 81 and then 81 into 69. 
+
+
+
+Your task is to find out whether x can be turned into y after a certain number of operations (possibly zero).
+
+Input
+
+The only line of the input contains two integers x and y (1 ≤ x, y ≤ 10^{18}).
+
+Output
+
+Print YES if you can make x equal to y and NO if you can't.
+
+Examples
+
+Input
+
+
+3 3
+
+
+Output
+
+
+YES
+
+
+Input
+
+
+7 4
+
+
+Output
+
+
+NO
+
+
+Input
+
+
+2 8
+
+
+Output
+
+
+NO
+
+
+Input
+
+
+34 69
+
+
+Output
+
+
+YES
+
+
+Input
+
+
+8935891487501725 71487131900013807
+
+
+Output
+
+
+YES
+
+Note
+
+In the first example, you don't even need to do anything.
+
+The fourth example is described in the statement.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 572_D. Minimization
+Tags: ['dp', 'greedy', 'sortings']
+Description: You've got array A, consisting of n integers and a positive integer k. Array A is indexed by integers from 1 to n.
+
+You need to permute the array elements so that value 
+
+<image> became minimal possible. In particular, it is allowed not to change order of elements at all.
+
+Input
+
+The first line contains two integers n, k (2 ≤ n ≤ 3·105, 1 ≤ k ≤ min(5000, n - 1)). 
+
+The second line contains n integers A[1], A[2], ..., A[n] ( - 109 ≤ A[i] ≤ 109), separate by spaces — elements of the array A.
+
+Output
+
+Print the minimum possible value of the sum described in the statement.
+
+Examples
+
+Input
+
+3 2
+1 2 4
+
+
+Output
+
+1
+
+
+Input
+
+5 2
+3 -5 3 -5 3
+
+
+Output
+
+0
+
+
+Input
+
+6 3
+4 3 4 3 2 5
+
+
+Output
+
+3
+
+Note
+
+In the first test one of the optimal permutations is 1 4 2. 
+
+In the second test the initial order is optimal. 
+
+In the third test one of the optimal permutations is 2 3 4 4 3 5.
+Difficulty: 10
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int N = 3e5 + 5;
+const long long INF = 1e18;
+const int MOD = 1e9 + 7;
+const double eps = 1e-4;
+int n, k;
+long long dp[5005][5005], a[N];
+int main() {
+  scanf("%d%d", &n, &k);
+  for (int i = 1; i <= n; i++) scanf("%I64d", &a[i]);
+  sort(a + 1, a + 1 + n);
+  for (int i = 0; i <= k; i++)
+    for (int j = 0; j <= k; j++) dp[i][j] = INF;
+  dp[0][0] = 0;
+  for (int i = 0; i <= (k - n % k); i++)
+    for (int j = 0; j <= n % k; j++)
+      if (i || j) {
+        int num = i * (n / k) + j * (n / k + 1);
+        if (i)
+          dp[i][j] = min(dp[i][j], dp[i - 1][j] + a[num] - a[num - n / k + 1]);
+        if (j) dp[i][j] = min(dp[i][j], dp[i][j - 1] + a[num] - a[num - n / k]);
+      }
+  cout << dp[k - (n % k)][n % k];
+  return 0;
+}
+
+
+Example question 2:
+Name: 1088_E. Ehab and a component choosing problem
+Tags: ['dp', 'greedy', 'math', 'trees']
+Description: You're given a tree consisting of n nodes. Every node u has a weight a_u. You want to choose an integer k (1 ≤ k ≤ n) and then choose k connected components of nodes that don't overlap (i.e every node is in at most 1 component). Let the set of nodes you chose be s. You want to maximize:
+
+$$$\frac{∑_{u ∈ s} a_u}{k}$$$
+
+In other words, you want to maximize the sum of weights of nodes in s divided by the number of connected components you chose. Also, if there are several solutions, you want to maximize k.
+
+Note that adjacent nodes can belong to different components. Refer to the third sample.
+
+Input
+
+The first line contains the integer n (1 ≤ n ≤ 3 ⋅ 10^5), the number of nodes in the tree.
+
+The second line contains n space-separated integers a_1, a_2, ..., a_n (|a_i| ≤ 10^9), the weights of the nodes.
+
+The next n-1 lines, each contains 2 space-separated integers u and v (1 ≤ u,v ≤ n) which means there's an edge between u and v.
+
+Output
+
+Print the answer as a non-reduced fraction represented by 2 space-separated integers. The fraction itself should be maximized and if there are several possible ways, you should maximize the denominator. See the samples for a better understanding.
+
+Examples
+
+Input
+
+
+3
+1 2 3
+1 2
+1 3
+
+
+Output
+
+
+6 1
+
+Input
+
+
+1
+-2
+
+
+Output
+
+
+-2 1
+
+Input
+
+
+3
+-1 -1 -1
+1 2
+2 3
+
+
+Output
+
+
+-3 3
+
+Input
+
+
+3
+-1 -2 -1
+1 2
+1 3
+
+
+Output
+
+
+-2 2
+
+Note
+
+A connected component is a set of nodes such that for any node in the set, you can reach all other nodes in the set passing only nodes in the set.
+
+In the first sample, it's optimal to choose the whole tree.
+
+In the second sample, you only have one choice (to choose node 1) because you can't choose 0 components.
+
+In the third sample, notice that we could've, for example, chosen only node 1, or node 1 and node 3, or even the whole tree, and the fraction would've had the same value (-1), but we want to maximize k. 
+
+In the fourth sample, we'll just choose nodes 1 and 3.
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int maxn = 3e5 + 10;
+vector<int> G[maxn];
+int a[maxn];
+long long mx = -1e18, cnt, dp[maxn];
+void dfs(int v, int fa, int flag) {
+  dp[v] = a[v];
+  for (int i = G[v].size() - 1; i >= 0; i--) {
+    int to = G[v][i];
+    if (to == fa) continue;
+    dfs(to, v, flag);
+    if (dp[to] > 0) dp[v] += dp[to];
+  }
+  if (!flag)
+    mx = max(mx, dp[v]);
+  else if (dp[v] == mx)
+    cnt++, dp[v] = 0;
+}
+int main() {
+  int n;
+  scanf("%d", &n);
+  for (int i = 1; i <= n; i++) scanf("%d", &a[i]);
+  for (int i = 1; i < n; i++) {
+    int x, y;
+    scanf("%d%d", &x, &y);
+    G[x].push_back(y);
+    G[y].push_back(x);
+  }
+  dfs(1, 0, 0);
+  dfs(1, 0, 1);
+  printf("%lld %lld\n", cnt * mx, cnt);
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

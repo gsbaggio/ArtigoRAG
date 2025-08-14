@@ -1,0 +1,886 @@
+CURRENT QUESTION:
+You are given a tree consisting of n vertices. Recall that a tree is an undirected connected acyclic graph. The given tree is rooted at the vertex 1.
+
+You have to process q queries. In each query, you are given a vertex of the tree v and an integer k.
+
+To process a query, you may delete any vertices from the tree in any order, except for the root and the vertex v. When a vertex is deleted, its children become the children of its parent. You have to process a query in such a way that maximizes the value of c(v) - m ⋅ k (where c(v) is the resulting number of children of the vertex v, and m is the number of vertices you have deleted). Print the maximum possible value you can obtain.
+
+The queries are independent: the changes you make to the tree while processing a query don't affect the tree in other queries.
+
+Input
+
+The first line contains one integer n (1 ≤ n ≤ 2 ⋅ 10^5) — the number of vertices in the tree.
+
+Then n-1 lines follow, the i-th of them contains two integers x_i and y_i (1 ≤ x_i, y_i ≤ n; x_i ≠ y_i) — the endpoints of the i-th edge. These edges form a tree.
+
+The next line contains one integer q (1 ≤ q ≤ 2 ⋅ 10^5) — the number of queries.
+
+Then q lines follow, the j-th of them contains two integers v_j and k_j (1 ≤ v_j ≤ n; 0 ≤ k_j ≤ 2 ⋅ 10^5) — the parameters of the j-th query.
+
+Output
+
+For each query, print one integer — the maximum value of c(v) - m ⋅ k you can achieve.
+
+Example
+
+Input
+
+
+8
+6 7
+3 2
+8 3
+5 7
+7 4
+7 1
+7 3
+6
+1 0
+1 2
+1 3
+7 1
+5 0
+7 200000
+
+
+Output
+
+
+5
+2
+1
+4
+0
+4
+
+Note
+
+The tree in the first example is shown in the following picture:
+
+<image>
+
+Answers to the queries are obtained as follows:
+
+  1. v=1,k=0: you can delete vertices 7 and 3, so the vertex 1 has 5 children (vertices 2, 4, 5, 6, and 8), and the score is 5 - 2 ⋅ 0 = 5; 
+  2. v=1,k=2: you can delete the vertex 7, so the vertex 1 has 4 children (vertices 3, 4, 5, and 6), and the score is 4 - 1 ⋅ 2 = 2. 
+  3. v=1,k=3: you shouldn't delete any vertices, so the vertex 1 has only one child (vertex 7), and the score is 1 - 0 ⋅ 3 = 1; 
+  4. v=7,k=1: you can delete the vertex 3, so the vertex 7 has 5 children (vertices 2, 4, 5, 6, and 8), and the score is 5 - 1 ⋅ 1 = 4; 
+  5. v=5,k=0: no matter what you do, the vertex 5 will have no children, so the score is 0; 
+  6. v=7,k=200000: you shouldn't delete any vertices, so the vertex 7 has 4 children (vertices 3, 4, 5, and 6), and the score is 4 - 0 ⋅ 200000 = 4. 
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.76):
+Name: 1178_G. The Awesomest Vertex
+Tags: ['data structures', 'dfs and similar']
+Description: You are given a rooted tree on n vertices. The vertices are numbered from 1 to n; the root is the vertex number 1.
+
+Each vertex has two integers associated with it: a_i and b_i. We denote the set of all ancestors of v (including v itself) by R(v). The awesomeness of a vertex v is defined as 
+
+$$$\left| ∑_{w ∈ R(v)} a_w\right| ⋅ \left|∑_{w ∈ R(v)} b_w\right|,$$$
+
+where |x| denotes the absolute value of x. 
+
+Process q queries of one of the following forms: 
+
+  * 1 v x — increase a_v by a positive integer x. 
+  * 2 v — report the maximum awesomeness in the subtree of vertex v. 
+
+Input
+
+The first line contains two integers n and q (1 ≤ n ≤ 2⋅ 10^5, 1 ≤ q ≤ 10^5) — the number of vertices in the tree and the number of queries, respectively.
+
+The second line contains n - 1 integers p_2, p_3, ..., p_n (1 ≤ p_i < i), where p_i means that there is an edge between vertices i and p_i.
+
+The third line contains n integers a_1, a_2, ..., a_n (-5000 ≤ a_i ≤ 5000), the initial values of a_i for each vertex.
+
+The fourth line contains n integers b_1, b_2, ..., b_n (-5000 ≤ b_i ≤ 5000), the values of b_i for each vertex.
+
+Each of the next q lines describes a query. It has one of the following forms: 
+
+  * 1 v x (1 ≤ v ≤ n, 1≤ x ≤ 5000). 
+  * 2 v (1 ≤ v ≤ n). 
+
+Output
+
+For each query of the second type, print a single line with the maximum awesomeness in the respective subtree.
+
+Example
+
+Input
+
+5 6
+1 1 2 2
+10 -3 -7 -3 -10
+10 3 9 3 6
+2 1
+2 2
+1 2 6
+2 1
+1 2 5
+2 1
+
+
+Output
+
+100
+91
+169
+240
+
+Note
+
+The initial awesomeness of the vertices is [100, 91, 57, 64, 57]. The most awesome vertex in the subtree of vertex 1 (the first query) is 1, and the most awesome vertex in the subtree of vertex 2 (the second query) is 2. 
+
+After the first update (the third query), the awesomeness changes to [100, 169, 57, 160, 57] and thus the most awesome vertex in the whole tree (the fourth query) is now 2.
+
+After the second update (the fifth query), the awesomeness becomes [100, 234, 57, 240, 152], hence the most awesome vertex (the sixth query) is now 4. 
+Difficulty: 13
+Solutions: #include <bits/stdc++.h>
+#pragma comment(linker, "/stack:200000000")
+#pragma GCC optimize("Ofast,no-stack-protector,unroll-loops,fast-math")
+#pragma GCC target( \
+    "sse,sse2,sse3,ssse3,sse4.1,sse4.2,avx,avx2,popcnt,tune=native")
+using namespace std;
+const int MN = 1000005, inf = 1000000005, mod = 1000000007;
+const long long INF = 1000000000000000005LL;
+const int __BS = 4096;
+static char __bur[__BS + 16], *__er = __bur + __BS, *__ir = __er;
+template <class T = int>
+T readInt() {
+  auto c = [&]() {
+    if (__ir == __er)
+      std::fill(__bur, __bur + __BS, 0), cin.read(__bur, __BS), __ir = __bur;
+  };
+  c();
+  while (*__ir && (*__ir < '0' || *__ir > '9') && *__ir != '-') ++__ir;
+  c();
+  bool m = false;
+  if (*__ir == '-') ++__ir, c(), m = true;
+  T r = 0;
+  while (*__ir >= '0' && *__ir <= '9') r = r * 10 + *__ir - '0', ++__ir, c();
+  ++__ir;
+  return m ? -r : r;
+}
+string readString() {
+  auto c = [&]() {
+    if (__ir == __er)
+      std::fill(__bur, __bur + __BS, 0), cin.read(__bur, __BS), __ir = __bur;
+  };
+  string r;
+  c();
+  while (*__ir && isspace(*__ir)) ++__ir, c();
+  while (!isspace(*__ir)) r.push_back(*__ir), ++__ir, c();
+  ++__ir;
+  return r;
+}
+char readChar() {
+  auto c = [&]() {
+    if (__ir == __er)
+      std::fill(__bur, __bur + __BS, 0), cin.read(__bur, __BS), __ir = __bur;
+  };
+  c();
+  while (*__ir && isspace(*__ir)) ++__ir, c();
+  return *__ir++;
+}
+static char __buw[__BS + 20], *__iw = __buw, *__ew = __buw + __BS;
+template <class T>
+void writeInt(T x, char endc = '\n') {
+  if (x < 0) *__iw++ = '-', x = -x;
+  if (x == 0) *__iw++ = '0';
+  char *s = __iw;
+  while (x) {
+    T t = x / 10;
+    char c = x - 10 * t + '0';
+    *__iw++ = c;
+    x = t;
+  }
+  char *f = __iw - 1;
+  while (s < f) swap(*s, *f), ++s, --f;
+  if (__iw > __ew) cout.write(__buw, __iw - __buw), __iw = __buw;
+  if (endc) {
+    *__iw++ = endc;
+  }
+}
+template <class T>
+void writeStr(const T &str) {
+  int i = 0;
+  while (str[i]) {
+    *__iw++ = str[i++];
+    if (__iw > __ew) cout.write(__buw, __iw - __buw), __iw = __buw;
+  }
+}
+struct __FL__ {
+  ~__FL__() {
+    if (__iw != __buw) cout.write(__buw, __iw - __buw);
+  }
+};
+static __FL__ __flushVar__;
+inline int mo(int &a) { return (a > 0 ? a : -a); }
+int pocz[MN], kon[MN], A[MN], B[MN], sa[MN], sb[MN];
+vector<int> G[MN];
+int czas;
+void dfs(int x, int a, int b) {
+  pocz[x] = ++czas;
+  kon[x] = pocz[x];
+  a += A[x];
+  b += B[x];
+  sa[pocz[x]] = a, sb[pocz[x]] = b;
+  for (auto v : G[x])
+    if (!pocz[v]) {
+      dfs(v, a, b);
+      kon[x] = kon[v];
+    }
+}
+void add(int *t, int n, int x) {
+  for (int i = 0; i < n; ++i) t[i] += x;
+}
+long long ask(int *t, int *u, int n) {
+  long long ans1 = 0LL, ans2 = 0LL;
+  for (int i = 0; i < n; ++i) {
+    long long r = t[i] * 1LL * u[i];
+    ans1 = ans1 < r ? r : ans1;
+    ans2 = ans2 > r ? r : ans2;
+  }
+  return max(ans1, -ans2);
+}
+int main() {
+  int n, q;
+  n = readInt();
+  q = readInt();
+  for (int i = 2; i <= n; ++i) {
+    int p;
+    p = readInt();
+    G[p].push_back(i);
+  }
+  for (int i = 1; i <= n; ++i) A[i] = readInt();
+  for (int i = 1; i <= n; ++i) B[i] = readInt();
+  dfs(1, 0, 0);
+  while (q--) {
+    int typ, v, x, a, b;
+    typ = readInt();
+    if (typ == 1) {
+      v = readInt();
+      x = readInt();
+      a = pocz[v], b = kon[v];
+      add(sa + a, b - a + 1, x);
+    } else {
+      v = readInt();
+      a = pocz[v], b = kon[v];
+      long long ans = ask(sa + a, sb + a, b - a + 1);
+      writeInt(ans);
+    }
+  }
+}
+
+
+Similar question 2 (Similarity score: 0.75):
+Name: 1416_D. Graph and Queries
+Tags: ['data structures', 'dsu', 'graphs', 'implementation', 'trees']
+Description: You are given an undirected graph consisting of n vertices and m edges. Initially there is a single integer written on every vertex: the vertex i has p_i written on it. All p_i are distinct integers from 1 to n.
+
+You have to process q queries of two types:
+
+  * 1 v — among all vertices reachable from the vertex v using the edges of the graph (including the vertex v itself), find a vertex u with the largest number p_u written on it, print p_u and replace p_u with 0; 
+  * 2 i — delete the i-th edge from the graph. 
+
+
+
+Note that, in a query of the first type, it is possible that all vertices reachable from v have 0 written on them. In this case, u is not explicitly defined, but since the selection of u does not affect anything, you can choose any vertex reachable from v and print its value (which is 0). 
+
+Input
+
+The first line contains three integers n, m and q (1 ≤ n ≤ 2 ⋅ 10^5; 1 ≤ m ≤ 3 ⋅ 10^5; 1 ≤ q ≤ 5 ⋅ 10^5).
+
+The second line contains n distinct integers p_1, p_2, ..., p_n, where p_i is the number initially written on vertex i (1 ≤ p_i ≤ n).
+
+Then m lines follow, the i-th of them contains two integers a_i and b_i (1 ≤ a_i, b_i ≤ n, a_i ≠ b_i) and means that the i-th edge connects vertices a_i and b_i. It is guaranteed that the graph does not contain multi-edges.
+
+Then q lines follow, which describe the queries. Each line is given by one of the following formats:
+
+  * 1 v — denotes a query of the first type with a vertex v (1 ≤ v ≤ n). 
+  * 2 i — denotes a query of the second type with an edge i (1 ≤ i ≤ m). For each query of the second type, it is guaranteed that the corresponding edge is not deleted from the graph yet. 
+
+Output
+
+For every query of the first type, print the value of p_u written on the chosen vertex u.
+
+Example
+
+Input
+
+
+5 4 6
+1 2 5 4 3
+1 2
+2 3
+1 3
+4 5
+1 1
+2 1
+2 3
+1 1
+1 2
+1 2
+
+
+Output
+
+
+5
+1
+2
+0
+Difficulty: 10
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int val[200005];
+pair<int, int> e[300005];
+bool del[300005];
+int qT[500005], qV[500005];
+int color[200005];
+inline int repr(int x) {
+  return color[x] == x ? x : (color[x] = repr(color[x]));
+}
+vector<int> f[200005];
+pair<int, int> op[500005];
+inline void join(int x, int y, int ind) {
+  x = repr(x);
+  y = repr(y);
+  if (x != y) {
+    if (f[x].size() < f[y].size()) swap(x, y);
+    f[x].insert(f[x].end(), f[y].begin(), f[y].end());
+    color[y] = x;
+    if (ind != -1) {
+      op[ind] = {x, y};
+    }
+  }
+}
+int root[200005];
+set<pair<int, int>> ff[200005];
+int main() {
+  int n, m, q;
+  scanf("%d%d%d", &n, &m, &q);
+  for (int i = 0; i < n; ++i) cin >> val[i];
+  for (int i = 0; i < m; ++i) {
+    scanf("%d%d", &e[i].first, &e[i].second);
+    e[i].first--;
+    e[i].second--;
+  }
+  for (int i = 0; i < q; ++i) {
+    scanf("%d%d", &qT[i], &qV[i]), qV[i]--;
+    if (qT[i] == 2) del[qV[i]] = true;
+  }
+  for (int i = 0; i < n; ++i) {
+    color[i] = i;
+    f[i].push_back(i);
+  }
+  for (int i = 0; i < m; ++i) {
+    if (del[i]) continue;
+    join(e[i].first, e[i].second, -1);
+  }
+  for (int i = q - 1; i >= 0; --i) {
+    if (qT[i] == 2) {
+      join(e[qV[i]].first, e[qV[i]].second, i);
+    }
+  }
+  for (int i = 0; i < n; ++i) {
+    ff[repr(i)].insert({-val[i], i});
+    root[i] = repr(i);
+  }
+  for (int i = 0; i < q; ++i) {
+    if (qT[i] == 1) {
+      int p = root[qV[i]];
+      if (ff[p].size() > 0) {
+        printf("%d\n", -ff[p].begin()->first);
+        val[ff[p].begin()->second] = 0;
+        ff[p].erase(ff[p].begin());
+      } else {
+        puts("0");
+      }
+    } else if (op[i].first != op[i].second) {
+      for (int t : f[op[i].second]) {
+        root[t] = op[i].second;
+        if (val[t] > 0) {
+          ff[op[i].first].erase({-val[t], t});
+          ff[op[i].second].insert({-val[t], t});
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+
+Similar question 3 (Similarity score: 0.75):
+Name: 1417_F. Graph and Queries
+Tags: ['data structures', 'dsu', 'graphs', 'implementation', 'trees']
+Description: You are given an undirected graph consisting of n vertices and m edges. Initially there is a single integer written on every vertex: the vertex i has p_i written on it. All p_i are distinct integers from 1 to n.
+
+You have to process q queries of two types:
+
+  * 1 v — among all vertices reachable from the vertex v using the edges of the graph (including the vertex v itself), find a vertex u with the largest number p_u written on it, print p_u and replace p_u with 0; 
+  * 2 i — delete the i-th edge from the graph. 
+
+
+
+Note that, in a query of the first type, it is possible that all vertices reachable from v have 0 written on them. In this case, u is not explicitly defined, but since the selection of u does not affect anything, you can choose any vertex reachable from v and print its value (which is 0). 
+
+Input
+
+The first line contains three integers n, m and q (1 ≤ n ≤ 2 ⋅ 10^5; 1 ≤ m ≤ 3 ⋅ 10^5; 1 ≤ q ≤ 5 ⋅ 10^5).
+
+The second line contains n distinct integers p_1, p_2, ..., p_n, where p_i is the number initially written on vertex i (1 ≤ p_i ≤ n).
+
+Then m lines follow, the i-th of them contains two integers a_i and b_i (1 ≤ a_i, b_i ≤ n, a_i ≠ b_i) and means that the i-th edge connects vertices a_i and b_i. It is guaranteed that the graph does not contain multi-edges.
+
+Then q lines follow, which describe the queries. Each line is given by one of the following formats:
+
+  * 1 v — denotes a query of the first type with a vertex v (1 ≤ v ≤ n). 
+  * 2 i — denotes a query of the second type with an edge i (1 ≤ i ≤ m). For each query of the second type, it is guaranteed that the corresponding edge is not deleted from the graph yet. 
+
+Output
+
+For every query of the first type, print the value of p_u written on the chosen vertex u.
+
+Example
+
+Input
+
+
+5 4 6
+1 2 5 4 3
+1 2
+2 3
+1 3
+4 5
+1 1
+2 1
+2 3
+1 1
+1 2
+1 2
+
+
+Output
+
+
+5
+1
+2
+0
+Difficulty: 12
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+using LL = long long;
+using LD = long double;
+using PII = pair<int, int>;
+using PLL = pair<LL, LL>;
+using PLD = pair<LD, LD>;
+using VI = vector<int>;
+using VLL = vector<LL>;
+using VLD = vector<LD>;
+using VPII = vector<PII>;
+using VPLL = vector<PLL>;
+using VPLD = vector<PLD>;
+using VVI = vector<VI>;
+const int inf = 1e9 + 7;
+const int MOD = 998244353;
+const LL INF = 1e18 + 7;
+const long double PI = acos(-1);
+const LD EPS = 1e-9;
+namespace input {
+template <class T>
+istream& operator>>(istream& st, vector<T>& container) {
+  for (auto& u : container) st >> u;
+  return st;
+}
+template <class T, size_t N>
+istream& operator>>(istream& st, array<T, N>& container) {
+  for (auto& u : container) st >> u;
+  return st;
+}
+template <class T, class U>
+istream& operator>>(istream& st, pair<T, U>& p) {
+  st >> p.first >> p.second;
+  return st;
+}
+void re() {}
+template <typename T, typename... TArgs>
+void re(T& x, TArgs&... rest) {
+  cin >> x;
+  re(rest...);
+}
+}  // namespace input
+using namespace input;
+namespace output {
+template <class T>
+ostream& operator<<(ostream& st, const vector<T>& container) {
+  for (auto& u : container) st << u << ' ';
+  return st;
+}
+template <class T, size_t N>
+ostream& operator<<(ostream& st, const array<T, N>& container) {
+  for (auto& u : container) st << u << ' ';
+  return st;
+}
+template <class T, class U>
+ostream& operator<<(ostream& st, pair<T, U> p) {
+  st << p.first << ' ' << p.second;
+  return st;
+}
+void pr() {}
+template <typename T>
+void pr(const T& x) {
+  cout << x;
+}
+template <typename T, typename... TArgs>
+void pr(const T& x, const TArgs&... rest) {
+  cout << x << ' ';
+  pr(rest...);
+}
+template <typename... TArgs>
+void prln(const TArgs&... args) {
+  pr(args...);
+  cout << '\n';
+}
+}  // namespace output
+using namespace output;
+namespace pairs {
+template <class T, class U, class V>
+pair<T, U> operator*(pair<T, U> p, V val) {
+  return {p.first * val, p.second * val};
+}
+template <class T, class U, class V>
+pair<T, U> operator/(pair<T, U> p, V val) {
+  return {p.first / val, p.second / val};
+}
+template <class T, class U>
+pair<T, U> operator-(pair<T, U> a, pair<T, U> b) {
+  return {a.first - b.first, a.second - b.second};
+}
+template <class T, class U>
+pair<T, U> operator+(pair<T, U> a, pair<T, U> b) {
+  return {a.first + b.first, a.second + b.second};
+}
+}  // namespace pairs
+using namespace pairs;
+namespace triples {
+template <class T1, class T2, class T3>
+struct triple {
+  T1 x;
+  T2 y;
+  T3 z;
+  triple() : x(T1()), y(T2()), z(T3()){};
+  triple(T1 _x, T2 _y, T3 _z) : x(_x), y(_y), z(_z) {}
+};
+template <class T1, class T2, class T3>
+bool operator<(const triple<T1, T2, T3>& t1, const triple<T1, T2, T3>& t2) {
+  if (t1.x != t2.x) return t1.x < t2.x;
+  if (t1.y != t2.y)
+    return t1.y < t2.y;
+  else
+    return t1.z < t2.z;
+}
+template <class T1, class T2, class T3>
+bool operator>(const triple<T1, T2, T3>& t1, const triple<T1, T2, T3>& t2) {
+  if (t1.x != t2.x) return t1.x > t2.x;
+  if (t1.y != t2.y)
+    return t1.y > t2.y;
+  else
+    return t1.z > t2.z;
+}
+template <class T1, class T2, class T3>
+bool operator==(const triple<T1, T2, T3>& t1, const triple<T1, T2, T3>& t2) {
+  return (t1.x == t2.x && t1.y == t2.y && t1.z == t2.z);
+}
+template <class T1, class T2, class T3>
+inline istream& operator>>(istream& os, triple<T1, T2, T3>& t) {
+  return os >> t.x >> t.y >> t.y;
+}
+template <class T1, class T2, class T3>
+ostream& operator<<(ostream& os, const triple<T1, T2, T3>& t) {
+  return os << t.x << " " << t.y << " " << t.z;
+}
+template <class T1, class T2, class T3>
+triple<T1, T2, T3> operator+(triple<T1, T2, T3> a, triple<T1, T2, T3> b) {
+  return {a.x + b.x, a.y + b.y, a.z + b.z};
+}
+template <class T1, class T2, class T3>
+triple<T1, T2, T3> operator-(triple<T1, T2, T3> a, triple<T1, T2, T3> b) {
+  return {a.x - b.x, a.y - b.y, a.z - b.z};
+}
+template <class T1, class T2, class T3, class T4>
+triple<T1, T2, T3> operator*(triple<T1, T2, T3> a, T4 val) {
+  return {a.x * val, a.y * val, a.z * val};
+}
+template <class T1, class T2, class T3, class T4>
+triple<T1, T2, T3> operator/(triple<T1, T2, T3> a, T4 val) {
+  return {a.x / val, a.y / val, a.z / val};
+}
+using TRII = triple<int, int, int>;
+using TRLL = triple<LL, LL, LL>;
+using TRLD = triple<LD, LD, LD>;
+using VTRII = vector<TRII>;
+using VTRLL = vector<TRLL>;
+using VTRLD = vector<TRLD>;
+}  // namespace triples
+using namespace triples;
+namespace geo {
+template <class T>
+T dotProduct(pair<T, T> a, pair<T, T> b) {
+  return a.first * b.first + a.second * b.second;
+}
+template <class T>
+T crossProduct(pair<T, T> a, pair<T, T> b) {
+  return a.first * b.second - a.second * b.first;
+}
+template <class T>
+T lengthPow(pair<T, T> a) {
+  return a.first * 1ll * a.first + a.second * 1ll * a.second;
+}
+template <class T>
+LD length(pair<T, T> a) {
+  return sqrt(lengthPow(a));
+}
+template <class T>
+T dotProduct(triple<T, T, T> a, triple<T, T, T> b) {
+  return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+template <class T>
+T crossProduct(triple<T, T, T> a, triple<T, T, T> b) {
+  return {a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
+}
+template <class T>
+T lengthPow(triple<T, T, T> a) {
+  return a.x * 1ll * a.x + a.y * 1ll * a.y + a.z * 1ll * a.z;
+}
+template <class T>
+LD length(triple<T, T, T> a) {
+  return sqrt(lengthPow(a));
+}
+}  // namespace geo
+using namespace geo;
+template <class T>
+T invGeneral(T a, T b) {
+  a %= b;
+  if (a == 0) return b == 1 ? 0 : -1;
+  T x = invGeneral(b, a);
+  return x == -1 ? -1 : ((1 - (LL)b * x) / a + b) % b;
+}
+template <class T>
+struct modular {
+  T val;
+  explicit operator T() const { return val; }
+  modular() { val = 0; }
+  modular(const LL& v) {
+    val = (-MOD <= v && v <= MOD) ? v : v % MOD;
+    if (val < 0) val += MOD;
+  }
+  friend ostream& operator<<(ostream& os, const modular& a) {
+    return os << a.val;
+  }
+  friend void pr(const modular& a) { pr(a.val); }
+  friend void re(modular& a) {
+    LL x;
+    re(x);
+    a = modular(x);
+  }
+  friend bool operator==(const modular& a, const modular& b) {
+    return a.val == b.val;
+  }
+  friend bool operator!=(const modular& a, const modular& b) {
+    return !(a == b);
+  }
+  friend bool operator<(const modular& a, const modular& b) {
+    return a.val < b.val;
+  }
+  modular operator-() const { return modular(-val); }
+  modular& operator+=(const modular& m) {
+    if ((val += m.val) >= MOD) val -= MOD;
+    return *this;
+  }
+  modular& operator-=(const modular& m) {
+    if ((val -= m.val) < 0) val += MOD;
+    return *this;
+  }
+  modular& operator*=(const modular& m) {
+    val = (LL)val * m.val % MOD;
+    return *this;
+  }
+  friend modular pow(modular a, LL p) {
+    modular ans = 1;
+    for (; p; p /= 2, a *= a)
+      if (p & 1) ans *= a;
+    return ans;
+  }
+  friend modular inv(const modular& a) {
+    auto i = invGeneral(a.val, MOD);
+    assert(i != -1);
+    return i;
+  }
+  modular& operator/=(const modular& m) { return (*this) *= inv(m); }
+  friend modular operator+(modular a, const modular& b) { return a += b; }
+  friend modular operator-(modular a, const modular& b) { return a -= b; }
+  friend modular operator*(modular a, const modular& b) { return a *= b; }
+  friend modular operator/(modular a, const modular& b) { return a /= b; }
+};
+using MI = modular<int>;
+using PMI = pair<MI, MI>;
+using VMI = vector<MI>;
+using VPMI = vector<PMI>;
+namespace debug {
+template <typename _T>
+inline void _debug(const char* s, _T x) {
+  cerr << s << " = " << x << "\n";
+}
+template <typename _T, typename... args>
+void _debug(const char* s, _T x, args... a) {
+  while (*s != ',') cerr << *s++;
+  cerr << " = " << x << ',';
+  _debug(s + 1, a...);
+}
+}  // namespace debug
+using namespace debug;
+template <class T>
+bool setMax(T& v, T newV) {
+  if (v < newV) {
+    v = newV;
+    return true;
+  }
+  return false;
+}
+template <class T>
+bool setMin(T& v, T newV) {
+  if (v > newV) {
+    v = newV;
+    return true;
+  }
+  return false;
+}
+const int N = 5e5 + 7;
+namespace DSU {
+int tab[N];
+int sz[N];
+VI members[N];
+void init(int n) {
+  for (int i = (0); (1) > 0 ? i < (n) : i >= (n); i += (1)) {
+    sz[i] = 1;
+    tab[i] = i;
+    members[i] = {i};
+  }
+}
+int Find(int a) {
+  if (tab[a] != a) tab[a] = Find(tab[a]);
+  return tab[a];
+}
+void Union(int a, int b) {
+  a = Find(a);
+  b = Find(b);
+  if (a == b) return;
+  if (sz[a] < sz[b]) swap(a, b);
+  tab[b] = a;
+  sz[a] += sz[b];
+  members[a].insert(members[a].end(), begin((members[b])), end((members[b])));
+}
+}  // namespace DSU
+int val[N];
+bool validEdge[N];
+bool ok[N];
+VI ids[N];
+PII queries[N];
+int setID[N];
+set<int, greater<int>> sety[2 * N];
+void solve() {
+  int n, m, q;
+  re(n, m, q);
+  VPII kra;
+  VI edgeQue;
+  DSU::init(n);
+  for (int i = (0); (1) > 0 ? i < (n) : i >= (n); i += (1)) {
+    re(val[i]);
+  }
+  for (int i = (0); (1) > 0 ? i < (m) : i >= (m); i += (1)) validEdge[i] = 1;
+  for (int i = (0); (1) > 0 ? i < (m) : i >= (m); i += (1)) {
+    int a, b;
+    re(a, b);
+    --a, --b;
+    kra.push_back({a, b});
+  }
+  for (int i = (0); (1) > 0 ? i < (q) : i >= (q); i += (1)) {
+    int t, a;
+    re(t, a);
+    --a;
+    queries[i] = {t, a};
+    if (t == 2) {
+      validEdge[a] = false;
+      edgeQue.push_back(a);
+    }
+  }
+  reverse(begin((edgeQue)), end((edgeQue)));
+  for (int i = (0); (1) > 0 ? i < (m) : i >= (m); i += (1)) {
+    if (not validEdge[i]) continue;
+    DSU::Union(kra[i].first, kra[i].second);
+  }
+  for (const auto& edgeID : edgeQue) {
+    auto a = DSU::Find(kra[edgeID].first);
+    auto b = DSU::Find(kra[edgeID].second);
+    if (a == b) continue;
+    if (DSU::sz[a] > DSU::sz[b]) swap(a, b);
+    ids[edgeID] = DSU::members[a];
+    DSU::Union(a, b);
+  }
+  int cnt = 0;
+  map<int, int> iddd;
+  for (int i = (0); (1) > 0 ? i < (n) : i >= (n); i += (1)) {
+    int a = DSU::Find(i);
+    if (iddd.count(a) == 0) iddd[a] = ++cnt;
+    setID[i] = iddd[a];
+    sety[setID[i]].insert(val[i]);
+  }
+  for (int i = (0); (1) > 0 ? i < (q) : i >= (q); i += (1)) {
+    auto [t, a] = queries[i];
+    if (t == 1) {
+      auto& set = sety[setID[a]];
+      if (set.empty()) {
+        prln(0);
+        continue;
+      }
+      prln(*set.begin());
+      set.erase(set.begin());
+    } else {
+      ++cnt;
+      auto& setOld = sety[setID[kra[a].first]];
+      auto& setNew = sety[cnt];
+      for (auto u : ids[a]) {
+        setID[u] = cnt;
+        if (setOld.erase(val[u])) setNew.insert(val[u]);
+      }
+    }
+  }
+}
+int main() {
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  ;
+  cout << fixed << setprecision(13);
+  int t = 1;
+  for (int i = 1; i <= t; ++i) {
+    solve();
+  }
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

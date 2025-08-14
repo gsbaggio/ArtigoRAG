@@ -1,0 +1,620 @@
+CURRENT QUESTION:
+You are given an undirected graph of N nodes and M edges, E_1, E_2, ... E_M.
+
+A connected graph is a cactus if each of it's edges belogs to at most one simple cycle. A graph is a desert if each of it's connected components is a cactus. 
+
+Find the number of pairs (L, R), (1 ≤ L ≤ R ≤ M) such that, if we delete all the edges except for E_L, E_{L+1}, ... E_R, the graph is a desert. 
+
+Input
+
+The first line contains two integers N and M (2 ≤ N ≤ 2.5 × 10^5, 1 ≤ M ≤ 5 × 10^5). Each of the next M lines contains two integers. The i-th line describes the i-th edge. It contains integers U_i and V_i, the nodes connected by the i-th edge (E_i=(U_i, V_i)). It is guaranteed that 1 ≤ U_i, V_i ≤ N and U_i ≠ V_i. 
+
+Output
+
+The output contains one integer number – the answer.
+
+Examples
+
+Input
+
+
+5 6
+1 2
+2 3
+3 4
+4 5
+5 1
+2 4
+
+
+Output
+
+
+20
+
+Input
+
+
+2 3
+1 2
+1 2
+1 2
+
+
+Output
+
+
+5
+
+Note
+
+In the second example: Graphs for pairs (1, 1), (2, 2) and (3, 3) are deserts because they don't have any cycles. Graphs for pairs (1, 2) and (2, 3) have one cycle of length 2 so they are deserts.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 1045_H. Self-exploration
+Tags: ['math']
+Description: Being bored of exploring the Moon over and over again Wall-B decided to explore something he is made of — binary numbers. He took a binary number and decided to count how many times different substrings of length two appeared. He stored those values in c_{00}, c_{01}, c_{10} and c_{11}, representing how many times substrings 00, 01, 10 and 11 appear in the number respectively. For example:
+
+10111100 → c_{00} = 1, \ c_{01} = 1,\ c_{10} = 2,\ c_{11} = 3
+
+10000 → c_{00} = 3,\ c_{01} = 0,\ c_{10} = 1,\ c_{11} = 0
+
+10101001 → c_{00} = 1,\ c_{01} = 3,\ c_{10} = 3,\ c_{11} = 0
+
+1 → c_{00} = 0,\ c_{01} = 0,\ c_{10} = 0,\ c_{11} = 0
+
+Wall-B noticed that there can be multiple binary numbers satisfying the same c_{00}, c_{01}, c_{10} and c_{11} constraints. Because of that he wanted to count how many binary numbers satisfy the constraints c_{xy} given the interval [A, B]. Unfortunately, his processing power wasn't strong enough to handle large intervals he was curious about. Can you help him? Since this number can be large print it modulo 10^9 + 7.
+
+Input
+
+First two lines contain two positive binary numbers A and B (1 ≤ A ≤ B < 2^{100 000}), representing the start and the end of the interval respectively. Binary numbers A and B have no leading zeroes.
+
+Next four lines contain decimal numbers c_{00}, c_{01}, c_{10} and c_{11} (0 ≤ c_{00}, c_{01}, c_{10}, c_{11} ≤ 100 000) representing the count of two-digit substrings 00, 01, 10 and 11 respectively. 
+
+Output
+
+Output one integer number representing how many binary numbers in the interval [A, B] satisfy the constraints mod 10^9 + 7.
+
+Examples
+
+Input
+
+10
+1001
+0
+0
+1
+1
+
+
+Output
+
+1
+
+
+Input
+
+10
+10001
+1
+2
+3
+4
+
+
+Output
+
+0
+
+Note
+
+Example 1: The binary numbers in the interval [10,1001] are 10,11,100,101,110,111,1000,1001. Only number 110 satisfies the constraints: c_{00} = 0, c_{01} = 0, c_{10} = 1, c_{11} = 1.
+
+Example 2: No number in the interval satisfies the constraints
+Difficulty: 14
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int MaxN(100003);
+const int Mod(1e9 + 7);
+int fac[MaxN], inv[MaxN];
+char s1[MaxN], s2[MaxN];
+int fexp(int x, int k) {
+  int res = 1;
+  for (; k; k >>= 1, x = (long long)x * x % Mod)
+    if (k & 1) res = (long long)res * x % Mod;
+  return res;
+}
+inline int C(int n, int m) {
+  return (n < 0 || m < 0 || n < m)
+             ? 0
+             : (long long)fac[n] * inv[m] % Mod * inv[n - m] % Mod;
+}
+inline int val(int a, int b, int c, int d) {
+  if (a == 0 && c == 0) return C(d - 1, b - 1);
+  if (b == 0 && d == 0) return C(c - 1, a - 1);
+  return (long long)C(c - 1, a - 1) * C(d - 1, b - 1) % Mod;
+}
+inline void upd(int &x, int y) { (x += y) >= Mod ? x -= Mod : x; }
+int calc(char *s, int a, int b, int c, int d, int t) {
+  int n = strlen(s), ans = 0;
+  if (c + d > n) return 0;
+  if (c + d < n) return val(a, b, c, d);
+  for (int i = 0; i < n; i++) {
+    if (i && s[i] != s[i - 1]) s[i] == '1' ? a-- : b--;
+    if (s[i] == '1') {
+      if (i && s[i - 1] == '1' && (a == b - 1 || a == b))
+        upd(ans, val(a, b - 1, c, d));
+      else if (i && s[i - 1] == '0' && (a + 1 == b || a == b))
+        upd(ans, val(a + 1, b, c, d));
+      d--;
+    } else
+      c--;
+  }
+  (s[n - 1] == '1') ? b-- : a--;
+  if (t && !a && !b && !c && !d) upd(ans, 1);
+  return ans;
+}
+int work(char *s, int a, int b, int c, int d) {
+  int n = strlen(s);
+  if (c + d != n) return 0;
+  --d, --b;
+  for (int i = 1; i < n; i++) {
+    if (s[i] == '1')
+      --d, b -= s[i - 1] == '0';
+    else
+      --c, a -= s[i - 1] == '1';
+  }
+  return a == 0 && b == 0 && c == 0 && d == 0;
+}
+int main() {
+  int a, b, c, d;
+  scanf("%s%s", s1, s2);
+  scanf("%d%d%d%d", &a, &b, &c, &d);
+  if (b != c && b != c - 1) return puts("0"), 0;
+  if (b == c)
+    swap(a, b), swap(b, c), ++b, c += a, d += b;
+  else
+    swap(a, b), swap(b, c), ++a, c += a, d += b;
+  for (int i = fac[0] = inv[0] = 1; i <= max(c, d); i++) {
+    fac[i] = (long long)fac[i - 1] * i % Mod;
+    inv[i] = fexp(fac[i], Mod - 2);
+  }
+  printf("%d\n",
+         (calc(s2, a, b, c, d, 1) - calc(s1, a, b, c, d, 0) + Mod) % Mod);
+  return 0;
+}
+
+
+Example question 2:
+Name: p03084 ExaWizards 2019 - More Realistic Manhattan Distance
+Tags: ['']
+Description: In Takaha-shi, the capital of Republic of AtCoder, there are N roads extending east and west, and M roads extending north and south. There are no other roads. The i-th east-west road from the north and the j-th north-south road from the west cross at the intersection (i, j). Two east-west roads do not cross, nor do two north-south roads. The distance between two adjacent roads in the same direction is 1.
+
+Each road is one-way; one can only walk in one direction. The permitted direction for each road is described by a string S of length N and a string T of length M, as follows:
+
+* If the i-th character in S is `W`, one can only walk westward along the i-th east-west road from the north;
+* If the i-th character in S is `E`, one can only walk eastward along the i-th east-west road from the north;
+* If the i-th character in T is `N`, one can only walk northward along the i-th north-south road from the west;
+* If the i-th character in T is `S`, one can only walk southward along the i-th south-west road from the west.
+
+
+
+Process the following Q queries:
+
+* In the i-th query, a_i, b_i, c_i and d_i are given. What is the minimum distance to travel to reach the intersection (c_i, d_i) from the intersection (a_i, b_i) by walking along the roads?
+
+Constraints
+
+* 2 \leq N \leq 100000
+* 2 \leq M \leq 100000
+* 2 \leq Q \leq 200000
+* |S| = N
+* S consists of `W` and `E`.
+* |T| = M
+* T consists of `N` and `S`.
+* 1 \leq a_i \leq N
+* 1 \leq b_i \leq M
+* 1 \leq c_i \leq N
+* 1 \leq d_i \leq M
+* (a_i, b_i) \neq (c_i, d_i)
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N M Q
+S
+T
+a_1 b_1 c_1 d_1
+a_2 b_2 c_2 d_2
+:
+a_Q b_Q c_Q d_Q
+
+
+Output
+
+In the i-th line, print the response to the i-th query. If the intersection (c_i, d_i) cannot be reached from the intersection (a_i, b_i) by walking along the roads, print `-1` instead.
+
+Examples
+
+Input
+
+4 5 4
+EEWW
+NSNNS
+4 1 1 4
+1 3 1 2
+4 2 3 2
+3 3 3 5
+
+
+Output
+
+6
+11
+5
+4
+
+
+Input
+
+3 3 2
+EEE
+SSS
+1 1 3 3
+3 3 1 1
+
+
+Output
+
+4
+-1
+
+
+Input
+
+9 7 10
+EEEEEWEWW
+NSSSNSN
+4 6 9 2
+3 7 6 7
+7 5 3 5
+1 1 8 1
+4 3 5 4
+7 4 6 4
+2 5 8 6
+6 6 2 7
+2 4 7 5
+7 2 9 7
+
+
+Output
+
+9
+-1
+4
+9
+2
+3
+7
+7
+6
+-1
+Difficulty: 0
+Solutions: #include <cstdio>
+#include <cstdlib>
+#include <algorithm>
+#include <vector>
+#include <cstring>
+#include <string>
+#include <queue>
+#include <functional>
+#include <set>
+#include <map>
+#include <deque>
+#include <cmath>
+#include <cassert>
+#define SIZE 200005
+#define INF 1000000000
+
+using namespace std;
+typedef long long int ll;
+typedef pair <int,int> P;
+
+char S[SIZE],T[SIZE];
+int A[SIZE],B[SIZE],C[SIZE],D[SIZE];
+int dw[SIZE],de[SIZE],dw2[SIZE],de2[SIZE];
+int ds[SIZE],dn[SIZE],ds2[SIZE],dn2[SIZE];
+int rs[SIZE],re[SIZE];
+int ans[SIZE];
+int n,m,q;
+
+//South : +1
+//East  : +1
+void solve()
+{
+	for(int i=0;i<m;i++)
+	{
+		dw[i]=de[i]=-1;
+		if(i>0)
+		{
+			if(dw[i-1]!=-1) dw[i]=dw[i-1]+1;
+			if(de[i-1]!=-1) de[i]=de[i-1]+1;
+		}
+		if(T[i]=='E') de[i]=0;
+		else dw[i]=0;
+	}
+	for(int i=m-1;i>=0;i--)
+	{
+		dw2[i]=de2[i]=-1;
+		if(i+1<m)
+		{
+			if(dw2[i+1]!=-1) dw2[i]=dw2[i+1]+1;
+			if(de2[i+1]!=-1) de2[i]=de2[i+1]+1;
+		}
+		if(T[i]=='E') de2[i]=0;
+		else dw2[i]=0;
+	}
+	for(int i=0;i<n;i++)
+	{
+		ds[i]=dn[i]=-1;
+		if(i>0)
+		{
+			if(ds[i-1]!=-1) ds[i]=ds[i-1]+1;
+			if(dn[i-1]!=-1) dn[i]=dn[i-1]+1;
+		}
+		if(S[i]=='S') ds[i]=0;
+		else dn[i]=0;
+	}
+	for(int i=n-1;i>=0;i--)
+	{
+		ds2[i]=dn2[i]=-1;
+		if(i+1<n)
+		{
+			if(ds2[i+1]!=-1) ds2[i]=ds2[i+1]+1;
+			if(dn2[i+1]!=-1) dn2[i]=dn2[i+1]+1;
+		}
+		if(S[i]=='S') ds2[i]=0;
+		else dn2[i]=0;
+	}
+	for(int i=0;i<n;i++)
+	{
+		rs[i]=(S[i]=='S');
+		if(i>0) rs[i]+=rs[i-1];
+	}
+	for(int i=0;i<m;i++)
+	{
+		re[i]=(T[i]=='E');
+		if(i>0) re[i]+=re[i-1];
+	}
+	for(int i=0;i<q;i++)
+	{
+		if(A[i]<=C[i]&&B[i]<=D[i])
+		{
+			ans[i]=-1;
+			if(A[i]==C[i]&&S[A[i]]=='S') ans[i]=D[i]-B[i];
+			else if(B[i]==D[i]&&T[B[i]]=='E') ans[i]=C[i]-A[i];
+			else
+			{
+				int ms=-1;
+				if(S[A[i]]=='S') ms=0;
+				else if(dw[B[i]]!=-1&&ds[A[i]]!=-1) ms=(dw[B[i]]+ds[A[i]])*2;
+				int me=-1;
+				if(T[B[i]]=='E') me=0;
+				else if(de[B[i]]!=-1&&dn[A[i]]!=-1) me=(de[B[i]]+dn[A[i]])*2;
+				int ms2=-1;
+				if(S[C[i]]=='S') ms2=0;
+				else if(dw2[D[i]]!=-1&&ds2[C[i]]!=-1) ms2=(dw2[D[i]]+ds2[C[i]])*2;
+				int me2=-1;
+				if(T[D[i]]=='E') me2=0;
+				else if(de2[D[i]]!=-1&&dn2[C[i]]!=-1) me2=(de2[D[i]]+dn2[C[i]])*2;
+				int now=INF;
+				if(ms>=0&&me2>=0) now=min(now,ms+me2+C[i]+D[i]-A[i]-B[i]);
+				if(me>=0&&ms2>=0) now=min(now,me+ms2+C[i]+D[i]-A[i]-B[i]);
+				int cs=rs[C[i]]-(A[i]==0?0:rs[A[i]-1]);
+				int ce=re[D[i]]-(B[i]==0?0:re[B[i]-1]);
+				if(me>=0&&me2>=0&&cs>0) now=min(now,me+me2+C[i]+D[i]-A[i]-B[i]);
+				if(ms>=0&&ms2>=0&&ce>0) now=min(now,ms+ms2+C[i]+D[i]-A[i]-B[i]);
+				
+				if(T[B[i]]=='E'&&T[D[i]]=='E')
+				{
+					//printf("%d %d %d\n",ds2[A[i]],dw2[B[i]],ds[A[i]]);
+					if(ds2[A[i]]!=-1&&dw2[B[i]]!=-1&&B[i]+dw2[B[i]]<D[i]&&ds[A[i]]!=-1)
+					{
+						now=min(now,ds2[A[i]]*2+ds[A[i]]*2+C[i]+D[i]-A[i]-B[i]);
+					}
+				}
+				if(S[A[i]]=='S'&&S[C[i]]=='S')
+				{
+					if(de2[B[i]]!=-1&&dn2[A[i]]!=-1&&A[i]+dn2[A[i]]<C[i]&&de[B[i]]!=-1)
+					{
+						now=min(now,de2[B[i]]*2+de[B[i]]*2+C[i]+D[i]-A[i]-B[i]);
+					}
+				}
+				
+				if(now!=INF) ans[i]=now;
+			}
+			//printf("* %d %d %d %d\n",A[i],B[i],C[i],D[i]);
+			//printf("%s %s -> %d\n",S,T,ans[i]);
+		}
+	}
+}
+int main()
+{
+	scanf("%d %d %d",&n,&m,&q);
+	scanf("%s",&S);
+	scanf("%s",&T);
+	for(int i=0;i<n;i++)
+	{
+		if(S[i]=='E') S[i]='S';
+		else S[i]='N';
+	}
+	for(int i=0;i<m;i++)
+	{
+		if(T[i]=='S') T[i]='E';
+		else T[i]='W';
+	}
+	for(int i=0;i<q;i++)
+	{
+		scanf("%d %d %d %d",&A[i],&B[i],&C[i],&D[i]);
+		A[i]--,B[i]--,C[i]--,D[i]--;
+	}
+	solve();
+	for(int l=0,r=n-1;l<r;l++,r--) swap(S[l],S[r]);
+	for(int i=0;i<m;i++)
+	{
+		if(T[i]=='E') T[i]='W';
+		else T[i]='E';
+	}
+	for(int i=0;i<q;i++) A[i]=n-A[i]-1,C[i]=n-C[i]-1;
+	solve();
+	for(int l=0,r=m-1;l<r;l++,r--) swap(T[l],T[r]);
+	for(int i=0;i<n;i++)
+	{
+		if(S[i]=='N') S[i]='S';
+		else S[i]='N';
+	}
+	for(int i=0;i<q;i++) B[i]=m-B[i]-1,D[i]=m-D[i]-1;
+	solve();
+	for(int l=0,r=n-1;l<r;l++,r--) swap(S[l],S[r]);
+	for(int i=0;i<m;i++)
+	{
+		if(T[i]=='E') T[i]='W';
+		else T[i]='E';
+	}
+	for(int i=0;i<q;i++) A[i]=n-A[i]-1,C[i]=n-C[i]-1;
+	solve();
+	for(int i=0;i<q;i++) printf("%d\n",ans[i]);
+	return 0;
+}
+
+
+Example question 3:
+Name: p00166 Area of Polygon
+Tags: ['']
+Description: Create a program that inputs the vertex information of two polygons inscribed in one circle and outputs the magnitude relationship of their areas.
+
+Assume that each vertex of the X-side is numbered counterclockwise from 1 to X (the figure shows an example when X = 4). However, the given polygon assumes that the center of the circle is contained inside, and the data on the position of vertex i is the angle v (1 ≤ v <180) of the central angle measured counterclockwise from vertex i to vertex i + 1. Integer). Regarding the magnitude relationship to be output, 1 (half-width number) when the area of ​​the first polygon is large, 2 (half-width number) when the area of ​​the second polygon is large, and when the areas are the same, Please output 0 (half-width number).
+
+<image>
+
+
+
+Input
+
+A sequence of multiple datasets is given as input. The end of the input is indicated by a single line of zeros. Each dataset is given in the following format:
+
+
+m
+v1
+v2
+::
+vm −1
+n
+v1
+v2
+::
+vn − 1
+
+
+The first line gives the number of vertices of the first polygon m (3 ≤ m ≤ 50), and the following m − 1 line gives the information vi (1 ≤ vi <180) of the vertices i of the first polygon. ..
+
+The following line gives the number of vertices n (3 ≤ n ≤ 50) of the second polygon, and the following n − 1 line gives the information vi (1 ≤ vi <180) for the vertices i of the second polygon.
+
+The number of datasets does not exceed 200.
+
+Output
+
+Outputs the magnitude relationship (half-width numbers) for each data set on one line.
+
+Example
+
+Input
+
+4
+30
+125
+75
+4
+30
+125
+75
+5
+30
+125
+75
+65
+4
+30
+125
+75
+4
+30
+125
+75
+6
+30
+50
+50
+25
+75
+0
+
+
+Output
+
+0
+1
+2
+Difficulty: 0
+Solutions: # Area of Polygon
+
+from math import sin
+from math import radians
+
+while True:
+    m = int(raw_input())
+    if m == 0:
+        break
+
+    a1, v, vv = (0.0, 0, 0)
+    for i in range(m):
+        if i < m - 1:
+            v = int(raw_input())
+            vv += v
+        else:
+            v = 360 - vv
+        a1 += sin(radians(v)) * 100 / 2
+
+    n = int(raw_input())
+
+    a2, v, vv = (0.0, 0, 0)
+    for i in range(n):
+        if i < n - 1:
+            v = int(raw_input())
+            vv += v
+        else:
+            v = 360 - vv
+        a2 += sin(radians(v)) * 100 / 2
+
+    if a1 > a2:
+        print 1
+    elif a1 < a2:
+        print 2
+    else:
+        print 0
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

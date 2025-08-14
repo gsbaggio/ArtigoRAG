@@ -1,0 +1,448 @@
+CURRENT QUESTION:
+You are given a string s of length n consisting of characters a and/or b.
+
+Let \operatorname{AB}(s) be the number of occurrences of string ab in s as a substring. Analogically, \operatorname{BA}(s) is the number of occurrences of ba in s as a substring.
+
+In one step, you can choose any index i and replace s_i with character a or b.
+
+What is the minimum number of steps you need to make to achieve \operatorname{AB}(s) = \operatorname{BA}(s)?
+
+Reminder:
+
+The number of occurrences of string d in s as substring is the number of indices i (1 ≤ i ≤ |s| - |d| + 1) such that substring s_i s_{i + 1} ... s_{i + |d| - 1} is equal to d. For example, \operatorname{AB}(aabbbabaa) = 2 since there are two indices i: i = 2 where aabbbabaa and i = 6 where aabbbabaa.
+
+Input
+
+Each test contains multiple test cases. The first line contains the number of test cases t (1 ≤ t ≤ 1000). Description of the test cases follows.
+
+The first and only line of each test case contains a single string s (1 ≤ |s| ≤ 100, where |s| is the length of the string s), consisting only of characters a and/or b.
+
+Output
+
+For each test case, print the resulting string s with \operatorname{AB}(s) = \operatorname{BA}(s) you'll get making the minimum number of steps.
+
+If there are multiple answers, print any of them.
+
+Example
+
+Input
+
+
+4
+b
+aabbbabaa
+abbb
+abbaab
+
+
+Output
+
+
+b
+aabbbabaa
+bbbb
+abbaaa
+
+Note
+
+In the first test case, both \operatorname{AB}(s) = 0 and \operatorname{BA}(s) = 0 (there are no occurrences of ab (ba) in b), so can leave s untouched.
+
+In the second test case, \operatorname{AB}(s) = 2 and \operatorname{BA}(s) = 2, so you can leave s untouched. 
+
+In the third test case, \operatorname{AB}(s) = 1 and \operatorname{BA}(s) = 0. For example, we can change s_1 to b and make both values zero.
+
+In the fourth test case, \operatorname{AB}(s) = 2 and \operatorname{BA}(s) = 1. For example, we can change s_6 to a and make both values equal to 1.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.72):
+Name: 1276_F. Asterisk Substrings
+Tags: ['string suffix structures']
+Description: Consider a string s of n lowercase English letters. Let t_i be the string obtained by replacing the i-th character of s with an asterisk character *. For example, when s = abc, we have t_1 = \tt{*bc}, t_2 = \tt{a*c}, and t_3 = \tt{ab*}.
+
+Given a string s, count the number of distinct strings of lowercase English letters and asterisks that occur as a substring of at least one string in the set \\{s, t_1, …, t_n \}. The empty string should be counted.
+
+Note that *'s are just characters and do not play any special role as in, for example, regex matching.
+
+Input
+
+The only line contains a string s of n lowercase English letters (1 ≤ n ≤ 10^5).
+
+Output
+
+Print a single integer — the number of distinct strings of s, t_1, …, t_n.
+
+Example
+
+Input
+
+
+abc
+
+
+Output
+
+
+15
+
+Note
+
+For the sample case, the distinct substrings are (empty string), a, b, c, *, ab, a*, bc, b*, *b, *c, abc, ab*, a*c, *bc.
+Difficulty: 12
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int N = 1e5 + 100;
+int n, m;
+char ch[N];
+struct SA {
+  int sa[N], rk[N], h[N], x[N], y[N], c[N];
+  void build_SA() {
+    m = 128;
+    for (int i = 0; i <= m; ++i) c[i] = 0;
+    for (int i = 1; i <= n; ++i) c[x[i] = ch[i]]++;
+    for (int i = 1; i <= m; ++i) c[i] += c[i - 1];
+    for (int i = n; i >= 1; --i) sa[c[x[i]]--] = i;
+    for (int k = 1; k <= n; k *= 2) {
+      int cnt = 0;
+      for (int i = n - k + 1; i <= n; ++i) y[++cnt] = i;
+      for (int i = 1; i <= n; ++i)
+        if (sa[i] > k) y[++cnt] = sa[i] - k;
+      for (int i = 0; i <= m; ++i) c[i] = 0;
+      for (int i = 1; i <= n; ++i) c[x[i]]++;
+      for (int i = 1; i <= m; ++i) c[i] += c[i - 1];
+      for (int i = n; i >= 1; --i) sa[c[x[y[i]]]--] = y[i], y[i] = 0;
+      swap(x, y);
+      x[sa[1]] = 1;
+      cnt = 1;
+      for (int i = 2; i <= n; ++i) {
+        x[sa[i]] =
+            (y[sa[i]] == y[sa[i - 1]] && y[sa[i] + k] == y[sa[i - 1] + k])
+                ? cnt
+                : ++cnt;
+      }
+      if (cnt == n) break;
+      m = cnt;
+    }
+    for (int i = 1; i <= n; ++i) rk[sa[i]] = i;
+    h[1] = 0;
+    int lst = 0;
+    for (int i = 1; i <= n; ++i) {
+      int j = sa[rk[i] - 1];
+      if (lst) --lst;
+      while (ch[i + lst] == ch[j + lst]) ++lst;
+      h[rk[i]] = lst;
+    }
+  }
+  int st[N][21];
+  int lg[N];
+  inline void init() {
+    for (int i = 1; i <= n; ++i) {
+      st[i][0] = h[i];
+    }
+    for (int i = 1; i <= 20; ++i)
+      for (int j = 1; j <= n - (1 << i) + 1; ++j)
+        st[j][i] = min(st[j][i - 1], st[j + (1 << (i - 1))][i - 1]);
+    lg[1] = 0;
+    for (int i = 2; i <= N - 1; ++i) lg[i] = lg[i / 2] + 1;
+  }
+  inline int lcp(int x, int y) {
+    int w1 = x, w2 = y;
+    if (w1 > w2) swap(w1, w2);
+    int G = lg[w2 - w1];
+    return min(st[w1 + 1][G], st[w2 - (1 << G) + 1][G]);
+  }
+} a;
+set<int> s1[N * 2];
+int rt[N * 2];
+long long val[N * 2];
+inline int merge(int x, int y) {
+  int w1 = x, w2 = y;
+  if (w1 == w2) return w1;
+  if (s1[w1].size() > s1[w2].size()) swap(w1, w2);
+  for (set<int>::iterator i = s1[w1].begin(); i != s1[w1].end(); ++i) {
+    int j = *i;
+    set<int>::iterator nxt = s1[w2].upper_bound(j);
+    int res = 0, p1, p2;
+    p1 = p2 = 0;
+    if (nxt != s1[w2].end()) {
+      p1 = *nxt;
+      res = max(res, a.lcp(p1, j));
+    }
+    if (nxt != s1[w2].begin()) {
+      p2 = *(--nxt);
+      res = max(res, a.lcp(p2, j));
+    }
+    if (p1 && p2) {
+      assert(a.lcp(p1, p2) + res == a.lcp(j, p1) + a.lcp(p2, j));
+    }
+    val[w2] += n - a.sa[j] + 1 - res;
+    s1[w2].insert(j);
+  }
+  s1[w1].clear();
+  return w2;
+}
+long long ans;
+struct SAM {
+  int nxt[N * 2][26], l[N * 2], fa[N * 2], lst, cnt, pos[N * 2];
+  inline void init() {
+    lst = cnt = 1;
+    memset(nxt[1], 0, sizeof nxt[1]);
+    l[1] = fa[1] = 0;
+  }
+  inline void add(int x, int curp) {
+    int np = ++cnt, p = lst;
+    lst = np;
+    pos[np] = curp;
+    memset(nxt[np], 0, sizeof nxt[np]);
+    l[np] = l[p] + 1;
+    while (p && !nxt[p][x]) nxt[p][x] = np, p = fa[p];
+    if (!p)
+      fa[np] = 1;
+    else {
+      int q = nxt[p][x];
+      if (l[q] == l[p] + 1)
+        fa[np] = q;
+      else {
+        int nq = ++cnt;
+        l[nq] = l[p] + 1;
+        fa[nq] = fa[q];
+        fa[q] = fa[np] = nq;
+        memcpy(nxt[nq], nxt[q], sizeof nxt[q]);
+        while (nxt[p][x] == q) nxt[p][x] = nq, p = fa[p];
+      }
+    }
+  }
+  int c[N * 2], z[N * 2];
+  inline void solve() {
+    for (int i = 0; i <= cnt; ++i) c[i] = 0;
+    for (int i = 1; i <= cnt; ++i) c[l[i]]++;
+    for (int i = 1; i <= cnt; ++i) c[i] += c[i - 1];
+    for (int i = 1; i <= cnt; ++i) z[c[l[i]]--] = i;
+    for (int i = 1; i <= cnt; ++i) {
+      rt[i] = i;
+      if (pos[i] && pos[i] <= n - 2) {
+        s1[rt[i]].insert(a.rk[pos[i] + 2]);
+        val[rt[i]] += n - pos[i] - 1;
+      }
+    }
+    for (int i = cnt; i >= 2; --i) {
+      int x = z[i];
+      ans += 1LL * (l[x] - l[fa[x]]) * val[rt[x]];
+      ans += (l[x] - l[fa[x]]);
+      rt[fa[x]] = merge(rt[fa[x]], rt[x]);
+    }
+  }
+  inline void solve_pure() {
+    for (int i = 0; i <= cnt; ++i) c[i] = 0;
+    for (int i = 1; i <= cnt; ++i) c[l[i]]++;
+    for (int i = 1; i <= cnt; ++i) c[i] += c[i - 1];
+    for (int i = 1; i <= cnt; ++i) z[c[l[i]]--] = i;
+    for (int i = cnt; i >= 2; --i) {
+      int x = z[i];
+      ans += (l[x] - l[fa[x]]);
+    }
+  }
+} s;
+int main() {
+  scanf("%s", ch + 1);
+  n = strlen(ch + 1);
+  a.build_SA();
+  a.init();
+  s.init();
+  for (int i = 1; i <= n; ++i) s.add(ch[i] - 'a', i);
+  s.solve();
+  s.init();
+  for (int i = 1; i <= n - 1; ++i) s.add(ch[i] - 'a', i);
+  s.solve_pure();
+  s.init();
+  for (int i = 2; i <= n; ++i) s.add(ch[i] - 'a', i);
+  s.solve_pure();
+  ans += 2;
+  printf("%lld\n", ans);
+  return 0;
+}
+
+
+Similar question 2 (Similarity score: 0.72):
+Name: repstr
+Tags: []
+Description: Given a string S (containing at most 10^5 lowercase English letters). You are requested to find out from continuous substrings a string having length from L to H, which appears the most times; if there are more than one answer, find the most length.
+
+Input
+There are several test cases (fifteen at most), each formed as follows:
+
+The first line contains two positive integers L, H.
+The second line contains the string S.
+
+The input is ended with L = H = 0.
+
+
+
+Output
+For each test case, output on a line two integers which are the number of times appearing and the length of the found string, respectively.
+
+Example
+
+Input:
+3 5
+aabcbcbca
+3 5
+baaaababababbababbab
+1 4
+abcd
+0 0
+
+
+Output:
+2 4
+6 3
+1 4
+
+
+Explanation
+Case #1: bcbc occurs twice - at position 3 and position 5 (occurrences may overlap).
+Case #2: bab occurs 6 times.
+Case #3: abcd occurs 1 time.
+Difficulty: 3
+Solutions: import sys
+
+def get_int():
+    return int(sys.stdin.readline())
+
+def get_ints():
+    return [int(i) for i in sys.stdin.readline().split()]
+
+def find_max(line, pos, L, H):
+    for i in range(H-L):
+        new_pos = [ j + 1 for j in pos if j != len(line) - 1]
+        #print 'new', new_pos
+        if len(new_pos) < len(pos):
+            return len(pos), L+i
+        for i0 in range(len(new_pos) -1):
+            if line[new_pos[i0]] != line[new_pos[i0+1]]:
+                return len(pos), L+i
+        pos = new_pos
+    return len(pos), H
+
+def run():
+    while True:
+        L, H = get_ints()
+        if L == 0:
+            break
+        line = sys.stdin.readline()[:-1]
+        # Find the maximun occurrence of length L
+        dd = {}
+        for i in range(len(line)-L+1):
+            s = line[i:i+L]
+            dd.setdefault(s, []).append(i+L-1)
+        max_l = 0
+        poses = []
+        br = False
+        #print line, dd
+        for k, v in dd.viewitems():
+            if len(v) > max_l:
+                max_l = len(v)
+                poses = [v,]
+            elif len(v) == max_l:
+                poses.append(v)
+        max_l = 0
+        r = None
+        for pos in poses:
+            m = find_max(line, pos, L, H)
+            #print 'm', m
+            if m[1] > max_l:
+                r = m
+                max_l = m[1]
+        print r[0], r[1]
+
+
+run()
+
+Similar question 3 (Similarity score: 0.72):
+Name: roy-and-counting-sorted-substrings-1
+Tags: []
+Description: Roy has a string S of length N. String S is made of lower case English alphabets.  He likes sorted strings. So he wonders how many substrings of S are sorted.  
+
+Given the string S, your task is to count the number of sorted substrings of S.  
+
+A string s is lexicographically sorted if si ≤ si+1  where 1 ≤ i ≤ N-1 (consider 1-based indexing).    
+
+Caution: Use 64-bit integer for count to avoid overflow.  
+
+Input:
+First line contains integer T - number of test cases.
+First line of each test case contains N - length of string .
+Second line contains S  -  the given string.  
+
+Output:
+Print the answer for each test case in a new line.  
+
+Constraints:
+1 ≤ T ≤ 10
+1 ≤ N ≤ 1000000
+S consists of only lower case English alphabets [a-z].  
+
+SAMPLE INPUT
+4
+3
+abc
+3
+bba
+4
+abac
+3
+zyxSAMPLE OUTPUT
+6
+4
+6
+3Explanation
+
+Test Case #1: 
+Substrings of 'abc' are: a, b, c, ab, bc, abc
+All these 6 substrings are sorted. Hence the result is 6. 
+
+Test Case #2: 
+Substrings of 'bba' are: b, b, a, bb, ba, bba
+Out of these 6 substrings, 4 ('b', 'b', 'a' and 'bb') substrings are sorted. So the answer is 4.
+
+Test Case #3: 
+Substrings of abac are: a, b, a, c, ab, ba, ac, aba, bac, abac
+Out of these 10 substrings, 6 ('a', 'b', 'a', 'c', 'ab' and 'ac') substrings are sorted. Hence the result is 6.
+
+Test Case #4: 
+Substrings of zxy are: z, y, x, zy, yx, zyx 
+Out of these 6 substrings, only 3 ('z', 'y' and 'x') substrings are sorted. So the answer is 3.
+Difficulty: 0
+Solutions: '''
+# Read input from stdin and provide input before running code
+
+name = raw_input('What is your name?\n')
+print 'Hi, %s.' % name
+'''
+#print 'Hello World!'
+t=int(raw_input())
+while t:
+	t-=1
+	n=int(raw_input())
+	s=raw_input()
+	sort=1
+	c=0
+	for i in range(1,n):
+		if(s[i]>=s[i-1]):
+			sort+=1
+		else:
+			c+= (sort*(sort+1)/2)
+			sort=1
+	print c+(sort*(sort+1)/2)
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

@@ -1,0 +1,413 @@
+CURRENT QUESTION:
+You are given two integer arrays of length N, A1 and A2. You are also given Q queries of 4 types: 
+
+1 k l r x: set Ak_i:=min(Ak_i, x) for each l ≤ i ≤ r.
+
+2 k l r x: set Ak_i:=max(Ak_i, x) for each l ≤ i ≤ r.
+
+3 k l r x: set Ak_i:=Ak_i+x for each l ≤ i ≤ r.
+
+4 l r: find the (∑_{i=l}^r F(A1_i+A2_i)) \% (10^9+7) where F(k) is the k-th Fibonacci number (F(0)=0, F(1)=1, F(k)=F(k-1)+F(k-2)), and x \% y denotes the remainder of the division of x by y.
+
+You should process these queries and answer each query of the fourth type.
+
+Input
+
+The first line contains two integers N and Q. (1 ≤ N, Q ≤ 5 × 10^4) 
+
+The second line contains N integers, array A1_1, A1_2, ... A1_N. (0 ≤ A1_i ≤ 10^6)
+
+The third line contains N integers, array A2_1, A2_2, ... A2_N. (0 ≤ A2_i ≤ 10^6)
+
+The next Q lines describe the queries. Each line contains 5 or 3 integers, where the first integer denotes the type of the query. (k ∈ \{1, 2\}, 1 ≤ l ≤ r ≤ N)
+
+For queries of type 1 and 2, 0 ≤ x ≤ 10^9 holds.
+
+For queries of type 3, −10^6 ≤ x ≤ 10^6 holds.
+
+It is guaranteed that after every query each number in arrays A1 and A2 will be nonnegative. 
+
+Output
+
+Print the answer to each query of the fourth type, in separate lines. 
+
+Examples
+
+Input
+
+
+3 4
+1 0 2
+2 1 0
+4 1 3
+3 2 2 2 3
+1 1 1 3 0
+4 1 3
+
+
+Output
+
+
+4
+4
+
+
+Input
+
+
+5 4
+1 3 5 3 2
+4 2 1 3 3
+4 1 3
+4 2 5
+2 1 2 4 6
+4 2 4
+
+
+Output
+
+
+18
+26
+68
+
+Note
+
+In the first example: The answer for the first query is F(1 + 2) + F(0 + 1) + F(2 + 0) = F(3) + F(1) + F(2) = 2 + 1 + 1 = 4. After the second query, the array A2 changes to [2, 4, 0]. After the third query, the array A1 changes to [0, 0, 0]. The answer for the fourth query is F(0 + 2) + F(0 + 4) + F(0 + 0) = F(2) + F(4) + F(0) = 1 + 3 + 0 = 4. 
+
+In the second example: The answer for the first query is F(1 + 4) + F(3 + 2) + F(5 + 1) = F(5) + F(5) + F(6) = 5 + 5 + 8 = 18. The answer for the second query is F(3 + 2) + F(5 + 1) + F(3 + 3) + F(2 + 3) = F(5) + F(6) + F(6) + F(5) = 5 + 8 + 8 + 5 = 26. After the third query, the array A1 changes to [1, 6, 6, 6, 2]. The answer for the fourth query is F(6 + 2) + F(6 + 1) + F(6 + 3) = F(8) + F(7) + F(9) = 21 + 13 + 34 = 68. 
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 616_B. Dinner with Emma
+Tags: ['games', 'greedy']
+Description: Jack decides to invite Emma out for a dinner. Jack is a modest student, he doesn't want to go to an expensive restaurant. Emma is a girl with high taste, she prefers elite places.
+
+Munhattan consists of n streets and m avenues. There is exactly one restaurant on the intersection of each street and avenue. The streets are numbered with integers from 1 to n and the avenues are numbered with integers from 1 to m. The cost of dinner in the restaurant at the intersection of the i-th street and the j-th avenue is cij.
+
+Jack and Emma decide to choose the restaurant in the following way. Firstly Emma chooses the street to dinner and then Jack chooses the avenue. Emma and Jack makes their choice optimally: Emma wants to maximize the cost of the dinner, Jack wants to minimize it. Emma takes into account that Jack wants to minimize the cost of the dinner. Find the cost of the dinner for the couple in love.
+
+Input
+
+The first line contains two integers n, m (1 ≤ n, m ≤ 100) — the number of streets and avenues in Munhattan.
+
+Each of the next n lines contains m integers cij (1 ≤ cij ≤ 109) — the cost of the dinner in the restaurant on the intersection of the i-th street and the j-th avenue.
+
+Output
+
+Print the only integer a — the cost of the dinner for Jack and Emma.
+
+Examples
+
+Input
+
+3 4
+4 1 3 5
+2 2 2 2
+5 4 5 1
+
+
+Output
+
+2
+
+
+Input
+
+3 3
+1 2 3
+2 3 1
+3 1 2
+
+
+Output
+
+1
+
+Note
+
+In the first example if Emma chooses the first or the third streets Jack can choose an avenue with the cost of the dinner 1. So she chooses the second street and Jack chooses any avenue. The cost of the dinner is 2.
+
+In the second example regardless of Emma's choice Jack can choose a restaurant with the cost of the dinner 1.
+Difficulty: 8
+Solutions: import math
+n=raw_input().split()
+t=[]
+for i in range(int(n[0])):
+    a=raw_input().split()
+    mini=int(a[0])
+    for i in a:
+        if mini>int(i):
+            mini=int(i)
+    t.append(mini)
+print max(t)
+
+
+
+Example question 2:
+Name: 1505_F. Math
+Tags: ['*special', 'math']
+Description: <image> <image>
+
+*The two images are equivalent, feel free to use either one.
+
+Input
+
+The input contains a single integer a (-100 ≤ a ≤ 100).
+
+Output
+
+Output the result – an integer number.
+
+Example
+
+Input
+
+
+1
+
+
+Output
+
+
+1
+Difficulty: 12
+Solutions: import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.lang.reflect.Array;
+import java.util.*;
+public class Main{
+    static class FastScanner {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer("");
+
+        String next() {
+            while (!st.hasMoreTokens())
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        int[] nextArray(int n) {
+            int[] a = new int[n];
+            for (int i = 0; i < n; i++) a[i] = nextInt();
+            return a;
+        }
+        long[] nextArray(long n) {
+            long[] a = new long[(int) n];
+            for (int i = 0; i < n; i++) a[i] = nextLong();
+            return a;
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+    }
+    static class FastWriter extends PrintWriter {
+            FastWriter(){
+                super(System.out);
+            }
+            void println(int[] array) {
+                for(int i=0; i<array.length; i++) {
+                    print(array[i]+" ");
+                }
+                println();
+            }
+            void println(long [] array) {
+                for(int i=0; i<array.length; i++) {
+                    print(array[i]+" ");
+                }
+                println();
+            }
+        }
+        static ArrayList<Integer> list=new ArrayList<>();
+    public static void main(String[] args){
+        FastScanner in = new FastScanner();
+        FastWriter out = new FastWriter();
+        int n=in.nextInt();
+        out.println(2-n*n);
+        out.close();
+    }
+}
+
+Example question 3:
+Name: 1242_E. Planar Perimeter
+Tags: ['constructive algorithms', 'graphs']
+Description: Ujan has finally cleaned up his house and now wants to decorate the interior. He decided to place a beautiful carpet that would really tie the guest room together.
+
+He is interested in carpets that are made up of polygonal patches such that each side of a patch is either a side of another (different) patch, or is an exterior side of the whole carpet. In other words, the carpet can be represented as a planar graph, where each patch corresponds to a face of the graph, each face is a simple polygon. The perimeter of the carpet is the number of the exterior sides. 
+
+Ujan considers a carpet beautiful if it consists of f patches, where the i-th patch has exactly a_i sides, and the perimeter is the smallest possible. Find an example of such a carpet, so that Ujan can order it!
+
+Input
+
+The first line of input contains a single integer f (1 ≤ f ≤ 10^5), the number of patches in the carpet. 
+
+The next line contains f integers a_1, …, a_f (3 ≤ a_i ≤ 3⋅ 10^5), the number of sides of the patches. The total number of the sides of the patches a_1 + … + a_f does not exceed 3⋅10^5.
+
+Output
+
+Output the description of the carpet as a graph. 
+
+First, output a single integer n (3 ≤ n ≤ 3 ⋅ 10^5), the total number of vertices in your graph (the vertices must be numbered from 1 to n). 
+
+Then output f lines containing the description of the faces. The i-th line should describe the i-th face and contain a_i distinct integers v_{i,1}, …, v_{i,a_i} (1 ≤ v_{i,j} ≤ n), which means that the vertices v_{i,j} and v_{i,(j mod{a_i})+1} are connected by an edge for any 1 ≤ j ≤ a_i.
+
+The graph should be planar and satisfy the restrictions described in the problem statement. Its perimeter should be the smallest possible. There should be no double edges or self-loops in the graph. The graph should be connected. Note that a solution always exists; if there are multiple solutions, output any of them.
+
+Examples
+
+Input
+
+
+2
+3 3
+
+
+Output
+
+
+4
+2 1 4 
+1 2 3 
+
+
+Input
+
+
+3
+5 3 5
+
+
+Output
+
+
+6
+1 2 3 4 5
+4 5 6
+1 3 4 6 5
+
+Note
+
+In the first sample, the two triangular faces are connected by a single edge, which results in the minimum perimeter 4.
+
+The figure shows one possible configuration for the second sample. The minimum perimeter in this case is 3. 
+
+<image>
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+int pp[300000], n, cnt;
+void connect(int *qq, int a, int b) {
+  int h, j, k;
+  k = 0;
+  for (h = cnt - 1; h >= cnt - b; h--) qq[k++] = pp[h];
+  j = pp[cnt - 1];
+  cnt -= b - 1;
+  for (h = 0; h < a - b; h++) qq[k++] = pp[cnt++] = n++;
+  pp[cnt++] = j;
+}
+int main() {
+  static int aa[300000], hh[300000], *qq[300000];
+  int f, g, h, h_, tmp, sum, odd;
+  scanf("%d", &f);
+  odd = 0;
+  for (h = 0; h < f; h++) {
+    scanf("%d", &aa[h]);
+    hh[h] = h;
+    if (aa[h] > 3) odd ^= aa[h] & 1;
+  }
+  h_ = 0;
+  for (h = 1; h < f; h++)
+    if (aa[h_] < aa[h]) h_ = h;
+  tmp = hh[0], hh[0] = hh[h_], hh[h_] = tmp;
+  for (h = 0; h < f; h++)
+    qq[hh[h]] = (int *)malloc(aa[hh[h]] * sizeof *qq[hh[h]]);
+  sum = 0;
+  for (h = 1; h < f; h++)
+    if (aa[hh[h]] > 3) sum += aa[hh[h]] - 2;
+  for (g = 0; g < aa[hh[0]]; g++) qq[hh[0]][g] = pp[cnt++] = n++;
+  if (aa[hh[0]] - sum >= 3) {
+    for (h = 1; h < f; h++) {
+      int a = aa[hh[h]];
+      if (a > 3) connect(qq[hh[h]], a, a);
+    }
+  } else if (odd) {
+    for (h = 1; h < f; h++) {
+      int a = aa[hh[h]];
+      if (a > 3) {
+        sum -= a - 2;
+        if (cnt + a - 4 - sum < 3)
+          connect(qq[hh[h]], a, 3);
+        else {
+          int x;
+          x = (cnt + a - sum - 3) / 2 + 1;
+          connect(qq[hh[h]], a, x);
+          break;
+        }
+      }
+    }
+    for (h++; h < f; h++) {
+      int a = aa[hh[h]];
+      if (a > 3) connect(qq[hh[h]], a, a);
+    }
+  } else {
+    for (h = 1; h < f; h++) {
+      int a = aa[hh[h]];
+      if (a > 3) {
+        sum -= a - 2;
+        if (cnt + a - 4 - sum < 4)
+          connect(qq[hh[h]], a, 3);
+        else {
+          int x;
+          x = (cnt + a - sum - 4) / 2 + 1;
+          connect(qq[hh[h]], a, x);
+          break;
+        }
+      }
+    }
+    for (h++; h < f; h++) {
+      int a = aa[hh[h]];
+      if (a > 3) connect(qq[hh[h]], a, a);
+    }
+  }
+  for (h = 1; h < f; h++) {
+    int a = aa[hh[h]];
+    if (a == 3)
+      if (cnt > 3)
+        connect(qq[hh[h]], a, 3);
+      else {
+        int tmp;
+        connect(qq[hh[h]], a, 2);
+        tmp = pp[0], pp[0] = pp[1], pp[1] = pp[2], pp[2] = pp[3], pp[3] = tmp;
+      }
+  }
+  printf("%d\n", n);
+  for (h = 0; h < f; h++) {
+    for (g = 0; g < aa[h]; g++) printf("%d ", qq[h][g] + 1);
+    printf("\n");
+  }
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

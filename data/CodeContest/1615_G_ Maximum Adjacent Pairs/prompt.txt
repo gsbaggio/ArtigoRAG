@@ -1,0 +1,593 @@
+CURRENT QUESTION:
+You are given an array a consisting of n non-negative integers.
+
+You have to replace each 0 in a with an integer from 1 to n (different elements equal to 0 can be replaced by different integers).
+
+The value of the array you obtain is the number of integers k from 1 to n such that the following condition holds: there exist a pair of adjacent elements equal to k (i. e. there exists some i ∈ [1, n - 1] such that a_i = a_{i + 1} = k). If there are multiple such pairs for some integer k, this integer is counted in the value only once.
+
+Your task is to obtain the array with the maximum possible value.
+
+Input
+
+The first line contains one integer n (2 ≤ n ≤ 3 ⋅ 10^5) — the number of elements in the array.
+
+The second line contains n integers a_1, a_2, ..., a_n (0 ≤ a_i ≤ min(n, 600)) — the elements of the array.
+
+Output
+
+Print n integers not less than 1 and not greater than n — the array with the maximum possible value you can obtain.
+
+If there are multiple answers, print any of them.
+
+Examples
+
+Input
+
+
+4
+1 1 0 2
+
+
+Output
+
+
+1 1 2 2 
+
+
+Input
+
+
+5
+0 0 0 0 0
+
+
+Output
+
+
+3 1 1 3 3
+
+
+Input
+
+
+5
+1 2 3 4 5
+
+
+Output
+
+
+1 2 3 4 5 
+
+
+Input
+
+
+6
+1 0 0 0 0 1
+
+
+Output
+
+
+1 2 3 3 1 1
+
+
+Input
+
+
+3
+3 0 2
+
+
+Output
+
+
+3 2 2 
+
+
+Input
+
+
+5
+1 0 2 0 1
+
+
+Output
+
+
+1 2 2 1 1 
+
+
+Input
+
+
+7
+1 0 2 3 1 0 2
+
+
+Output
+
+
+1 2 2 3 1 1 2 
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.81):
+Name: 1082_E. Increasing Frequency
+Tags: ['binary search', 'dp', 'greedy']
+Description: You are given array a of length n. You can choose one segment [l, r] (1 ≤ l ≤ r ≤ n) and integer value k (positive, negative or even zero) and change a_l, a_{l + 1}, ..., a_r by k each (i.e. a_i := a_i + k for each l ≤ i ≤ r).
+
+What is the maximum possible number of elements with value c that can be obtained after one such operation?
+
+Input
+
+The first line contains two integers n and c (1 ≤ n ≤ 5 ⋅ 10^5, 1 ≤ c ≤ 5 ⋅ 10^5) — the length of array and the value c to obtain.
+
+The second line contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 5 ⋅ 10^5) — array a.
+
+Output
+
+Print one integer — the maximum possible number of elements with value c which can be obtained after performing operation described above.
+
+Examples
+
+Input
+
+
+6 9
+9 9 9 9 9 9
+
+
+Output
+
+
+6
+
+
+Input
+
+
+3 2
+6 2 6
+
+
+Output
+
+
+2
+
+Note
+
+In the first example we can choose any segment and k = 0. The array will stay same.
+
+In the second example we can choose segment [1, 3] and k = -4. The array will become [2, -2, 2].
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+template <typename T>
+void pr(vector<T> &v) {
+  for (int i = 0; i < (int)(v).size(); i++) cout << v[i] << " ";
+  cout << endl;
+}
+template <typename T>
+void pr(vector<vector<T>> &v) {
+  for (int i = 0; i < (int)(v).size(); i++) {
+    pr(v[i]);
+  }
+}
+template <typename T>
+void re(T &first) {
+  cin >> first;
+}
+template <typename T>
+void re(vector<T> &a) {
+  for (int i = 0; i < (int)(a).size(); i++) re(a[i]);
+}
+template <class Arg, class... Args>
+void re(Arg &first, Args &...rest) {
+  re(first);
+  re(rest...);
+}
+template <typename T>
+void pr(T first) {
+  cout << first << endl;
+}
+template <class Arg, class... Args>
+void pr(const Arg &first, const Args &...rest) {
+  cout << first << " ";
+  pr(rest...);
+  cout << endl;
+}
+void ps() { cout << endl; }
+template <class T, class... Ts>
+void ps(const T &t, const Ts &...ts) {
+  cout << t;
+  if (sizeof...(ts)) cout << " ";
+  ps(ts...);
+}
+vector<int> pre;
+int cnt(int l, int r) { return pre[r + 1] - pre[l]; }
+void solve() {
+  int n, c;
+  re(n, c);
+  vector<int> a(n);
+  re(a);
+  pre.resize(n + 1);
+  pre[0] = 0;
+  for (int i = 0; i < n; i++) {
+    pre[i + 1] = pre[i] + ((a[i] == c) ? 1 : 0);
+  }
+  vector<vector<int>> ind(5e5 + 1);
+  for (int i = 0; i < n; i++) {
+    ind[a[i]].push_back(i);
+  }
+  int mx = 0;
+  for (int i = 1; i < (int)(ind).size(); i++) {
+    int m = (int)(ind[i]).size();
+    if (!m || i == c) continue;
+    int cur = 1;
+    mx = max(mx, cur);
+    for (int j = 1; j < (int)(ind[i]).size(); j++) {
+      cur -= cnt(ind[i][j - 1], ind[i][j]) - 1;
+      if (cur <= 0) {
+        cur = 1;
+      }
+      mx = max(mx, cur);
+    }
+  }
+  pr(cnt(0, n - 1) + mx);
+}
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(0);
+  cout.tie(0);
+  int t = 1;
+  for (int tt = 0; tt < t; tt++) {
+    solve();
+  }
+}
+
+
+Similar question 2 (Similarity score: 0.79):
+Name: 231_C. To Add or Not to Add
+Tags: ['binary search', 'sortings', 'two pointers']
+Description: A piece of paper contains an array of n integers a1, a2, ..., an. Your task is to find a number that occurs the maximum number of times in this array.
+
+However, before looking for such number, you are allowed to perform not more than k following operations — choose an arbitrary element from the array and add 1 to it. In other words, you are allowed to increase some array element by 1 no more than k times (you are allowed to increase the same element of the array multiple times).
+
+Your task is to find the maximum number of occurrences of some number in the array after performing no more than k allowed operations. If there are several such numbers, your task is to find the minimum one.
+
+Input
+
+The first line contains two integers n and k (1 ≤ n ≤ 105; 0 ≤ k ≤ 109) — the number of elements in the array and the number of operations you are allowed to perform, correspondingly.
+
+The third line contains a sequence of n integers a1, a2, ..., an (|ai| ≤ 109) — the initial array. The numbers in the lines are separated by single spaces.
+
+Output
+
+In a single line print two numbers — the maximum number of occurrences of some number in the array after at most k allowed operations are performed, and the minimum number that reaches the given maximum. Separate the printed numbers by whitespaces.
+
+Examples
+
+Input
+
+5 3
+6 3 4 0 2
+
+
+Output
+
+3 4
+
+
+Input
+
+3 4
+5 5 5
+
+
+Output
+
+3 5
+
+
+Input
+
+5 3
+3 1 2 2 1
+
+
+Output
+
+4 2
+
+Note
+
+In the first sample your task is to increase the second element of the array once and increase the fifth element of the array twice. Thus, we get sequence 6, 4, 4, 0, 4, where number 4 occurs 3 times.
+
+In the second sample you don't need to perform a single operation or increase each element by one. If we do nothing, we get array 5, 5, 5, if we increase each by one, we get 6, 6, 6. In both cases the maximum number of occurrences equals 3. So we should do nothing, as number 5 is less than number 6.
+
+In the third sample we should increase the second array element once and the fifth element once. Thus, we get sequence 3, 2, 2, 2, 2, where number 2 occurs 4 times.
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+long long a[200000];
+int n, i, ans, j, x;
+long long sum, k, num;
+int main() {
+  cin >> n >> k;
+  for (i = 0; i < n; i++) {
+    scanf("%d", &x);
+    a[i] = x;
+  }
+  sort(a, a + n);
+  sum = 0;
+  ans = 0;
+  j = 0;
+  for (i = 0; i < n; i++) {
+    if (i > 0) sum = sum + (a[i] - a[i - 1]) * (i - j);
+    while (sum > k) {
+      sum -= (a[i] - a[j]);
+      j++;
+    }
+    if ((i - j + 1) > ans) {
+      ans = (i - j + 1);
+      num = a[i];
+    }
+  }
+  cout << ans << " " << num << endl;
+  return 0;
+}
+
+
+Similar question 3 (Similarity score: 0.78):
+Name: 1312_D. Count the Arrays
+Tags: ['combinatorics', 'math']
+Description: Your task is to calculate the number of arrays such that:
+
+  * each array contains n elements; 
+  * each element is an integer from 1 to m; 
+  * for each array, there is exactly one pair of equal elements; 
+  * for each array a, there exists an index i such that the array is strictly ascending before the i-th element and strictly descending after it (formally, it means that a_j < a_{j + 1}, if j < i, and a_j > a_{j + 1}, if j ≥ i). 
+
+Input
+
+The first line contains two integers n and m (2 ≤ n ≤ m ≤ 2 ⋅ 10^5).
+
+Output
+
+Print one integer — the number of arrays that meet all of the aforementioned conditions, taken modulo 998244353.
+
+Examples
+
+Input
+
+
+3 4
+
+
+Output
+
+
+6
+
+
+Input
+
+
+3 5
+
+
+Output
+
+
+10
+
+
+Input
+
+
+42 1337
+
+
+Output
+
+
+806066790
+
+
+Input
+
+
+100000 200000
+
+
+Output
+
+
+707899035
+
+Note
+
+The arrays in the first example are:
+
+  * [1, 2, 1]; 
+  * [1, 3, 1]; 
+  * [1, 4, 1]; 
+  * [2, 3, 2]; 
+  * [2, 4, 2]; 
+  * [3, 4, 3]. 
+Difficulty: 10
+Solutions: import java.io.*;
+import java.util.*;
+import java.math.*;
+
+ 
+ public class S	{
+		static class Pair  implements Comparable<Pair> {
+   int a;
+   int b;
+   public Pair(int x,int y){a=x;b=y;}
+   public Pair(){}
+   public int compareTo(Pair p1){
+      return a+b-p1.a-p1.b;
+   }
+@Override
+public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + a;
+	result = prime * result + b;
+	return result;
+}
+@Override
+public boolean equals(Object obj) {
+	Pair p = (Pair)obj;
+	if (this.a==p.a && this.b==p.b)
+		return true;
+	else return false;
+	
+}
+     
+   
+ }
+static class TrieNode{
+  TrieNode[]child;
+  int w;
+  boolean term;
+  TrieNode(){
+    child = new TrieNode[26];  
+  }
+}
+  public static int gcd(int a,int b)
+  {
+    if(a<b)
+
+      return gcd(b,a);
+    if(b==0)
+      return a;
+    return gcd(b,a%b);
+    
+  }
+  //static long ans = 0;
+  static long mod = 998244353;//(long)(1e9+7);
+   
+    public static void main(String[] args) throws Exception {
+       new Thread(null, null, "Anshum Gupta", 99999999) {
+            public void run() {
+                try {
+                    solve();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
+        }.start();
+    }
+
+static long pow(long x,long y){
+    if(y == 0)return 1;
+    if(y==1)return x;
+    long a = pow(x,y/2);
+    a = (a*a)%mod;
+    if(y%2==0){
+        return a;
+    }
+    return (a*x)%mod;
+}
+static long my_inv(long x) {
+	return pow(x,mod-2);
+}
+static long bin(int n,int r) {
+	return (((fact[n]*inv_fact[n-r])%mod)*inv_fact[r])%mod;
+}
+static long mxx;
+static int mxN = (int)(1e5+5);
+static long[]fact,inv_fact;
+ public static void solve() throws Exception {
+   // solve the problem here
+   MyScanner s = new MyScanner();
+        out = new PrintWriter(new BufferedOutputStream(System.out), true);
+        int t = 1;//s.nextInt();
+        mxx = (long)(1e18+5);
+        while(t-->0){
+        	int n = s.nextInt();
+        	int m = s.nextInt();
+        	if(n == 2) {
+        		out.println("0");
+        		break;
+        	}
+        	fact = new long[m+1];
+        	inv_fact=new long[m+1];
+        	fact[1] = inv_fact[1] = 1;
+        	for(int i=2;i<=m;i++) {
+        		fact[i] = (fact[i-1]*i)%mod;
+        		inv_fact[i] = my_inv(fact[i]);
+        	}
+        	long ans = bin(m,n-1);
+        	ans = (ans*(n-2))%mod;
+        	ans = (ans * pow(2,n-3))%mod;
+        	if(ans < 0)ans += mod;
+        	out.println(ans);
+        }
+           
+        out.flush();
+}
+ 
+     
+ 
+ 
+ 
+    //-----------PrintWriter for faster output---------------------------------
+    public static PrintWriter out;
+ 
+    //-----------MyScanner class for faster input----------
+    public static class MyScanner {
+        BufferedReader br;
+        StringTokenizer st;
+ 
+        public MyScanner() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+ 
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+ 
+        int nextInt() { return Integer.parseInt(next()); }
+        long nextLong() { return Long.parseLong(next()); }
+        double nextDouble() { return Double.parseDouble(next()); }
+         
+        String nextLine(){
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return str;
+        }
+    }
+    //--------------------------------------------------------
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

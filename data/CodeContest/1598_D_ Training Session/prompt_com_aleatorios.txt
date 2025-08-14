@@ -1,0 +1,387 @@
+CURRENT QUESTION:
+Monocarp is the coach of the Berland State University programming teams. He decided to compose a problemset for a training session for his teams.
+
+Monocarp has n problems that none of his students have seen yet. The i-th problem has a topic a_i (an integer from 1 to n) and a difficulty b_i (an integer from 1 to n). All problems are different, that is, there are no two tasks that have the same topic and difficulty at the same time.
+
+Monocarp decided to select exactly 3 problems from n problems for the problemset. The problems should satisfy at least one of two conditions (possibly, both):
+
+  * the topics of all three selected problems are different; 
+  * the difficulties of all three selected problems are different. 
+
+
+
+Your task is to determine the number of ways to select three problems for the problemset.
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 50000) — the number of testcases.
+
+The first line of each testcase contains an integer n (3 ≤ n ≤ 2 ⋅ 10^5) — the number of problems that Monocarp have.
+
+In the i-th of the following n lines, there are two integers a_i and b_i (1 ≤ a_i, b_i ≤ n) — the topic and the difficulty of the i-th problem.
+
+It is guaranteed that there are no two problems that have the same topic and difficulty at the same time.
+
+The sum of n over all testcases doesn't exceed 2 ⋅ 10^5.
+
+Output
+
+Print the number of ways to select three training problems that meet either of the requirements described in the statement.
+
+Example
+
+Input
+
+
+2
+4
+2 4
+3 4
+2 1
+1 3
+5
+1 5
+2 4
+3 3
+4 2
+5 1
+
+
+Output
+
+
+3
+10
+
+Note
+
+In the first example, you can take the following sets of three problems:
+
+  * problems 1, 2, 4; 
+  * problems 1, 3, 4; 
+  * problems 2, 3, 4. 
+
+
+
+Thus, the number of ways is equal to three.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 1417_B. Two Arrays
+Tags: ['greedy', 'math', 'sortings']
+Description: RedDreamer has an array a consisting of n non-negative integers, and an unlucky integer T.
+
+Let's denote the misfortune of array b having length m as f(b) — the number of pairs of integers (i, j) such that 1 ≤ i < j ≤ m and b_i + b_j = T. RedDreamer has to paint each element of a into one of two colors, white and black (for each element, the color is chosen independently), and then create two arrays c and d so that all white elements belong to c, and all black elements belong to d (it is possible that one of these two arrays becomes empty). RedDreamer wants to paint the elements in such a way that f(c) + f(d) is minimum possible.
+
+For example:
+
+  * if n = 6, T = 7 and a = [1, 2, 3, 4, 5, 6], it is possible to paint the 1-st, the 4-th and the 5-th elements white, and all other elements black. So c = [1, 4, 5], d = [2, 3, 6], and f(c) + f(d) = 0 + 0 = 0; 
+  * if n = 3, T = 6 and a = [3, 3, 3], it is possible to paint the 1-st element white, and all other elements black. So c = [3], d = [3, 3], and f(c) + f(d) = 0 + 1 = 1. 
+
+
+
+Help RedDreamer to paint the array optimally!
+
+Input
+
+The first line contains one integer t (1 ≤ t ≤ 1000) — the number of test cases. Then t test cases follow.
+
+The first line of each test case contains two integers n and T (1 ≤ n ≤ 10^5, 0 ≤ T ≤ 10^9) — the number of elements in the array and the unlucky integer, respectively. 
+
+The second line contains n integers a_1, a_2, ..., a_n (0 ≤ a_i ≤ 10^9) — the elements of the array. 
+
+The sum of n over all test cases does not exceed 10^5.
+
+Output
+
+For each test case print n integers: p_1, p_2, ..., p_n (each p_i is either 0 or 1) denoting the colors. If p_i is 0, then a_i is white and belongs to the array c, otherwise it is black and belongs to the array d.
+
+If there are multiple answers that minimize the value of f(c) + f(d), print any of them.
+
+Example
+
+Input
+
+
+2
+6 7
+1 2 3 4 5 6
+3 6
+3 3 3
+
+
+Output
+
+
+1 0 0 1 1 0 
+1 0 0
+Difficulty: 8
+Solutions: for I in range(int(input())):
+    n,t = map(int,input().split())
+    a = list(map(int,input().split()))
+    d = []
+    if t % 2 != 0:
+        for i in range(n):
+            if a[i] <= t // 2:
+                d.append(1)
+            else:
+                d.append(0)
+    else:
+        p = 0
+        for i in range(n):
+            if a[i] < t//2:
+                d.append(1)
+            elif a[i] > t//2:
+                d.append(0)
+            else:
+                d.append(p)
+                p = (p + 1) % 2
+    print(*d)
+
+Example question 2:
+Name: p02293 Parallel/Orthogonal
+Tags: ['']
+Description: For given two lines s1 and s2, print "2" if they are parallel, "1" if they are orthogonal, or "0" otherwise.
+
+s1 crosses points p0 and p1, and s2 crosses points p2 and p3.
+
+Constraints
+
+* 1 ≤ q ≤ 1000
+* -10000 ≤ xpi, ypi ≤ 10000
+* p0 ≠ p1 and p2 ≠ p3.
+
+Input
+
+The entire input looks like:
+
+
+q (the number of queries)
+1st query
+2nd query
+...
+qth query
+
+
+Each query consists of integer coordinates of the points p0, p1, p2, p3 in the following format:
+
+
+xp0 yp0 xp1 yp1 xp2 yp2 xp3 yp3
+
+
+Output
+
+For each query, print "2", "1" or "0".
+
+Example
+
+Input
+
+3
+0 0 3 0 0 2 3 2
+0 0 3 0 1 1 1 4
+0 0 3 0 1 1 2 2
+
+
+Output
+
+2
+1
+0
+Difficulty: 0
+Solutions: #include <iostream>
+#include <cmath>
+#include <utility>
+#define EPS 1e-10
+using namespace std;
+
+int main(void){
+
+    pair<double, double> p0, p1, p2, p3;
+    int n;
+    cin >> n;
+
+    while(n--){
+
+        cin >> p0.first >> p0.second;
+        cin >> p1.first >> p1.second;
+        cin >> p2.first >> p2.second;
+        cin >> p3.first >> p3.second;
+
+        double innerProduct = (p1.first - p0.first)*(p3.first - p2.first)
+            + (p1.second - p0.second)*(p3.second - p2.second);
+        double crossProduct = (p1.first - p0.first)*(p3.second - p2.second)
+            - (p1.second - p0.second)*(p3.first - p2.first);
+
+        if(crossProduct == 0){
+            cout << "2" << endl;
+        }else if(innerProduct == 0 ){
+            cout << "1" << endl;
+        }else{
+            cout << "0" << endl;
+        }
+    }
+    return 0;
+}
+
+Example question 3:
+Name: 902_E. Bipartite Segments
+Tags: ['binary search', 'data structures', 'dfs and similar', 'dsu', 'graphs', 'two pointers']
+Description: You are given an undirected graph with n vertices. There are no edge-simple cycles with the even length in it. In other words, there are no cycles of even length that pass each edge at most once. Let's enumerate vertices from 1 to n. 
+
+You have to answer q queries. Each query is described by a segment of vertices [l; r], and you have to count the number of its subsegments [x; y] (l ≤ x ≤ y ≤ r), such that if we delete all vertices except the segment of vertices [x; y] (including x and y) and edges between them, the resulting graph is bipartite.
+
+Input
+
+The first line contains two integers n and m (1 ≤ n ≤ 3·105, 1 ≤ m ≤ 3·105) — the number of vertices and the number of edges in the graph.
+
+The next m lines describe edges in the graph. The i-th of these lines contains two integers ai and bi (1 ≤ ai, bi ≤ n; ai ≠ bi), denoting an edge between vertices ai and bi. It is guaranteed that this graph does not contain edge-simple cycles of even length.
+
+The next line contains a single integer q (1 ≤ q ≤ 3·105) — the number of queries.
+
+The next q lines contain queries. The i-th of these lines contains two integers li and ri (1 ≤ li ≤ ri ≤ n) — the query parameters.
+
+Output
+
+Print q numbers, each in new line: the i-th of them should be the number of subsegments [x; y] (li ≤ x ≤ y ≤ ri), such that the graph that only includes vertices from segment [x; y] and edges between them is bipartite.
+
+Examples
+
+Input
+
+6 6
+1 2
+2 3
+3 1
+4 5
+5 6
+6 4
+3
+1 3
+4 6
+1 6
+
+
+Output
+
+5
+5
+14
+
+
+Input
+
+8 9
+1 2
+2 3
+3 1
+4 5
+5 6
+6 7
+7 8
+8 4
+7 2
+3
+1 8
+1 4
+3 8
+
+
+Output
+
+27
+8
+19
+
+Note
+
+The first example is shown on the picture below:
+
+<image>
+
+For the first query, all subsegments of [1; 3], except this segment itself, are suitable.
+
+For the first query, all subsegments of [4; 6], except this segment itself, are suitable.
+
+For the third query, all subsegments of [1; 6] are suitable, except [1; 3], [1; 4], [1; 5], [1; 6], [2; 6], [3; 6], [4; 6].
+
+The second example is shown on the picture below:
+
+<image>
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int maxn = 1e5 + 10;
+long long n, m, q, l, r;
+long long vis[3 * maxn], cir[3 * maxn], suff[3 * maxn];
+vector<long long> G[3 * maxn];
+stack<long long> path;
+void dfs(long long now, long long pre) {
+  path.push(now);
+  vis[now] = 1;
+  for (int i = 0; i < (int)G[now].size(); i++) {
+    long long Next = G[now][i];
+    if (Next == pre) continue;
+    if (!vis[Next]) dfs(Next, now);
+    if (vis[Next] == 1) {
+      long long maxc = now, minc = now;
+      while (!path.empty()) {
+        long long temp = path.top();
+        path.pop();
+        maxc = max(maxc, temp), minc = min(minc, temp);
+        if (temp == Next) break;
+      }
+      cir[minc] = maxc;
+    }
+  }
+  if (!path.empty() && path.top() == now) path.pop();
+  vis[now] = 2;
+}
+int main() {
+  scanf("%lld %lld", &n, &m);
+  for (int i = 1; i <= m; i++) {
+    long long u, v;
+    scanf("%lld %lld", &u, &v);
+    G[u].push_back(v);
+    G[v].push_back(u);
+  }
+  memset(vis, 0, sizeof(vis));
+  for (int i = 0; i <= n + 1; i++) cir[i] = n + 1;
+  for (int i = 1; i <= n; i++) {
+    if (!vis[i]) dfs(i, 0);
+  }
+  suff[n] = suff[n + 1] = 0;
+  for (int i = n; i >= 1; i--) cir[i] = min(cir[i], cir[i + 1]);
+  for (int i = n; i >= 1; i--) suff[i] = cir[i] - i + suff[i + 1];
+  scanf("%lld", &q);
+  while (q--) {
+    scanf("%lld %lld", &l, &r);
+    long long L = l, R = r, p;
+    while (L <= R) {
+      long long m = (L + R) / 2;
+      if (cir[m] <= r) {
+        L = m + 1;
+      } else {
+        p = m;
+        R = m - 1;
+      }
+    }
+    long long ans = suff[l] - suff[p] + (r - p + 1) * (r - p + 2) / 2;
+    printf("%lld\n", ans);
+  }
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

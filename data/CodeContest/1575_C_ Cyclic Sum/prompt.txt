@@ -1,0 +1,708 @@
+CURRENT QUESTION:
+Denote a cyclic sequence of size n as an array s such that s_n is adjacent to s_1. The segment s[r, l] where l < r is the concatenation of s[r, n] and s[1, l].
+
+You are given an array a consisting of n integers. Define b as the cyclic sequence obtained from concatenating m copies of a. Note that b has size n ⋅ m.
+
+You are given an integer k where k = 1 or k is a prime number. Find the number of different segments in b where the sum of elements in the segment is divisible by k.
+
+Two segments are considered different if the set of indices of the segments are different. For example, when n = 3 and m = 2, the set of indices for segment s[2, 5] is \{2, 3, 4, 5\}, and for segment s[5, 2] is \{5, 6, 1, 2\}. In particular, the segments s[1, 6], s[2,1], …, s[6, 5] are considered as the same segment.
+
+Output the answer modulo 10^9 + 7.
+
+Input
+
+The first line contains three integers n, m, and k (1 ≤ n, m, k ≤ 2 ⋅ 10^5, k = 1 or k is a prime number).
+
+The second line contains n integers a_1, a_2, …, a_n (0 ≤ a_i ≤ 2 ⋅ 10^5).
+
+Output
+
+Output an integer denoting the number of different segments in b where the sum of elements in the segment is divisible by k, modulo 10^9 + 7.
+
+Examples
+
+Input
+
+
+5 1 5
+1 2 3 4 3
+
+
+Output
+
+
+4
+
+
+Input
+
+
+5 1 5
+1 2 3 4 5
+
+
+Output
+
+
+5
+
+
+Input
+
+
+5 4 5
+1 2 3 4 5
+
+
+Output
+
+
+125
+
+Note
+
+In the first example, all valid segments are [1,4], [2, 3], [3, 5], and [4, 2].
+
+In the second example, one of the valid segments is [1, 5].
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.74):
+Name: 466_D. Increase Sequence
+Tags: ['combinatorics', 'dp']
+Description: Peter has a sequence of integers a1, a2, ..., an. Peter wants all numbers in the sequence to equal h. He can perform the operation of "adding one on the segment [l, r]": add one to all elements of the sequence with indices from l to r (inclusive). At that, Peter never chooses any element as the beginning of the segment twice. Similarly, Peter never chooses any element as the end of the segment twice. In other words, for any two segments [l1, r1] and [l2, r2], where Peter added one, the following inequalities hold: l1 ≠ l2 and r1 ≠ r2.
+
+How many distinct ways are there to make all numbers in the sequence equal h? Print this number of ways modulo 1000000007 (109 + 7). Two ways are considered distinct if one of them has a segment that isn't in the other way.
+
+Input
+
+The first line contains two integers n, h (1 ≤ n, h ≤ 2000). The next line contains n integers a1, a2, ..., an (0 ≤ ai ≤ 2000).
+
+Output
+
+Print a single integer — the answer to the problem modulo 1000000007 (109 + 7).
+
+Examples
+
+Input
+
+3 2
+1 1 1
+
+
+Output
+
+4
+
+
+Input
+
+5 1
+1 1 1 1 1
+
+
+Output
+
+1
+
+
+Input
+
+4 3
+3 2 1 1
+
+
+Output
+
+0
+Difficulty: 10
+Solutions: /*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author Trung Pham
+ */
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.SortedSet;
+import java.util.Stack;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
+/**
+ *
+ *
+ *
+ *
+ * @author pttrung
+ */
+public class D_Round_266_Div2 {
+
+    public static long MOD = 1000000007;
+    static int[] X = {0, 1};
+    static int[] Y = {1, 0};
+    static long[][] dp;
+    static long[] pre;
+
+    public static void main(String[] args) throws FileNotFoundException {
+        // PrintWriter out = new PrintWriter(new FileOutputStream(new File(
+        // "output.txt")));
+        PrintWriter out = new PrintWriter(System.out);      
+        Scanner in = new Scanner();
+        int n = in.nextInt();
+        int p = in.nextInt();
+        int[]data = new int[n];
+        boolean ok = true;
+        for(int i = 0; i < n; i++){
+            data[i] = in.nextInt();
+            ok &= (data[i] <= p);
+        }       
+        if(ok){
+            long re = 0;
+            dp = new long[n][p + 1];
+            dp[0][0] = data[0] == p || data[0] == (p - 1)? 1 : 0;
+            dp[0][1] = data[0] == p - 1? 1 : 0;
+            for(int i = 1; i < n; i++){
+                int v = p - data[i];
+                dp[i][v] = dp[i - 1][v];
+                if(v > 0){
+                    dp[i][v] += dp[i - 1][v - 1];
+                    dp[i][v] %= MOD;
+                    dp[i][v - 1] = (dp[i - 1][v]*(long)v) %MOD;
+                    dp[i][v - 1] += dp[i - 1][v - 1];
+                    dp[i][v - 1] %= MOD;
+                    dp[i][v - 1] += (dp[i - 1][v - 1]*((long)v - 1)) % MOD;
+                    dp[i][v - 1] %= MOD;
+                }
+                
+            }
+            out.println(dp[n - 1][0]);
+        }else{
+            out.println(0);
+        }
+        out.close();
+    }
+    
+ 
+    
+    public static long preCal(int l){
+        if(l == 1){
+            return l;
+        }
+        if(pre[l] != 0){
+            return pre[l];
+        }
+        long result = 1;
+        for(int i = 1; i < l; i++){
+            
+            long b = preCal(l - i);
+            result += b;
+            result %= MOD;
+        }
+        return pre[l] = result;
+    }
+
+    public static int[] KMP(String val) {
+        int i = 0;
+        int j = -1;
+        int[] result = new int[val.length() + 1];
+        result[0] = -1;
+        while (i < val.length()) {
+            while (j >= 0 && val.charAt(j) != val.charAt(i)) {
+                j = result[j];
+            }
+            j++;
+            i++;
+            result[i] = j;
+        }
+        return result;
+
+    }
+
+    public static boolean nextPer(int[] data) {
+        int i = data.length - 1;
+        while (i > 0 && data[i] < data[i - 1]) {
+            i--;
+        }
+        if (i == 0) {
+            return false;
+        }
+        int j = data.length - 1;
+        while (data[j] < data[i - 1]) {
+            j--;
+        }
+        int temp = data[i - 1];
+        data[i - 1] = data[j];
+        data[j] = temp;
+        Arrays.sort(data, i, data.length);
+        return true;
+    }
+
+    public static int digit(long n) {
+        int result = 0;
+        while (n > 0) {
+            n /= 10;
+            result++;
+        }
+        return result;
+    }
+
+    public static double dist(long a, long b, long x, long y) {
+        double val = (b - a) * (b - a) + (x - y) * (x - y);
+        val = Math.sqrt(val);
+        double other = x * x + a * a;
+        other = Math.sqrt(other);
+        return val + other;
+
+
+
+    }
+
+    public static class Point implements Comparable<Point> {
+
+        int x, y;
+
+        public Point(int start, int end) {
+            this.x = start;
+            this.y = end;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 47 * hash + this.x;
+            hash = 47 * hash + this.y;
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Point other = (Point) obj;
+            if (this.x != other.x) {
+                return false;
+            }
+            if (this.y != other.y) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int compareTo(Point o) {
+            return x - o.x;
+        }
+    }
+
+    public static class FT {
+
+        long[] data;
+
+        FT(int n) {
+            data = new long[n];
+        }
+
+        public void update(int index, long value) {
+            while (index < data.length) {
+                data[index] += value;
+                index += (index & (-index));
+            }
+        }
+
+        public long get(int index) {
+            long result = 0;
+            while (index > 0) {
+                result += data[index];
+                index -= (index & (-index));
+            }
+            return result;
+
+        }
+    }
+
+    public static long gcd(long a, long b) {
+        if (b == 0) {
+            return a;
+        }
+        return gcd(b, a % b);
+    }
+
+    public static long pow(long a, long b) {
+        if (b == 0) {
+            return 1;
+        }
+        if (b == 1) {
+            return a;
+        }
+        long val = pow(a, b / 2);
+        if (b % 2 == 0) {
+            return val * val % MOD;
+        } else {
+            return val * (val * a % MOD) % MOD;
+
+
+        }
+    }
+
+    static class Scanner {
+
+        BufferedReader br;
+        StringTokenizer st;
+
+        public Scanner() throws FileNotFoundException {
+            // System.setOut(new PrintStream(new BufferedOutputStream(System.out), true));
+            br = new BufferedReader(new InputStreamReader(System.in));
+            //  br = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
+        }
+
+        public String next() {
+
+            while (st == null || !st.hasMoreTokens()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (Exception e) {
+                    throw new RuntimeException();
+                }
+            }
+            return st.nextToken();
+        }
+
+        public long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        public int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        public double nextDouble() {
+            return Double.parseDouble(next());
+        }
+
+        public String nextLine() {
+            st = null;
+            try {
+                return br.readLine();
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+        }
+
+        public boolean endLine() {
+            try {
+                String next = br.readLine();
+                while (next != null && next.trim().isEmpty()) {
+                    next = br.readLine();
+                }
+                if (next == null) {
+                    return true;
+                }
+                st = new StringTokenizer(next);
+                return st.hasMoreTokens();
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+        }
+    }
+}
+
+
+Similar question 2 (Similarity score: 0.74):
+Name: p03003 AtCoder Beginner Contest 130 - Common Subsequence
+Tags: ['']
+Description: You are given two integer sequences S and T of length N and M, respectively, both consisting of integers between 1 and 10^5 (inclusive).
+
+In how many pairs of a subsequence of S and a subsequence of T do the two subsequences are the same in content?
+
+Here the subsequence of A is a sequence obtained by removing zero or more elements from A and concatenating the remaining elements without changing the order.
+
+For both S and T, we distinguish two subsequences if the sets of the indices of the removed elements are different, even if the subsequences are the same in content.
+
+Since the answer can be tremendous, print the number modulo 10^9+7.
+
+Constraints
+
+* 1 \leq N, M \leq 2 \times 10^3
+* The length of S is N.
+* The length of T is M.
+* 1 \leq S_i, T_i \leq 10^5
+* All values in input are integers.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+N M
+S_1 S_2 ... S_{N-1} S_{N}
+T_1 T_2 ... T_{M-1} T_{M}
+
+
+Output
+
+Print the number of pairs of a subsequence of S and a subsequence of T such that the subsequences are the same in content, modulo 10^9+7.
+
+Examples
+
+Input
+
+2 2
+1 3
+3 1
+
+
+Output
+
+3
+
+
+Input
+
+2 2
+1 1
+1 1
+
+
+Output
+
+6
+
+
+Input
+
+4 4
+3 4 5 6
+3 4 5 6
+
+
+Output
+
+16
+
+
+Input
+
+10 9
+9 6 5 7 5 9 8 5 6 7
+8 6 8 5 5 7 9 9 7
+
+
+Output
+
+191
+
+
+Input
+
+20 20
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+
+
+Output
+
+846527861
+Difficulty: 0
+Solutions: #include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+const int MOD = 1000 * 1000 * 1000 + 7;
+
+int main()
+{
+	int N, M;
+	cin >> N >> M;
+
+	vector<int> S(N), T(M);
+	for (auto &x : S) cin >> x;
+	for (auto &x : T) cin >> x;
+
+	vector<vector<long long>> dp(N + 1, vector<long long>(M + 1, 0));
+
+	for (int i = 0; i <= N; ++i) {
+		dp[i][0] = 1;
+	}
+	for (int j = 0; j <= M; ++j) {
+		dp[0][j] = 1;
+	}
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < M; ++j) {
+			dp[i + 1][j + 1] = (dp[i][j + 1] + dp[i + 1][j]) % MOD;
+			if (S[i] != T[j]) {
+				dp[i + 1][j + 1] = (dp[i + 1][j + 1] + MOD - dp[i][j]) % MOD;
+			}
+		}
+	}
+	cout << dp[N][M] << endl;
+}
+
+
+Similar question 3 (Similarity score: 0.73):
+Name: 1129_D. Isolation
+Tags: ['data structures', 'dp']
+Description: Find the number of ways to divide an array a of n integers into any number of disjoint non-empty segments so that, in each segment, there exist at most k distinct integers that appear exactly once.
+
+Since the answer can be large, find it modulo 998 244 353.
+
+Input
+
+The first line contains two space-separated integers n and k (1 ≤ k ≤ n ≤ 10^5) — the number of elements in the array a and the restriction from the statement.
+
+The following line contains n space-separated integers a_1, a_2, …, a_n (1 ≤ a_i ≤ n) — elements of the array a.
+
+Output
+
+The first and only line contains the number of ways to divide an array a modulo 998 244 353.
+
+Examples
+
+Input
+
+
+3 1
+1 1 2
+
+
+Output
+
+
+3
+
+
+Input
+
+
+5 2
+1 1 2 1 3
+
+
+Output
+
+
+14
+
+
+Input
+
+
+5 5
+1 2 3 4 5
+
+
+Output
+
+
+16
+
+Note
+
+In the first sample, the three possible divisions are as follows.
+
+  * [[1], [1], [2]] 
+  * [[1, 1], [2]] 
+  * [[1, 1, 2]] 
+
+
+
+Division [[1], [1, 2]] is not possible because two distinct integers appear exactly once in the second segment [1, 2].
+Difficulty: 10
+Solutions: #include <bits/stdc++.h>
+int bb[1 + 100000], dp[1 + 100000], ss[((100000 + 500 - 1) / 500)],
+    dq[((100000 + 500 - 1) / 500)][500 + 1 + 500];
+void update(int h) {
+  int *qq = dq[h];
+  int i, t, c;
+  t = 0;
+  memset(qq, 0, (500 + 1 + 500) * sizeof *qq);
+  for (i = (h + 1) * 500; i > h * 500; i--) {
+    t += bb[i];
+    qq[500 + t] = (qq[500 + t] + dp[i - 1]) % 998244353;
+  }
+  for (c = 1; c <= 500 + 500; c++) qq[c] = (qq[c] + qq[c - 1]) % 998244353;
+}
+int main() {
+  static int pp[1 + 100000], ii[1 + 100000];
+  int n, m, k, h, i, j;
+  scanf("%d%d", &n, &k);
+  for (i = 1; i <= n; i++) {
+    int a;
+    scanf("%d", &a);
+    pp[i] = ii[a];
+    ii[a] = i;
+  }
+  dp[0] = 1;
+  for (j = 1; j <= n; j++) {
+    int p, x, t;
+    m = (j - 1) / 500;
+    ss[m] += 1 - bb[j];
+    bb[j] = 1;
+    if ((p = pp[j])) {
+      h = (p - 1) / 500;
+      ss[h] += -1 - bb[p];
+      bb[p] = -1;
+      if (p <= m * 500) update(h);
+      if ((p = pp[p])) {
+        h = (p - 1) / 500;
+        ss[h] += 0 - bb[p];
+        bb[p] = 0;
+        if (p <= m * 500) update(h);
+      }
+    }
+    x = 0;
+    t = 0;
+    for (i = j; i > m * 500; i--) {
+      t += bb[i];
+      if (t <= k) x = (x + dp[i - 1]) % 998244353;
+    }
+    for (h = m - 1; h >= 0; h--) {
+      if (k - t >= -500)
+        x = (x + dq[h][500 + (500 < k - t ? 500 : k - t)]) % 998244353;
+      t += ss[h];
+    }
+    dp[j] = x;
+    if (j % 500 == 0) update(m);
+  }
+  printf("%d\n", dp[n]);
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

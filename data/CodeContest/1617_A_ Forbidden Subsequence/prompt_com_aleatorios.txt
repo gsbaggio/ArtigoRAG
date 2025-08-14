@@ -1,0 +1,380 @@
+CURRENT QUESTION:
+You are given strings S and T, consisting of lowercase English letters. It is guaranteed that T is a permutation of the string abc. 
+
+Find string S', the lexicographically smallest permutation of S such that T is not a subsequence of S'.
+
+String a is a permutation of string b if the number of occurrences of each distinct character is the same in both strings.
+
+A string a is a subsequence of a string b if a can be obtained from b by deletion of several (possibly, zero or all) elements.
+
+A string a is lexicographically smaller than a string b if and only if one of the following holds:
+
+  * a is a prefix of b, but a ≠ b;
+  * in the first position where a and b differ, the string a has a letter that appears earlier in the alphabet than the corresponding letter in b.
+
+Input
+
+Each test contains multiple test cases. The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of test cases. Description of the test cases follows.
+
+The first line of each test case contains a string S (1 ≤ |S| ≤ 100), consisting of lowercase English letters.
+
+The second line of each test case contains a string T that is a permutation of the string abc. (Hence, |T| = 3).
+
+Note that there is no limit on the sum of |S| across all test cases.
+
+Output
+
+For each test case, output a single string S', the lexicographically smallest permutation of S such that T is not a subsequence of S'.
+
+Example
+
+Input
+
+
+7
+abacaba
+abc
+cccba
+acb
+dbsic
+bac
+abracadabra
+abc
+dddddddddddd
+cba
+bbc
+abc
+ac
+abc
+
+
+Output
+
+
+aaaacbb
+abccc
+bcdis
+aaaaacbbdrr
+dddddddddddd
+bbc
+ac
+
+Note
+
+In the first test case, both aaaabbc and aaaabcb are lexicographically smaller than aaaacbb, but they contain abc as a subsequence.
+
+In the second test case, abccc is the smallest permutation of cccba and does not contain acb as a subsequence.
+
+In the third test case, bcdis is the smallest permutation of dbsic and does not contain bac as a subsequence.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 1422_D. Returning Home
+Tags: ['graphs', 'shortest paths', 'sortings']
+Description: Yura has been walking for some time already and is planning to return home. He needs to get home as fast as possible. To do this, Yura can use the instant-movement locations around the city.
+
+Let's represent the city as an area of n × n square blocks. Yura needs to move from the block with coordinates (s_x,s_y) to the block with coordinates (f_x,f_y). In one minute Yura can move to any neighboring by side block; in other words, he can move in four directions. Also, there are m instant-movement locations in the city. Their coordinates are known to you and Yura. Yura can move to an instant-movement location in no time if he is located in a block with the same coordinate x or with the same coordinate y as the location.
+
+Help Yura to find the smallest time needed to get home.
+
+Input
+
+The first line contains two integers n and m — the size of the city and the number of instant-movement locations (1 ≤ n ≤ 10^9, 0 ≤ m ≤ 10^5).
+
+The next line contains four integers s_x s_y f_x f_y — the coordinates of Yura's initial position and the coordinates of his home ( 1 ≤ s_x, s_y, f_x, f_y ≤ n).
+
+Each of the next m lines contains two integers x_i y_i — coordinates of the i-th instant-movement location (1 ≤ x_i, y_i ≤ n).
+
+Output
+
+In the only line print the minimum time required to get home.
+
+Examples
+
+Input
+
+
+5 3
+1 1 5 5
+1 2
+4 1
+3 3
+
+
+Output
+
+
+5
+
+
+Input
+
+
+84 5
+67 59 41 2
+39 56
+7 2
+15 3
+74 18
+22 7
+
+
+Output
+
+
+42
+
+Note
+
+In the first example Yura needs to reach (5, 5) from (1, 1). He can do that in 5 minutes by first using the second instant-movement location (because its y coordinate is equal to Yura's y coordinate), and then walking (4, 1) → (4, 2) → (4, 3) → (5, 3) → (5, 4) → (5, 5).
+Difficulty: 10
+Solutions: from bisect import *
+from collections import *
+from math import *
+from heapq import *
+from typing import List
+from itertools import *
+from operator import *
+from functools import *
+import sys
+'''
+@lru_cache(None)
+def fact(x):
+    if x<2:
+        return 1
+    return fact(x-1)*x
+
+@lru_cache(None)
+def per(i,j):
+    return fact(i)//fact(i-j)
+
+@lru_cache(None)
+def com(i,j):
+    return per(i,j)//fact(j)
+
+def linc(f,t,l,r):
+    while l<r:
+        mid=(l+r)//2
+        if t>f(mid):
+            l=mid+1
+        else:
+            r=mid
+    return l
+
+def rinc(f,t,l,r):
+    while l<r:
+        mid=(l+r+1)//2
+        if t<f(mid):
+            r=mid-1
+        else:
+            l=mid
+    return l
+
+def ldec(f,t,l,r):
+    while l<r:
+        mid=(l+r)//2
+        if t<f(mid):
+            l=mid+1
+        else:
+            r=mid
+    return l
+
+def rdec(f,t,l,r):
+    while l<r:
+        mid=(l+r+1)//2
+        if t>f(mid):
+            r=mid-1
+        else:
+            l=mid
+    return l
+
+def isprime(n):
+    for i in range(2,int(n**0.5)+1):
+        if n%i==0:
+            return False
+    return True
+
+def power2(n):
+    while not n&1:
+        n>>=1
+    return n==1
+'''
+'''
+import time
+s=time.time()
+e=time.time()
+print(e-s)
+'''
+'''
+t=int(input())
+for i in range(t):
+    n,m=map(int,input().split())
+    arr=[]
+    for i in range(n):
+        arr.append(list(map(int,input().split())))
+    used=set()
+    ans=0
+    for i in range(n//2+1):
+        for j in range(m//2+1):
+            if (i,j) not in used:
+                tmp=set([(i,j),(n-1-i,j),(n-1-i,m-1-j),(i,m-1-j)])
+                used|=tmp
+                if len(tmp)==1:
+                    continue
+                elif len(tmp)==2:
+                    (x,y),(a,b)=tmp
+                    ans+=abs(arr[x][y]-arr[a][b])
+                else:
+                    res=[]
+                    for x,y in tmp:
+                        res.append(arr[x][y])
+                    res.sort()
+                    ans+=min(sum(abs(res[i]-res[j]) for j in range(4)) for i in range(1,3))
+
+    print(ans)
+'''
+def dij(s,graph):
+    d={}
+    d[s]=0
+    heap=[(0,s)]
+    seen=set()
+    while heap:
+        dis,u=heappop(heap)
+        if u in seen:
+            continue
+        for v in graph[u]:
+            if v not in d or d[v]>d[u]+graph[u][v]:
+                d[v]=d[u]+graph[u][v]
+                heappush(heap,(d[v],v))
+    return d
+n,m=map(int,input().split())
+sx,sy,fx,fy=map(int,input().split())
+s=set()
+for i in range(m):
+    x,y=map(int,input().split())
+    s.add((x,y))
+graph=defaultdict(dict)
+s.add((sx,sy))
+arr=list(s)
+#print(arr)
+for i,(x,y) in enumerate(arr):
+    if x==sx and y==sy:
+        start=i
+l=len(arr)
+ax=sorted(range(l),key=lambda i: arr[i][0])
+ay=sorted(range(l),key=lambda i: arr[i][1])
+#print(ax,ay)
+for i in range(l-1):
+    tmp=arr[ax[i+1]][0]-arr[ax[i]][0]
+    if ax[i+1] not in graph[ax[i]]:
+        graph[ax[i]][ax[i+1]]=graph[ax[i+1]][ax[i]]=tmp
+    else:
+        graph[ax[i]][ax[i+1]]=graph[ax[i+1]][ax[i]]=min(tmp,graph[ax[i]][ax[i+1]])
+    #print(i,ax[i],ax[i+1],graph[ax[i]][ax[i+1]])
+for i in range(l-1):
+    tmp=arr[ay[i+1]][1]-arr[ay[i]][1]
+    if ay[i+1] not in graph[ay[i]]:
+        graph[ay[i]][ay[i+1]]=graph[ay[i+1]][ay[i]]=tmp
+    else:
+        graph[ay[i]][ay[i+1]]=graph[ay[i+1]][ay[i]]=min(tmp,graph[ay[i]][ay[i+1]])
+    #print(i,ay[i],ay[i+1],graph[ay[i]][ay[i+1]])
+        
+#print(graph)
+d=dij(start,graph)
+ans=inf
+for k in d:
+    x,y=arr[k]
+    ans=min(ans,abs(x-fx)+abs(y-fy)+d[k])
+print(ans)
+
+
+
+
+
+
+
+Example question 2:
+Name: 585_C. Alice, Bob, Oranges and Apples
+Tags: ['number theory']
+Description: Alice and Bob decided to eat some fruit. In the kitchen they found a large bag of oranges and apples. Alice immediately took an orange for herself, Bob took an apple. To make the process of sharing the remaining fruit more fun, the friends decided to play a game. They put multiple cards and on each one they wrote a letter, either 'A', or the letter 'B'. Then they began to remove the cards one by one from left to right, every time they removed a card with the letter 'A', Alice gave Bob all the fruits she had at that moment and took out of the bag as many apples and as many oranges as she had before. Thus the number of oranges and apples Alice had, did not change. If the card had written letter 'B', then Bob did the same, that is, he gave Alice all the fruit that he had, and took from the bag the same set of fruit. After the last card way removed, all the fruit in the bag were over.
+
+You know how many oranges and apples was in the bag at first. Your task is to find any sequence of cards that Alice and Bob could have played with.
+
+Input
+
+The first line of the input contains two integers, x, y (1 ≤ x, y ≤ 1018, xy > 1) — the number of oranges and apples that were initially in the bag.
+
+Output
+
+Print any sequence of cards that would meet the problem conditions as a compressed string of characters 'A' and 'B. That means that you need to replace the segments of identical consecutive characters by the number of repetitions of the characters and the actual character. For example, string AAABAABBB should be replaced by string 3A1B2A3B, but cannot be replaced by 2A1A1B2A3B or by 3AB2A3B. See the samples for clarifications of the output format. The string that you print should consist of at most 106 characters. It is guaranteed that if the answer exists, its compressed representation exists, consisting of at most 106 characters. If there are several possible answers, you are allowed to print any of them.
+
+If the sequence of cards that meet the problem statement does not not exist, print a single word Impossible.
+
+Examples
+
+Input
+
+1 4
+
+
+Output
+
+3B
+
+
+Input
+
+2 2
+
+
+Output
+
+Impossible
+
+
+Input
+
+3 2
+
+
+Output
+
+1A1B
+
+Note
+
+In the first sample, if the row contained three cards with letter 'B', then Bob should give one apple to Alice three times. So, in the end of the game Alice has one orange and three apples, and Bob has one apple, in total it is one orange and four apples.
+
+In second sample, there is no answer since one card is not enough for game to finish, and two cards will produce at least three apples or three oranges.
+
+In the third sample, cards contain letters 'AB', so after removing the first card Bob has one orange and one apple, and after removal of second card Alice has two oranges and one apple. So, in total it is three oranges and two apples.
+Difficulty: 9
+Solutions: import fractions
+def solve(x, y):
+    if fractions.gcd(x, y) > 1: return 'Impossible'
+    turn = x > y
+    if not turn: x, y = y, x
+    ans = []
+    while x != 0 and y != 0:
+        ans.append((x//y, 'A' if turn else 'B'))
+        x, y = y, x%y
+        turn = not turn
+    ans[-1] = (ans[-1][0]-1, ans[-1][1])
+    return ''.join(str(n) + l for n, l in ans)
+
+x, y = [int(x) for x in input().split()]
+print(solve(x, y))
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

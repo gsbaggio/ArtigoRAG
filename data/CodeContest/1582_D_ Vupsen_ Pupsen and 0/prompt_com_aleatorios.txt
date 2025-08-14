@@ -1,0 +1,330 @@
+CURRENT QUESTION:
+Vupsen and Pupsen were gifted an integer array. Since Vupsen doesn't like the number 0, he threw away all numbers equal to 0 from the array. As a result, he got an array a of length n.
+
+Pupsen, on the contrary, likes the number 0 and he got upset when he saw the array without zeroes. To cheer Pupsen up, Vupsen decided to come up with another array b of length n such that ∑_{i=1}^{n}a_i ⋅ b_i=0. Since Vupsen doesn't like number 0, the array b must not contain numbers equal to 0. Also, the numbers in that array must not be huge, so the sum of their absolute values cannot exceed 10^9. Please help Vupsen to find any such array b!
+
+Input
+
+The first line contains a single integer t (1 ≤ t ≤ 100) — the number of test cases. The next 2 ⋅ t lines contain the description of test cases. The description of each test case consists of two lines.
+
+The first line of each test case contains a single integer n (2 ≤ n ≤ 10^5) — the length of the array.
+
+The second line contains n integers a_1, a_2, …, a_n (-10^4 ≤ a_i ≤ 10^4, a_i ≠ 0) — the elements of the array a.
+
+It is guaranteed that the sum of n over all test cases does not exceed 2 ⋅ 10^5.
+
+Output
+
+For each test case print n integers b_1, b_2, …, b_n — elements of the array b (|b_1|+|b_2|+… +|b_n| ≤ 10^9, b_i ≠ 0, ∑_{i=1}^{n}a_i ⋅ b_i=0).
+
+It can be shown that the answer always exists.
+
+Example
+
+Input
+
+
+3
+2
+5 5
+5
+5 -2 10 -9 4
+7
+1 2 3 4 5 6 7
+
+
+Output
+
+
+1 -1
+-1 5 1 -1 -1
+-10 2 2 -3 5 -1 -1
+
+Note
+
+In the first test case, 5 ⋅ 1 + 5 ⋅ (-1)=5-5=0. You could also print 3 -3, for example, since 5 ⋅ 3 + 5 ⋅ (-3)=15-15=0
+
+In the second test case, 5 ⋅ (-1) + (-2) ⋅ 5 + 10 ⋅ 1 + (-9) ⋅ (-1) + 4 ⋅ (-1)=-5-10+10+9-4=0.
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 1243_B2. Character Swap (Hard Version)
+Tags: ['strings']
+Description: This problem is different from the easy version. In this version Ujan makes at most 2n swaps. In addition, k ≤ 1000, n ≤ 50 and it is necessary to print swaps themselves. You can hack this problem if you solve it. But you can hack the previous problem only if you solve both problems.
+
+After struggling and failing many times, Ujan decided to try to clean up his house again. He decided to get his strings in order first.
+
+Ujan has two distinct strings s and t of length n consisting of only of lowercase English characters. He wants to make them equal. Since Ujan is lazy, he will perform the following operation at most 2n times: he takes two positions i and j (1 ≤ i,j ≤ n, the values i and j can be equal or different), and swaps the characters s_i and t_j.
+
+Ujan's goal is to make the strings s and t equal. He does not need to minimize the number of performed operations: any sequence of operations of length 2n or shorter is suitable.
+
+Input
+
+The first line contains a single integer k (1 ≤ k ≤ 1000), the number of test cases.
+
+For each of the test cases, the first line contains a single integer n (2 ≤ n ≤ 50), the length of the strings s and t. 
+
+Each of the next two lines contains the strings s and t, each having length exactly n. The strings consist only of lowercase English letters. It is guaranteed that strings are different.
+
+Output
+
+For each test case, output "Yes" if Ujan can make the two strings equal with at most 2n operations and "No" otherwise. You can print each letter in any case (upper or lower).
+
+In the case of "Yes" print m (1 ≤ m ≤ 2n) on the next line, where m is the number of swap operations to make the strings equal. Then print m lines, each line should contain two integers i, j (1 ≤ i, j ≤ n) meaning that Ujan swaps s_i and t_j during the corresponding operation. You do not need to minimize the number of operations. Any sequence of length not more than 2n is suitable.
+
+Example
+
+Input
+
+
+4
+5
+souse
+houhe
+3
+cat
+dog
+2
+aa
+az
+3
+abc
+bca
+
+
+Output
+
+
+Yes
+1
+1 4
+No
+No
+Yes
+3
+1 2
+3 1
+2 3
+Difficulty: 8
+Solutions: import java.io.*;
+import java.text.*;
+import java.util.*;
+import java.math.*;
+public class template {
+	public static void main(String[] args) throws Exception {
+		new template().run();
+	}
+	public void run() throws Exception {
+		FastScanner f = new FastScanner();
+		PrintWriter out = new PrintWriter(System.out);
+		int asdf = f.nextInt();
+		while(asdf-->0) {
+			int n = f.nextInt();
+			char[] a = f.next().toCharArray();
+			char[] b = f.next().toCharArray();
+			boolean[] used = new boolean[n];
+			int curind = 0;
+			boolean works = true;
+			ArrayList<Integer> moves = new ArrayList<>();
+			for(char c = 'a'; c <= 'z'; c++) {
+				int i = 0, j = 0;
+				while(true) {
+					while(i < n && a[i] != c) i++;
+					while(j < n && b[j] != c) j++;
+					if(i == n && j == n) break;
+					else if(j == n) {
+						int p = i++;
+						while(true) {
+							while(i < n && a[i] != c) i++;
+							if(i == n) break;
+							else if(p == -1) p = i;
+							else {
+								moves.add(i);
+								moves.add(p);
+								a[i] = b[p];
+								b[p] = c;
+								used[p] = true;
+								p = -1;
+							}
+							i++;
+						}
+						if(p != -1) works = false;
+						break;
+					} else if(i == n) {
+						int p = j++;
+						while(true) {
+							while(j < n && b[j] != c) j++;
+							if(j == n) break;
+							else if(p == -1) p = j;
+							else{
+								moves.add(p);
+								moves.add(j);
+								b[j] = a[p];
+								a[p] = c;
+								used[p] = true;
+								p = -1;
+							}
+							j++;
+						}
+						if(p != -1) works = false;
+						break;
+					} else {
+						while(used[curind]) curind++;	
+						if(i == curind) {
+							moves.add(i);
+							moves.add(curind);
+							a[i] = b[curind];
+							b[curind] = c;
+							moves.add(curind);
+							moves.add(j);
+							b[j] = a[curind];
+							a[curind] = c;
+						} else {
+							moves.add(curind);
+							moves.add(j);
+							b[j] = a[curind];
+							a[curind] = c;
+							moves.add(i);
+							moves.add(curind);
+							a[i] = b[curind];
+							b[curind] = c;
+						}
+						used[curind] = true;
+						curind++;
+						i++; j++;
+					}
+				}
+			}
+			if(works) {
+				out.println("Yes");
+				out.println(moves.size()/2);
+				for(int i = 0; i < moves.size(); i+= 2) out.println(moves.get(i)+1 + " " + (moves.get(i+1)+1));
+			} else out.println("No");
+		}
+///
+		out.flush(); 
+	}
+///
+    static class FastScanner {
+        public BufferedReader reader;
+        public StringTokenizer tokenizer;
+        public FastScanner() {
+            reader = new BufferedReader(new InputStreamReader(System.in), 32768);
+            tokenizer = null;
+        }
+        public String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+        public int nextInt() {
+            return Integer.parseInt(next());
+        }
+        public long nextLong() {
+        	return Long.parseLong(next());
+        }
+        public double nextDouble() {
+        	return Double.parseDouble(next());
+        }
+        public String nextLine() {
+        	try {
+        		return reader.readLine();
+        	} catch(IOException e) {
+        		throw new RuntimeException(e);
+        	}
+        }
+    }
+}
+
+
+
+Example question 2:
+Name: p02239 Breadth First Search
+Tags: ['']
+Description: Write a program which reads an directed graph $G = (V, E)$, and finds the shortest distance from vertex $1$ to each vertex (the number of edges in the shortest path). Vertices are identified by IDs $1, 2, ... n$.
+
+Constraints
+
+* $1 \leq n \leq 100$
+
+Input
+
+In the first line, an integer $n$ denoting the number of vertices, is given. In the next $n$ lines, adjacent lists of vertex $u$ are given in the following format:
+
+$u$ $k$ $v_1$ $v_2$ ... $v_k$
+
+$u$ is ID of the vertex and $k$ denotes its degree.$v_i$ are IDs of vertices adjacent to $u$.
+
+Output
+
+For each vertex $u$, print $id$ and $d$ in a line. $id$ is ID of vertex $u$ and $d$ is the distance from vertex $1$ to vertex $u$. If there are no path from vertex $1$ to vertex $u$, print -1 as the shortest distance. Print in order of IDs.
+
+Example
+
+Input
+
+4
+1 2 2 4
+2 1 4
+3 0
+4 1 3
+
+
+Output
+
+1 0
+2 1
+3 2
+4 1
+Difficulty: 0
+Solutions: #include <iostream>
+#include <queue>
+using namespace std;
+int c[101][102],ch[101];
+queue<int> q;
+
+int main(){
+  int a,b,e,d,n,k;
+  cin>>a;
+  for(int i=1;i<=a;i++)ch[i]=-1;
+  for(int i=0;i<a;i++){
+    cin>>b>>e;
+    c[b][0]=e;
+    for(int j=1;j<=e;j++){
+      cin>>d;
+      c[b][j]=d;
+    }
+  }
+  q.push(1);
+  ch[1]=0;
+  while(q.size()){
+    n=q.front();q.pop();
+    for(int i=1;i<=c[n][0];i++){
+      if(ch[c[n][i]]==-1){
+	q.push(c[n][i]);
+	ch[c[n][i]]=ch[n]+1;
+      }
+    }
+  }
+  for(int i=1;i<=a;i++)cout<<i<<" "<<ch[i]<<endl;
+
+  return 0;
+}
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

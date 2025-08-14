@@ -1,0 +1,357 @@
+CURRENT QUESTION:
+You are given a tree consisting of n vertices. Recall that a tree is an undirected connected acyclic graph. The given tree is rooted at the vertex 1.
+
+You have to process q queries. In each query, you are given a vertex of the tree v and an integer k.
+
+To process a query, you may delete any vertices from the tree in any order, except for the root and the vertex v. When a vertex is deleted, its children become the children of its parent. You have to process a query in such a way that maximizes the value of c(v) - m ⋅ k (where c(v) is the resulting number of children of the vertex v, and m is the number of vertices you have deleted). Print the maximum possible value you can obtain.
+
+The queries are independent: the changes you make to the tree while processing a query don't affect the tree in other queries.
+
+Input
+
+The first line contains one integer n (1 ≤ n ≤ 2 ⋅ 10^5) — the number of vertices in the tree.
+
+Then n-1 lines follow, the i-th of them contains two integers x_i and y_i (1 ≤ x_i, y_i ≤ n; x_i ≠ y_i) — the endpoints of the i-th edge. These edges form a tree.
+
+The next line contains one integer q (1 ≤ q ≤ 2 ⋅ 10^5) — the number of queries.
+
+Then q lines follow, the j-th of them contains two integers v_j and k_j (1 ≤ v_j ≤ n; 0 ≤ k_j ≤ 2 ⋅ 10^5) — the parameters of the j-th query.
+
+Output
+
+For each query, print one integer — the maximum value of c(v) - m ⋅ k you can achieve.
+
+Example
+
+Input
+
+
+8
+6 7
+3 2
+8 3
+5 7
+7 4
+7 1
+7 3
+6
+1 0
+1 2
+1 3
+7 1
+5 0
+7 200000
+
+
+Output
+
+
+5
+2
+1
+4
+0
+4
+
+Note
+
+The tree in the first example is shown in the following picture:
+
+<image>
+
+Answers to the queries are obtained as follows:
+
+  1. v=1,k=0: you can delete vertices 7 and 3, so the vertex 1 has 5 children (vertices 2, 4, 5, 6, and 8), and the score is 5 - 2 ⋅ 0 = 5; 
+  2. v=1,k=2: you can delete the vertex 7, so the vertex 1 has 4 children (vertices 3, 4, 5, and 6), and the score is 4 - 1 ⋅ 2 = 2. 
+  3. v=1,k=3: you shouldn't delete any vertices, so the vertex 1 has only one child (vertex 7), and the score is 1 - 0 ⋅ 3 = 1; 
+  4. v=7,k=1: you can delete the vertex 3, so the vertex 7 has 5 children (vertices 2, 4, 5, 6, and 8), and the score is 5 - 1 ⋅ 1 = 4; 
+  5. v=5,k=0: no matter what you do, the vertex 5 will have no children, so the score is 0; 
+  6. v=7,k=200000: you shouldn't delete any vertices, so the vertex 7 has 4 children (vertices 3, 4, 5, and 6), and the score is 4 - 0 ⋅ 200000 = 4. 
+
+EXAMPLE QUESTIONS:
+Example question 1:
+Name: 1133_F1. Spanning Tree with Maximum Degree
+Tags: ['graphs']
+Description: You are given an undirected unweighted connected graph consisting of n vertices and m edges. It is guaranteed that there are no self-loops or multiple edges in the given graph.
+
+Your task is to find any spanning tree of this graph such that the maximum degree over all vertices is maximum possible. Recall that the degree of a vertex is the number of edges incident to it.
+
+Input
+
+The first line contains two integers n and m (2 ≤ n ≤ 2 ⋅ 10^5, n - 1 ≤ m ≤ min(2 ⋅ 10^5, (n(n-1))/(2))) — the number of vertices and edges, respectively.
+
+The following m lines denote edges: edge i is represented by a pair of integers v_i, u_i (1 ≤ v_i, u_i ≤ n, u_i ≠ v_i), which are the indices of vertices connected by the edge. There are no loops or multiple edges in the given graph, i. e. for each pair (v_i, u_i) there are no other pairs (v_i, u_i) or (u_i, v_i) in the list of edges, and for each pair (v_i, u_i) the condition v_i ≠ u_i is satisfied.
+
+Output
+
+Print n-1 lines describing the edges of a spanning tree such that the maximum degree over all vertices is maximum possible. Make sure that the edges of the printed spanning tree form some subset of the input edges (order doesn't matter and edge (v, u) is considered the same as the edge (u, v)).
+
+If there are multiple possible answers, print any of them.
+
+Examples
+
+Input
+
+
+5 5
+1 2
+2 3
+3 5
+4 3
+1 5
+
+
+Output
+
+
+3 5
+2 1
+3 2
+3 4
+
+
+Input
+
+
+4 6
+1 2
+1 3
+1 4
+2 3
+2 4
+3 4
+
+
+Output
+
+
+4 1
+1 2
+1 3
+
+
+Input
+
+
+8 9
+1 2
+2 3
+2 5
+1 6
+3 4
+6 5
+4 5
+2 7
+5 8
+
+
+Output
+
+
+3 2
+2 5
+8 5
+6 1
+2 7
+1 2
+3 4
+
+Note
+
+Picture corresponding to the first example: <image>
+
+In this example the number of edges of spanning tree incident to the vertex 3 is 3. It is the maximum degree over all vertices of the spanning tree. It is easy to see that we cannot obtain a better answer.
+
+Picture corresponding to the second example: <image>
+
+In this example the number of edges of spanning tree incident to the vertex 1 is 3. It is the maximum degree over all vertices of the spanning tree. It is easy to see that we cannot obtain a better answer.
+
+Picture corresponding to the third example: <image>
+
+In this example the number of edges of spanning tree incident to the vertex 2 is 4. It is the maximum degree over all vertices of the spanning tree. It is easy to see that we cannot obtain a better answer. But because this example is symmetric, we can choose almost the same spanning tree but with vertex 5 instead of 2.
+Difficulty: 12
+Solutions: import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.StringTokenizer;
+
+public class G {
+
+	public static void main(String[] args) {
+		FastScanner scan = new FastScanner();
+		PrintWriter out = new PrintWriter(System.out);
+		int n = scan.nextInt(), m = scan.nextInt(), d = scan.nextInt();
+		ArrayList<Integer>[] adj = new ArrayList[n];
+		for(int i = 0; i < n; i++) adj[i] = new ArrayList<Integer>();
+		int deg = 0;
+		for(int i = 0; i < m; i++) {
+			int u = scan.nextInt()-1, v = scan.nextInt()-1;
+			adj[u].add(v);
+			adj[v].add(u);
+			if(u == 0 || v == 0) deg++;
+		}
+		if(deg < d) {
+			out.println("NO");
+			out.close();
+			return;
+		}
+		DSU dsu = new DSU(n);
+		boolean[] v = new boolean[n];
+		v[0] = true;
+		ArrayDeque<Integer> q = new ArrayDeque<Integer>();
+		for(int i : adj[0]) if(!v[i]){
+			v[i] = true;
+			q.add(i);
+			while(!q.isEmpty()) {
+				int at = q.poll();
+				for(int j : adj[at]) {
+					if(!v[j]) {
+						dsu.union(at, j);
+						v[j] = true;
+						q.add(j);
+					}
+				}
+			}
+		}
+		HashSet<Integer> s = new HashSet<>();
+		for(int i : adj[0]) 
+			s.add(dsu.find(i));
+		if(s.size() > d) out.println("NO");
+		else {
+			StringBuilder sb = new StringBuilder();
+			sb.append("YES\n");
+			boolean[] u = new boolean[n];
+			Arrays.fill(v, false);
+			v[0] = true;
+			for(int i : adj[0]) {
+				if(!u[dsu.find(i)]) {
+					u[dsu.find(i)] = true;
+					v[i] = true;
+					sb.append("1 ");
+					sb.append(i+1);
+					sb.append("\n");
+					q.add(i);
+				}
+			}
+			int rem = d-s.size();
+			for(int i : adj[0]) {
+				if(rem > 0 && !v[i]) {
+					sb.append("1 ");
+					sb.append(i+1);
+					sb.append("\n");
+					v[i] = true;
+					q.add(i);
+					rem--;
+				}
+			}
+			while(!q.isEmpty()) {
+				int at = q.poll();
+				for(int i : adj[at]) if(!v[i]){
+					v[i] = true;
+					sb.append(at+1);
+					sb.append(" ");
+					sb.append(i+1);
+					sb.append("\n");
+					q.add(i);
+				}
+			}
+			out.print(sb);
+		}
+		out.close();
+	}
+	
+	static class DSU {
+		int n;
+		int[] f;
+		public DSU(int nn) {
+			n = nn;
+			f = new int[n];
+			for(int i = 0; i < n; i++) f[i] = i;
+		}
+		int find(int i) {
+			if(f[i] == i) return i;
+			return f[i] = find(f[i]);
+		}
+		void union(int u, int v) {
+			int fu = find(u), fv = find(v);
+			if(fu != fv) f[fu] = fv;
+		}
+	}
+	
+	static class FastScanner {
+		BufferedReader br;
+		StringTokenizer st;
+
+		public FastScanner() {
+			try	{
+				br = new BufferedReader(new InputStreamReader(System.in));
+				st = new StringTokenizer(br.readLine());
+			} catch (Exception e){e.printStackTrace();}
+		}
+
+		public String next() {
+			if (st.hasMoreTokens())	return st.nextToken();
+			try {st = new StringTokenizer(br.readLine());}
+			catch (Exception e) {e.printStackTrace();}
+			return st.nextToken();
+		}
+
+		public int nextInt() {return Integer.parseInt(next());}
+
+		public long nextLong() {return Long.parseLong(next());}
+
+		public double nextDouble() {return Double.parseDouble(next());}
+
+		public String nextLine() {
+			String line = "";
+			if(st.hasMoreTokens()) line = st.nextToken();
+			else try {return br.readLine();}catch(IOException e){e.printStackTrace();}
+			while(st.hasMoreTokens()) line += " "+st.nextToken();
+			return line;
+		}
+
+		public int[] nextIntArray(int n) {
+			int[] a = new int[n];
+			for(int i = 0; i < n; i++) a[i] = nextInt();
+			return a;
+		}
+
+		public long[] nextLongArray(int n){
+			long[] a = new long[n];
+			for(int i = 0; i < n; i++) a[i] = nextLong();
+			return a;
+		}
+
+		public double[] nextDoubleArray(int n){
+			double[] a = new double[n];
+			for(int i = 0; i < n; i++) a[i] = nextDouble();
+			return a;
+		}
+
+		public char[][] nextGrid(int n, int m){
+			char[][] grid = new char[n][m];
+			for(int i = 0; i < n; i++) grid[i] = next().toCharArray();
+			return grid;
+		}
+	}
+
+
+}
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+5. Don't use any external libraries. Don't need to import any libraries.

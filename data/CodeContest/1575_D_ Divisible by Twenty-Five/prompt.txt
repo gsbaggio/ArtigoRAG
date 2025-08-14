@@ -1,0 +1,291 @@
+CURRENT QUESTION:
+Mr. Chanek has an integer represented by a string s. Zero or more digits have been erased and are denoted by the character _. There are also zero or more digits marked by the character X, meaning they're the same digit.
+
+Mr. Chanek wants to count the number of possible integer s, where s is divisible by 25. Of course, s must not contain any leading zero. He can replace the character _ with any digit. He can also replace the character X with any digit, but it must be the same for every character X.
+
+As a note, a leading zero is any 0 digit that comes before the first nonzero digit in a number string in positional notation. For example, 0025 has two leading zeroes. An exception is the integer zero, (0 has no leading zero, but 0000 has three leading zeroes).
+
+Input
+
+One line containing the string s (1 ≤ |s| ≤ 8). The string s consists of the characters 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, _, and X.
+
+Output
+
+Output an integer denoting the number of possible integer s.
+
+Examples
+
+Input
+
+
+25
+
+
+Output
+
+
+1
+
+
+Input
+
+
+_00
+
+
+Output
+
+
+9
+
+
+Input
+
+
+_XX
+
+
+Output
+
+
+9
+
+
+Input
+
+
+0
+
+
+Output
+
+
+1
+
+
+Input
+
+
+0_25
+
+
+Output
+
+
+0
+
+Note
+
+In the first example, the only possible s is 25.
+
+In the second and third example, s ∈ \{100, 200,300,400,500,600,700,800,900\}.
+
+In the fifth example, all possible s will have at least one leading zero.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.70):
+Name: p02960 AtCoder Beginner Contest 135 - Digits Parade
+Tags: ['']
+Description: Given is a string S. Each character in S is either a digit (`0`, ..., `9`) or `?`.
+
+Among the integers obtained by replacing each occurrence of `?` with a digit, how many have a remainder of 5 when divided by 13? An integer may begin with 0.
+
+Since the answer can be enormous, print the count modulo 10^9+7.
+
+Constraints
+
+* S is a string consisting of digits (`0`, ..., `9`) and `?`.
+* 1 \leq |S| \leq 10^5
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+S
+
+
+Output
+
+Print the number of integers satisfying the condition, modulo 10^9+7.
+
+Examples
+
+Input
+
+??2??5
+
+
+Output
+
+768
+
+
+Input
+
+?44
+
+
+Output
+
+1
+
+
+Input
+
+7?4
+
+
+Output
+
+0
+
+
+Input
+
+?6?42???8??2??06243????9??3???7258??5??7???????774????4?1??17???9?5?70???76???
+
+
+Output
+
+153716888
+Difficulty: 0
+Solutions: #include<bits/stdc++.h>
+using namespace std;
+const int mod=1e9+7;
+int dp[100001][13];
+int main(){
+	string s;
+	cin>>s;
+	dp[0][0]=1;
+	for(int i=0;i<s.size();i++){
+		for(int j=0;j<13;j++){
+			if(s[i]=='?')
+				for(int k=0;k<=9;k++)
+					(dp[i+1][(j*10+k)%13]+=dp[i][j])%=mod;
+			else
+				(dp[i+1][(j*10+s[i]-'0')%13]+=dp[i][j])%=mod;
+		}
+	}
+	cout<<dp[s.size()][5]<<endl;
+}
+
+
+Similar question 2 (Similarity score: 0.70):
+Name: p02636 AtCoder Grand Contest 046 - Secret Passage
+Tags: ['']
+Description: Given is a string S consisting of `0` and `1`. Find the number of strings, modulo 998244353, that can result from applying the following operation on S zero or more times:
+
+* Remove the two characters at the beginning of S, erase one of them, and reinsert the other somewhere in S. This operation can be applied only when S has two or more characters.
+
+Constraints
+
+* 1 \leq |S| \leq 300
+* S consists of `0` and `1`.
+
+Input
+
+Input is given from Standard Input in the following format:
+
+
+S
+
+
+Output
+
+Print the number of strings, modulo 998244353, that can result from applying the operation on S zero or more times.
+
+Examples
+
+Input
+
+0001
+
+
+Output
+
+8
+
+
+Input
+
+110001
+
+
+Output
+
+24
+
+
+Input
+
+11101111011111000000000110000001111100011111000000001111111110000000111111111
+
+
+Output
+
+697354558
+Difficulty: 0
+Solutions: #include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+using namespace std;
+const int N=310,mod=998244353;
+int n,f[N][N][N],g[N][N][N],C[N*2][N*2];
+char s[N];
+void add(int &x,int y){x+=y;x>=mod?x-=mod:0;}
+int main(){
+//	freopen("a.in","r",stdin);
+	scanf("%s",s);n=strlen(s);
+	g[n][0][0]=1;
+	for(int i=0;i<=n;i++)C[i][0]=1;
+	for(int i=1;i<=n*2;i++)for(int j=1;j<=i;j++)C[i][j]=(C[i-1][j]+C[i-1][j-1])%mod;
+	for(int i=0;i<=n;i++)for(int j=0;j<=n;j++)g[n][i][j]=C[i+j][i];
+	for(int i=n-1;~i;i--)for(int j=0;j<=i;j++)for(int k=0;k<=i;k++){
+		g[i][j][k]=g[i+1][j][k];
+		if(s[i]=='0'&&k)add(g[i][j][k],g[i][j][k-1]);
+		if(s[i]=='1'&&j)add(g[i][j][k],g[i][j-1][k]);
+	}
+	f[0][0][0]=1;
+	for(int i=0;i<=n;i++)for(int j=i;~j;j--)for(int k=i;~k;k--){
+		if(j&&j+k>=2)f[i][j-1][k]|=f[i][j][k];
+		if(k&&j+k>=2)f[i][j][k-1]|=f[i][j][k];
+		if(i<n){if(j&&s[i]=='1')f[i+1][j-1][k+1]|=f[i][j][k];
+			if(k&&s[i]=='0')f[i+1][j+1][k-1]|=f[i][j][k];
+			if(j+k)f[i+1][j][k]|=f[i][j][k];
+		}
+		if(i+2<=n){
+			if(s[i]=='0'||s[i+1]=='0') f[i+2][j+1][k]|=f[i][j][k];
+			if(s[i]=='1'||s[i+1]=='1') f[i+2][j][k+1]|=f[i][j][k];
+		}
+	}
+	int ans=0;
+	for(int i=n;~i;i--)
+		for(int j=i;~j;j--) {
+			for(int k=i;~k;k--) {
+//				printf("%d %d %d : %d %d\n", i, j, k, f[i][j][k], dp[i][j][k]);
+				if( !f[i][j][k] ) continue;
+				add(ans,g[i][j][k]);
+				int cnt[2] = {};
+				for(int l=i-1;l>=0;l--) {
+					cnt[s[l]-'0']++;if(j<cnt[0]||k<cnt[1])break;
+					f[l][j-cnt[0]][k-cnt[1]]=0;
+				}
+			}
+	}
+	printf("%d\n", ans);
+}
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.

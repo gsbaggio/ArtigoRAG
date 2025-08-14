@@ -1,0 +1,325 @@
+CURRENT QUESTION:
+Polycarp had an array a of 3 positive integers. He wrote out the sums of all non-empty subsequences of this array, sorted them in non-decreasing order, and got an array b of 7 integers.
+
+For example, if a = \{1, 4, 3\}, then Polycarp wrote out 1, 4, 3, 1 + 4 = 5, 1 + 3 = 4, 4 + 3 = 7, 1 + 4 + 3 = 8. After sorting, he got an array b = \{1, 3, 4, 4, 5, 7, 8\}.
+
+Unfortunately, Polycarp lost the array a. He only has the array b left. Help him to restore the array a.
+
+Input
+
+The first line contains one integer t (1 ≤ t ≤ 5000) — the number of test cases.
+
+Each test case consists of one line which contains 7 integers b_1, b_2, ..., b_7 (1 ≤ b_i ≤ 10^9; b_i ≤ b_{i+1}). 
+
+Additional constraint on the input: there exists at least one array a which yields this array b as described in the statement.
+
+Output
+
+For each test case, print 3 integers — a_1, a_2 and a_3. If there can be several answers, print any of them.
+
+Example
+
+Input
+
+
+5
+1 3 4 4 5 7 8
+1 2 3 4 5 6 7
+300000000 300000000 300000000 600000000 600000000 600000000 900000000
+1 1 2 999999998 999999999 999999999 1000000000
+1 2 2 3 3 4 5
+
+
+Output
+
+
+1 4 3
+4 1 2
+300000000 300000000 300000000
+999999998 1 1
+1 2 2
+
+Note
+
+The subsequence of the array a is a sequence that can be obtained from a by removing zero or more of its elements.
+
+Two subsequences are considered different if index sets of elements included in them are different. That is, the values of the elements don't matter in the comparison of subsequences. In particular, any array of length 3 has exactly 7 different non-empty subsequences.
+
+SIMILAR QUESTIONS:
+Similar question 1 (Similarity score: 0.74):
+Name: 1490_F. Equalize the Array
+Tags: ['binary search', 'data structures', 'greedy', 'math', 'sortings']
+Description: Polycarp was gifted an array a of length n. Polycarp considers an array beautiful if there exists a number C, such that each number in the array occurs either zero or C times. Polycarp wants to remove some elements from the array a to make it beautiful.
+
+For example, if n=6 and a = [1, 3, 2, 1, 4, 2], then the following options are possible to make the array a array beautiful: 
+
+  * Polycarp removes elements at positions 2 and 5, array a becomes equal to [1, 2, 1, 2]; 
+  * Polycarp removes elements at positions 1 and 6, array a becomes equal to [3, 2, 1, 4]; 
+  * Polycarp removes elements at positions 1, 2 and 6, array a becomes equal to [2, 1, 4]; 
+
+
+
+Help Polycarp determine the minimum number of elements to remove from the array a to make it beautiful.
+
+Input
+
+The first line contains one integer t (1 ≤ t ≤ 10^4) — the number of test cases. Then t test cases follow.
+
+The first line of each test case consists of one integer n (1 ≤ n ≤ 2 ⋅ 10^5) — the length of the array a.
+
+The second line of each test case contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 10^9) — array a.
+
+It is guaranteed that the sum of n over all test cases does not exceed 2 ⋅ 10^5.
+
+Output
+
+For each test case, output one integer — the minimum number of elements that Polycarp has to remove from the array a to make it beautiful.
+
+Example
+
+Input
+
+
+3
+6
+1 3 2 1 4 2
+4
+100 100 4 100
+8
+1 2 3 3 3 2 6 6
+
+
+Output
+
+
+2
+1
+2
+Difficulty: 12
+Solutions: #include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+#ifndef ONLINE_JUDGE
+  #include <fstream>
+  #define cin fin
+  #define cout fout
+  ifstream fin ("test.in");
+  ofstream fout ("test.out");
+#endif
+
+int t, n, a[200001], f[200001], nra, p[100001], k;
+
+int rasp (int mij) {
+  int r = 0;
+  for (int i = 1; i <= k; i++) {
+    if (p[i] - mij < 0)
+      r += p[i] * f[p[i]];
+    else
+      r += (p[i] - mij) * f[p[i]];
+  }
+  return r;
+}
+
+int main()
+{
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+
+  cin >> t;
+  for (int tt = 1; tt <= t; tt++) {
+    cin >> n; int r = n + 1; k = 0;
+    for (int i = 1; i <= n; i++) {
+      cin >> a[i]; f[i] = 0;
+    }
+    sort (a + 1, a + n + 1);
+    nra = 0; a[0] = a[1]; a[n + 1] = a[n] + 1;
+    for (int i = 1; i <= n + 1; i++) {
+      if (a[i] == a[i - 1])
+        nra++;
+      else {
+        f[nra]++;
+        nra = 1;
+      }
+    }
+    for (int i = 1; i <= n; i++)
+      if (f[i])
+        p[++k] = i;
+    for (int i = 1; i <= k; i++)
+      r = min (r, rasp(p[i]));
+    cout << r << '\n';
+  }
+  return 0;
+}
+
+
+Similar question 2 (Similarity score: 0.74):
+Name: 1416_E. Split
+Tags: ['binary search', 'data structures', 'dp', 'greedy']
+Description: One day, BThero decided to play around with arrays and came up with the following problem:
+
+You are given an array a, which consists of n positive integers. The array is numerated 1 through n. You execute the following procedure exactly once:
+
+  * You create a new array b which consists of 2n positive integers, where for each 1 ≤ i ≤ n the condition b_{2i-1}+b_{2i} = a_i holds. For example, for the array a = [6, 8, 2] you can create b = [2, 4, 4, 4, 1, 1]. 
+  * You merge consecutive equal numbers in b. For example, b = [2, 4, 4, 4, 1, 1] becomes b = [2, 4, 1]. 
+
+
+
+Find and print the minimum possible value of |b| (size of b) which can be achieved at the end of the procedure. It can be shown that under the given constraints there is at least one way to construct b.
+
+Input
+
+The first line of the input file contains a single integer T (1 ≤ T ≤ 5 ⋅ 10^5) denoting the number of test cases. The description of T test cases follows.
+
+The first line of each test contains a single integer n (1 ≤ n ≤ 5 ⋅ 10^5).
+
+The second line contains n space-separated integers a_1, a_2, ..., a_n (2 ≤ a_i ≤ 10^9).
+
+It is guaranteed that ∑{n} over all test cases does not exceed 5 ⋅ 10^5.
+
+Output
+
+For each test case, print a single line containing one integer — the minimum possible value of |b|.
+
+Example
+
+Input
+
+
+3
+3
+6 8 2
+1
+4
+3
+5 6 6
+
+
+Output
+
+
+3
+1
+2
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+void read(long long &a) {
+  a = 0;
+  char c = getchar();
+  while (c < '0' || c > '9') {
+    c = getchar();
+  }
+  while (c >= '0' && c <= '9') {
+    a = (a << 1) + (a << 3) + (c ^ 48);
+    c = getchar();
+  }
+}
+const long long Maxn = 500000;
+long long T;
+struct Reverse_Set {
+  long long left, right;
+  set<long long> point;
+  long long rev;
+  long long base;
+  void clear() {
+    left = 1, right = 0;
+    point.clear();
+    rev = 1;
+    base = 0;
+  }
+  void push_seg(long long x) {
+    clear();
+    right = x;
+  }
+  void push_point(long long x) {
+    clear();
+    point.insert(x);
+  }
+  void reverse(long long maxn) {
+    base = maxn - base;
+    left = maxn - left;
+    right = maxn - right;
+    swap(left, right);
+    rev *= -1;
+  }
+  long long find_id(long long x) { return rev * (x - base); }
+  long long find_val(long long x) { return base + x * rev; }
+  void del(long long x) {
+    right = min(right, x);
+    if (point.empty()) {
+      return;
+    }
+    if (rev == -1) {
+      while (!point.empty() && find_val(*point.begin()) > x) {
+        point.erase(point.begin());
+      }
+    } else {
+      while (!point.empty() && find_val(*(--point.end())) > x) {
+        point.erase(--point.end());
+      }
+    }
+  }
+  bool find_in(long long x) {
+    if (left <= x && right >= x) {
+      return 1;
+    }
+    if (point.count(find_id(x)) > 0) {
+      return 1;
+    }
+    return 0;
+  }
+  void add_point(long long x) { point.insert(find_id(x)); }
+  bool empty() { return left > right && point.empty(); }
+} st;
+long long n;
+long long a[Maxn + 5];
+void solve() {
+  st.clear();
+  read(n);
+  long long ans = 0;
+  for (long long i = 1; i <= n; i++) {
+    read(a[i]);
+    st.del(a[i] - 1);
+    if (!(a[i] & 1) && st.find_in(a[i] >> 1)) {
+      st.push_point(a[i] >> 1);
+      ans += 2;
+    } else if (st.empty()) {
+      if (!(a[i] & 1)) {
+        ans++;
+        st.push_point(a[i] >> 1);
+      } else {
+        st.push_seg(a[i] - 1);
+      }
+    } else {
+      ans++;
+      if (!(a[i] & 1)) {
+        st.add_point(a[i] >> 1);
+      }
+    }
+    st.reverse(a[i]);
+  }
+  printf("%lld\n", (n << 1) - ans);
+}
+signed main() {
+  read(T);
+  while (T--) {
+    solve();
+  }
+  return 0;
+}
+
+
+
+INSTRUCTIONS:
+Solve the current question.
+Provide:
+1. A complete and efficient code solution, optimized for both time and space complexity.
+2. A detailed explanation of the solution, including:
+   - The intuition behind the approach;
+   - Time and space complexity;
+   - Important considerations about the algorithm.
+3. If the language has classes, implement in 'Solution' class. Any language is accepted.
+4. Use the similar questions as references to improve the solution, but only if they are relevant.
+5. Don't use any external libraries. Don't need to import any libraries.
