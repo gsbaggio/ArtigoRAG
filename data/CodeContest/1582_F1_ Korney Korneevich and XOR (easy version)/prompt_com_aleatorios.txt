@@ -61,362 +61,189 @@ In the first test case:
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1277_D. Let's Play the Words?
-Tags: ['data structures', 'hashing', 'implementation', 'math']
-Description: Polycarp has n different binary words. A word called binary if it contains only characters '0' and '1'. For example, these words are binary: "0001", "11", "0" and "0011100".
+Name: p00640 Distorted Love
+Tags: ['']
+Description: Saying that it is not surprising that people want to know about their love, she has checked up his address, name, age, phone number, hometown, medical history, political party and even his sleeping position, every piece of his personal information. The word "privacy" is not in her dictionary. A person like her is called "stoker" or "yandere", but it doesn't mean much to her.
 
-Polycarp wants to offer his set of n binary words to play a game "words". In this game, players name words and each next word (starting from the second) must start with the last character of the previous word. The first word can be any. For example, these sequence of words can be named during the game: "0101", "1", "10", "00", "00001".
+To know about him, she set up spyware to his PC. This spyware can record his mouse operations while he is browsing websites. After a while, she could successfully obtain the record from the spyware in absolute secrecy.
 
-Word reversal is the operation of reversing the order of the characters. For example, the word "0111" after the reversal becomes "1110", the word "11010" after the reversal becomes "01011".
+Well, we want you to write a program which extracts web pages he visited from the records.
 
-Probably, Polycarp has such a set of words that there is no way to put them in the order correspondent to the game rules. In this situation, he wants to reverse some words from his set so that:
+All pages have the same size H × W where upper-left corner is (0, 0) and lower right corner is (W, H). A page includes several (or many) rectangular buttons (parallel to the page). Each button has a link to another page, and when a button is clicked the browser leads you to the corresponding page.
 
-  * the final set of n words still contains different words (i.e. all words are unique); 
-  * there is a way to put all words of the final set of words in the order so that the final sequence of n words is consistent with the game rules. 
+His browser manages history and the current page in the following way:
+
+The browser has a buffer of 1-dimensional array with enough capacity to store pages, and a pointer to indicate a page in the buffer. A page indicated by the pointer is shown on the browser. At first, a predetermined page is stored and the pointer indicates that page. When the link button is clicked, all pages recorded in the right side from the pointer are removed from the buffer. Then, the page indicated by the link button is stored into the right-most position of the buffer, and the pointer moves to right. As a result, the user browse the page indicated by the button.
+
+The browser also has special buttons 'back to the previous page' (back button) and 'forward to the next page' (forward button). When the user clicks the back button, the pointer moves to left, and the user clicks the forward button, the pointer moves to right. But in both cases, if there are no such pages in the buffer, nothing happen.
+
+The record consists of the following operations:
 
 
+click x y
 
-Polycarp wants to reverse minimal number of words. Please, help him.
+
+It means to click (x, y). If there is a button on the point (x, y), he moved to the corresponding page. If there is nothing in the point, nothing happen. The button is clicked if x1 ≤ x ≤ x2 and y1 ≤ y ≤ y2 where x1, x2 means the leftmost and rightmost coordinate and y1, y2 means the topmost and bottommost coordinate of the corresponding button respectively.
+
+
+back
+
+
+It means to click the Back button.
+
+
+forward
+
+
+It means to click the Forward button.
+
+In addition, there is a special operation show. Your program should print the name of current page for each show operation.
+
+By the way, setting spyware into computers of others may conflict with the law. Do not attempt, or you will be reprimanded by great men.
+
+Constraints
+
+* 1 ≤ n ≤ 100
+* b[i] ≤ 100
+* 1 ≤ the number of characters in the name ≤ 20
+* Buttons are not touch, overlapped nor run over from the browser.
 
 Input
 
-The first line of the input contains one integer t (1 ≤ t ≤ 10^4) — the number of test cases in the input. Then t test cases follow.
+Input consists of several datasets.
 
-The first line of a test case contains one integer n (1 ≤ n ≤ 2⋅10^5) — the number of words in the Polycarp's set. Next n lines contain these words. All of n words aren't empty and contains only characters '0' and '1'. The sum of word lengths doesn't exceed 4⋅10^6. All words are different.
+Each dataset starts with an integer n which represents the number of pages in the dataset.
 
-Guaranteed, that the sum of n for all test cases in the input doesn't exceed 2⋅10^5. Also, guaranteed that the sum of word lengths for all test cases in the input doesn't exceed 4⋅10^6.
+Next line contains two integers W and H.
+
+Next, information of each page are given. Each page starts with a string of characters and b[i], the number of buttons the page has. Following b[i] lines give information of buttons. Each button consists of four integers representing the coordinate (x1, y1) of upper left corner and the coordinate (x2, y2) of lower right corner of the button and a string of characters, which represents the name of page that the link of the button represents.
+
+Next, the number of operation m is given. Following m lines represent the record of operations. Please see the above description for the operation.
+
+The first page is stored in the buffer at first.
+
+Input ends when n = 0.
 
 Output
 
-Print answer for all of t test cases in the order they appear.
-
-If there is no answer for the test case, print -1. Otherwise, the first line of the output should contain k (0 ≤ k ≤ n) — the minimal number of words in the set which should be reversed. The second line of the output should contain k distinct integers — the indexes of the words in the set which should be reversed. Words are numerated from 1 to n in the order they appear. If k=0 you can skip this line (or you can print an empty line). If there are many answers you can print any of them.
+For each dataset, output the name of current page for each show operation.
 
 Example
 
 Input
 
-
-4
-4
-0001
-1000
-0011
-0111
 3
-010
-101
+800 600
+index 1
+500 100 700 200 profile
+profile 2
+100 100 400 200 index
+100 400 400 500 link
+link 1
+100 100 300 200 index
+9
+click 600 150
+show
+click 200 450
+show
+back
+back
+show
+forward
+show
 0
-2
-00000
-00001
-4
-01
-001
-0001
-00001
 
 
 Output
 
-
-1
-3 
--1
-0
-
-2
-1 2 
-Difficulty: 10
-Solutions: import java.io.*;
-import java.util.*;
-
-public class A {
-
-	static String rev(char[] a) {
-		StringBuilder sb = new StringBuilder();
-		for (int i = a.length - 1; i >= 0; i--)
-			sb.append(a[i]);
-		return sb.toString();
-	}
-
-	public static void main(String[] args) throws IOException {
-		Scanner sc = new Scanner();
-		PrintWriter out = new PrintWriter(System.out);
-		int tc = sc.nextInt();
-
-		cases: while (tc-- > 0) {
-			int n = sc.nextInt();
-			int zeroes = 0, ones = 0;
-			char[][] a = new char[n][];
-			int[] cnt = new int[2];
-			HashSet<String>[] sets = new HashSet[2];
-			for (int i = 0; i < 2; i++)
-				sets[i] = new HashSet();
-			for (int i = 0; i < n; i++) {
-				a[i] = sc.next().toCharArray();
-				int len = a[i].length;
-				if (a[i][0] == '0' && a[i][len - 1] == '1')
-					cnt[0]++;
-				else if (a[i][0] == '1' && a[i][len - 1] == '0')
-					cnt[1]++;
-				else if (a[i][0] == '0' && a[i][len - 1] == '0')
-					zeroes++;
-				else
-					ones++;
-
-				sets[a[i][0] - '0'].add(new String(a[i]));
-
-			}
-			int small = cnt[0] < cnt[1] ? 0 : 1;
-			if (ones + zeroes == n && Math.min(ones, zeroes)!=0) {
-				out.println(-1);
-				continue cases;
-			}
-
-			for (int rev = 0; rev <= cnt[small ^ 1]; rev++) {
-				int newBig = cnt[small ^ 1] - rev, newSmall = cnt[small] + rev;
-				if (Math.abs(newBig - newSmall) <= 1) {
-
-					String needed = small == 0 ? "10" : "01";
-					ArrayList<Integer> ans = new ArrayList();
-					for (int i = 0; ans.size() < rev && i < n; i++) {
-						String tmp = a[i][0] + "" + a[i][a[i].length - 1];
-						String revString = rev(a[i]);
-						int first = a[i][0] - '0';
-						if (tmp.equals(needed) && !sets[first ^ 1].contains(revString)) {
-							ans.add(i + 1);
-						}
-					}
-					if (ans.size() == rev)
-						out.println(rev);
-					else
-						break;
-					for (int x : ans)
-						out.print(x + " ");
-					out.println();
-					continue cases;
-				}
-			}
-			out.println(-1);
-
-		}
-		out.close();
-
-	}
-
-	static class Scanner {
-		BufferedReader br;
-		StringTokenizer st;
-
-		Scanner() {
-			br = new BufferedReader(new InputStreamReader(System.in));
-		}
-
-		Scanner(String fileName) throws FileNotFoundException {
-			br = new BufferedReader(new FileReader(fileName));
-		}
-
-		String next() throws IOException {
-			while (st == null || !st.hasMoreTokens())
-				st = new StringTokenizer(br.readLine());
-			return st.nextToken();
-		}
-
-		String nextLine() throws IOException {
-			return br.readLine();
-		}
-
-		int nextInt() throws IOException {
-			return Integer.parseInt(next());
-		}
-
-		long nextLong() throws NumberFormatException, IOException {
-			return Long.parseLong(next());
-		}
-
-		double nextDouble() throws NumberFormatException, IOException {
-			return Double.parseDouble(next());
-		}
-
-		boolean ready() throws IOException {
-			return br.ready();
-		}
-
-	}
-
-	static void sort(int[] a) {
-		shuffle(a);
-		Arrays.sort(a);
-	}
-
-	static void shuffle(int[] a) {
-		int n = a.length;
-		Random rand = new Random();
-		for (int i = 0; i < n; i++) {
-			int tmpIdx = rand.nextInt(n);
-			int tmp = a[i];
-			a[i] = a[tmpIdx];
-			a[tmpIdx] = tmp;
-		}
-	}
-
-}
-
-Example question 2:
-Name: p03306 SoundHound Inc. Programming Contest 2018 -Masters Tournament- - + Graph
-Tags: ['']
-Description: Kenkoooo found a simple connected graph. The vertices are numbered 1 through n. The i-th edge connects Vertex u_i and v_i, and has a fixed integer s_i.
-
-Kenkoooo is trying to write a positive integer in each vertex so that the following condition is satisfied:
-
-* For every edge i, the sum of the positive integers written in Vertex u_i and v_i is equal to s_i.
-
-
-
-Find the number of such ways to write positive integers in the vertices.
-
-Constraints
-
-* 2 \leq n \leq 10^5
-* 1 \leq m \leq 10^5
-* 1 \leq u_i < v_i \leq n
-* 2 \leq s_i \leq 10^9
-* If i\neq j, then u_i \neq u_j  or v_i \neq v_j.
-* The graph is connected.
-* All values in input are integers.
-
-Input
-
-Input is given from Standard Input in the following format:
-
-
-n m
-u_1 v_1 s_1
-:
-u_m v_m s_m
-
-
-Output
-
-Print the number of ways to write positive integers in the vertices so that the condition is satisfied.
-
-Examples
-
-Input
-
-3 3
-1 2 3
-2 3 5
-1 3 4
-
-
-Output
-
-1
-
-
-Input
-
-4 3
-1 2 6
-2 3 7
-3 4 5
-
-
-Output
-
-3
-
-
-Input
-
-8 7
-1 2 1000000000
-2 3 2
-3 4 1000000000
-4 5 2
-5 6 1000000000
-6 7 2
-7 8 1000000000
-
-
-Output
-
-0
+profile
+link
+index
+profile
 Difficulty: 0
-Solutions: import sys
-from sys import setrecursionlimit
-from collections import deque
-from heapq import heappop, heappush
+Solutions: #include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+#include <vector>
+using namespace std;
 
-setrecursionlimit(10**9)
-#input = sys.stdin.readline
+struct Button {
+  int sx, sy, ex, ey;
+  string to;
+  bool isHit(int x, int y) {
+    return ( sx <= x && x <= ex &&
+	     sy <= y && y <= ey );
+  }
+};
 
-def inpl(): return map(int, input().split())
-INF = 2**31
+struct Page {
+  vector<Button> buttons;
+  string click(int x, int y) {
+    for(int i = 0; i < buttons.size(); ++i) {
+      if(buttons[i].isHit(x,y)) return buttons[i].to;
+    }
+    return "";
+  }
+};
 
-N, M = inpl()
-D = [[] for _ in range(N+1)]
+int W, H;
+map<string, Page> Pages;
+vector<string> Buff;
+int pi, br;
 
-for _ in range(M):
-    u, v, s = inpl()
-    D[u].append((v, s))
-    D[v].append((u, s))
-
-S = [2**31] * (N+1)
-C = [-1] * (N+1)
-S[1] = 0
-C[1] = 0
-
-L = [1] * (N+1)
-R = [2**31] * (N+1)
-
-Q = [1]
-
-state = 1
-while Q:
-    p = Q.pop()
-    for q, s in D[p]:
-        if C[q] == -1:
-            C[q] = int(not C[p])
-            S[q] = s - S[p]
-            if C[q]:
-                R[q] = min(R[q], S[q] - 1)
-            else:
-                L[q] = max(1, -S[q] + 1)
-            Q.append(q)
-        elif C[q] == C[p]:
-            if C[p] == 0:
-                a = s - S[p]
-                b = S[q]
-            else:
-                a = S[q]
-                b = s - S[p]
-
-            if (a-b)%2:
-                state = 0
-                Q = []
-                break
-            t = (a-b)//2
-            if t == L[q] == R[q]:
-                continue
-            R[q] = t
-            L[q] = t
-            Q.append(q)
-
-
-        else:
-            if S[q] != s - S[p]:
-                state = 0
-                Q = []
-                break
-
-if state == 0:
-    print(0)
-elif state == 1:
-    print(max(0, min(R) - max(L) + 1))
-
+int main() {
+  int n, m;
+  string np;
+  while(cin >> n && n) {
+    Pages.clear();
+    np = "";
+    cin >> W >> H;
+    while(n--) {
+      Page p;
+      string name;
+      int b;
+      cin >> name >> b;
+      if(np == "") np = name;
+      while(b--) {
+	Button bn;
+	cin >> bn.sx >> bn.sy >> bn.ex >> bn.ey >> bn.to;
+	p.buttons.push_back(bn);
+      }
+      Pages[name] = p;
+    }
+    cin >> m;
+    Buff.resize(m*2);
+    Buff[0] = np;
+    pi = 0;
+    br = 1;
+    while(m--) {
+      string op;
+      cin >> op;
+      if(op == "click") {
+	int x, y;
+	cin >> x >> y;
+	string to = Pages[Buff[pi]].click(x,y);
+	if(to != "" && Pages.count(to)) {
+	  ++pi;
+	  Buff[pi] = to;
+	  br = pi+1;
+	}
+      } else if(op == "back") {
+	if(pi != 0) {
+	  --pi;
+	}
+      } else if(op == "forward") {
+	if(pi+1 != br) {
+	  ++pi;
+	}
+      } else if(op == "show") {
+	cout << Buff[pi] << endl;
+      }
+    }
+  }
+  return 0;
+}
 
 
 INSTRUCTIONS:
@@ -427,6 +254,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

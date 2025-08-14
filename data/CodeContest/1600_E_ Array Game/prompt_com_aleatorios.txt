@@ -53,152 +53,289 @@ Bob
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 290_A. Mysterious strings
-Tags: ['*special', 'implementation']
-Description: 
+Name: 1191_B. Tokitsukaze and Mahjong
+Tags: ['brute force', 'implementation']
+Description: Tokitsukaze is playing a game derivated from Japanese mahjong. In this game, she has three tiles in her hand. Each tile she owns is a suited tile, which means it has a suit (manzu, pinzu or souzu) and a number (a digit ranged from 1 to 9). In this problem, we use one digit and one lowercase letter, which is the first character of the suit, to represent a suited tile. All possible suited tiles are represented as 1m, 2m, …, 9m, 1p, 2p, …, 9p, 1s, 2s, …, 9s.
+
+In order to win the game, she must have at least one mentsu (described below) in her hand, so sometimes she should draw extra suited tiles. After drawing a tile, the number of her tiles increases by one. She can draw any tiles she wants, including those already in her hand.
+
+Do you know the minimum number of extra suited tiles she needs to draw so that she can win?
+
+Here are some useful definitions in this game:
+
+  * A mentsu, also known as meld, is formed by a koutsu or a shuntsu; 
+  * A koutsu, also known as triplet, is made of three identical tiles, such as [1m, 1m, 1m], however, [1m, 1p, 1s] or [1m, 4m, 7m] is NOT a koutsu; 
+  * A shuntsu, also known as sequence, is made of three sequential numbered tiles in the same suit, such as [1m, 2m, 3m] and [5s, 7s, 6s], however, [9m, 1m, 2m] or [1m, 2p, 3s] is NOT a shuntsu. 
+
+
+
+Some examples: 
+
+  * [2m, 3p, 2s, 4m, 1s, 2s, 4s] — it contains no koutsu or shuntsu, so it includes no mentsu; 
+  * [4s, 3m, 3p, 4s, 5p, 4s, 5p] — it contains a koutsu, [4s, 4s, 4s], but no shuntsu, so it includes a mentsu; 
+  * [5p, 5s, 9m, 4p, 1s, 7p, 7m, 6p] — it contains no koutsu but a shuntsu, [5p, 4p, 6p] or [5p, 7p, 6p], so it includes a mentsu. 
+
+
+
+Note that the order of tiles is unnecessary and you can assume the number of each type of suited tiles she can draw is infinite.
 
 Input
 
-The input contains a single integer a (1 ≤ a ≤ 40).
+The only line contains three strings — the tiles in Tokitsukaze's hand. For each string, the first character is a digit ranged from 1 to 9 and the second character is m, p or s.
 
 Output
 
-Output a single string.
+Print a single integer — the minimum number of extra suited tiles she needs to draw.
 
 Examples
 
 Input
 
-2
+
+1s 2s 3s
 
 
 Output
 
-Adams
+
+0
 
 
 Input
 
-8
+
+9m 9m 9m
 
 
 Output
 
-Van Buren
+
+0
 
 
 Input
 
-29
+
+3p 9m 2p
 
 
 Output
 
-Harding
-Difficulty: 7
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-int main() {
-  char war[55][20] = {
-      "WASHINGTON", "ADAMS",     "JEFFERSON", "MADISON",    "MONROE",
-      "ADAMS",      "JACKSON",   "Van BUREN", "HARRISON",   "TYLER",
-      "POLK",       "TAYLOR",    "FILLMORE",  "PIERCE",     "BUCHANAN",
-      "LINCOLN",    "JOHNSON",   "GRANT",     "HAYES",      "GARFIELD",
-      "ARTHUR",     "CLEVELAND", "HARRISON",  "Cleveland",  "McKinley",
-      "ROOSEVELT",  "TAFT",      "WILSON",    "HARDING",    "COOLIDGE",
-      "HOOVER",     "ROOSEVELT", "TRUMAN",    "EISENHOWER", "KENNEDY",
-      "JOHNSON",    "NIXON",     "FORD",      "CARTER",     "REAGAN",
-      "BUSH",       "CLINTON"};
-  int num = 0;
-  cin >> num;
-  num--;
-  string cur = war[num];
-  istringstream iss(cur);
-  string in = "";
-  vector<string> print;
-  while (iss >> in) {
-    string p = "";
-    if (num == 24) {
-      p += in;
-      print.push_back(p);
-      continue;
-    }
-    for (int i = 0; i < in.size(); i++) {
-      if (i == 0)
-        p += in[i];
-      else if (in[i] >= 'A' && in[i] <= 'Z')
-        p += in[i] + 32;
-      else
-        p += in[i];
-    }
-    print.push_back(p);
-  }
-  for (int i = 0; i < print.size(); i++) {
-    if (i == 0)
-      cout << print[i];
-    else
-      cout << " " << print[i];
-  }
-  cout << endl;
-  return 0;
-}
 
+1
+
+Note
+
+In the first example, Tokitsukaze already has a shuntsu.
+
+In the second example, Tokitsukaze already has a koutsu.
+
+In the third example, Tokitsukaze can get a shuntsu by drawing one suited tile — 1p or 4p. The resulting tiles will be [3p, 9m, 2p, 1p] or [3p, 9m, 2p, 4p].
+Difficulty: 8
+Solutions: string = input().split()
+first = string[0]
+second = string[1]
+third = string[2]
+string.sort(key=lambda x: int(x[0]))
+if first == second == third or first[1] == second[1] == third[1] and all(int(string[i][0]) == int(string[i - 1][0]) + 1 for i in range(1, 3)):
+    print(0)
+elif (first == second or second == third or third == first or (string[0][1] == string[1][1] and int(string[1][0]) - int(string[0][0]) <= 2) or
+        (string[1][1] == string[2][1] and int(string[2][0]) - int(string[1][0]) <= 2) or (string[0][1] == string[2][1] and int(string[2][0]) - int(string[0][0]) <= 2)):
+    print(1)
+else:
+    print(2)
 
 Example question 2:
-Name: karan-and-trees
-Tags: []
-Description: Karan performed poorly in the Capillary Java Hiring Challenge because he did not know the concept of trees. After the contest, he asks you to help him out in the questions.
+Name: p03941 AtCoder Grand Contest 007 - Shik and Travel
+Tags: ['']
+Description: In the country there are N cities numbered 1 through N, which are connected by N-1 bidirectional roads. In terms of graph theory, there is a unique simple path connecting every pair of cities. That is, the N cities form a tree. Besides, if we view city 1 as the root of this tree, the tree will be a full binary tree (a tree is a full binary tree if and only if every non-leaf vertex in the tree has exactly two children). Roads are numbered 1 through N-1. The i-th road connects city i+1 and city a_i. When you pass through road i, the toll you should pay is v_i (if v_i is 0, it indicates the road does not require a toll).
 
-Given two nodes of a binary tree, you need to tell the lowest common ancestor.
+A company in city 1 will give each employee a family travel and cover a large part of the tolls incurred. Each employee can design the travel by themselves. That is, which cities he/she wants to visit in each day and which city to stay at each night. However, there are some constraints. More details are as follows:
 
-The root node is 1 and the general form of left node is 2n and of right node is 2n+1, where n is the parent.
+* The travel must start and end at city 1. If there are m leaves in the tree formed by the cities, then the number of days in the travel must be m+1. At the end of each day, except for the last day, the employee must stay at some hotel in a leaf city. During the whole travel, the employee must stay at all leaf cities exactly once.
 
-Input:
+* During the whole travel, all roads of the country must be passed through exactly twice.
 
-The first line contains the number of test cases T. Each test case contains two space separated integers, the nodes.
+* The amount that the employee must pay for tolls by him/herself is the maximum total toll incurred in a single day during the travel, except the first day and the last day. The remaining tolls will be covered by the company.
 
-Output:
 
-The Lowest Common Ancestor, one per line.
 
-Constraints:
 
-1 ≤ T ≤ 1000
+Shik, as an employee of this company, has only one hope for his travel. He hopes that the amount he must pay for tolls by himself will be as small as possible. Please help Shik to design the travel which satisfies his hope.
 
-1 ≤ a,b ≤ 10^18
-This is the last question in the contest. Hope you had a great time!!! Keep practising :)
-Thanks to Sri Patel for pointing out the language problem in the statement. Any inconvenience is regretted.
+Constraints
 
-SAMPLE INPUT
-1
-2 3
+* 2 < N < 131,072
+* 1 \leq a_i \leq i for all i
+* 0 \leq v_i \leq 131,072
+* v_i is an integer
+* The given tree is a full binary tree
 
-SAMPLE OUTPUT
-1
+Input
+
+The input is given from Standard Input in the following format:
+
+
+N
+a_1 v_1
+a_2 v_2
+:
+a_{N-1} v_{N-1}
+
+
+Output
+
+Print an integer denoting the minimum amount Shik must pay by himself for tolls incurred during the travel.
+
+Examples
+
+Input
+
+7
+1 1
+1 1
+2 1
+2 1
+3 1
+3 1
+
+
+Output
+
+4
+
+
+Input
+
+9
+1 2
+1 2
+3 2
+3 2
+5 2
+5 2
+7 2
+7 2
+
+
+Output
+
+6
+
+
+Input
+
+15
+1 2
+1 5
+3 3
+4 3
+4 3
+6 5
+5 4
+5 3
+6 3
+3 2
+11 5
+11 3
+13 2
+13 1
+
+
+Output
+
+15
+
+
+Input
+
+3
+1 0
+1 0
+
+
+Output
+
+0
 Difficulty: 0
-Solutions: '''
-# Read input from stdin and provide input before running code
-
-name = raw_input('What is your name?\n')
-print 'Hi, %s.' % name
-'''
-#print 'Hello World!'
-
-t = int(raw_input())
-for i in range(t):
-    a,b = map(int,raw_input().split())
-    while(a != b):
-        if a > b:
-            if a % 2==0:
-                a = a/2
-            else:
-                a = (a -1)/2
-        elif b > a:
-            if b % 2==0:
-                b=b/2
-            else:
-                b = (b-1)/2
-    print a
+Solutions: #include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+typedef long long ll;
+struct Pr{
+	ll x,y;
+}l_r[210000],r_l[210000];
+ 
+struct Te{
+	int ls,rs,lv,rv;
+}t[210000];
+ 
+int n;
+ll mid;
+vector<Pr>V[210000];
+ 
+void insert(int x,Pr y){
+	//x sorted
+	//compare y is ok
+	int i=V[x].size()-1;
+	if(V[x].empty()){V[x].push_back(y);return;}
+	if(V[x][i].y<=y.y)return;
+	while(!V[x].empty()&&V[x][i].x>=y.x)V[x].pop_back();
+	V[x].push_back(y);
+}
+ 
+int dfs(int u){
+	V[u].clear();
+	int i,j,ltor=0,rtol=0,dt=t[u].lv+t[u].rv;
+	int ls=t[u].ls,rs=t[u].rs,lv=t[u].lv,rv=t[u].rv;
+	if(t[u].ls==0){
+		insert(u,(Pr){0,0});
+		return 1;
+	}int jud=dfs(t[u].ls)&&dfs(t[u].rs);
+	if(jud==0)return 0;
+	//stay x/ y\
+	//using combine
+	for(i=V[ls].size()-1,j=V[rs].size()-1;i>=0;i--)
+	{
+		while(j>=0&&V[ls][i].y+V[rs][j].x+dt>mid) j--;
+		if(j>=0) l_r[++ltor]=(Pr){V[ls][i].x+lv,V[rs][j].y+rv};
+	}
+	for(i=V[ls].size()-1,j=V[rs].size()-1;j>=0;j--)
+	{
+		while(i>=0&&V[ls][i].x+V[rs][j].y+dt>mid) i--;
+		if(i>=0) r_l[++rtol]=(Pr){V[rs][j].x+rv,V[ls][i].y+lv};
+	}
+	reverse(l_r+1,l_r+ltor+1);
+	reverse(r_l+1,r_l+rtol+1);
+	i=1;j=1;
+	while(i<=ltor&&j<=rtol){
+		if(l_r[i].x<r_l[j].x){insert(u,l_r[i]);i++;}
+		else {insert(u,r_l[j]);j++;}
+	}while(i<=ltor){insert(u,l_r[i]);i++;}
+	while(j<=rtol){insert(u,r_l[j]);j++;}
+	return !V[u].empty();
+}
+ 
+int main(){
+	int x,y;
+	scanf("%d",&n);
+	ll L=-1,R=17179869184ll;
+	for(int i=2;i<=n;i++){
+		scanf("%d %d",&x,&y);
+		if(t[x].ls==0)t[x].ls=i,t[x].lv=y;
+		else t[x].rs=i,t[x].rv=y;
+	}while(L+1<R){
+		mid=(L+R)>>1;
+		if(dfs(1)){
+			R=mid;
+		}else L=mid;
+	}printf("%lld\n",R);
+	return 0;
+}
 
 
 INSTRUCTIONS:
@@ -209,6 +346,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

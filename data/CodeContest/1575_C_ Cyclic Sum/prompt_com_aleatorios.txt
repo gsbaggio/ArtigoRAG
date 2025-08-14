@@ -67,87 +67,74 @@ In the second example, one of the valid segments is [1, 5].
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: cheflr
-Tags: []
-Description: Chef has a nice complete binary tree in his garden. Complete means that each node has exactly two sons, so the tree is infinite. Yesterday he had enumerated the nodes of the tree in such a way: 
+Name: 78_C. Beaver Game
+Tags: ['dp', 'games', 'number theory']
+Description: Two beavers, Timur and Marsel, play the following game.
 
-Let's call the nodes' level a number of nodes that occur on the way to this node from the root, including this node. This way, only the root has the level equal to 1, while only its two sons has the level equal to 2.
-Then, let's take all the nodes with the odd level and enumerate them with consecutive odd numbers, starting from the smallest levels and the leftmost nodes, going to the rightmost nodes and the highest levels.
-Then, let's take all the nodes with the even level and enumerate them with consecutive even numbers, starting from the smallest levels and the leftmost nodes, going to the rightmost nodes and the highest levels.
-For the better understanding there is an example: 
+There are n logs, each of exactly m meters in length. The beavers move in turns. For each move a beaver chooses a log and gnaws it into some number (more than one) of equal parts, the length of each one is expressed by an integer and is no less than k meters. Each resulting part is also a log which can be gnawed in future by any beaver. The beaver that can't make a move loses. Thus, the other beaver wins.
 
-
-                             1
-                        /           \
-                  2                   4
-                /   \                /       \
-             3       5           7        9
-            / \      /  \          /  \       /  \
-           6  8 10 12      14 16   18 20 
-Here you can see the visualization of the process. For example, in odd levels, the root was enumerated first, then, there were enumerated roots' left sons' sons and roots' right sons' sons.
-You are given the string of symbols, let's call it S. Each symbol is either l or r. Naturally, this sequence denotes some path from the root, where l means going to the left son and r means going to the right son.
-Please, help Chef to determine the number of the last node in this path.
+Timur makes the first move. The players play in the optimal way. Determine the winner.
 
 Input
-The first line contains single integer T number of test cases.
-Each of next T lines contain a string S consisting only of the symbols l and r.
+
+The first line contains three integers n, m, k (1 ≤ n, m, k ≤ 109).
+
+Output
+
+Print "Timur", if Timur wins, or "Marsel", if Marsel wins. You should print everything without the quotes. 
+
+Examples
+
+Input
+
+1 15 4
 
 
 Output
-Per each line output the number of the last node in the path, described by S, modulo 10^9+7.
 
-Constraints
+Timur
 
-1 ≤ |T| ≤ 5
-1 ≤ |S| ≤ 10^5
-Remember that the tree is infinite, so each path described by appropriate S is a correct one.
+Input
 
-
-Example
-Input:
-4
-lrl
-rll
-r
-lllr
-Output:
-10
-14
-4
-13
+4 9 5
 
 
+Output
 
-Explanation
-See the example in the statement for better understanding the samples.
-Difficulty: 2
-Solutions: import sys
- 
- 
-def update_odd( direction , value ) :
-    if direction == 'l' :
-       value = (value * 2) 
-    else :
-       value  = (2 *value + 2) 
-    return value
- 
-def update_even(direction , value) :
-    if direction == 'l' :
-       value = (2*value - 1)
-    else :
-       value = (2*value + 1) 
-    return value 
- 
-t = int(raw_input())
-for i in range(0,t) :
-    list = raw_input()
-    value = 1
-    flag = True
-    for character in list :
-        if character in ('l','r'):
-            value = update_odd(character,value) if ( flag ) else update_even(character,value)
-            flag = not (flag) 
-    print value  % (10**9 + 7)
+Marsel
+
+Note
+
+In the first sample the beavers only have one log, of 15 meters in length. Timur moves first. The only move he can do is to split the log into 3 parts each 5 meters in length. Then Marsel moves but he can't split any of the resulting logs, as k = 4. Thus, the winner is Timur.
+
+In the second example the beavers have 4 logs 9 meters in length. Timur can't split any of them, so that the resulting parts possessed the length of not less than 5 meters, that's why he loses instantly.
+Difficulty: 9
+Solutions: import java.util.Scanner;
+
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner r = new Scanner(System.in);
+        
+        int n = r.nextInt();
+        int m = r.nextInt();
+        int k = r.nextInt();
+        
+        if(n % 2 == 0){
+            System.out.println("Marsel");
+        }else{
+            boolean can = false;
+            for(int d = 1; d * d <= m; d++)if( m % d == 0 ){
+//              System.out.println(d);
+                if((m / d > 1 && d >= k) || (d > 1 && m / d >= k))can = true;
+            }
+            
+            if(can)System.out.println("Timur");
+            else System.out.println("Marsel");
+        }
+    }
+}
+
 
 
 INSTRUCTIONS:
@@ -158,6 +145,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

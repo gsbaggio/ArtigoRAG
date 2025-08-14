@@ -81,359 +81,344 @@ Output
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1400_G. Mercenaries
-Tags: ['bitmasks', 'brute force', 'combinatorics', 'dp', 'dsu', 'math', 'two pointers']
-Description: Polycarp plays a (yet another!) strategic computer game. In this game, he leads an army of mercenaries.
+Name: bytesg
+Tags: []
+Description: Do you like Treasure Hunts? I like treasure hunts. Love ‘em. And TROIKA 2013 has the best one ever in ‘MIST’ (apps.facebook.com/mist_troika). 
+Just like a normal treasure hunt, you are given several clues and you have to get the right answer to progress to the next level and so on, until you reach the ultimate prize! But the organizers have learnt that a lot of users are not progressing even after figuring out the correct answer; it seems ‘someone’ forgot to code in ‘possible variants of the correct answer’ for each level. For example, if “Sachin Tendulkar” happened to be the answer to a particular level, “Tendulkar” or “tendulkar” or “sachin tendulkar” wasn’t accepted as correct. This is what you have to rectify.
+Given the expected answer ‘S’, your job is to modify the answer-verification-system to be able to allow acceptable variants of ‘S’.
+If the user enters an acceptable variant ,terminate the program. You can assume that the user is intelligent enough so that he will enter the answer in an order specified by the string S i.e he will not enter anything like “Tendulkar Sachin” if the answer is “Sachin Tendulkar” however he can enter “Tendulkar”.
 
-Polycarp wants to gather his army for a quest. There are n mercenaries for hire, and the army should consist of some subset of them.
+Input
+The first line of the input contains a string S.
+The next few lines contain the input string P entered by the user.
 
-The i-th mercenary can be chosen if the resulting number of chosen mercenaries is not less than l_i (otherwise he deems the quest to be doomed) and not greater than r_i (he doesn't want to share the trophies with too many other mercenaries). Furthermore, m pairs of mercenaries hate each other and cannot be chosen for the same quest. 
+Output
+For every line entered by the user output “Yes” if the string is acceptable and “No” if it is not. (quotes only for clarity).
 
-How many non-empty subsets does Polycarp need to consider? In other words, calculate the number of non-empty subsets of mercenaries such that the size of this subset belongs to [l_i, r_i] for each chosen mercenary, and there are no two mercenaries in the subset that hate each other.
+Contraints
+1 <= length of S and P <= 10000
 
-The answer may be large, so calculate it modulo 998244353.
+Example
+
+Input 1:
+Sachin Ramesh Tendulkar
+Sach
+Ram
+sAcH Tendul
+sach Tendulkar
+Sachin Ram Tendulkar
+SAChin TENduLkaR
+
+Output 1:
+No
+No
+No
+No
+No
+Yes
+
+Input 2:
+Sachin Ramesh Tendulkar
+Sach
+Ram
+sAcH Tendul
+sach Tendulkar
+Sachin Ram Tendulkar
+Ramesh TENduLkaR
+
+Output 2:
+No
+No
+No
+No
+No
+Yes
+Difficulty: 6
+Solutions: import string
+s = raw_input().split()
+l = len(s)
+for i in range(l):
+    s[i] = string.lower(s[i])
+while True:
+    p = raw_input().split()
+    l1 = len(p)
+    a = 1
+    for i in range(l1):
+        if string.lower(p[i]) not in s:
+            a = 0
+            break
+    if a:
+        break
+    else:
+        print "No"
+print "Yes"
+
+Example question 2:
+Name: 1107_C. Brutality
+Tags: ['greedy', 'sortings', 'two pointers']
+Description: You are playing a new famous fighting game: Kortal Mombat XII. You have to perform a brutality on your opponent's character.
+
+You are playing the game on the new generation console so your gamepad have 26 buttons. Each button has a single lowercase Latin letter from 'a' to 'z' written on it. All the letters on buttons are pairwise distinct.
+
+You are given a sequence of hits, the i-th hit deals a_i units of damage to the opponent's character. To perform the i-th hit you have to press the button s_i on your gamepad. Hits are numbered from 1 to n.
+
+You know that if you press some button more than k times in a row then it'll break. You cherish your gamepad and don't want to break any of its buttons.
+
+To perform a brutality you have to land some of the hits of the given sequence. You are allowed to skip any of them, however changing the initial order of the sequence is prohibited. The total damage dealt is the sum of a_i over all i for the hits which weren't skipped.
+
+Note that if you skip the hit then the counter of consecutive presses the button won't reset.
+
+Your task is to skip some hits to deal the maximum possible total damage to the opponent's character and not break your gamepad buttons.
 
 Input
 
-The first line contains two integers n and m (1 ≤ n ≤ 3 ⋅ 10^5, 0 ≤ m ≤ min(20, (n(n-1))/(2))) — the number of mercenaries and the number of pairs of mercenaries that hate each other.
+The first line of the input contains two integers n and k (1 ≤ k ≤ n ≤ 2 ⋅ 10^5) — the number of hits and the maximum number of times you can push the same button in a row.
 
-Then n lines follow, the i-th of them contains two integers l_i and r_i (1 ≤ l_i ≤ r_i ≤ n).
+The second line of the input contains n integers a_1, a_2, ..., a_n (1 ≤ a_i ≤ 10^9), where a_i is the damage of the i-th hit.
 
-Then m lines follow, the i-th of them contains two integers a_i and b_i (1 ≤ a_i < b_i ≤ n) denoting that the mercenaries a_i and b_i hate each other. There are no two equal pairs in this list.
+The third line of the input contains the string s consisting of exactly n lowercase Latin letters — the sequence of hits (each character is the letter on the button you need to press to perform the corresponding hit).
 
 Output
 
-Print one integer — the number of non-empty subsets meeting the constraints, taken modulo 998244353.
+Print one integer dmg — the maximum possible damage to the opponent's character you can deal without breaking your gamepad buttons.
 
 Examples
 
 Input
 
 
-3 0
-1 1
-2 3
-1 3
+7 3
+1 5 16 18 7 2 10
+baaaaca
 
 
 Output
 
 
-3
+54
 
 
 Input
 
 
-3 1
-1 1
-2 3
-1 3
-2 3
+5 5
+2 4 1 3 1000
+aaaaa
 
 
 Output
 
 
-2
-Difficulty: 13
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-const int Inf = 0x3f3f3f3f;
-const long long INF = 0x3f3f3f3f3f3f3f3fll;
-const int jt = 998244353;
-int n, m;
-int jc[1 << 19], fjc[1 << 19];
-int l[1 << 19], r[1 << 19];
-int a[44], b[44];
-int xf[1 << 19], cs[1 << 19][44];
-int lgl[1 << 19];
-int ksmii(int a, int b) {
-  if (!b) return 1;
-  int x = ksmii(a, b >> 1);
-  x = 1ll * x * x % jt;
-  if (b & 1) x = 1ll * x * a % jt;
-  return x;
-}
-int inline C(int a, int b) {
-  if (b < 0 || a < b) return 0;
-  return 1ll * jc[a] * fjc[b] % jt * fjc[a - b] % jt;
-}
-int main() {
-  jc[0] = 1;
-  for (int i = 1; i <= (500000); i++) jc[i] = 1ll * jc[i - 1] * i % jt;
-  fjc[500000] = ksmii(jc[500000], jt - 2);
-  for (int i = (500000); ((-1) > 0 ? i <= (1) : i >= (1)); i += (-1))
-    fjc[i - 1] = 1ll * fjc[i] * i % jt;
-  scanf("%d%d", &n, &m);
-  for (int i = 1; i <= (n); i++) {
-    scanf("%d%d", l + i, r + i);
-    xf[l[i]]++;
-    xf[r[i] + 1]--;
-  }
-  for (int i = 1; i <= (n); i++) {
-    xf[i] += xf[i - 1];
-    for (int j = 0; j < (m << 1 | 1); j++) {
-      cs[i][j] = (cs[i - 1][j] + C(xf[i] - j, i - j)) % jt;
-    }
-  }
-  for (int i = 0; i < (m); i++) scanf("%d%d", a + i, b + i);
-  int ans = 0;
-  for (int i = 0; i < (1 << m); i++) {
-    int ls = 1, rs = n, ts = 0;
-    for (int j = 0; j < (m); j++) {
-      if (!((i >> j) & 1)) continue;
-      if (lgl[a[j]] != i) {
-        lgl[a[j]] = i;
-        ts++;
-      }
-      if (lgl[b[j]] != i) {
-        lgl[b[j]] = i;
-        ts++;
-      }
-      ls = max(ls, max(l[a[j]], l[b[j]]));
-      rs = min(rs, min(r[a[j]], r[b[j]]));
-    }
-    if (ls > rs) continue;
-    int res = (cs[rs][ts] - cs[ls - 1][ts] + jt) % jt;
-    if (__builtin_popcount(i) % 2)
-      ans = (ans - res + jt) % jt;
-    else
-      ans = (ans + res) % jt;
-  }
-  printf("%d\n", ans);
-  return 0;
-}
+1010
 
-
-Example question 2:
-Name: 739_C. Alyona and towers
-Tags: ['data structures']
-Description: Alyona has built n towers by putting small cubes some on the top of others. Each cube has size 1 × 1 × 1. A tower is a non-zero amount of cubes standing on the top of each other. The towers are next to each other, forming a row.
-
-Sometimes Alyona chooses some segment towers, and put on the top of each tower several cubes. Formally, Alyouna chooses some segment of towers from li to ri and adds di cubes on the top of them.
-
-Let the sequence a1, a2, ..., an be the heights of the towers from left to right. Let's call as a segment of towers al, al + 1, ..., ar a hill if the following condition holds: there is integer k (l ≤ k ≤ r) such that al < al + 1 < al + 2 < ... < ak > ak + 1 > ak + 2 > ... > ar.
-
-After each addition of di cubes on the top of the towers from li to ri, Alyona wants to know the maximum width among all hills. The width of a hill is the number of towers in it.
 
 Input
 
-The first line contain single integer n (1 ≤ n ≤ 3·105) — the number of towers.
 
-The second line contain n integers a1, a2, ..., an (1 ≤ ai ≤ 109) — the number of cubes in each tower. 
+5 4
+2 4 1 3 1000
+aaaaa
 
-The third line contain single integer m (1 ≤ m ≤ 3·105) — the number of additions.
-
-The next m lines contain 3 integers each. The i-th of these lines contains integers li, ri and di (1 ≤ l ≤ r ≤ n, 1 ≤ di ≤ 109), that mean that Alyona puts di cubes on the tio of each of the towers from li to ri.
 
 Output
 
-Print m lines. In i-th line print the maximum width of the hills after the i-th addition.
 
-Example
+1009
+
 
 Input
 
-5
-5 5 5 5 5
-3
-1 3 2
-2 2 1
-4 4 1
+
+8 1
+10 15 2 1 4 8 15 16
+qqwweerr
 
 
 Output
 
-2
-4
-5
+
+41
+
+
+Input
+
+
+6 3
+14 18 9 19 2 15
+cccccc
+
+
+Output
+
+
+52
+
+
+Input
+
+
+2 1
+10 10
+qq
+
+
+Output
+
+
+10
 
 Note
 
-The first sample is as follows:
+In the first example you can choose hits with numbers [1, 3, 4, 5, 6, 7] with the total damage 1 + 16 + 18 + 7 + 2 + 10 = 54.
 
-After addition of 2 cubes on the top of each towers from the first to the third, the number of cubes in the towers become equal to [7, 7, 7, 5, 5]. The hill with maximum width is [7, 5], thus the maximum width is 2.
+In the second example you can choose all hits so the total damage is 2 + 4 + 1 + 3 + 1000 = 1010.
 
-After addition of 1 cube on the second tower, the number of cubes in the towers become equal to [7, 8, 7, 5, 5]. The hill with maximum width is now [7, 8, 7, 5], thus the maximum width is 4.
+In the third example you can choose all hits expect the third one so the total damage is 2 + 4 + 3 + 1000 = 1009.
 
-After addition of 1 cube on the fourth tower, the number of cubes in the towers become equal to [7, 8, 7, 6, 5]. The hill with maximum width is now [7, 8, 7, 6, 5], thus the maximum width is 5.
+In the fourth example you can choose hits with numbers [2, 3, 6, 8]. Only this way you can reach the maximum total damage 15 + 2 + 8 + 16 = 41.
+
+In the fifth example you can choose only hits with numbers [2, 4, 6] with the total damage 18 + 19 + 15 = 52.
+
+In the sixth example you can change either first hit or the second hit (it does not matter) with the total damage 10.
 Difficulty: 9
 Solutions: #include <bits/stdc++.h>
 using namespace std;
-const int N = 300005;
-struct ban {
-  long long laz;
-  int e;
-  int maxs, maxl, maxr;
-  int nl, nr;
-  long long l, r;
-  void nor(long long x) {
-    laz = 0;
-    e = 1;
-    maxs = maxl = maxr = 1;
-    nl = nr = 1;
-    l = r = x;
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(0);
+  vector<long long> tmp;
+  int n, k;
+  cin >> n >> k;
+  long long mas[n], ans = 0;
+  for (int i = 0; i < (int)(n); ++i) cin >> mas[i];
+  vector<pair<long long, long long> > ext;
+  string s;
+  cin >> s;
+  for (int i = 0; i < (int)(s.length()); ++i) {
+    ext.push_back(make_pair(mas[i], s[i]));
   }
-  void mer(const ban& ll, const ban& rr) {
-    e = ll.e + rr.e;
-    maxs = max(ll.maxs, rr.maxs);
-    maxl = ll.maxl;
-    maxr = rr.maxr;
-    nl = ll.nl;
-    nr = rr.nr;
-    l = ll.l;
-    r = rr.r;
-    if (ll.r > rr.l) {
-      maxs = max(maxs, ll.maxr + rr.nl);
-      if (ll.maxr == ll.e) maxl = ll.maxr + rr.nl;
-      if (rr.nl == rr.e) maxr = ll.maxr + rr.nl;
+  for (long long i = 0; i < s.length(); i++) {
+    long long start = i, loop = k;
+    while (s[i] == s[i + 1] && i < s.length() - 1) i++;
+    for (long long j = start; j <= i; j++) {
+      tmp.push_back(ext[j].first);
     }
-    if (rr.l > ll.r) {
-      maxs = max(maxs, rr.maxl + ll.nr);
-      if (rr.maxl == rr.e) maxr = rr.maxl + ll.nr;
-      if (ll.nr == ll.e) maxl = rr.maxl + ll.nr;
+    sort(tmp.begin(), tmp.end());
+    for (long long i = tmp.size() - 1; i >= 0; i--) {
+      ans += tmp[i];
+      loop--;
+      if (loop <= 0) break;
     }
-    if (ll.nl == ll.e && ll.r > rr.l) nl = ll.nl + rr.nl;
-    if (rr.nr == rr.e && rr.l > ll.r) nr = rr.nr + ll.nr;
+    tmp.clear();
   }
-};
-int n;
-long long a[N];
-ban t[N * 4];
-void shi(int pos) {
-  if (t[pos].laz == 0) return;
-  t[pos].l += t[pos].laz;
-  t[pos].r += t[pos].laz;
-  if (t[pos].e > 1) {
-    t[pos * 2].laz += t[pos].laz;
-    t[pos * 2 + 1].laz += t[pos].laz;
-  }
-  t[pos].laz = 0;
-}
-ban crt(ban u) {
-  u.l += u.laz;
-  u.r += u.laz;
-  return u;
-}
-void bil(int tl, int tr, int pos) {
-  if (tl == tr) {
-    t[pos].nor(a[tl]);
-    return;
-  }
-  int m = (tl + tr) / 2;
-  bil(tl, m, pos * 2);
-  bil(m + 1, tr, pos * 2 + 1);
-  t[pos].mer(crt(t[pos * 2]), crt(t[pos * 2 + 1]));
-}
-void ubd(int tl, int tr, int l, int r, long long g, int pos) {
-  if (tl == l && tr == r) {
-    t[pos].laz += g;
-    return;
-  }
-  shi(pos);
-  int m = (tl + tr) / 2;
-  if (r <= m)
-    ubd(tl, m, l, r, g, pos * 2);
-  else if (l > m)
-    ubd(m + 1, tr, l, r, g, pos * 2 + 1);
-  else {
-    ubd(tl, m, l, m, g, pos * 2);
-    ubd(m + 1, tr, m + 1, r, g, pos * 2 + 1);
-  }
-  t[pos].mer(crt(t[pos * 2]), crt(t[pos * 2 + 1]));
-}
-int32_t main() {
-  ios_base::sync_with_stdio(false);
-  cin >> n;
-  for (int i = 1; i <= n; ++i) cin >> a[i];
-  bil(1, n, 1);
-  int q;
-  cin >> q;
-  while (q--) {
-    int l, r, g;
-    cin >> l >> r >> g;
-    ubd(1, n, l, r, g, 1);
-    cout << t[1].maxs << endl;
-  }
+  cout << ans;
   return 0;
 }
 
 
 Example question 3:
-Name: 400_E. Inna and Binary Logic
-Tags: ['binary search', 'bitmasks', 'data structures']
-Description: Inna is fed up with jokes about female logic. So she started using binary logic instead.
+Name: 92_E. Ski Base
+Tags: ['combinatorics', 'dsu', 'graphs']
+Description: A ski base is planned to be built in Walrusland. Recently, however, the project is still in the constructing phase. A large land lot was chosen for the construction. It contains n ski junctions, numbered from 1 to n. Initially the junctions aren't connected in any way.
 
-Inna has an array of n elements a1[1], a1[2], ..., a1[n]. Girl likes to train in her binary logic, so she does an exercise consisting of n stages: on the first stage Inna writes out all numbers from array a1, on the i-th (i ≥ 2) stage girl writes all elements of array ai, which consists of n - i + 1 integers; the k-th integer of array ai is defined as follows: ai[k] = ai - 1[k] AND ai - 1[k + 1]. Here AND is bit-wise binary logical operation.
+In the constructing process m bidirectional ski roads will be built. The roads are built one after another: first the road number 1 will be built, then the road number 2, and so on. The i-th road connects the junctions with numbers ai and bi.
 
-Dima decided to check Inna's skill. He asks Inna to change array, perform the exercise and say the sum of all <image> elements she wrote out during the current exercise.
+Track is the route with the following properties: 
 
-Help Inna to answer the questions!
+  * The route is closed, that is, it begins and ends in one and the same junction.
+  * The route contains at least one road. 
+  * The route doesn't go on one road more than once, however it can visit any junction any number of times. 
+
+
+
+Let's consider the ski base as a non-empty set of roads that can be divided into one or more tracks so that exactly one track went along each road of the chosen set. Besides, each track can consist only of roads from the chosen set. Ski base doesn't have to be connected.
+
+Two ski bases are considered different if they consist of different road sets.
+
+After building each new road the Walrusland government wants to know the number of variants of choosing a ski base based on some subset of the already built roads. The government asks you to help them solve the given problem.
 
 Input
 
-The first line contains two integers n and m (1 ≤ n, m ≤ 105) — size of array a1 and number of Dima's questions. Next line contains n integers a1[1], a1[2], ..., a1[n] (0 ≤ ai ≤ 105) — initial array elements.
-
-Each of next m lines contains two integers — Dima's question description. Each question consists of two integers pi, vi (1 ≤ pi ≤ n; 0 ≤ vi ≤ 105). For this question Inna should make a1[pi] equals vi, and then perform the exercise. Please, note that changes are saved from question to question.
+The first line contains two integers n and m (2 ≤ n ≤ 105, 1 ≤ m ≤ 105). They represent the number of junctions and the number of roads correspondingly. Then on m lines follows the description of the roads in the order in which they were built. Each road is described by a pair of integers ai and bi (1 ≤ ai, bi ≤ n, ai ≠ bi) — the numbers of the connected junctions. There could be more than one road between a pair of junctions.
 
 Output
 
-For each question print Inna's answer on a single line.
+Print m lines: the i-th line should represent the number of ways to build a ski base after the end of construction of the road number i. The numbers should be printed modulo 1000000009 (109 + 9).
 
 Examples
 
 Input
 
 3 4
-1 1 1
-1 1
-2 2
-3 2
+1 3
+2 3
+1 2
 1 2
 
 
 Output
 
-6
-4
-7
-12
+0
+0
+1
+3
+
+Note
+
+Let us have 3 junctions and 4 roads between the junctions have already been built (as after building all the roads in the sample): 1 and 3, 2 and 3, 2 roads between junctions 1 and 2. The land lot for the construction will look like this:
+
+<image>
+
+The land lot for the construction will look in the following way:
+
+<image>
+
+We can choose a subset of roads in three ways:
+
+<image>
+
+In the first and the second ways you can choose one path, for example, 1 - 2 - 3 - 1. In the first case you can choose one path 1 - 2 - 1.
 Difficulty: 11
 Solutions: #include <bits/stdc++.h>
-const int maxn = 100050, maxb = 20;
-int n, m, d = 17, A[maxn];
-long long ans = 0;
+using namespace std;
+const double pi = acos(-1.0);
+int dx[] = {-1, 0, 1, 0, 1, 1, -1, -1};
+int dy[] = {0, 1, 0, -1, 1, -1, 1, -1};
+int n, m;
+struct ufind {
+  int p[100005], t;
+  void init() { memset(p, 0, sizeof(p)); }
+  void set_friend(int i, int j) {
+    for (; p[t = i]; i = p[i], p[t] = (p[i] ? p[i] : i))
+      ;
+    for (; p[t = j]; j = p[j], p[t] = (p[j] ? p[j] : j))
+      ;
+    p[i] = (i == j ? 0 : j);
+  }
+  int is_friend(int i, int j) {
+    for (; p[t = i]; i = p[i], p[t] = (p[i] ? p[i] : i))
+      ;
+    for (; p[t = j]; j = p[j], p[t] = (p[j] ? p[j] : j))
+      ;
+    return i == j && i;
+  }
+} U;
 int main() {
-  int d0, i, j, p, v;
-  scanf("%d%d", &n, &m);
-  for (i = 1; i <= n; i++) scanf("%d", &A[i]);
-  for (d0 = 0; d0 < d; d0++)
-    for (i = 1; i <= n; i++)
-      if ((A[i] >> d0) & 1) {
-        for (j = i + 1; j <= n && (A[j] >> d0) & 1; j++)
-          ;
-        ans += ((long long)(j - i) * (j - i + 1) / 2) << d0;
-        i = j;
+  while (cin >> n >> m) {
+    int a, b;
+    U.init();
+    long long ret = 0;
+    for (int i = 0; i < m; ++i) {
+      scanf("%d%d", &a, &b);
+      if (U.is_friend(a, b)) {
+        ret *= 2;
+        ++ret;
+        ret %= 1000000009;
+      } else {
+        U.set_friend(a, b);
       }
-  for (i = 0; i < m; i++) {
-    scanf("%d%d", &p, &v);
-    for (d0 = 0; d0 < d; d0++)
-      if ((v >> d0 & 1) ^ (A[p] >> d0 & 1)) {
-        int ls, rs;
-        for (j = p + 1; j <= n && A[j] >> d0 & 1; j++)
-          ;
-        ls = j - p;
-        for (j = p - 1; j && A[j] >> d0 & 1; j--)
-          ;
-        rs = p - j;
-        if (A[p] >> d0 & 1)
-          ans -= ((long long)ls * rs) << d0;
-        else
-          ans += ((long long)ls * rs) << d0;
-      }
-    A[p] = v;
-    printf("%I64d\n", ans);
+      cout << ret << endl;
+    }
   }
   return 0;
 }
@@ -448,6 +433,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

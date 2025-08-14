@@ -470,6 +470,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. Use the similar questions as references to improve the solution, but only if they are relevant.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. Use the similar questions as references to improve the solution, but only if they are relevant.
+4. Don't use any external libraries. Any language is accepted.

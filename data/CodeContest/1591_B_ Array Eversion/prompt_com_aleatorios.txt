@@ -59,75 +59,374 @@ Consider the second example.
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1100_C. NN and the Optical Illusion
-Tags: ['binary search', 'geometry', 'math']
-Description: NN is an experienced internet user and that means he spends a lot of time on the social media. Once he found the following image on the Net, which asked him to compare the sizes of inner circles:
+Name: 681_E. Runaway to a Shadow
+Tags: ['geometry', 'sortings']
+Description: Dima is living in a dormitory, as well as some cockroaches.
 
-<image>
+At the moment 0 Dima saw a cockroach running on a table and decided to kill it. Dima needs exactly T seconds for aiming, and after that he will precisely strike the cockroach and finish it.
 
-It turned out that the circles are equal. NN was very surprised by this fact, so he decided to create a similar picture himself.
+To survive the cockroach has to run into a shadow, cast by round plates standing on the table, in T seconds. Shadow casted by any of the plates has the shape of a circle. Shadow circles may intersect, nest or overlap arbitrarily.
 
-He managed to calculate the number of outer circles n and the radius of the inner circle r. NN thinks that, using this information, you can exactly determine the radius of the outer circles R so that the inner circle touches all of the outer ones externally and each pair of neighboring outer circles also touches each other. While NN tried very hard to guess the required radius, he didn't manage to do that. 
+The cockroach uses the following strategy: first he equiprobably picks a direction to run towards and then runs towards it with the constant speed v. If at some moment t ≤ T it reaches any shadow circle, it immediately stops in the shadow and thus will stay alive. Otherwise the cockroach is killed by the Dima's precise strike. Consider that the Dima's precise strike is instant.
 
-Help NN find the required radius for building the required picture.
+Determine the probability of that the cockroach will stay alive.
 
 Input
 
-The first and the only line of the input file contains two numbers n and r (3 ≤ n ≤ 100, 1 ≤ r ≤ 100) — the number of the outer circles and the radius of the inner circle respectively.
+In the first line of the input the four integers x0, y0, v, T (|x0|, |y0| ≤ 109, 0 ≤ v, T ≤ 109) are given — the cockroach initial position on the table in the Cartesian system at the moment 0, the cockroach's constant speed and the time in seconds Dima needs for aiming respectively.
+
+In the next line the only number n (1 ≤ n ≤ 100 000) is given — the number of shadow circles casted by plates.
+
+In the next n lines shadow circle description is given: the ith of them consists of three integers xi, yi, ri (|xi|, |yi| ≤ 109, 0 ≤ r ≤ 109) — the ith shadow circle on-table position in the Cartesian system and its radius respectively.
+
+Consider that the table is big enough for the cockroach not to run to the table edges and avoid Dima's precise strike.
 
 Output
 
-Output a single number R — the radius of the outer circle required for building the required picture. 
+Print the only real number p — the probability of that the cockroach will stay alive.
 
-Your answer will be accepted if its relative or absolute error does not exceed 10^{-6}.
-
-Formally, if your answer is a and the jury's answer is b. Your answer is accepted if and only when (|a-b|)/(max(1, |b|)) ≤ 10^{-6}.
+Your answer will be considered correct if its absolute or relative error does not exceed 10 - 4.
 
 Examples
 
 Input
 
-3 1
+0 0 1 1
+3
+1 1 1
+-1 -1 1
+-2 2 1
 
 
 Output
 
-6.4641016
-
+0.50000000000
 
 Input
 
-6 1
+0 0 1 0
+1
+1 0 1
 
 
 Output
 
-1.0000000
+1.00000000000
 
+Note
 
-Input
+The picture for the first sample is given below. 
 
-100 100
+<image>
 
-
-Output
-
-3.2429391
-Difficulty: 9
+Red color stands for points which being chosen as the cockroach's running direction will cause him being killed, green color for those standing for survival directions. Please note that despite containing a circle centered in ( - 2, 2) a part of zone is colored red because the cockroach is not able to reach it in one second.
+Difficulty: 11
 Solutions: #include <bits/stdc++.h>
 using namespace std;
-const long long INF = 999999999999999999;
-const double PI = acos(-1.0);
-void stop() { exit(0); }
+struct debugger {
+  template <typename T>
+  debugger& operator,(const T& v) {
+    cerr << v << " ";
+    return *this;
+  }
+} dbg;
+struct circle {
+  double x, y, r, a1, a2, d;
+} cir[100010];
+bool cmp(circle c1, circle c2) {
+  if (c1.a1 == c2.a1) {
+    if (c1.a2 == c2.a2) return c1.d < c2.d;
+    return c1.a2 < c2.a2;
+  }
+  return c1.a1 < c2.a1;
+}
 int main() {
-  double n, r;
-  cin >> n >> r;
-  double sn = sin(PI / n);
-  double x = (2.0 * r * sn) / (2.0 - 2.0 * sn);
-  printf("%.9lf", x);
-  stop();
+  double x0, y0, v, T;
+  while (scanf("%lf %lf %lf %lf", &x0, &y0, &v, &T) == 4) {
+    double R = v * T;
+    int n, c = 0, f = 0;
+    scanf("%d", &n);
+    vector<pair<double, double> > thetas;
+    int k = 0;
+    for (int i = 0; i < n; i++) {
+      double x1, y1, r;
+      scanf("%lf %lf %lf", &x1, &y1, &r);
+      x1 -= x0;
+      y1 -= y0;
+      if (x1 * x1 + y1 * y1 <= r * r) f = 1;
+      double dis = sqrt(x1 * x1 + y1 * y1);
+      if (dis < (r + R)) {
+        double theta = atan2(y1, x1);
+        double DS = sqrt(x1 * x1 + y1 * y1 - r * r);
+        double phi;
+        if (DS <= R)
+          phi = asin(r / dis);
+        else {
+          phi = acos((dis * dis + R * R - r * r) / (2.0 * dis * R));
+        }
+        theta -= phi;
+        phi = theta + phi * 2.0;
+        if (theta < -acos(-1.0))
+          thetas.push_back({theta + 2.0 * acos(-1.0), acos(-1.0)}),
+              theta = -acos(-1.0);
+        if (phi > acos(-1.0))
+          thetas.push_back({-acos(-1.0), phi - 2.0 * acos(-1.0)}),
+              phi = acos(-1.0);
+        thetas.push_back({theta, phi});
+      }
+    }
+    double ans;
+    if (f)
+      ans = 1.0;
+    else {
+      sort(thetas.begin(), thetas.end());
+      double ang = 0.0;
+      double b1 = -500.0, b2 = 0.0;
+      for (int i = 0; i < (int)thetas.size(); i++) {
+        if (b1 < thetas[i].first) b1 = thetas[i].first;
+        if (thetas[i].second > b1) {
+          ang += thetas[i].second - b1;
+          b1 = thetas[i].second;
+        }
+      }
+      ans = ang / (2.0 * acos(-1.0));
+      ans = min(1.0, ans);
+    }
+    printf("%.15lf\n", ans);
+  }
+  return 0;
 }
 
+
+Example question 2:
+Name: p00957 Secret of Chocolate Poles
+Tags: ['']
+Description: Problem A Secret of Chocolate Poles
+
+Wendy, the master of a chocolate shop, is thinking of displaying poles of chocolate disks in the showcase. She can use three kinds of chocolate disks: white thin disks, dark thin disks, and dark thick disks. The thin disks are $1$ cm thick, and the thick disks are $k$ cm thick. Disks will be piled in glass cylinders.
+
+Each pole should satisfy the following conditions for her secret mission, which we cannot tell.
+
+* A pole should consist of at least one disk.
+* The total thickness of disks in a pole should be less than or equal to $l$ cm.
+* The top disk and the bottom disk of a pole should be dark.
+* A disk directly upon a white disk should be dark and vice versa.
+
+
+
+As examples, six side views of poles are drawn in Figure A.1. These are the only possible side views she can make when $l = 5$ and $k = 3$.
+
+<image>
+
+Figure A.1. Six chocolate poles corresponding to Sample Input 1
+
+Your task is to count the number of distinct side views she can make for given $l$ and $k$ to help her accomplish her secret mission.
+
+Input
+
+The input consists of a single test case in the following format.
+
+
+$l$ $k$
+
+
+Here, the maximum possible total thickness of disks in a pole is $l$ cm, and the thickness of the thick disks is $k$ cm. $l$ and $k$ are integers satisfying $1 \leq l \leq 100$ and $2 \leq k \leq 10$.
+
+Output
+
+Output the number of possible distinct patterns.
+
+Sample Input 1
+
+
+5 3
+
+
+Sample Output 1
+
+
+6
+
+
+Sample Input 2
+
+
+9 10
+
+
+Sample Output 2
+
+
+5
+
+
+Sample Input 3
+
+
+10 10
+
+
+Sample Output 3
+
+
+6
+
+
+Sample Input 4
+
+
+20 5
+
+
+Sample Output 4
+
+
+86
+
+
+Sample Input 5
+
+
+100 2
+
+
+Sample Output 5
+
+
+3626169232670
+
+
+
+
+
+
+Example
+
+Input
+
+5 3
+
+
+Output
+
+6
+Difficulty: 0
+Solutions: #include <bits/stdc++.h>
+#define rep(i, n) for (int i=0; i<(int)(n); i++)
+#define all(v) v.begin(), v.end()
+#define PRINT(v) for (auto x : (v)) cout <<x <<" " ; cout <<endl;
+using namespace std;
+using ll = long long;
+using Graph = vector<vector<int>>;
+using mat = vector<vector<ll>>;
+const ll MOD = 1000000007;
+const ll INF = 10000000000000000;
+const int inf = 1001001001;
+vector<int> x4 = {0, 1, 0, -1}, x8 = {0, 1, 1, 1, 0, -1, -1, -1};
+vector<int> y4 = {1, 0, -1, 0}, y8 = {1, 1, 0, -1, -1, -1, 0, 1};
+template<class T> inline bool chmin(T& a, T b){if (a>b){a = b; return true;}return false;}
+template<class T> inline bool chmax(T& a, T b){if (a<b){a = b; return true;}return false;}
+template<class T> inline T powerM(T a,T b){if (b==0) return 1;
+T tmp = powerM(a,b/2); if (b%2==0) return tmp*tmp%MOD; else return tmp*tmp%MOD*a%MOD; }
+template<class T> inline T power(T a,T b,T m){ if (b==0) return 1;
+  T tmp = power(a,b/2,m); if (b%2==0) return tmp*tmp%m; else return tmp*tmp%m*a%m; }
+template<class T> inline T gcd(T a, T b){if (b==0) return a; return gcd(b, a%b);}
+template<class T> inline T lcm(T a, T b){return a / gcd(a,b) * b;}
+// ax+by=gcd(a,b)を解く
+template<class T> inline T extgcd(T a,T b,T &x,T &y){if (b==0){x=1; y=0; return a;} T d=extgcd(b,a%b,y,x); y -= a/b*x; return d;}
+void hey(){ cout <<"hey" <<endl; }
+
+template<class T> struct edge { int to; T cost;};
+
+
+int main() {
+  int l,k; cin >>l >>k;
+  vector<ll> dp(l+1, 0);
+  // dp[i] := 高さiにする積み方は何通りあるか
+  dp[1] = 1; // dark thin disk
+  if (k <= l) dp[k] = 1; // dark white disk
+  for (int i=1; i<l; i++){
+    if (!dp[i]) continue;
+    if (i+2 <= l) dp[i+2] += dp[i]; // + white thin disk + dark thin disk
+    if (i+k+1<=l) dp[i+k+1] += dp[i]; // +white thin disk + dark thick disk
+  }
+  ll res = 0;
+  for (int i=1; i<=l; i++) res += dp[i];
+  cout <<res <<endl;
+}
+
+
+Example question 3:
+Name: mike-and-his-guitar-collection-3
+Tags: []
+Description: Mike has a huge guitar collection which the whole band is jealous of. Brad, the lead guitarist of the band, gave Mike a challenge so that he can't use all his guitars. The band is on a world tour and Brad told Mike to assign numbers to all his guitars. After that, he told Mike that he can use the guitars in such a manner that no two concerts have the same sum when the numbers on the guitars used in that concert are added. 
+
+Now,  Mike has other important things to do, like performing sound checks and last minute rehersals, and so he asks for your help. Help him find how many concerts will he be able to perform in this World Tour with the restrictions imposed on him by Brad .
+
+Input: First line contains t, the number of test cases. Now, each test case consists of 2 lines, the first one contains N,the number of guitars that Mike has and the second line contains N space separated numbers assigned by Mike to his guitars denoted by a[i].
+
+Output: For each test case you need to print a single integer denoting the number of concerts that Mike would be able to perform in this world tour.
+
+Constraints:
+
+1 ≤ t ≤ 20
+
+1 ≤ N ≤ 20
+
+1 ≤ a[i] ≤ 100
+
+Problem Setter: Rohit Mishra
+
+SAMPLE INPUT
+3
+1
+1
+2
+1 2
+3
+1 2 3
+
+SAMPLE OUTPUT
+2
+4
+7
+
+Explanation
+
+Consider the 3rd test case
+We have guitars numbered 1,2 and 3
+So all the different possibilities are:
+{} - Sum=0
+{1} - Sum=1
+{2} - Sum=2
+{3} - Sum=3
+{1,2} - Sum=3
+{1,3} - Sum=4
+{2,3} - Sum=5
+{1,2,3} - Sum=6
+
+So, we see that 7 different sums are possible (3 is counted only once) and so output is 7.
+Difficulty: 0
+Solutions: from itertools import combinations
+for _ in range(input()):
+	arr=[]
+
+	n=input()
+	a=map(int,raw_input().split())
+	for i in range(n+1):
+		comb = combinations(a,i)
+		arr.append(comb)
+	count=0
+	sumset=set()
+	# Print the obtained combinations
+	for it in arr:
+	    for i in list(it):
+	        #print i
+	        sumset.add(sum(list(i)))
+	        count+=1
+	#print count
+	#print sumset
+	print len(sumset)
 
 
 INSTRUCTIONS:
@@ -138,6 +437,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

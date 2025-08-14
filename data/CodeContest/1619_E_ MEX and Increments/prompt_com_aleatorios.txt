@@ -61,192 +61,637 @@ In the first set of example inputs, n=3:
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1250_F. Data Center
-Tags: ['brute force', 'implementation']
-Description: You are developing a project to build a new data center. The data center will be a rectangle with an area of exactly n square meters. Each side of the data center must be an integer.
+Name: 1043_G. Speckled Band
+Tags: ['data structures', 'divide and conquer', 'hashing', 'string suffix structures', 'strings']
+Description: Ildar took a band (a thin strip of cloth) and colored it. Formally, the band has n cells, each of them is colored into one of 26 colors, so we can denote each color with one of the lowercase letters of English alphabet. 
 
-Your goal is to minimize the impact of the external environment on the data center. For this reason, you want to minimize the length of the perimeter of the data center (that is, the sum of the lengths of its four sides).
+Ildar decided to take some segment of the band [l, r] (1 ≤ l ≤ r ≤ n) he likes and cut it from the band. So he will create a new band that can be represented as a string t = s_l s_{l+1} … s_r.
 
-What is the minimum perimeter of a rectangular data center with an area of exactly n square meters, if the lengths of all its sides must be integers?
+After that Ildar will play the following game: he cuts the band t into some new bands and counts the number of different bands among them. Formally, Ildar chooses 1 ≤ k ≤ |t| indexes 1 ≤ i_1 < i_2 < … < i_k = |t| and cuts t to k bands-strings t_1 t_2 … t_{i_1}, t_{i_1 + 1} … t_{i_2}, …, {t_{i_{k-1} + 1}} … t_{i_k} and counts the number of different bands among them. He wants to know the minimal possible number of different bands he can get under the constraint that at least one band repeats at least two times. The result of the game is this number. If it is impossible to cut t in such a way, the result of the game is -1.
+
+Unfortunately Ildar hasn't yet decided which segment he likes, but he has q segments-candidates [l_1, r_1], [l_2, r_2], ..., [l_q, r_q]. Your task is to calculate the result of the game for each of them.
 
 Input
 
-The first and only line of the input contains an integer n (1 ≤ n ≤ 10^5), where n is the area of the data center in square meters.
+The first line contains one integer n (1 ≤ n ≤ 200 000) — the length of the band Ildar has.
+
+The second line contains a string s consisting of n lowercase English letters — the band Ildar has.
+
+The third line contains a single integer q (1 ≤ q ≤ 200 000) — the number of segments Ildar has chosen as candidates.
+
+Each of the next q lines contains two integer integers l_i and r_i (1 ≤ l_i ≤ r_i ≤ n) denoting the ends of the i-th segment.
 
 Output
 
-Print the required minimum perimeter in meters.
+Output q lines, where the i-th of them should contain the result of the game on the segment [l_i, r_i].
 
-Examples
+Example
 
 Input
 
-
-36
+9
+abcabcdce
+7
+1 6
+4 7
+5 9
+6 9
+1 9
+3 6
+4 4
 
 
 Output
-
-
-24
-
-
-Input
-
-
-13
-
-
-Output
-
-
-28
-
-
-Input
-
 
 1
-
-
-Output
-
-
+-1
 4
-
-Note
-
-In the first example, the required shape of the data center is 6×6 square. Its area is 36 and the perimeter is 6+6+6+6=24.
-
-In the second example, the required shape of the data center is 1×13 rectangle. Its area is 13 and the perimeter is 1+13+1+13=28.
-
-In the third example, the required shape of the data center is 1×1 square. Its area is 1 and the perimeter is 1+1+1+1=4.
-Difficulty: 12
-Solutions: 
-
-Example question 2:
-Name: 711_D. Directed Roads
-Tags: ['combinatorics', 'dfs and similar', 'graphs', 'math']
-Description: ZS the Coder and Chris the Baboon has explored Udayland for quite some time. They realize that it consists of n towns numbered from 1 to n. 
-
-There are n directed roads in the Udayland. i-th of them goes from town i to some other town ai (ai ≠ i). ZS the Coder can flip the direction of any road in Udayland, i.e. if it goes from town A to town B before the flip, it will go from town B to town A after.
-
-ZS the Coder considers the roads in the Udayland confusing, if there is a sequence of distinct towns A1, A2, ..., Ak (k > 1) such that for every 1 ≤ i < k there is a road from town Ai to town Ai + 1 and another road from town Ak to town A1. In other words, the roads are confusing if some of them form a directed cycle of some towns.
-
-Now ZS the Coder wonders how many sets of roads (there are 2n variants) in initial configuration can he choose to flip such that after flipping each road in the set exactly once, the resulting network will not be confusing.
-
-Note that it is allowed that after the flipping there are more than one directed road from some town and possibly some towns with no roads leading out of it, or multiple roads between any pair of cities.
-
-Input
-
-The first line of the input contains single integer n (2 ≤ n ≤ 2·105) — the number of towns in Udayland.
-
-The next line contains n integers a1, a2, ..., an (1 ≤ ai ≤ n, ai ≠ i), ai denotes a road going from town i to town ai.
-
-Output
-
-Print a single integer — the number of ways to flip some set of the roads so that the resulting whole set of all roads is not confusing. Since this number may be too large, print the answer modulo 109 + 7.
-
-Examples
-
-Input
-
 3
-2 3 1
-
-
-Output
-
-6
-
-
-Input
-
-4
-2 1 1 1
-
-
-Output
-
-8
-
-
-Input
-
-5
-2 4 2 5 3
-
-
-Output
-
-28
+2
+2
+-1
 
 Note
 
-Consider the first sample case. There are 3 towns and 3 roads. The towns are numbered from 1 to 3 and the roads are <image>, <image>, <image> initially. Number the roads 1 to 3 in this order. 
+Consider the first example.
 
-The sets of roads that ZS the Coder can flip (to make them not confusing) are {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3}. Note that the empty set is invalid because if no roads are flipped, then towns 1, 2, 3 is form a directed cycle, so it is confusing. Similarly, flipping all roads is confusing too. Thus, there are a total of 6 possible sets ZS the Coder can flip.
+If Ildar chooses the segment [1, 6], he cuts a string t = abcabc. If he cuts t into two bands abc and abc, the band abc repeats two times and the number of different tapes is 1. So, the result of this game is 1.
 
-The sample image shows all possible ways of orienting the roads from the first sample such that the network is not confusing.
+If Ildar chooses the segment [4, 7], he cuts a string t = abcd. It is impossible to cut this band in such a way that there is at least one band repeating at least two times. So, the result of this game is -1.
 
-<image>
-Difficulty: 10
+If Ildar chooses the segment [3, 6], he cuts a string t = cabc. If he cuts t into three bands c, ab and c, the band c repeats two times and the number of different bands is 2. So, the result of this game is 2.
+Difficulty: 13
 Solutions: #include <bits/stdc++.h>
-using namespace std;
-int cas, cass;
-int n, m, lll, ans;
-long long aans;
-long long e[200014];
-int to[200014];
-int t[200014];
-bool mark[200014];
-long long mi(int x, int y) {
-  long long sum = 1;
-  while (y) {
-    if (y & 1) sum = (sum * x) % 1000000007;
-    x = (x * x) % 1000000007;
-    y >>= 1;
-  }
-  return sum;
+using std::max;
+using std::min;
+using std::reverse;
+using std::swap;
+const int INF = 1e9;
+const int N = 200010;
+const int C = 26;
+int n, sqrtn;
+char str[N];
+int csum[N][C];
+namespace SA {
+int n;
+int reala[N], realb[N], *a = reala, *b = realb;
+int sa[N], rk[N], h[N];
+int c[N], m;
+int st[19][N];
+void Sort() {
+  for (int i = 1; i <= m; i++) c[i] = 0;
+  for (int i = 1; i <= n; i++) c[a[b[i]]]++;
+  for (int i = 2; i <= m; i++) c[i] += c[i - 1];
+  for (int i = n; i >= 1; i--) sa[c[a[b[i]]]--] = b[i];
 }
-void dfs(int u) {
-  while (!mark[u]) {
-    mark[u] = 1;
-    t[u] = ++cas;
-    u = to[u];
+void Calc(int _n, char *str) {
+  n = _n;
+  m = 0;
+  for (int i = 1; i <= n; i++) {
+    a[i] = str[i] - 'a' + 1;
+    b[i] = i;
+    m = max(m, a[i]);
   }
-  if (t[u] <= cass)
-    aans = (aans * e[cas - cass]) % 1000000007;
-  else {
-    aans = (aans * ((e[cas - t[u] + 1] - 2 + 1000000007) % 1000000007)) %
-           1000000007;
-    aans = (aans * e[t[u] - 1 - cass]) % 1000000007;
+  Sort();
+  int all = -1;
+  for (int l = 1; all < n; l <<= 1) {
+    all = 0;
+    for (int i = n - l + 1; i <= n; i++) b[++all] = i;
+    for (int i = 1; i <= n; i++)
+      if (sa[i] > l) b[++all] = sa[i] - l;
+    Sort();
+    swap(a, b);
+    a[sa[1]] = all = 1;
+    for (int i = 2; i <= n; i++) {
+      if (!(b[sa[i]] == b[sa[i - 1]] && b[sa[i] + l] == b[sa[i - 1] + l]))
+        all++;
+      a[sa[i]] = all;
+    }
+    m = all;
   }
-  return;
+  for (int i = 1; i <= n; i++) rk[i] = a[i];
+  for (int i = 1, j = 0; i <= n; i++) {
+    if (j) j--;
+    while (str[i + j] == str[sa[rk[i] - 1] + j]) j++;
+    h[rk[i]] = j;
+  }
+  for (int i = 1; i < n; i++) st[0][i] = h[i + 1];
+  for (int j = 1; j <= 18; j++)
+    for (int i = 1; i < n; i++) {
+      st[j][i] = st[j - 1][i];
+      if (i + (1 << (j - 1)) < n)
+        st[j][i] = min(st[j][i], st[j - 1][i + (1 << (j - 1))]);
+    }
 }
-void init() {
-  int i;
-  e[0] = 1;
-  for (i = 1; i < 200014; i++) e[i] = (e[i - 1] * 2) % 1000000007;
+int GetLCP(int a, int b) {
+  if (a == b) return -1;
+  a = rk[a];
+  b = rk[b];
+  if (a > b) swap(a, b);
+  b--;
+  int j = (int)log2(b - a + 1);
+  return min(st[j][a], st[j][b - (1 << j) + 1]);
+}
+bool Same(int a, int b, int len) { return GetLCP(a, b) >= len; }
+bool Query(int l, int r) {
+  int lcp;
+  int x = rk[l];
+  lcp = h[x];
+  for (int i = x - 1; i >= 1 && x - i + 1 <= sqrtn; lcp = min(lcp, h[i]), i--)
+    if ((l < sa[i] && sa[i] <= r) && sa[i] + lcp - 1 >= r) return true;
+  lcp = h[x + 1];
+  for (int i = x + 1; i <= n && i - x + 1 <= sqrtn; i++, lcp = min(lcp, h[i]))
+    if ((l < sa[i] && sa[i] <= r) && sa[i] + lcp - 1 >= r) return true;
+  return false;
+}
+}  // namespace SA
+namespace HASH {
+const unsigned long long BAS = 133333;
+unsigned long long bas[N];
+unsigned long long h[N];
+void Calc(int n, char *str) {
+  bas[0] = 1;
+  for (int i = 1; i <= n; i++) bas[i] = bas[i - 1] * BAS;
+  for (int i = 1; i <= n; i++) h[i] = h[i - 1] + bas[i] * (str[i] - 'a' + 1);
+}
+bool Same(int x, int y, int len) {
+  if (x > y) swap(x, y);
+  return (h[x + len - 1] - h[x - 1]) * bas[y - x] ==
+         (h[y + len - 1] - h[y - 1]);
+}
+}  // namespace HASH
+namespace MATH {
+bool vis[N];
+int p[N], pcnt;
+int minp[N];
+void Sieve(int n) {
+  for (int i = 2; i <= n; i++) {
+    if (!vis[i]) {
+      p[++pcnt] = i;
+      minp[i] = i;
+    }
+    for (int j = 1; j <= pcnt && i * p[j] <= n; j++) {
+      vis[i * p[j]] = true;
+      minp[i * p[j]] = p[j];
+      if (i % p[j] == 0) break;
+    }
+  }
+}
+void GetP(int x, int *a, int &acnt) {
+  acnt = 0;
+  while (x != 1) {
+    int curp = minp[x];
+    a[++acnt] = curp;
+    while (x % curp == 0) x /= curp;
+  }
+}
+}  // namespace MATH
+namespace DIV {
+struct Seg {
+  int rt, sz;
+  int ch[N * 2][2];
+  int tag[N * 2];
+  void Reset() { rt = sz = 0; }
+  inline void MakeTag(int u, int x) { tag[u] = min(tag[u], x); }
+  void Build(int &u, int l, int r) {
+    u = ++sz;
+    tag[u] = INF;
+    if (l == r) return;
+    int mid = (l + r) >> 1;
+    Build(ch[u][0], l, mid);
+    Build(ch[u][1], mid + 1, r);
+  }
+  void SegMin(int u, int l, int r, int ml, int mr, int x) {
+    if (ml > mr) return;
+    if (ml <= l && r <= mr) {
+      MakeTag(u, x);
+      return;
+    }
+    int mid = (l + r) >> 1;
+    if (mr <= mid)
+      SegMin(ch[u][0], l, mid, ml, mr, x);
+    else if (mid < ml)
+      SegMin(ch[u][1], mid + 1, r, ml, mr, x);
+    else {
+      SegMin(ch[u][0], l, mid, ml, mid, x);
+      SegMin(ch[u][1], mid + 1, r, mid + 1, mr, x);
+    }
+  }
+  void Extract(int u, int l, int r, int *arr, int tagSum = INF) {
+    tagSum = min(tagSum, tag[u]);
+    if (l == r) {
+      arr[l] = tagSum;
+      return;
+    }
+    int mid = (l + r) >> 1;
+    Extract(ch[u][0], l, mid, arr, tagSum);
+    Extract(ch[u][1], mid + 1, r, arr, tagSum);
+  }
+} sl, sr;
+int f[2][N];
+int st[2][19][N];
+void GetNext(int n, char *str, int *nex) {
+  int i = 0, j, p;
+  nex[0] = n;
+  while (i < n - 1 && str[i] == str[i + 1]) i++;
+  nex[1] = i;
+  p = 1;
+  for (int i = 2; i < n; i++)
+    if (nex[i - p] + i < nex[p] + p)
+      nex[i] = nex[i - p];
+    else {
+      j = max(0, p + nex[p] - i);
+      while (i + j < n && str[j] == str[i + j]) j++;
+      nex[i] = j;
+      p = i;
+    }
+}
+void GetExt(int n, char *s, int m, char *t, int *nex, int *ext) {
+  int i = 0, j, p;
+  while (i < n && i < m && s[i] == t[i]) i++;
+  ext[0] = i;
+  p = 0;
+  for (int i = 1; i < n; i++)
+    if (nex[i - p] + i < ext[p] + p)
+      ext[i] = nex[i - p];
+    else {
+      j = max(0, p + ext[p] - i);
+      while (i + j < n && j < m && s[i + j] == t[j]) j++;
+      ext[i] = j;
+      p = i;
+    }
+}
+void Proceed(int l, int mid, int r, int *lp, int *ls) {
+  int lenl = mid - l + 1, lenr = r - mid;
+  static int nex[N];
+  GetNext(lenr, str + mid + 1, lp + 1);
+  lp[lenr + 1] = 0;
+  reverse(str + l, str + mid + 1);
+  reverse(str + mid + 1, str + r + 1);
+  GetNext(lenl, str + l, nex);
+  GetExt(lenr, str + mid + 1, lenl, str + l, nex, ls + 1);
+  reverse(ls + 1, ls + 1 + lenr);
+  reverse(str + l, str + mid + 1);
+  reverse(str + mid + 1, str + r + 1);
+}
+void Divide(int l, int r) {
+  if (l == r) return;
+  int mid = (l + r) >> 1;
+  Divide(l, mid);
+  Divide(mid + 1, r);
+  static int lp[N], ls[N];
+  Proceed(l, mid, r, lp, ls);
+  for (int x = 1; x <= r - mid; x++) {
+    int tl = mid + max(1, 2 * x - ls[x]),
+        tr = mid + min(r - mid, min(2 * x - 1, x + lp[x + 1]));
+    sl.SegMin(sl.rt, 1, n, tl, tr, 2 * x);
+    sr.SegMin(sr.rt, 1, n, tl - 2 * x + 1, tr - 2 * x + 1, 2 * x);
+  }
+  reverse(str + l, str + r + 1);
+  mid = l + (r - mid) - 1;
+  Proceed(l, mid, r, lp, ls);
+  for (int x = 1; x <= r - mid; x++) {
+    int tl = mid + max(1, 2 * x - ls[x]),
+        tr = mid + min(r - mid, min(2 * x - 1, x + lp[x + 1]));
+    tl = l + (r - tl);
+    tr = l + (r - tr);
+    sr.SegMin(sr.rt, 1, n, tr, tl, 2 * x);
+    sl.SegMin(sr.rt, 1, n, tr + 2 * x - 1, tl + 2 * x - 1, 2 * x);
+  }
+  reverse(str + l, str + r + 1);
+}
+void InitST() {
+  for (int i = 1; i <= n; i++) st[0][0][i] = f[0][i];
+  for (int j = 1; j <= 18; j++)
+    for (int i = 1; i <= n; i++) {
+      st[0][j][i] = st[0][j - 1][i];
+      if (i + (1 << (j - 1)) <= n)
+        st[0][j][i] = max(st[0][j][i], st[0][j - 1][i + (1 << (j - 1))]);
+    }
+  for (int i = 1; i <= n; i++) st[1][0][i] = f[1][i];
+  for (int j = 1; j <= 18; j++)
+    for (int i = 1; i <= n; i++) {
+      st[1][j][i] = st[1][j - 1][i];
+      if (i + (1 << (j - 1)) <= n)
+        st[1][j][i] = min(st[1][j][i], st[1][j - 1][i + (1 << (j - 1))]);
+    }
+}
+int Query(int k, int l, int r) {
+  int j = (int)log2(r - l + 1);
+  if (!k)
+    return max(st[0][j][l], st[0][j][r - (1 << j) + 1]);
+  else
+    return min(st[1][j][l], st[1][j][r - (1 << j) + 1]);
+}
+void Calc() {
+  sl.Build(sl.rt, 1, n);
+  sr.Build(sr.rt, 1, n);
+  Divide(1, n);
+  sl.Extract(sl.rt, 1, n, f[0]);
+  sr.Extract(sr.rt, 1, n, f[1]);
+  for (int i = 1; i <= n; i++) {
+    f[0][i] = max(0, i - f[0][i] + 1);
+    f[1][i] = min(n + 1, i + f[1][i] - 1);
+  }
+  InitST();
+}
+}  // namespace DIV
+void ReadData() {
+  scanf("%d", &n);
+  sqrtn = ((int)sqrt(n)) + 1;
+  scanf("%s", str + 1);
+}
+void InitStr() {
+  for (int i = 1; i <= n; i++) {
+    for (int j = 0; j < C; j++) csum[i][j] = csum[i - 1][j];
+    csum[i][str[i] - 'a']++;
+  }
+}
+bool AllSingle(int l, int r) {
+  if (r - l + 1 > 26) return false;
+  bool exist = false;
+  for (int j = 0; j < C; j++)
+    if (csum[r][j] - csum[l - 1][j] >= 2) {
+      exist = true;
+      break;
+    }
+  return !exist;
+}
+bool Loop(int l, int r) {
+  int len = r - l + 1;
+  static int p[20], pcnt;
+  MATH::GetP(len, p, pcnt);
+  for (int i = 1; i <= pcnt; i++) {
+    int orz = len / p[i];
+    if (SA::Same(l, l + orz, len - orz)) return true;
+  }
+  return false;
+}
+bool ExistBorder(int l, int r) {
+  int len = r - l + 1;
+  for (int i = 1; i < len && i <= sqrtn; i++)
+    if (SA::Same(l, r - i + 1, i)) return true;
+  return SA::Query(l, r);
+}
+bool SideAdjTwo(int l, int r) { return DIV::f[1][l] <= r || l <= DIV::f[0][r]; }
+bool AdjTwo(int l, int r) {
+  return DIV::Query(0, l, r) >= l || DIV::Query(1, l, r) <= r;
+}
+bool TwoCha(int l, int r) {
+  int lc = str[l] - 'a', rc = str[r] - 'a';
+  return csum[r][lc] - csum[l - 1][lc] > 1 || csum[r][rc] - csum[l - 1][rc] > 1;
+}
+int Solve(int l, int r) {
+  if (AllSingle(l, r)) return -1;
+  if (Loop(l, r)) return 1;
+  if (ExistBorder(l, r)) return 2;
+  if (SideAdjTwo(l, r)) return 2;
+  if (AdjTwo(l, r)) return 3;
+  if (TwoCha(l, r)) return 3;
+  return 4;
+}
+void AnswerQuery() {
+  int q, l, r;
+  scanf("%d", &q);
+  for (int i = 1; i <= q; i++) {
+    scanf("%d%d", &l, &r);
+    printf("%d\n", Solve(l, r));
+  }
 }
 int main() {
-  int i, j, k;
-  init();
-  while (~scanf("%d", &n)) {
-    memset(mark, 0, sizeof(mark));
-    for (i = 1; i <= n; i++) scanf("%d", &to[i]);
-    aans = 1;
-    cas = 0;
-    for (i = 1; i <= n; i++) {
-      if (mark[i]) continue;
-      cass = cas;
-      dfs(i);
-    }
-    printf("%I64d\n", aans);
-  }
+  ReadData();
+  InitStr();
+  SA::Calc(n, str);
+  HASH::Calc(n, str);
+  MATH::Sieve(n);
+  DIV::Calc();
+  AnswerQuery();
   return 0;
 }
 
+
+Example question 2:
+Name: even-divisors
+Tags: []
+Description: Tom gives a number N to Roy and ask him to tell the total number of even divisors of the number N. Help Roy to answer the question of Tom.
+
+INPUT:
+
+First line contains the number of testcases T, followed by T lines each containing an integer N. 
+
+OUTPUT:
+
+For each testcase, print the required answer in a singlr line.
+
+Constraints:
+
+1 ≤ T ≤ 100
+
+1 ≤ N ≤ 1000000000
+
+SAMPLE INPUT
+2
+9
+8
+
+SAMPLE OUTPUT
+0
+3
+Difficulty: 0
+Solutions: def div(n):    
+    return set(reduce(list.__add__, 
+                ([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0)))
+
+for _ in xrange(input()):
+	x= div(input())
+	print len([1 for i in x if i%2==0])
+
+Example question 3:
+Name: p00652 Cutting a Chocolate
+Tags: ['']
+Description: Turtle Shi-ta and turtle Be-ko decided to divide a chocolate. The shape of the chocolate is rectangle. The corners of the chocolate are put on (0,0), (w,0), (w,h) and (0,h). The chocolate has lines for cutting. They cut the chocolate only along some of these lines.
+
+The lines are expressed as follows. There are  m  points on the line connected between (0,0) and (0,h), and between (w,0) and (w,h). Each i-th point, ordered by y value (i = 0 then y =0), is connected as cutting line. These lines do not share any point where 0 < x < w . They can share points where x = 0 or x = w . However, (0, li ) = (0,lj ) and (w,ri ) = (w,rj ) implies  i  =  j  . The following figure shows the example of the chocolate.
+
+<image>
+
+There are  n  special almonds, so delicious but high in calories on the chocolate. Almonds are circle but their radius is too small. You can ignore radius of almonds. The position of almond is expressed as (x,y) coordinate.
+
+Two turtles are so selfish. Both of them have requirement for cutting.
+
+Shi-ta's requirement is that the piece for her is continuous. It is possible for her that she cannot get any chocolate. Assume that the minimum index of the piece is  i  and the maximum is  k . She must have all pieces between  i  and  k . For example, chocolate piece 1,2,3 is continuous but 1,3 or 0,2,4 is not continuous.
+
+Be-ko requires that the area of her chocolate is at least  S . She is worry about her weight. So she wants the number of almond on her chocolate is as few as possible.
+
+They doesn't want to make remainder of the chocolate because the chocolate is expensive.
+
+Your task is to compute the minumum number of Beko's almonds if both of their requirment are satisfied.
+
+
+
+Input
+
+Input consists of multiple test cases.
+Each dataset is given in the following format.
+
+
+n m w h S
+l0 r0
+...
+lm-1 rm-1
+x0 y0
+...
+xn-1 yn-1
+
+
+The last line contains five 0s. n is the number of almonds. m is the number of lines. w is the width of the chocolate. h is the height of the chocolate. S is the area that Be-ko wants to eat. Input is integer except xi yi.
+
+Input satisfies following constraints.
+1 ≤ n ≤ 30000
+1 ≤ m ≤ 30000
+1 ≤ w ≤ 200
+1 ≤ h ≤ 1000000
+0 ≤ S ≤ w*h
+
+
+If i < j  then  li ≤ lj and  ri ≤ rj and then  i -th lines and  j -th lines share at most 1 point. It is assured that lm-1 and rm-1 are h. xi yi is floating point number with ten digits. It is assured that they are inside of the chocolate. It is assured that the distance between points and any lines is at least 0.00001.
+
+Output
+
+You should output the minumum number of almonds for Be-ko.
+
+Example
+
+Input
+
+2 3 10 10 50
+3 3
+6 6
+10 10
+4.0000000000 4.0000000000
+7.0000000000 7.0000000000
+2 3 10 10 70
+3 3
+6 6
+10 10
+4.0000000000 4.0000000000
+7.0000000000 7.0000000000
+2 3 10 10 30
+3 3
+6 6
+10 10
+4.0000000000 4.0000000000
+7.0000000000 7.0000000000
+2 3 10 10 40
+3 3
+6 6
+10 10
+4.0000000000 4.0000000000
+7.0000000000 7.0000000000
+2 3 10 10 100
+3 3
+6 6
+10 10
+4.0000000000 4.0000000000
+7.0000000000 7.0000000000
+0 0 0 0 0
+
+
+Output
+
+1
+1
+0
+1
+2
+Difficulty: 0
+Solutions: #include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <string>
+#include <queue>
+using namespace std;
+#define SZ(v) ((int)(v).size())
+const int maxint = -1u>>1;
+const int maxn = 30000 + 100;
+const double eps = 1e-8;
+typedef long long lint;
+
+int sgn(double x) {
+    return (x > eps) - (x < -eps);
+}
+struct P {
+    double x, y;
+    P() {}
+    P(double _x, double _y): x(_x), y(_y) {}
+    lint cross(const P &a, const P &b) const {
+        return (a.x - x) * (b.y - y) - (a.y - y) * (b.x - x);
+    }
+    void input() {
+        scanf("%lf%lf", &x, &y);
+    }
+};
+
+int n, m, w, h, s;
+int l[maxn], r[maxn];
+double area[maxn];
+int cnt[maxn];
+
+int main() {
+    while (scanf("%d%d%d%d%d", &n, &m, &w, &h, &s) == 5 && (n || m || w || h || s)) {
+        for (int i = 1; i <= m; ++i) {
+            scanf("%d%d", &l[i], &r[i]);
+        }
+        l[0] = r[0] = 0;
+        l[m + 1] = r[m + 1] = h;
+        
+        for (int i = 0; i <= m; ++i) {
+            area[i] = double(r[i + 1] - r[i] + l[i + 1] - l[i]) * w / 2;
+            cnt[i] = 0;
+        }
+        for (int i = 0; i < n; ++i) {
+            P pt;
+            pt.input();
+            int low = 0, high = m, res = -1;
+            while (low <= high) {
+                int mid = (low + high) / 2;
+                if (sgn(P(0, l[mid]).cross(P(w, r[mid]), pt)) > 0) {
+                    res = mid;
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
+            }
+            if (res == -1) while (1);
+            if (res != -1) ++cnt[res];
+        }
+        //for (int i = 0; i <= m; ++i) printf("%lf ", area[i]); printf("\n");
+        //for (int i = 0; i <= m; ++i) {
+            //if (i == 0) sum[i] = cnt[i];
+            //else sum[i] = sum[i - 1] + cnt[i];
+        //}
+        int ba = 0;
+        double now = 0;
+        int ct = 0;
+        int ans = 0;
+        for (int i = 0; i <= m; ++i) {
+            now += area[i];
+            ct += cnt[i];
+            while (ba <= i && sgn(now - w * h + s) > 0) {
+                now -= area[ba];
+                ct -= cnt[ba];
+                ++ba;
+            }
+            ans = max(ans, ct);
+        }
+        printf("%d\n", n - ans);
+    }
+    return 0;
+}
 
 
 INSTRUCTIONS:
@@ -257,6 +702,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

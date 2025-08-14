@@ -53,102 +53,301 @@ In the third example, any non-empty subsequence is valid.
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 147_B. Smile House
-Tags: ['binary search', 'graphs', 'matrices']
-Description: A smile house is created to raise the mood. It has n rooms. Some of the rooms are connected by doors. For each two rooms (number i and j), which are connected by a door, Petya knows their value cij — the value which is being added to his mood when he moves from room i to room j.
+Name: 1487_G. String Counting
+Tags: ['combinatorics', 'dp', 'fft', 'math']
+Description: You have c_1 letters 'a', c_2 letters 'b', ..., c_{26} letters 'z'. You want to build a beautiful string of length n from them (obviously, you cannot use the i-th letter more than c_i times). Each c_i is greater than n/3.
 
-Petya wondered whether he can raise his mood infinitely, moving along some cycle? And if he can, then what minimum number of rooms he will need to visit during one period of a cycle?
+A string is called beautiful if there are no palindromic contiguous substrings of odd length greater than 1 in it. For example, the string "abacaba" is not beautiful, it has several palindromic substrings of odd length greater than 1 (for example, "aca"). Another example: the string "abcaa" is beautiful.
+
+Calculate the number of different strings you can build, and print the answer modulo 998244353.
 
 Input
 
-The first line contains two positive integers n and m (<image>), where n is the number of rooms, and m is the number of doors in the Smile House. Then follows the description of the doors: m lines each containing four integers i, j, cij и cji (1 ≤ i, j ≤ n, i ≠ j, - 104 ≤ cij, cji ≤ 104). It is guaranteed that no more than one door connects any two rooms. No door connects the room with itself.
+The first line contains one integer n (3 ≤ n ≤ 400).
+
+The second line contains 26 integers c_1, c_2, ..., c_{26} (n/3 < c_i ≤ n).
 
 Output
 
-Print the minimum number of rooms that one needs to visit during one traverse of the cycle that can raise mood infinitely. If such cycle does not exist, print number 0.
+Print one integer — the number of strings you can build, taken modulo 998244353.
 
 Examples
 
 Input
 
-4 4
-1 2 -10 3
-1 3 1 -10
-2 4 -10 -1
-3 4 0 -3
+
+4
+2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
 
 
 Output
 
-4
 
-Note
+422500
 
-Cycle is such a sequence of rooms a1, a2, ..., ak, that a1 is connected with a2, a2 is connected with a3, ..., ak - 1 is connected with ak, ak is connected with a1. Some elements of the sequence can coincide, that is, the cycle should not necessarily be simple. The number of rooms in the cycle is considered as k, the sequence's length. Note that the minimum possible length equals two.
-Difficulty: 8
+
+Input
+
+
+3
+2 2 2 2 2 2 3 3 3 2 2 2 2 2 2 3 3 3 2 2 3 2 2 3 2 2
+
+
+Output
+
+
+16900
+
+
+Input
+
+
+400
+348 322 247 158 209 134 151 267 268 176 214 379 372 291 388 135 147 304 169 149 193 351 380 368 181 340
+
+
+Output
+
+
+287489790
+Difficulty: 13
 Solutions: #include <bits/stdc++.h>
 using namespace std;
-int gi() {
-  int w = 0;
-  bool q = 1;
-  char c = getchar();
-  while ((c < '0' || c > '9') && c != '-') c = getchar();
-  if (c == '-') q = 0, c = getchar();
-  while (c >= '0' && c <= '9') w = w * 10 + c - '0', c = getchar();
-  return q ? w : -w;
-}
-const int N = 510;
-long long f[10][N][N], g[10][N][N];
-long long h[N][N], H[N][N];
+
+const int N = 405, mod = 998244353;
+
+int n, mx[26], ans = 26*26, f[N][N][2][2], g[2][N][N][3][3], cnt[3], cur;
+
 int main() {
-  int n = gi(), m = gi(), i, j, k, a, b, t, ans;
-  for (i = 1; i <= n; i++)
-    for (j = 1; j <= n; j++) f[0][i][j] = -1LL << 60;
-  while (m--) {
-    a = gi(), b = gi();
-    f[0][a][b] = max(f[0][a][b], (long long)gi());
-    f[0][b][a] = max(f[0][b][a], (long long)gi());
-  }
-  for (i = 1; i <= n; i++)
-    for (j = 1; j <= n; j++) g[0][i][j] = f[0][i][j];
-  for (t = 1; t < 10; t++) {
-    for (i = 1; i <= n; i++)
-      for (j = 1; j <= n; j++) {
-        g[t][i][j] = -1LL << 60;
-        f[t][i][j] = f[t - 1][i][j];
-        for (k = 1; k <= n; k++) {
-          g[t][i][j] = max(g[t][i][j], g[t - 1][i][k] + g[t - 1][k][j]);
-          f[t][i][j] = max(f[t][i][j], g[t - 1][i][k] + f[t - 1][k][j]);
-        }
-      }
-    for (i = 1; i <= n; i++)
-      if (f[t][i][i] > 0) break;
-    if (i <= n) break;
-  }
-  if (t == 10) return puts("0"), 0;
-  for (i = 1, ans = 1 << (--t); i <= n; i++)
-    for (j = 1; j <= n; j++) h[i][j] = g[t][i][j];
-  while (--t >= 0) {
-    for (i = 1; i <= n; i++) {
-      for (k = 1; k <= n; k++)
-        if (h[i][k] + f[t][k][i] > 0) break;
-      if (k <= n) break;
-    }
-    if (i > n) {
-      ans |= 1 << t;
-      for (i = 1; i <= n; i++)
-        for (j = 1; j <= n; j++) {
-          H[i][j] = -1LL << 60;
-          for (k = 1; k <= n; k++) H[i][j] = max(H[i][j], h[i][k] + g[t][k][j]);
-        }
-      for (i = 1; i <= n; i++)
-        for (j = 1; j <= n; j++) h[i][j] = H[i][j];
-    }
-  }
-  printf("%d\n", ans + 1);
-  return 0;
+	scanf("%d", &n);
+	for (int i = 0; i < 26; i++)
+		scanf("%d", &mx[i]);
+	for (int i = 3; i <= n; i++)
+		ans = 25ll*ans%mod;
+	cnt[0] = 25, cnt[1] = 1;
+	for (int x = 0; x <= 1; x++)
+		for (int y = 0; y <= 1; y++)
+			f[2][(x&1) + (y&1)][x][y] = cnt[x]*cnt[y];
+	for (int i = 3; i <= n; i++)
+		for (int x = 0; x <= 1; x++) for (int y = 0; y <= 1; y++)
+			for (int j = (x&1) + (y&1); j <= i; j++)
+				f[i][j][x][y] = (1ll*f[i - 1][j - (x&1)][y][x]*(cnt[x] - 1) + 1ll*f[i - 1][j - (x&1)][y][x^1]*cnt[x])%mod;
+	for (int i = 0; i < 26; i++)
+		for (int j = mx[i] + 1; j <= n; j++)
+			for (int x = 0; x <= 1; x++) for (int y = 0; y <= 1; y++)
+				ans = (ans - f[n][j][x][y])%mod;
+	cnt[0] = 24, cnt[1] = 1, cnt[2] = 1, cur = 0;
+	for (int x = 0; x <= 2; x++)
+		for (int y = 0; y <= 2; y++)
+			g[cur][(x&1) + (y&1)][x/2 + y/2][x][y] = cnt[x]*cnt[y];
+	for (int i = 3; i <= n; i++) {
+		cur ^= 1;
+		memset(g[cur], 0, sizeof(g[cur]));
+		for (int x = 0; x <= 2; x++) for (int y = 0; y <= 2; y++)
+			for (int j = (x&1) + (y&1); j <= i; j++)
+				for (int k = x/2 + y/2; j + k <= i; k++) {
+					for (int z = 0; z <= 2; z++)
+						g[cur][j][k][x][y] = (g[cur][j][k][x][y] + 1ll*g[cur^1][j - (x&1)][k - x/2][y][z]*cnt[x])%mod;
+					g[cur][j][k][x][y] = (g[cur][j][k][x][y] - g[cur^1][j - (x&1)][k - x/2][y][x])%mod;					
+				}
+	}
+	for (int i = 0; i < 25; i++)
+		for (int j = i + 1; j < 26; j++)
+			for (int x = 0; x <= 2; x++) for (int y = 0; y <= 2; y++)
+				for (int s1 = mx[i] + 1; s1 <= n; s1++)
+					for (int s2 = mx[j] + 1; s2 + s1 <= n; s2++)
+						ans = (ans + g[cur][s1][s2][x][y])%mod;
+	printf("%d\n", (ans%mod + mod)%mod);
 }
 
+Example question 2:
+Name: p02301 Diameter of a Convex Polygon
+Tags: ['']
+Description: Find the diameter of a convex polygon g. In other words, find a pair of points that have maximum distance between them.
+
+Constraints
+
+* 3 ≤ n ≤ 80000
+* -100 ≤ xi, yi ≤ 100
+* No point in the g will occur more than once.
+
+Input
+
+
+n
+x1 y1
+x2 y2
+:
+xn yn
+
+
+The first integer n is the number of points in g.
+
+In the following lines, the coordinate of the i-th point pi is given by two real numbers xi and yi. The coordinates of points are given in the order of counter-clockwise visit of them. Each value is a real number with at most 6 digits after the decimal point.
+
+Output
+
+Print the diameter of g in a line. The output values should be in a decimal fraction with an error less than 0.000001.
+
+Examples
+
+Input
+
+3
+0.0 0.0
+4.0 0.0
+2.0 2.0
+
+
+Output
+
+4.00
+
+
+Input
+
+4
+0.0 0.0
+1.0 0.0
+1.0 1.0
+0.0 1.0
+
+
+Output
+
+1.414213562373
+Difficulty: 0
+Solutions: #include <bits/stdc++.h>
+#define rep(i, a, b) for(int i = (a); i <= (b); ++i)
+#define per(i, a, b) for(int i = (a); i >= (b); --i)
+#define debug(x) cerr << #x << ' ' << x << endl;
+using namespace std;
+
+typedef long long ll;
+const int mod = 1e9+7;
+const int MAXN = 2e5 + 7;
+const double EPS=1e-8;
+inline int sign(double a){return a<-EPS?-1:a>EPS;}
+inline int cmp(double a,double b){return sign(a-b);}
+//点
+struct P{
+    double x,y;
+    P(){}
+    P(double _x,double _y):x(_x),y(_y){}
+    P operator + (P p){return P(x+p.x,y+p.y);}
+    P operator - (P p){return P(x-p.x,y-p.y);}
+    P operator * (double k){return P(x*k,y*k);}
+    P operator / (double k){return P(x/k,y/k);}
+    double dot(P p){return x*p.x+y*p.y;}
+    double det(P p){return x*p.y-y*p.x;}
+    double distTo(P p){return (*this-p).abs();}
+    double alpha(){return atan2(y,x);}
+    void read(){scanf("%lf%lf", &x, &y);}
+    void write(){printf("%.0lf %.0lf\n", x, y);}
+    double abs(){return sqrt(abs2());}
+    double abs2(){return x*x+y*y;}
+    P rot90(){return P(-y,x);}
+    P unit(){return *this/abs();}
+    int quad(){return sign(y)==1||(sign(y)==0&&sign(x)>=0);}
+    P rot(double an){return P(x*cos(an)-y*sin(an),x*sin(an)+y*cos(an));}
+    bool operator < (P p)const{int c=cmp(x,p.x);if(c)return c==-1;return cmp(y,p.y)==-1;}
+    bool operator == (P o)const{return cmp(x,o.x)==0&&cmp(y,o.y)==0;}
+}s[MAXN];
+
+int main(int argc, char const *argv[])
+{
+    int n;
+    scanf("%d", &n);
+    rep(i, 0, n-1)    s[i].read();
+    int j = 2;
+    double ans = 0;
+    rep(i, 0, n-1) {
+        while((s[i]-s[j]).det(s[i+1]-s[j]) <= (s[i]-s[(j+1)%n]).det(s[i+1]-s[(j+1)%n]))  j = (j+1)%n;
+        ans = max(ans, max((s[i]-s[j]).abs(), (s[i+1]-s[j]).abs()));
+    }
+    printf("%.16lf\n", ans);
+    return 0;
+}
+
+
+Example question 3:
+Name: p00110 Alphametic
+Tags: ['']
+Description: The problem of hiding a part of a formula and searching for the hidden number is called verbal arithmetic. This time, I'm dealing with an expression in which some numbers in the expression are hidden by X. Enter the following formula and create a program that outputs the result.
+
+Formula
+
+* A simple one-line addition expression in the form of "number string + number string = number string".
+* A "number sequence" is a sequence of numbers 0-9 and the letter X.
+* It is assumed that the leftmost number in the "number string" with two or more digits is not 0.
+* X must be at least one in the entire formula.
+
+
+
+result
+
+* The answer to the verbal arithmetic. It is one of 0 to 9 with a value of X such that the formula holds. Suppose there are no more than one answer.
+* If there is no answer, the result should be “NA”.
+
+
+
+Input
+
+Given multiple datasets. For each dataset, an addition expression containing one or more Xs (a string of up to 126 characters without spaces) is given on one line. The number of datasets does not exceed 150.
+
+Output
+
+For each data set, output the result of the verbal arithmetic on one line. Print the numbers 0-9 or NA.
+
+Example
+
+Input
+
+123+4X6=X79
+12X+4X6=X79
+XX22+89=X2XX
+
+
+Output
+
+5
+NA
+1
+Difficulty: 0
+Solutions: import java.math.BigInteger;
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] args) throws java.io.IOException {
+		Scanner sc = new Scanner(System.in);
+		while (sc.hasNext()) {
+			String fm[] = sc.nextLine().split("\\+|=");
+			int init = 0;
+			if (fm[0].charAt(0) == 'X' && fm[0].length() > 1
+					|| fm[1].charAt(0) == 'X' && fm[1].length() > 1
+					|| fm[2].charAt(0) == 'X' && fm[2].length() > 1) {
+				init = 1;
+			}
+			for (int i = init; i < 10; i++) {
+//				System.out.println(Long.parseLong(fm[0].replace('X',
+//						(char) (i + '0')))
+//						+ "+"
+//						+ Long.parseLong(fm[1].replace('X', (char) (i + '0')))
+//						+ "="
+//						+ Long.parseLong(fm[2].replace('X', (char) (i + '0'))));
+				if (((new BigInteger(fm[0].replace('X', (char) (i + '0'))))
+						.add(new BigInteger(fm[1]
+								.replace('X', (char) (i + '0')))))
+						.equals(new BigInteger((fm[2].replace('X',
+								(char) (i + '0')))))) {
+					System.out.println(i);
+					break;
+				} else if (i == 9)
+					System.out.println("NA");
+			}
+		}
+	}
+}
 
 
 INSTRUCTIONS:
@@ -159,6 +358,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

@@ -97,413 +97,172 @@ In the third example, the array changes as follows:
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 178_D3. Magic Squares
-Tags: []
-Description: The Smart Beaver from ABBYY loves puzzles. One of his favorite puzzles is the magic square. He has recently had an idea to automate the solution of this puzzle. The Beaver decided to offer this challenge to the ABBYY Cup contestants.
+Name: p03172 Educational DP Contest - Candies
+Tags: ['']
+Description: There are N children, numbered 1, 2, \ldots, N.
 
-The magic square is a matrix of size n × n. The elements of this matrix are integers. The sum of numbers in each row of the matrix is equal to some number s. The sum of numbers in each column of the matrix is also equal to s. In addition, the sum of the elements on the main diagonal is equal to s and the sum of elements on the secondary diagonal is equal to s. Examples of magic squares are given in the following figure:
+They have decided to share K candies among themselves. Here, for each i (1 \leq i \leq N), Child i must receive between 0 and a_i candies (inclusive). Also, no candies should be left over.
 
-<image> Magic squares 
+Find the number of ways for them to share candies, modulo 10^9 + 7. Here, two ways are said to be different when there exists a child who receives a different number of candies.
 
-You are given a set of n2 integers ai. It is required to place these numbers into a square matrix of size n × n so that they form a magic square. Note that each number must occur in the matrix exactly the same number of times as it occurs in the original set.
+Constraints
 
-It is guaranteed that a solution exists!
+* All values in input are integers.
+* 1 \leq N \leq 100
+* 0 \leq K \leq 10^5
+* 0 \leq a_i \leq K
 
 Input
 
-The first input line contains a single integer n. The next line contains n2 integers ai ( - 108 ≤ ai ≤ 108), separated by single spaces.
-
-The input limitations for getting 20 points are: 
-
-  * 1 ≤ n ≤ 3
+Input is given from Standard Input in the following format:
 
 
+N K
+a_1 a_2 \ldots a_N
 
-The input limitations for getting 50 points are: 
-
-  * 1 ≤ n ≤ 4
-  * It is guaranteed that there are no more than 9 distinct numbers among ai. 
-
-
-
-The input limitations for getting 100 points are: 
-
-  * 1 ≤ n ≤ 4
 
 Output
 
-The first line of the output should contain a single integer s. In each of the following n lines print n integers, separated by spaces and describing the resulting magic square. In the resulting magic square the sums in the rows, columns and diagonals must be equal to s. If there are multiple solutions, you are allowed to print any of them.
+Print the number of ways for the children to share candies, modulo 10^9 + 7.
 
 Examples
 
 Input
 
-3
-1 2 3 4 5 6 7 8 9
+3 4
+1 2 3
 
 
 Output
 
-15
-2 7 6
-9 5 1
-4 3 8
+5
 
 
 Input
 
-3
-1 0 -1 0 2 -1 -2 0 1
+1 10
+9
 
 
 Output
 
 0
-1 0 -1
--2 0 2
-1 0 -1
 
 
 Input
 
-2
-5 5 5 5
+2 0
+0 0
 
 
 Output
 
-10
-5 5
-5 5
-Difficulty: 10
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-const int MAXN = 25;
-int n, N, A[MAXN], s, T[MAXN][MAXN], F[MAXN], C[MAXN], D[2], FN[MAXN], CN[MAXN],
-    DN[2];
-bool used[MAXN], solved;
-int WF[MAXN], WC[MAXN];
-bool tenta(int i, int x, int y) {
-  if (used[i]) return false;
-  int fn = FN[x] + 1;
-  int cn = CN[y] + 1;
-  int d = (x == y) ? DN[0] + 1 : ((n - 1 - x == y) ? DN[1] + 1 : -1);
-  if (fn == n) {
-    if (F[x] + A[i] != s) return false;
-  }
-  if (cn == n) {
-    if (C[y] + A[i] != s) return false;
-  }
-  if (d == n) {
-    if (x == y && D[0] + A[i] != s) return false;
-    if (n - 1 - x == y && D[1] + A[i] != s) return false;
-  }
-  if (fn == n - 1) {
-    bool ok = false;
-    int t = s - F[x] - A[i];
-    for (int z = (0); z < (int)(N); z++) {
-      if (z == i) continue;
-      if (used[z]) continue;
-      if (A[z] == t) {
-        ok = true;
-        break;
-      }
-    }
-    if (!ok) return false;
-  }
-  if (cn == n - 1) {
-    bool ok = false;
-    int t = s - C[y] - A[i];
-    for (int z = (0); z < (int)(N); z++) {
-      if (z == i) continue;
-      if (used[z]) continue;
-      if (A[z] == t) {
-        ok = true;
-        break;
-      }
-    }
-    if (!ok) return false;
-  }
-  return true;
-}
-void bf(int f, int c, int pos) {
-  if (f == n) {
-    printf("%d\n", s);
-    for (int i = (0); i < (int)(n); i++) {
-      for (int j = (0); j < (int)(n); j++) {
-        if (j) printf(" ");
-        printf("%d", T[i][j]);
-      }
-      puts("");
-    }
-    solved = true;
-    return;
-  }
-  int nf = c + 1 == n ? f + 1 : f;
-  int nc = c + 1 == n ? 0 : c + 1;
-  if (n == 4) {
-    nf = WF[pos + 1];
-    nc = WC[pos + 1];
-  }
-  for (int i = (0); i < (int)(N); i++) {
-    if (tenta(i, f, c)) {
-      used[i] = true;
-      F[f] += A[i];
-      FN[f]++;
-      C[c] += A[i];
-      CN[c]++;
-      if (f == c) {
-        D[0] += A[i];
-        DN[0]++;
-      }
-      if (n - 1 - f == c) {
-        D[1] += A[i];
-        DN[1]++;
-      }
-      T[f][c] = A[i];
-      bf(nf, nc, pos + 1);
-      if (solved) return;
-      F[f] -= A[i];
-      FN[f]--;
-      C[c] -= A[i];
-      CN[c]--;
-      if (f == c) {
-        D[0] -= A[i];
-        DN[0]--;
-      }
-      if (n - 1 - f == c) {
-        D[1] -= A[i];
-        DN[1]--;
-      }
-      used[i] = false;
-    }
-  }
-}
-int main() {
-  WF[0] = 0;
-  WF[4] = 1;
-  WF[8] = 3;
-  WF[12] = 2;
-  WF[1] = 0;
-  WF[5] = 2;
-  WF[9] = 3;
-  WF[13] = 1;
-  WF[2] = 0;
-  WF[6] = 3;
-  WF[10] = 2;
-  WF[14] = 1;
-  WF[3] = 0;
-  WF[7] = 3;
-  WF[11] = 1;
-  WF[15] = 2;
-  WF[16] = 4;
-  WC[0] = 0;
-  WC[4] = 3;
-  WC[8] = 1;
-  WC[12] = 2;
-  WC[1] = 1;
-  WC[5] = 3;
-  WC[9] = 0;
-  WC[13] = 1;
-  WC[2] = 2;
-  WC[6] = 3;
-  WC[10] = 1;
-  WC[14] = 0;
-  WC[3] = 3;
-  WC[7] = 2;
-  WC[11] = 2;
-  WC[15] = 0;
-  WC[16] = 4;
-  while (scanf("%d", &n) >= 1) {
-    memset(F, 0, sizeof(F));
-    memset(C, 0, sizeof(C));
-    memset(D, 0, sizeof(D));
-    memset(FN, 0, sizeof(FN));
-    memset(CN, 0, sizeof(CN));
-    memset(DN, 0, sizeof(DN));
-    solved = false;
-    N = n * n;
-    s = 0;
-    for (int i = (0); i < (int)(N); i++) {
-      scanf("%d", &A[i]);
-      s += A[i];
-    }
-    srand(time(NULL));
-    random_shuffle(A, A + N);
-    s /= n;
-    memset(used, false, sizeof(used));
-    bf(0, 0, 0);
-    if (!solved) {
-      printf("geeez\n");
-    }
-  }
-  return 0;
-}
+1
 
+
+Input
+
+4 100000
+100000 100000 100000 100000
+
+
+Output
+
+665683269
+Difficulty: 0
+Solutions: #include<bits/stdc++.h>
+
+using namespace std;
+
+const int N = 110,mod=1e9+7;
+
+typedef long long ll;
+
+int a[N];
+ll s[110000];
+ll f[110][110000];
+int main()
+{
+	ll n,k;
+	cin>>n>>k;
+
+	
+	memset(f,0,sizeof(f));
+	for(int i=1;i<=n;i++) cin>>a[i];
+	for(int i =0;i<=k;i++) f[1][i] = (i<=a[1])? 1:0;
+	for(int i=2;i<=n;i++)
+	{	memset(s,0,sizeof(s));
+		s[0]=f[i-1][0];
+		for(int j=1;j<=k;j++)
+		{
+			s[j]=s[j-1]+f[i-1][j];
+		}
+		for(int j=k;j>=0;j--)
+		{
+			if(j-a[i]-1>=0) f[i][j]=s[j]-s[j-a[i]-1];
+			else f[i][j]=s[j];
+			f[i][j]%=mod;
+		}
+	}
+	cout<<f[n][k]<<endl;
+ 
+}
 
 Example question 2:
-Name: 1359_B. New Theatre Square
-Tags: ['brute force', 'dp', 'greedy', 'implementation', 'two pointers']
-Description: You might have remembered Theatre square from the [problem 1A](https://codeforces.com/problemset/problem/1/A). Now it's finally getting repaved.
-
-The square still has a rectangular shape of n × m meters. However, the picture is about to get more complicated now. Let a_{i,j} be the j-th square in the i-th row of the pavement.
-
-You are given the picture of the squares:
-
-  * if a_{i,j} =  "*", then the j-th square in the i-th row should be black; 
-  * if a_{i,j} =  ".", then the j-th square in the i-th row should be white. 
-
-
-
-The black squares are paved already. You have to pave the white squares. There are two options for pavement tiles:
-
-  * 1 × 1 tiles — each tile costs x burles and covers exactly 1 square; 
-  * 1 × 2 tiles — each tile costs y burles and covers exactly 2 adjacent squares of the same row. Note that you are not allowed to rotate these tiles or cut them into 1 × 1 tiles.
-
-
-
-You should cover all the white squares, no two tiles should overlap and no black squares should be covered by tiles.
-
-What is the smallest total price of the tiles needed to cover all the white squares?
-
-Input
-
-The first line contains a single integer t (1 ≤ t ≤ 500) — the number of testcases. Then the description of t testcases follow.
-
-The first line of each testcase contains four integers n, m, x and y (1 ≤ n ≤ 100; 1 ≤ m ≤ 1000; 1 ≤ x, y ≤ 1000) — the size of the Theatre square, the price of the 1 × 1 tile and the price of the 1 × 2 tile.
-
-Each of the next n lines contains m characters. The j-th character in the i-th line is a_{i,j}. If a_{i,j} =  "*", then the j-th square in the i-th row should be black, and if a_{i,j} =  ".", then the j-th square in the i-th row should be white.
-
-It's guaranteed that the sum of n × m over all testcases doesn't exceed 10^5.
-
-Output
-
-For each testcase print a single integer — the smallest total price of the tiles needed to cover all the white squares in burles.
-
-Example
-
-Input
-
-
-4
-1 1 10 1
-.
-1 2 10 1
-..
-2 1 10 1
-.
-.
-3 3 3 7
-..*
-*..
-.*.
-
-
-Output
-
-
-10
-1
-20
-18
-
-Note
-
-In the first testcase you are required to use a single 1 × 1 tile, even though 1 × 2 tile is cheaper. So the total price is 10 burles.
-
-In the second testcase you can either use two 1 × 1 tiles and spend 20 burles or use a single 1 × 2 tile and spend 1 burle. The second option is cheaper, thus the answer is 1.
-
-The third testcase shows that you can't rotate 1 × 2 tiles. You still have to use two 1 × 1 tiles for the total price of 20.
-
-In the fourth testcase the cheapest way is to use 1 × 1 tiles everywhere. The total cost is 6 ⋅ 3 = 18.
-Difficulty: 8
-Solutions: cases=input()
-
-
-for i in range(0,int(cases)):
-    inss=input()
-    list=inss.split(' ')
-    n=int(list[0])
-    m=int(list[1])
-    x=int(list[2])
-    y=int(list[3])
-    price=0
-    if 2*x > y:
-        lame=True
-    else:
-        lame=False
-    for count in range(0,n):
-        data=input()
-        ###print(data)
-        ###list1=data.split('')
-        ###print(list1)
-        if lame:
-            ##print("lame yes")
-            sing=0
-            doub=0
-            lolz=False
-            for item in data:
-                ##print(item)
-                if lolz:
-                    if item=='.':
-                        doub=doub+1
-                        sing=sing-1
-                        lolz=False
-                    else:
-                        lolz=False
-                    
-                else:
-                    
-                    if item=='.':
-                        sing=sing+1
-                        lolz=True
-            ##print(doub,sing)
-            price=price+(doub*y+sing*x)
-            ##print(price,"1")
-                    
-        else:
-            ##print("lame no")
-            for item in data:
-                if item=='.':
-                    price=price+x
-        
-    
-       
-    print(price)
-
-Example question 3:
-Name: jntuv3
+Name: iitk2p01
 Tags: []
-Description: Problem Description. 
+Description: Nowadays out little Chef is traveling a lot. While traveling, on one unlucky day, he lost into a mysterious country. Nearby people handed little Chef to the King for investigations. After proper investigation they found little Chef innocent. Little Chef had no money with him to return to his country Byteland, so the King helped him by giving some money.
 
-Nithin proposed to his girl friend on valentines day. But she had kept a condition that if he answers her task then she will accept his proposal. As Nithin is new to programming, help him in solving the task. Your task is so simple.i.e...you need to find the factorial of a given number.
- 
+
+The monetary system of the country has coins of following values : 
+K^0 , K^1 , K^2 , K^3 , K^4  ..... (till infinity) 
+The King gave him K coins of each type.
+
+
+The cost of the air ticket from that country to Byteland (his home) is  N . What is the minimum number of coins little chef has to spend to buy a ticket ? Little Chef want to spend minimum number of coins so that he can play with the remaining coins in his home !
+
 
 Input
-Input description.
-An Integer N 
- 
+
+The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows.
+
+The only line of each test case contains two space separated integers N and  K  as described in the problem statement.
+
 
 Output
-Output description.
-Print the required output
+
+For each test case, output a single line containing the answer to the corresponding test case.
+
 
 Constraints
-Should contain all the constraints on the input data that you may have. Format it like:
 
-1 ≤ N ≤ 100
+1 ≤ T ≤ 100,000
+1 ≤ N ≤ 1,000,000,000,000,000,000 (10^18)
+1 ≤ K ≤ 100,000
 
- 
 
 Example
 Input:
-5
+2
+12 2
+18 3
 
 Output:
-120
+2
+2
 Difficulty: 6
-Solutions: import math
-print math.factorial(int(raw_input()))
+Solutions: for I in range(input()):
+ x=raw_input().split()
+ a=long(x[0])
+ b=long(x[1])
+ sum=0
+ if b==1:
+  print a
+  continue
+ while a!=0:
+  sum+=a%b
+  a/=b
+ print sum
 
 
 INSTRUCTIONS:
@@ -514,6 +273,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

@@ -89,91 +89,374 @@ The third and the fourth examples contain only one string each, so the order is 
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 430_E. Guess the Tree
-Tags: ['bitmasks', 'constructive algorithms', 'dp', 'greedy', 'trees']
-Description: Iahub and Iahubina went to a picnic in a forest full of trees. Less than 5 minutes passed before Iahub remembered of trees from programming. Moreover, he invented a new problem and Iahubina has to solve it, otherwise Iahub won't give her the food. 
+Name: 1011_B. Planning The Expedition
+Tags: ['binary search', 'brute force', 'implementation']
+Description: Natasha is planning an expedition to Mars for n people. One of the important tasks is to provide food for each participant.
 
-Iahub asks Iahubina: can you build a rooted tree, such that
+The warehouse has m daily food packages. Each package has some food type a_i.
 
-  * each internal node (a node with at least one son) has at least two sons; 
-  * node i has ci nodes in its subtree? 
+Each participant must eat exactly one food package each day. Due to extreme loads, each participant must eat the same food type throughout the expedition. Different participants may eat different (or the same) types of food.
 
+Formally, for each participant j Natasha should select his food type b_j and each day j-th participant will eat one food package of type b_j. The values b_j for different participants may be different.
 
-
-Iahubina has to guess the tree. Being a smart girl, she realized that it's possible no tree can follow Iahub's restrictions. In this way, Iahub will eat all the food. You need to help Iahubina: determine if there's at least one tree following Iahub's restrictions. The required tree must contain n nodes.
+What is the maximum possible number of days the expedition can last, following the requirements above?
 
 Input
 
-The first line of the input contains integer n (1 ≤ n ≤ 24). Next line contains n positive integers: the i-th number represents ci (1 ≤ ci ≤ n).
+The first line contains two integers n and m (1 ≤ n ≤ 100, 1 ≤ m ≤ 100) — the number of the expedition participants and the number of the daily food packages available.
+
+The second line contains sequence of integers a_1, a_2, ..., a_m (1 ≤ a_i ≤ 100), where a_i is the type of i-th food package.
 
 Output
 
-Output on the first line "YES" (without quotes) if there exist at least one tree following Iahub's restrictions, otherwise output "NO" (without quotes). 
+Print the single integer — the number of days the expedition can last. If it is not possible to plan the expedition for even one day, print 0.
 
 Examples
 
 Input
 
-4
-1 1 1 4
+4 10
+1 5 2 1 1 1 2 5 7 2
 
 
 Output
 
-YES
+2
+
 
 Input
 
-5
-1 1 5 2 1
+100 1
+1
 
 
 Output
 
-NO
-Difficulty: 11
-Solutions: #!/usr/bin/python
+0
 
-import sys
 
-def Ni(): return tuple(map(int, sys.stdin.readline().split()))
+Input
 
-n = Ni()[0]
-c = Ni()
+2 5
+5 4 3 2 1
 
-avail = [c.count(i) for i in range(n+1)]
 
-def backtrack(stack, sumleft):
-    #print stack, avail, sumleft
-    if len(stack) == 1 and sumleft == 0:
-        print "YES"
-        sys.exit(0)
+Output
 
-    # try to shift a 1
-    if avail[1] > 0:
-        avail[1] -= 1
-        backtrack(stack + [1], sumleft - 1)
-        avail[1] += 1
+1
 
-    # reduce if possible
-    if len(stack) < 2:
-        return
 
-    s = 1 + stack[-1]
-    for i in range(2, len(stack) + 1):
-        s += stack[-i]
-        if s >= n + 1:
-            break
+Input
 
-        if avail[s] > 0:
-            avail[s] -= 1
-            backtrack(stack[:-i] + [s], sumleft - s)
-            avail[s] += 1
-        
+3 9
+42 42 42 42 42 42 42 42 42
 
-backtrack([], sum(c))
-print "NO"
 
+Output
+
+3
+
+Note
+
+In the first example, Natasha can assign type 1 food to the first participant, the same type 1 to the second, type 5 to the third and type 2 to the fourth. In this case, the expedition can last for 2 days, since each participant can get two food packages of his food type (there will be used 4 packages of type 1, two packages of type 2 and two packages of type 5).
+
+In the second example, there are 100 participants and only 1 food package. In this case, the expedition can't last even 1 day.
+Difficulty: 8
+Solutions: '''input
+3 9
+42 42 42 42 42 42 42 42 42
+
+'''
+from collections import Counter
+
+n, m = map(int, input().split())
+if n > m:
+	print(0)
+	quit()
+a = list(map(int, input().split()))
+d = 1
+c = Counter(a).values()
+while True:
+	s = sum([i//d for i in c])
+	if s >= n:
+		d += 1
+	else:
+		break
+print(d - 1)
+
+Example question 2:
+Name: 631_B. Print Check
+Tags: ['constructive algorithms', 'implementation']
+Description: Kris works in a large company "Blake Technologies". As a best engineer of the company he was assigned a task to develop a printer that will be able to print horizontal and vertical strips. First prototype is already built and Kris wants to tests it. He wants you to implement the program that checks the result of the printing.
+
+Printer works with a rectangular sheet of paper of size n × m. Consider the list as a table consisting of n rows and m columns. Rows are numbered from top to bottom with integers from 1 to n, while columns are numbered from left to right with integers from 1 to m. Initially, all cells are painted in color 0.
+
+Your program has to support two operations: 
+
+  1. Paint all cells in row ri in color ai; 
+  2. Paint all cells in column ci in color ai. 
+
+
+
+If during some operation i there is a cell that have already been painted, the color of this cell also changes to ai.
+
+Your program has to print the resulting table after k operation.
+
+Input
+
+The first line of the input contains three integers n, m and k (1 ≤ n, m ≤ 5000, n·m ≤ 100 000, 1 ≤ k ≤ 100 000) — the dimensions of the sheet and the number of operations, respectively.
+
+Each of the next k lines contains the description of exactly one query: 
+
+  * 1 ri ai (1 ≤ ri ≤ n, 1 ≤ ai ≤ 109), means that row ri is painted in color ai; 
+  * 2 ci ai (1 ≤ ci ≤ m, 1 ≤ ai ≤ 109), means that column ci is painted in color ai. 
+
+Output
+
+Print n lines containing m integers each — the resulting table after all operations are applied.
+
+Examples
+
+Input
+
+3 3 3
+1 1 3
+2 2 1
+1 2 2
+
+
+Output
+
+3 1 3 
+2 2 2 
+0 1 0 
+
+
+Input
+
+5 3 5
+1 1 1
+1 3 1
+1 5 1
+2 1 1
+2 3 1
+
+
+Output
+
+1 1 1 
+1 0 1 
+1 1 1 
+1 0 1 
+1 1 1 
+
+Note
+
+The figure below shows all three operations for the first sample step by step. The cells that were painted on the corresponding step are marked gray. 
+
+<image>
+Difficulty: 8
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int N = 1e6 + 7;
+int table[5007][5007], n, m, k;
+bool frq[5007][2];
+struct q {
+  int t, x, c;
+} mem[N], a;
+int main() {
+  cin >> n >> m >> k;
+  for (int i = 0; i < k; i++) scanf("%d%d%d", &mem[i].t, &mem[i].x, &mem[i].c);
+  for (int i = k - 1; i >= 0; i--) {
+    a = mem[i];
+    if (a.t == 1) {
+      if (frq[a.x][0]) continue;
+      frq[a.x][0] = 1;
+      for (int j = 1; j <= m; j++) {
+        if (!table[a.x][j]) table[a.x][j] = a.c;
+      }
+    } else {
+      if (frq[a.x][1]) continue;
+      frq[a.x][1] = 1;
+      for (int j = 1; j <= n; j++) {
+        if (!table[j][a.x]) table[j][a.x] = a.c;
+      }
+    }
+  }
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) printf("%d ", table[i][j]);
+    puts("");
+  }
+  return 0;
+}
+
+
+Example question 3:
+Name: 1508_F. Optimal Encoding
+Tags: ['brute force', 'data structures']
+Description: Touko's favorite sequence of numbers is a permutation a_1, a_2, ..., a_n of 1, 2, ..., n, and she wants some collection of permutations that are similar to her favorite permutation.
+
+She has a collection of q intervals of the form [l_i, r_i] with 1 ≤ l_i ≤ r_i ≤ n. To create permutations that are similar to her favorite permutation, she coined the following definition:
+
+  * A permutation b_1, b_2, ..., b_n allows an interval [l', r'] to holds its shape if for any pair of integers (x, y) such that l' ≤ x < y ≤ r', we have b_x < b_y if and only if a_x < a_y. 
+  * A permutation b_1, b_2, ..., b_n is k-similar if b allows all intervals [l_i, r_i] for all 1 ≤ i ≤ k to hold their shapes. 
+
+
+
+Yuu wants to figure out all k-similar permutations for Touko, but it turns out this is a very hard task; instead, Yuu will encode the set of all k-similar permutations with directed acylic graphs (DAG). Yuu also coined the following definitions for herself:
+
+  * A permutation b_1, b_2, ..., b_n satisfies a DAG G' if for all edge u → v in G', we must have b_u < b_v. 
+  * A k-encoding is a DAG G_k on the set of vertices 1, 2, ..., n such that a permutation b_1, b_2, ..., b_n satisfies G_k if and only if b is k-similar. 
+
+
+
+Since Yuu is free today, she wants to figure out the minimum number of edges among all k-encodings for each k from 1 to q.
+
+Input
+
+The first line contains two integers n and q (1 ≤ n ≤ 25 000, 1 ≤ q ≤ 100 000).
+
+The second line contains n integers a_1, a_2, ..., a_n which form a permutation of 1, 2, ..., n.
+
+The i-th of the following q lines contains two integers l_i and r_i. (1 ≤ l_i ≤ r_i ≤ n).
+
+Output
+
+Print q lines. The k-th of them should contain a single integer — The minimum number of edges among all k-encodings.
+
+Examples
+
+Input
+
+
+4 3
+2 4 1 3
+1 3
+2 4
+1 4
+
+
+Output
+
+
+2
+4
+3
+
+
+Input
+
+
+8 4
+3 7 4 8 1 5 2 6
+3 6
+1 6
+3 8
+1 8
+
+
+Output
+
+
+3
+5
+9
+7
+
+
+Input
+
+
+10 10
+10 5 1 2 7 3 9 4 6 8
+2 2
+4 5
+6 8
+4 10
+4 4
+2 7
+2 2
+7 8
+3 7
+2 10
+
+
+Output
+
+
+0
+1
+3
+6
+6
+9
+9
+9
+9
+8
+
+Note
+
+For the first test case:
+
+  * All 1-similar permutations must allow the interval [1, 3] to hold its shape. Therefore, the set of all 1-similar permutations is \{[3, 4, 2, 1], [3, 4, 1, 2], [2, 4, 1, 3], [2, 3, 1, 4]\}. The optimal encoding of these permutations is <image>
+  * All 2-similar permutations must allow the intervals [1, 3] and [2, 4] to hold their shapes. Therefore, the set of all 2-similar permutations is \{[3, 4, 1, 2], [2, 4, 1, 3]\}. The optimal encoding of these permutations is <image>
+  * All 3-similar permutations must allow the intervals [1, 3], [2, 4], and [1, 4] to hold their shapes. Therefore, the set of all 3-similar permutations only includes [2, 4, 1, 3]. The optimal encoding of this permutation is <image>
+Difficulty: 12
+Solutions: // do a test
+using namespace std;
+#include <bits/stdc++.h>
+#define N 25005
+#define M 100005
+int n,m;
+int a[N];
+int lmin[N],rmax[N];
+int suc[N][2],pre[N][2];
+int ans;
+void work(int l,int r){
+	for (int i=l;i<=r;++i){
+		for (int &j=rmax[i];j<=r;++j)
+			if (a[j]>a[i]){
+				int &t=suc[i][0];
+				if (a[j]<a[t])
+					ans+=(pre[j][1]==i)-(pre[t][1]==i),t=j;
+			}
+			else{
+				int &t=pre[i][0];
+				if (a[j]>a[t])
+					ans+=(suc[j][1]==i)-(suc[t][1]==i),t=j;
+			}
+		for (int &j=lmin[i];j>=l;--j)
+			if (a[j]>a[i]){
+				int &t=suc[i][1];
+				if (a[j]<a[t])
+					ans+=(pre[j][0]==i)-(pre[t][0]==i),t=j;
+			}
+			else{
+				int &t=pre[i][1];
+				if (a[j]>a[t])
+					ans+=(suc[j][0]==i)-(suc[t][0]==i),t=j;
+			}
+	}
+}
+int main(){
+	scanf("%d%d",&n,&m);
+	for (int i=1;i<=n;++i)
+		scanf("%d",&a[i]);
+	a[0]=n+1,a[n+1]=0;
+	for (int i=1;i<=n;++i){
+		lmin[i]=i-1,rmax[i]=i+1;
+		suc[i][0]=suc[i][0]=0;
+		pre[i][0]=pre[i][1]=n+1;
+	}
+	for (int i=1;i<=m;++i){
+		int l,r;
+		scanf("%d%d",&l,&r);
+		work(l,r);
+		printf("%d\n",ans);
+	}
+	return 0;
+}
 
 
 INSTRUCTIONS:
@@ -184,6 +467,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

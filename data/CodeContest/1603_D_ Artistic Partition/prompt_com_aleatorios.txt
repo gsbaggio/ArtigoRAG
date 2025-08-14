@@ -41,136 +41,98 @@ In the first test case, YouKn0wWho can select the sequence [0, 2, 6]. So f(6, 2)
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: p01333 Summer of KMC
-Tags: ['']
-Description: Description
+Name: 128_C. Games with Rectangle
+Tags: ['combinatorics', 'dp']
+Description: In this task Anna and Maria play the following game. Initially they have a checkered piece of paper with a painted n × m rectangle (only the border, no filling). Anna and Maria move in turns and Anna starts. During each move one should paint inside the last-painted rectangle a new lesser rectangle (along the grid lines). The new rectangle should have no common points with the previous one. Note that when we paint a rectangle, we always paint only the border, the rectangles aren't filled.
 
-KMC sells CDs every year at a coterie spot sale called Comic Market. F was supposed to sell CDs at the comic market, but due to the popularity of F, the KMC sales floor was flooded with people, and the calculation of change could not keep up. So F decided to write a program that would output the change as soon as he entered the amount.
-
-KMC prepares only 100-yen coins, 500-yen coins, and 1000-yen coins as change. You can think of these coins and bills as infinite. Choose change so that the number of coins and bills is minimized. Also, the price of CDs sold by KMC is a multiple of 100, and the amount paid by the purchaser is also a multiple of 100.
-
-
+Nobody wins the game — Anna and Maria simply play until they have done k moves in total. Count the number of different ways to play this game.
 
 Input
 
-The input consists of multiple test cases.
-
-Each test case consists of two positive integers A and B. A is the price of the CD and B is the amount paid by the purchaser. A and B are multiples of 100 and do not exceed 100000000. Also, A ≤ B.
-
-The input ends with 0 0.
+The first and only line contains three integers: n, m, k (1 ≤ n, m, k ≤ 1000).
 
 Output
 
-For each test case, the number and number of 100-yen coins, 500-yen coins, and 1000-yen coins that should be presented as change are output in this order in one line. Insert a space between each number.
+Print the single number — the number of the ways to play the game. As this number can be very big, print the value modulo 1000000007 (109 + 7).
 
-Example
+Examples
 
 Input
 
-500 1000
-100 10000
-400 700
-600 5000
-10000 10000
-0 0
+3 3 1
 
 
 Output
 
-0 1 0
-4 1 9
-3 0 0
-4 0 4
-0 0 0
-Difficulty: 0
-Solutions: #include<iostream>
-#include<vector>
-#include<string>
-#include<algorithm>
-#include<set>
+1
+
+
+Input
+
+4 4 1
+
+
+Output
+
+9
+
+
+Input
+
+6 7 2
+
+
+Output
+
+75
+
+Note
+
+Two ways to play the game are considered different if the final pictures are different. In other words, if one way contains a rectangle that is not contained in the other way.
+
+In the first sample Anna, who performs her first and only move, has only one possible action plan — insert a 1 × 1 square inside the given 3 × 3 square.
+
+In the second sample Anna has as much as 9 variants: 4 ways to paint a 1 × 1 square, 2 ways to insert a 1 × 2 rectangle vertically, 2 more ways to insert it horizontally and one more way is to insert a 2 × 2 square.
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
 using namespace std;
+long long int C[1001][1001];
+long long int nCr(int n, int r) {
+  if (n < r) {
+    return 0;
+  }
+  if (r > n - r) r = n - r;
+  if (r == 0) return 1;
+  if (C[n][r] != -1) return C[n][r];
+  C[n][r] = (nCr(n - 1, r - 1) + nCr(n - 1, r)) % 1000000007;
+  return C[n][r];
+}
 int main() {
-	int a, b;
-	while(cin>>a>>b&&a!=0&&b!=0){
-		int h = 0, g = 0, s = 0,o=b-a;
-		while (o >= 1000) {
-			s++;
-			o -= 1000;
-		}
-		while (o >= 500) {
-			g++;
-			o -= 500;
-		}
-		while (o >= 100) {
-			h++;
-			o -= 100;
-		}
-		cout << h << " " << g << " " << s << endl;
-	}
+  memset(C, -1, sizeof C);
+  int n = ({
+    int _x;
+    scanf("%d", &_x);
+    _x;
+  }),
+      m = ({
+        int _x;
+        scanf("%d", &_x);
+        _x;
+      }),
+      k = ({
+        int _x;
+        scanf("%d", &_x);
+        _x;
+      });
+  long long ans;
+  if (2 * k > n - 1 || 2 * k > m - 1)
+    ans = 0;
+  else
+    ans = (nCr(n - 1, 2 * k) * nCr(m - 1, 2 * k)) % 1000000007;
+  cout << ans << endl;
+  return 0;
 }
 
-Example question 2:
-Name: dj-boy-and-phone
-Tags: []
-Description: DJ Boy is a new generation child he has never seen numeric keypad of mobile. So one day when Prem showed him his mobile, DJ boy started laughing on him. Prem being smart gave him a problem to solve with some condition. Your task is to help DJ boy to solve this problem:
-
-Given a number N, DJ boy has to tell how many numbers of length N are possible.
-
-Conditions:
-
-1)He can only press digit that are adjacent i.e. to the left, right, up or bottom to current digit.
-
-2)He may press the same key again i.e. numbers like 000 & 080 are possible for length 3.
-
-3)He cannot press * and # keys.
-
-Constraints:
-
-1 ≤ t ≤ 100
-
-0 ≤ N ≤ 10000
-
-MOD: 10^9 + 9
-
-Input:
-
-First line contains T,the number of test cases.
-Next t lines contain a number N.
-
-Output:
-
-Print the required number modulo MOD.
-
-SAMPLE INPUT
-2
-1
-2
-
-SAMPLE OUTPUT
-10
-36
-Difficulty: 0
-Solutions: maxn=10000
-mod=10**9+9
-d=[]
-for i in xrange(0,10):
-	d.append([0]*(maxn+1))
-	d[i][0]=0
-	d[i][1]=1
-for z in xrange(2,(maxn+1)):
-	d[0][z] = d[0][z-1] + d[8][z-1]
-	d[1][z] = d[1][z-1] + d[2][z-1] + d[4][z-1]
-	d[2][z] = d[2][z-1] + d[1][z-1] + d[5][z-1] + d[3][z-1]
-	d[3][z] = d[3][z-1] + d[2][z-1] + d[6][z-1]
-	d[4][z] = d[4][z-1] + d[1][z-1] + d[5][z-1] + d[7][z-1]
-	d[5][z] = d[5][z-1] + d[2][z-1] + d[4][z-1] + d[6][z-1] + d[8][z-1]
-	d[6][z] = d[6][z-1] + d[3][z-1] + d[5][z-1] + d[9][z-1]
-	d[7][z] = d[7][z-1] + d[4][z-1] + d[8][z-1]
-	d[8][z] = d[8][z-1] + d[5][z-1] + d[7][z-1] + d[9][z-1] + d[0][z-1]
-	d[9][z] = d[9][z-1] + d[6][z-1] + d[8][z-1]
-for _ in xrange(input()):
-	n=input()
-	print sum([d[i][n] for i in xrange(0,10)])%mod
 
 
 INSTRUCTIONS:
@@ -181,6 +143,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

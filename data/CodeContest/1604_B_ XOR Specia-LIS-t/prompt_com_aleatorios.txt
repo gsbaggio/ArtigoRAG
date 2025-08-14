@@ -55,511 +55,269 @@ In the second test case, it can be shown that it is impossible to split the sequ
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 180_D. Name
-Tags: ['greedy', 'strings']
-Description: Everything got unclear to us in a far away constellation Tau Ceti. Specifically, the Taucetians choose names to their children in a very peculiar manner.
-
-Two young parents abac and bbad think what name to give to their first-born child. They decided that the name will be the permutation of letters of string s. To keep up with the neighbours, they decided to call the baby so that the name was lexicographically strictly larger than the neighbour's son's name t.
-
-On the other hand, they suspect that a name tax will be introduced shortly. According to it, the Taucetians with lexicographically larger names will pay larger taxes. That's the reason abac and bbad want to call the newborn so that the name was lexicographically strictly larger than name t and lexicographically minimum at that.
-
-The lexicographical order of strings is the order we are all used to, the "dictionary" order. Such comparison is used in all modern programming languages to compare strings. Formally, a string p of length n is lexicographically less than string q of length m, if one of the two statements is correct:
-
-  * n < m, and p is the beginning (prefix) of string q (for example, "aba" is less than string "abaa"), 
-  * p1 = q1, p2 = q2, ..., pk - 1 = qk - 1, pk < qk for some k (1 ≤ k ≤ min(n, m)), here characters in strings are numbered starting from 1. 
-
-
-
-Write a program that, given string s and the heighbours' child's name t determines the string that is the result of permutation of letters in s. The string should be lexicographically strictly more than t and also, lexicographically minimum.
+Name: 12_E. Start of the season
+Tags: ['constructive algorithms']
+Description: Before the start of the football season in Berland a strange magic ritual is held. The most experienced magicians have to find a magic matrix of the size n × n (n is even number). Gods will never allow to start the championship without it. Matrix should contain integers from 0 to n - 1, main diagonal should contain only zeroes and matrix should be symmetric. Moreover, all numbers in each row should be different. Magicians are very tired of the thinking process, so they ask you to write a program to find such matrix.
 
 Input
 
-The first line contains a non-empty string s (1 ≤ |s| ≤ 5000), where |s| is its length. The second line contains a non-empty string t (1 ≤ |t| ≤ 5000), where |t| is its length. Both strings consist of lowercase Latin letters.
+The first line contains one integer n (2 ≤ n ≤ 1000), n is even.
 
 Output
 
-Print the sought name or -1 if it doesn't exist.
+Output n lines with n numbers each — the required matrix. Separate numbers with spaces. If there are several solutions, output any.
 
 Examples
 
 Input
 
-aad
-aac
+2
 
 
 Output
 
-aad
+0 1
+1 0
 
 
 Input
 
-abad
-bob
+4
 
 
 Output
 
-daab
+0 1 3 2
+1 0 2 3
+3 2 0 1
+2 3 1 0
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+short lastrow[1002];
+int main() {
+  int n, r, c, p, remember;
+  cin >> n;
+  lastrow[0] = n - 1;
+  lastrow[n - 1] = 0;
+  for (r = 0; r < n - 1; r++) {
+    for (p = 0, c = r; c < r + n; c++, p++) {
+      if (p == r) {
+        cout << "0 ";
+        if (c < n)
+          remember = c;
+        else
+          remember = c - n + 1;
+      } else if (p == n - 1 && r > 0) {
+        cout << remember;
+        lastrow[r] = remember;
+      } else {
+        if (c < n)
+          cout << c << ' ';
+        else
+          cout << c - n + 1 << ' ';
+      }
+    }
+    cout << '\n';
+  }
+  for (c = 0; c < n; c++) cout << lastrow[c] << ' ';
+  cout << '\n';
+  return 0;
+}
+
+
+Example question 2:
+Name: p04029 AtCoder Beginner Contest 043 - Children and Candies (ABC Edit)
+Tags: ['']
+Description: There are N children in AtCoder Kindergarten. Mr. Evi will arrange the children in a line, then give 1 candy to the first child in the line, 2 candies to the second child, ..., N candies to the N-th child. How many candies will be necessary in total?
+
+Constraints
+
+* 1≦N≦100
+
+Input
+
+The input is given from Standard Input in the following format:
+
+
+N
+
+
+Output
+
+Print the necessary number of candies in total.
+
+Examples
+
+Input
+
+3
+
+
+Output
+
+6
 
 
 Input
 
-abc
-defg
+10
 
 
 Output
+
+55
+
+
+Input
+
+1
+
+
+Output
+
+1
+Difficulty: 0
+Solutions: #include<bits/stdc++.h>
+using namespace std;
+int main(void){
+    int n;
+    cin>>n;
+    cout<<n*(1+n)/2<<endl;
+}
+
+Example question 3:
+Name: 1271_B. Blocks
+Tags: ['greedy', 'math']
+Description: There are n blocks arranged in a row and numbered from left to right, starting from one. Each block is either black or white. 
+
+You may perform the following operation zero or more times: choose two adjacent blocks and invert their colors (white block becomes black, and vice versa). 
+
+You want to find a sequence of operations, such that they make all the blocks having the same color. You don't have to minimize the number of operations, but it should not exceed 3 ⋅ n. If it is impossible to find such a sequence of operations, you need to report it.
+
+Input
+
+The first line contains one integer n (2 ≤ n ≤ 200) — the number of blocks.
+
+The second line contains one string s consisting of n characters, each character is either "W" or "B". If the i-th character is "W", then the i-th block is white. If the i-th character is "B", then the i-th block is black. 
+
+Output
+
+If it is impossible to make all the blocks having the same color, print -1.
+
+Otherwise, print an integer k (0 ≤ k ≤ 3 ⋅ n) — the number of operations. Then print k integers p_1, p_2, ..., p_k (1 ≤ p_j ≤ n - 1), where p_j is the position of the left block in the pair of blocks that should be affected by the j-th operation.
+
+If there are multiple answers, print any of them.
+
+Examples
+
+Input
+
+
+8
+BWWWWWWB
+
+
+Output
+
+
+3
+6 2 4
+
+
+Input
+
+
+4
+BWBB
+
+
+Output
+
 
 -1
 
 
 Input
 
-czaaab
-abcdef
-
-
-Output
-
-abczaa
-
-Note
-
-In the first sample the given string s is the sought one, consequently, we do not need to change the letter order there.
-Difficulty: 10
-Solutions: import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-
-public class D {
-
-	final int MOD = 1000000007;
-	final double eps = 1e-12;
-
-	public D () throws IOException {
-		char [] S = sc.nextChars();
-		char [] T = sc.nextChars();
-		
-		start();
-		
-		int [] C = new int [200];
-		for (char s : S)
-			++C[s];
-
-		
-		int N = Math.min(S.length, T.length);
-		out: for (int n = N; n >= 0; --n) {
-			int [] Q = Arrays.copyOf(C, 200);
-			char [] D = new char [S.length];
-			for (int i = 0; i < n; ++i) {
-				char z = T[i];
-				if (Q[z] > 0) {
-					--Q[z];
-					D[i] = z;
-				} else
-					continue out;
-			}
-			
-			boolean good = false;
-			if (n == T.length) {
-				if (S.length > n) good = true;
-				else continue out;
-			}
-
-			if (n < T.length) {
-				int y = T[n];
-				for (int x = (y+1); x < 200; ++x)
-					if (Q[x] > 0) {
-						--Q[x];
-						D[n] = (char)x;
-						good = true;
-						break;
-					}
-				if (!good) continue out;
-				++n;
-			}
-			
-			for (int i = n, j = 0; i < S.length; ++i) {
-				while (Q[j] == 0) ++j;
-				D[i] = (char)j; --Q[j];
-			}
-			
-			exit(new String(D));
-				
-		}
-		exit(-1);
-	}
-
-	////////////////////////////////////////////////////////////////////////////////////
-	
-	static MyScanner sc;
-	
-	static void print (Object... a) {
-		StringBuffer b = new StringBuffer();
-		for (Object o : a)
-			b.append(" ").append(o);
-		System.out.println(b.toString().trim());
-	}
-
-	static void exit (Object... a) {
-		print(a);
-		System.out.flush();
-		exit();
-	}
-
-	static void exit () {
-		System.err.println("------------------");
-		System.err.println("Time: " + (millis() - t) / 1000.0);
-		System.exit(0);
-	}
-	
-	static class MyScanner {
-		String next() throws IOException {
-			newLine();
-			return line[index++];
-		}
-		
-		char [] nextChars() throws IOException {
-			return next().toCharArray();
-		}
-		
-		double nextDouble() throws IOException {
-			return Double.parseDouble(next());
-		}
-		
-		int nextInt() throws IOException {
-			return Integer.parseInt(next());
-		}
-		
-		long nextLong() throws IOException {
-			return Long.parseLong(next());
-		}
-		
-		String nextLine() throws IOException {
-			line = null;
-			return r.readLine();
-		}
-		
-		String [] nextStrings() throws IOException {
-			line = null;
-			return r.readLine().split(" ");
-		}
-		
-		int [] nextInts() throws IOException {
-			String [] L = nextStrings();
-			int [] res = new int [L.length];
-			for (int i = 0; i < L.length; ++i)
-				res[i] = Integer.parseInt(L[i]);
-			return res;
-		}
-		
-		long [] nextLongs() throws IOException {
-			String [] L = nextStrings();
-			long [] res = new long [L.length];
-			for (int i = 0; i < L.length; ++i)
-				res[i] = Long.parseLong(L[i]);
-			return res;
-		}
-
-		boolean eol() {
-			return index == line.length;
-		}
-
-		//////////////////////////////////////////////
-		
-		private final BufferedReader r;
-
-		MyScanner () throws IOException {
-			this(new BufferedReader(new InputStreamReader(System.in)));
-		}
-		
-		MyScanner(BufferedReader r) throws IOException { 
-			this.r = r;
-		}
-		
-		private String [] line;
-		private int index;
-
-		private void newLine() throws IOException {
-			if (line == null || eol()) {
-				line = r.readLine().split(" ");
-				index = 0;
-			}
-		}		
-	}
-	
-	////////////////////////////////////////////////////////////////////////////////////
-	
-	public static void main(String[] args) throws IOException {
-		run();
-		exit();
-	}
-
-	static void start() {
-		t = millis();
-	}
-
-	static void run () throws IOException {
-		sc = new MyScanner ();
-		new D();
-	}
-
-	static long t;
-	
-	static long millis() {
-		return System.currentTimeMillis();
-	}	
-}
-
-
-Example question 2:
-Name: 1495_C. Garden of the Sun
-Tags: ['constructive algorithms', 'graphs']
-Description: There are many sunflowers in the Garden of the Sun.
-
-Garden of the Sun is a rectangular table with n rows and m columns, where the cells of the table are farmlands. All of the cells grow a sunflower on it. Unfortunately, one night, the lightning stroke some (possibly zero) cells, and sunflowers on those cells were burned into ashes. In other words, those cells struck by the lightning became empty. Magically, any two empty cells have no common points (neither edges nor corners).
-
-Now the owner wants to remove some (possibly zero) sunflowers to reach the following two goals: 
-
-  * When you are on an empty cell, you can walk to any other empty cell. In other words, those empty cells are connected. 
-  * There is exactly one simple path between any two empty cells. In other words, there is no cycle among the empty cells. 
-
-
-
-You can walk from an empty cell to another if they share a common edge.
-
-Could you please give the owner a solution that meets all her requirements?
-
-Note that you are not allowed to plant sunflowers. You don't need to minimize the number of sunflowers you remove. It can be shown that the answer always exists.
-
-Input
-
-The input consists of multiple test cases. The first line contains a single integer t (1≤ t≤ 10^4) — the number of test cases. The description of the test cases follows.
-
-The first line contains two integers n, m (1 ≤ n,m ≤ 500) — the number of rows and columns. 
-
-Each of the next n lines contains m characters. Each character is either 'X' or '.', representing an empty cell and a cell that grows a sunflower, respectively.
-
-It is guaranteed that the sum of n ⋅ m for all test cases does not exceed 250 000.
-
-Output
-
-For each test case, print n lines. Each should contain m characters, representing one row of the table. Each character should be either 'X' or '.', representing an empty cell and a cell with a sunflower, respectively.
-
-If there are multiple answers, you can print any. It can be shown that the answer always exists.
-
-Example
-
-Input
-
 
 5
-3 3
-X.X
-...
-X.X
-4 4
-....
-.X.X
-....
-.X.X
-5 5
-.X...
-....X
-.X...
-.....
-X.X.X
-1 10
-....X.X.X.
-2 2
-..
-..
+WWWWW
 
 
 Output
 
 
-XXX
-..X
-XXX
-XXXX
-.X.X
-.X..
-.XXX
-.X...
-.XXXX
-.X...
-.X...
-XXXXX
-XXXXXXXXXX
-..
-..
+0
 
-Note
-
-Let's use (x,y) to describe the cell on x-th row and y-th column.
-
-In the following pictures white, yellow, and blue cells stand for the cells that grow a sunflower, the cells lightning stroke, and the cells sunflower on which are removed, respectively.
-
-<image>
-
-In the first test case, one possible solution is to remove sunflowers on (1,2), (2,3) and (3 ,2). 
-
-<image>
-
-Another acceptable solution is to remove sunflowers on (1,2), (2,2) and (3,2). 
-
-<image>
-
-This output is considered wrong because there are 2 simple paths between any pair of cells (there is a cycle). For example, there are 2 simple paths between (1,1) and (3,3).
-
-  1. (1,1)→ (1,2)→ (1,3)→ (2,3)→ (3,3)
-
-  2. (1,1)→ (2,1)→ (3,1)→ (3,2)→ (3,3) 
-
-
-
-<image>
-
-This output is considered wrong because you can't walk from (1,1) to (3,3).
-Difficulty: 9
-Solutions: import sys, os
-
-if os.environ['USERNAME']=='kissz':
-    inp=open('in.txt','r').readline
-    def debug(*args):
-        print(*args,file=sys.stderr)
-else:
-    inp=sys.stdin.readline    
-    def debug(*args):
-        pass
-
-# SCRIPT STARTS HERE
-
-for _ in range(int(inp())):
-    n,m=map(int,inp().split())
-    R=[]
-    for i in range(n):
-        R+=[list(inp().strip())]
-    n_=((n-1)//3)*3+1
-    n__=n-n_
-    for i in range(n_):
-        if i%3==0:
-            R[i]=['X']*m
-        elif i%3==1:
-            if 'X' in R[i]:
-                j=R[i].index('X')
-                R[i+1][j]='X'
-            elif 'X' in R[i+1]:
-                j=R[i+1].index('X')
-                R[i][j]='X'
-            else:
-                R[i][0]='X'
-                R[i+1][0]='X'
-    if n__==2:
-        for j in range(m):
-            if R[-1][j]=='X': R[-2][j]='X'
-    for i in range(n):
-        print(''.join(R[i]))
-
-
-Example question 3:
-Name: 603_B. Moodular Arithmetic
-Tags: ['combinatorics', 'dfs and similar', 'dsu', 'math', 'number theory']
-Description: As behooves any intelligent schoolboy, Kevin Sun is studying psycowlogy, cowculus, and cryptcowgraphy at the Bovinia State University (BGU) under Farmer Ivan. During his Mathematics of Olympiads (MoO) class, Kevin was confronted with a weird functional equation and needs your help. For two fixed integers k and p, where p is an odd prime number, the functional equation states that 
-
-<image>
-
-for some function <image>. (This equation should hold for any integer x in the range 0 to p - 1, inclusive.)
-
-It turns out that f can actually be many different functions. Instead of finding a solution, Kevin wants you to count the number of distinct functions f that satisfy this equation. Since the answer may be very large, you should print your result modulo 109 + 7.
 
 Input
 
-The input consists of two space-separated integers p and k (3 ≤ p ≤ 1 000 000, 0 ≤ k ≤ p - 1) on a single line. It is guaranteed that p is an odd prime number.
-
-Output
-
-Print a single integer, the number of distinct functions f modulo 109 + 7.
-
-Examples
-
-Input
-
-3 2
-
-
-Output
 
 3
-
-
-Input
-
-5 4
+BWB
 
 
 Output
 
-25
+
+2
+2 1 
 
 Note
 
-In the first sample, p = 3 and k = 2. The following functions work: 
+In the first example, it is possible to make all blocks black in 3 operations. Start with changing blocks 6 and 7, so the sequence is "BWWWWBBB". Then change blocks 2 and 3, so the sequence is "BBBWWBB". And finally, change blocks 4 and 5, so all blocks are black.
 
-  1. f(0) = 0, f(1) = 1, f(2) = 2. 
-  2. f(0) = 0, f(1) = 2, f(2) = 1. 
-  3. f(0) = f(1) = f(2) = 0. 
+It is impossible to make all colors equal in the second example.
+
+All blocks are already white in the third example.
+
+In the fourth example it is possible to make all blocks white in two operations: first operation is to change blocks 2 and 3 (so the sequence is "BBW"), and then change blocks 1 and 2 (so all blocks are white).
 Difficulty: 8
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-const int INF = (1LL << 30) - 1;
-const long long int LINF = (1LL << 62) - 1;
-const int MOD = (int)1e9 + 7;
-const int NMAX = (int)1e6;
-int P, K;
-int root[NMAX + 5];
-unordered_set<int> M;
-int expLog(int B, int E) {
-  int Q = B, sol = 1;
-  for (int i = E; i; i /= 2) {
-    if (i & 1) sol = (sol * 1LL * Q) % MOD;
-    Q = (Q * 1LL * Q) % MOD;
-  }
-  return sol;
-}
-int find(int x) {
-  if (x != root[x]) root[x] = find(root[x]);
-  return root[x];
-}
-void unite(int x, int y) {
-  x = find(x), y = find(y);
-  root[y] = x;
-}
-int main() {
-  cin.sync_with_stdio(false);
-  scanf("%d%d", &P, &K);
-  if (K == 0) {
-    printf("%d\n", expLog(P, P - 1));
-    return 0;
-  } else if (K == 1) {
-    printf("%d\n", expLog(P, P));
-    return 0;
-  }
-  for (int i = 1; i <= P - 1; i++) root[i] = i;
-  for (int i = 1, j; i <= P - 1; i++) {
-    j = (K * 1LL * i) % P;
-    unite(i, j);
-  }
-  for (int i = 1; i <= P - 1; i++) M.insert(find(i));
-  int sol = expLog(P, (int)M.size());
-  printf("%d\n", sol);
-  return 0;
-}
+Solutions: n=int(input())
+s=list(input())
+s.append("B")
+b=s.count("B")
 
+w=len(s)-b
+if b==1 or w==0:
+    print(0)
+    exit(0)
+s.pop(n)
+b-=1
+if b%2 and w%2:
+    print("-1")
+    exit(0)
+
+if b%2==0:
+    p=[]
+    for i in range(s.index('B'),n-1): 
+        if s[i]=="W":
+            continue
+        if s[i+1:].count('B')==0:
+            break
+        p.append(i+1)
+        if s[i+1]=='W':
+            s[i+1]="B"
+        else:
+            s[i+1]="W"
+    print(len(p))
+    print(*p)
+
+else:
+    p=[]
+    for i in range(s.index('W'),n-1):   
+        if s[i]=="B":
+            continue
+        if s[i+1:].count('W')==0:
+            break
+        p.append(i+1)
+        if s[i+1]=='W':
+            s[i+1]="B"
+        else:
+            s[i+1]="W"
+    print(len(p))
+    print(*p)
 
 
 INSTRUCTIONS:
@@ -570,6 +328,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

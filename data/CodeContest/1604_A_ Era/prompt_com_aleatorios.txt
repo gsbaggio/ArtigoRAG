@@ -61,232 +61,298 @@ In the third test case, the sequence already satisfies the condition.
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1443_A. Kids Seating
-Tags: ['constructive algorithms', 'math']
-Description: Today the kindergarten has a new group of n kids who need to be seated at the dinner table. The chairs at the table are numbered from 1 to 4n. Two kids can't sit on the same chair. It is known that two kids who sit on chairs with numbers a and b (a ≠ b) will indulge if: 
-
-  1. gcd(a, b) = 1 or, 
-  2. a divides b or b divides a. 
-
-
-
-gcd(a, b) — the maximum number x such that a is divisible by x and b is divisible by x.
-
-For example, if n=3 and the kids sit on chairs with numbers 2, 3, 4, then they will indulge since 4 is divided by 2 and gcd(2, 3) = 1. If kids sit on chairs with numbers 4, 6, 10, then they will not indulge.
-
-The teacher really doesn't want the mess at the table, so she wants to seat the kids so there are no 2 of the kid that can indulge. More formally, she wants no pair of chairs a and b that the kids occupy to fulfill the condition above.
-
-Since the teacher is very busy with the entertainment of the kids, she asked you to solve this problem.
-
-Input
-
-The first line contains one integer t (1 ≤ t ≤ 100) — the number of test cases. Then t test cases follow.
-
-Each test case consists of one line containing an integer n (1 ≤ n ≤ 100) — the number of kids.
-
-Output
-
-Output t lines, which contain n distinct integers from 1 to 4n — the numbers of chairs that the kids should occupy in the corresponding test case. If there are multiple answers, print any of them. You can print n numbers in any order.
-
-Example
-
-Input
-
-
-3
-2
-3
-4
-
-
-Output
-
-
-6 4
-4 6 10
-14 10 12 8
-Difficulty: 7
-Solutions: # cook your dish here
-for _ in range(int(input())):
-    n=int(input())
-    s=4*n-2
-    for i in range(n):
-        print(s,end=" ")
-        s-=2
-    print()
-
-
-Example question 2:
-Name: 1405_C. Balanced Bitstring
-Tags: ['implementation', 'strings']
-Description: A bitstring is a string consisting only of the characters 0 and 1. A bitstring is called k-balanced if every substring of size k of this bitstring has an equal amount of 0 and 1 characters (k/2 of each).
-
-You are given an integer k and a string s which is composed only of characters 0, 1, and ?. You need to determine whether you can make a k-balanced bitstring by replacing every ? characters in s with either 0 or 1.
-
-A string a is a substring of a string b if a can be obtained from b by deletion of several (possibly, zero or all) characters from the beginning and several (possibly, zero or all) characters from the end.
-
-Input
-
-Each test contains multiple test cases. The first line contains the number of test cases t (1 ≤ t ≤ 10^4). Description of the test cases follows.
-
-The first line of each test case contains two integers n and k (2 ≤ k ≤ n ≤ 3 ⋅ 10^5, k is even) — the length of the string and the parameter for a balanced bitstring.
-
-The next line contains the string s (|s| = n). It is given that s consists of only 0, 1, and ?.
-
-It is guaranteed that the sum of n over all test cases does not exceed 3 ⋅ 10^5.
-
-Output
-
-For each test case, print YES if we can replace every ? in s with 0 or 1 such that the resulting bitstring is k-balanced, or NO if it is not possible.
-
-Example
-
-Input
-
-
-9
-6 4
-100110
-3 2
-1?1
-3 2
-1?0
-4 4
-????
-7 4
-1?0??1?
-10 10
-11??11??11
-4 2
-1??1
-4 4
-?0?0
-6 2
-????00
-
-
-Output
-
-
-YES
-YES
-NO
-YES
-YES
-NO
-NO
-YES
-NO
-
-Note
-
-For the first test case, the string is already a 4-balanced bitstring.
-
-For the second test case, the string can be transformed into 101.
-
-For the fourth test case, the string can be transformed into 0110.
-
-For the fifth test case, the string can be transformed into 1100110.
-Difficulty: 9
-Solutions: for _ in range(int(input())):
-    n,k = map(int,input().split())
-    s = input()
-    l = [-1]*k
-    f = 0
-    for i in range(len(s)):
-        if s[i] != "?":
-            if l[i%k] == -1:
-                l[i%k] = int(s[i])
-
-            else:
-                if l[i%k] != int(s[i]):
-                    f = 1
-
-        if f == 1:
-            break
-
-    if f == 1:
-        print("NO")
-
-    else:
-        o = l.count(1)
-        z = l.count(0)
-        m = l.count(-1)
-        if (k//2)-o < 0:
-            print("NO")
-            continue
-
-        if (k//2)-z < 0:
-            print("NO")
-            continue
-
-        do = (k//2)-o
-        dz = (k//2)-z
-        if (do+dz) != m:
-            print("NO")
-            continue
-
-        print("YES")
-
-Example question 3:
-Name: p02897 AtCoder Beginner Contest 142 - Odds of Oddness
+Name: p02092 Red Black Balloons
 Tags: ['']
-Description: Given is an integer N.
+Description: E: Red Black Balloons
 
-Takahashi chooses an integer a from the positive integers not greater than N with equal probability.
+Story
 
-Find the probability that a is odd.
+Homura-chan's dream comes true. It means ICPC Asia regional contest 20xx will be held in Sapporo! Homura-chan has been working hard for the preparation. And finally, it's the previous day of the contest. Homura-chan started to stock balloons to be delivered to contestants who get accepted. However, she noticed that there were only two colors of balloons: red and black.
+
+Problem Statement
+
+ICPC Asia regional contest in Sapporo plans to provide N problems to contestants. Homura-chan is a professional of contest preparation, so she already knows how many contestants would get acceptance for each problem (!!), a_i contestants for the i-th problem. You can assume the prediction is perfectly accurate. Ideally, Homura-chan would assign a distinct color of a balloon to each problem respectively. But you know, she has only two colors red and black now. Thus, Homura-chan comes up with the idea to differentiate the size of balloons in K levels, that is, each problem has a balloon with a distinct pair of (color, size).
+
+Homura-chan now has r_i red balloons with size i (1 \leq i \leq K) and b_j black balloons with size j (1 \leq j \leq K). Suppose we assign a pair (c_i, s_i) of a color c_i (red or black) and a size s_i to the i-th problem, for each i. As noted, we have to assign distinct pairs to each problem, more precisely, (c_i, s_i) \neq (c_j, s_j) holds for i \neq j. Moreover, the number of balloons with (c_i, s_i) must be no less than a_i. In the case that there are no such assignments, Homura-chan can change the size of balloons by her magic power. Note that Homura-chan doesn't know magic to change the color of balloons, so it's impossible.
+
+Your task is to write a program computing the minimum number of balloons whose size is changed by Homura-chan's magic to realize an assignment satisfying the above-mentioned conditions. If there is no way to achieve such an assignment even if Homura-chan changes the size of balloons infinitely, output `-1` instead.
+
+Input
+
+
+N K
+a_1 ... a_N
+r_1 ... r_K
+b_1 ... b_K
+
 
 Constraints
 
-* 1 \leq N \leq 100
+* 1 \leq N,K \leq 60
+* N \leq 2K
+* 1 \leq a_i \leq 50 (1 \leq i \leq N)
+* 1 \leq r_j,b_j \leq 50 (1 \leq j \leq K)
+* Inputs consist only of integers.
 
-Input
-
-Input is given from Standard Input in the following format:
-
-
-N
 
 
 Output
 
-Print the probability that a is odd. Your output will be considered correct when its absolute or relative error from the judge's output is at most 10^{-6}.
+Output the minimum number of balloons whose size is changed to achieve an assignment in a line. If there are no ways to achieve assignments, output `-1` instead.
+
+Sample Input 1
+
+
+3 2
+6 5 4
+8 1
+7 1
+
+
+Output for Sample Input 1
+
+
+3
+
+Homura-chan changes the size of three red balloons from 1 to 2. Then she can assign (black,1) to the problem 1, (red,1) to the problem 2, and (red,2) to the problem 3.
+
+Sample Input 2
+
+
+2 1
+50 50
+2
+3
+
+
+Output for Sample Input 2
+
+
+-1
+
+Sample Input 3
+
+
+4 3
+3 10 28 43
+40 18 2
+26 7 11
+
+
+Output for Sample Input 3
+
+
+5
+
+
+
+
+
+Example
+
+Input
+
+3 2
+6 5 4
+8 1
+7 1
+
+
+Output
+
+3
+Difficulty: 0
+Solutions: #include<bits/stdc++.h>
+using namespace std;
+
+#define rep(i,n) for(int i=0;i<n;i++)
+#define Rep(i,sta,n) for(int i=sta;i<n;i++)
+
+const int mod=1000000007;
+int dp[70][70][6100];
+void solve(){
+    int n,k;cin>>n>>k;
+    vector<int> ra(n+1);
+    vector<int> rr(k+1);
+    vector<int> rb(k+1);
+    vector<int> a(n);
+    vector<int> r(k),b(k);
+    rep(i,n){
+        cin>>a[i];
+    }
+    rep(i,k){
+        cin>>r[i];
+    }
+    rep(i,k){
+        cin>>b[i];
+    }
+    sort(a.begin(),a.end(),greater<int>());
+    sort(r.begin(),r.end(),greater<int>());
+    sort(b.begin(),b.end(),greater<int>());
+    rep(i,n){
+        ra[i+1]=ra[i]+a[i];
+    }
+    rep(i,k){
+        rr[i+1]=rr[i]+r[i];
+        rb[i+1]=rb[i]+b[i];
+    }
+    rep(i,n+1){
+        rep(j,k+1){
+            rep(l,6100){
+                dp[i][j][l]=mod;
+            }
+        }
+    }
+    dp[0][0][3010]=0;
+    rep(i,n){
+        rep(j,k+1){
+            int rest=i-j;
+            if(rest<0||rest>k)continue;
+            rep(l,6100){
+                if(dp[i][j][l]==mod)continue;
+                //take red
+                if(j<k){
+                    int dif=r[j]-a[i];
+                    int cost=max(0,-dif);
+                    dp[i+1][j+1][l+dif]=min(dp[i+1][j+1][l+dif],dp[i][j][l]+cost);
+                }
+                //take blue
+                if(rest<k){
+                    int dif=b[rest]-a[i];
+                    int cost=max(0,-dif);
+                    dp[i+1][j][l]=min(dp[i+1][j][l],dp[i][j][l]+cost);
+                }
+            }
+        }
+    }
+    int ans=mod;
+    rep(j,k+1){
+        int rest=n-j;
+        if(rest<0)continue;
+        if(rest>k)continue;
+        rep(l,6100){
+            int x=l-3010;
+            if(x+rr[k]-rr[j]<0)continue;
+            int bb=rr[j]-x+rb[rest]-ra[n];
+            if(bb+rb[k]-rb[rest]<0)continue;
+
+            ans=min(ans,dp[n][j][l]);
+
+        }
+    }
+    if(ans==mod)ans=-1;
+    cout<<ans<<endl;
+
+}
+int main(){
+    solve();
+    return 0;
+}
+
+
+Example question 2:
+Name: 1060_B. Maximum Sum of Digits
+Tags: ['greedy']
+Description: You are given a positive integer n.
+
+Let S(x) be sum of digits in base 10 representation of x, for example, S(123) = 1 + 2 + 3 = 6, S(0) = 0.
+
+Your task is to find two integers a, b, such that 0 ≤ a, b ≤ n, a + b = n and S(a) + S(b) is the largest possible among all such pairs.
+
+Input
+
+The only line of input contains an integer n (1 ≤ n ≤ 10^{12}).
+
+Output
+
+Print largest S(a) + S(b) among all pairs of integers a, b, such that 0 ≤ a, b ≤ n and a + b = n.
 
 Examples
 
 Input
 
-4
+35
 
 
 Output
 
-0.5000000000
+17
 
 
 Input
 
-5
+10000000000
 
 
 Output
 
-0.6000000000
+91
+
+Note
+
+In the first example, you can choose, for example, a = 17 and b = 18, so that S(17) + S(18) = 1 + 7 + 1 + 8 = 17. It can be shown that it is impossible to get a larger answer.
+
+In the second test example, you can choose, for example, a = 5000000001 and b = 4999999999, with S(5000000001) + S(4999999999) = 91. It can be shown that it is impossible to get a larger answer.
+Difficulty: 8
+Solutions: n=[k for k in raw_input().split(" ")][0]
 
 
-Input
+def sd(n):
+    res=0
+    while n:
+        res+=n%10
+        n/=10
+    return res
 
-1
+fn=int(n[0])-1
+res=str(fn)+"9"*(len(n)-1)
+res=int(res)
+n=int(n)
+print sd(res)+sd(n-res)
 
 
-Output
+Example question 3:
+Name: dfs-2
+Tags: []
+Description: You have some boxes. All of them are assigned a unique positive integer. This number is written on them with a marker. Your task is simple that is to evaluate a number of queries. The description of a single query is 
+given below:
+The query consists of 2 positive integers L and R. 
+You have to report total number of boxes that have the values in the range L and R (inclusive of L and R), written on them.
 
-1.0000000000
+INPUT 
+The first line of input contains a positive integer n, denoting the number of boxes.
+The second line contains n space separated integers denoting the positive integer assigned to each box.  (p[1] .... p[n])
+The third line contains an integer q, the number of queries.
+After this q lines follow, each containing two positive integers L and R, as stated above, for this particular query.
+
+OUTPUT
+The output contains q lines. Each line contains a positive integer, the answer for that particular test case.
+
+CONSTRAINTS
+1 ≤ n ≤ 100000
+1 ≤ p[i] ≤ 10^9
+1 ≤ q ≤ 100000
+
+SAMPLE INPUT
+5
+4 3 2 1 1
+4
+1 2
+2 3
+5 6
+1 1
+
+SAMPLE OUTPUT
+3
+2
+0
+2
 Difficulty: 0
-Solutions: N = input()
-print "%.10f"%((N+1)/2/float(N))
-
+Solutions: import bisect;
+N=input();  A=map(int,raw_input().split());	A.sort();
+for _ in xrange(int(raw_input())):
+	L,R=map(int,raw_input().split());
+	print bisect.bisect_right(A,R) - bisect.bisect_left(A,L)
 
 
 INSTRUCTIONS:
@@ -297,6 +363,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

@@ -80,130 +80,243 @@ In the second example, k = 0 so you can only choose the substrings consisting on
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 794_D. Labelling Cities
-Tags: ['dfs and similar', 'graphs', 'hashing']
-Description: Oleg the bank client lives in Bankopolia. There are n cities in Bankopolia and some pair of cities are connected directly by bi-directional roads. The cities are numbered from 1 to n. There are a total of m roads in Bankopolia, the i-th road connects cities ui and vi. It is guaranteed that from each city it is possible to travel to any other city using some of the roads.
+Name: little-stuart-and-evil-hackers-2
+Tags: []
+Description: Evil hackers are trying to hack the database of HackerEarth.com.
+After a lot of work they figure out that the encryption key used by HackerEarth to securely store the data is really just a random large number.
+After a bit more work they figure out that the key is in form of a^b( a power b).
+So now they call in the evil genius Little Stuart for their help,
+now Little Stuart is having some problems evaluating the expression and your job is to help him find the answer.
 
-Oleg wants to give a label to each city. Suppose the label of city i is equal to xi. Then, it must hold that for all pairs of cities (u, v) the condition |xu - xv| ≤ 1 holds if and only if there is a road connecting u and v.
+The values of a and b are:
+a = (nC0)^2 + (nC1)^2 +(nC2)^2+..........+(nCn)^2
+b = m
 
-Oleg wonders if such a labeling is possible. Find an example of such labeling if the task is possible and state that it is impossible otherwise.
+As the answer can be too large , you need to print  modulo 10^9+6.
+
+Input:
+first line contain a number "t"
+next "t" lines contain two number m and n
+
+Output:
+Output Contains "t" lines,ith line conatins the answer of the ith test case
+
+Constraints:
+1 ≤ m ≤ 10^5
+1 ≤ n ≤ 10^5
+1 ≤ t ≤ 1000
+
+SAMPLE INPUT
+4
+1 2
+1 1
+2 1
+2 3
+
+SAMPLE OUTPUT
+6
+2
+4
+400
+Difficulty: 0
+Solutions: # Binomial coefficient with mod inverse of prime.  Calculate binom (n, r) % p.
+MAXN = 200005
+MOD = 10 ** 9 + 7
+f = [0] * MAXN
+def binom (n, r, p):
+    # print binom (10 ** 18, 2545354543534, 9973)
+    if n < 0 or r < 0 or n < r: return 0
+
+    # Precalculate factorial.
+    if f [0] != 1:  # Factorial already precalculated.
+        f [0] = 1
+        for i in range (1, MAXN): f [i] = (i * f [i - 1]) % p
+
+    # Calculate modular inverse using Fermat's little theorum.
+    #def inv (n): return  pow (n, p - 2, p)
+    def inv (n): return  pow (n, 500000001, p)
+
+    ret = 1
+    while n or r:
+        # Use Lucas theorum to reduce values into its prime residual.
+        n0, r0 = n % p, r % p
+        n, r = n / p, r / p
+        if n0 < r0: return 0
+        # print n0, r0
+        ret *= f [n0] * inv (f [r0]) * inv (f [n0 - r0])
+        ret %= p
+
+    return ret
+
+T = int (raw_input ())
+for t in xrange (T):
+	m, n = [int (i) for i in raw_input ().split ()]
+	x = binom (2 * n, n, MOD - 1)
+	print pow (x, m, MOD - 1)
+
+Example question 2:
+Name: 1118_F1. Tree Cutting (Easy Version)
+Tags: ['dfs and similar', 'trees']
+Description: You are given an undirected tree of n vertices. 
+
+Some vertices are colored blue, some are colored red and some are uncolored. It is guaranteed that the tree contains at least one red vertex and at least one blue vertex.
+
+You choose an edge and remove it from the tree. Tree falls apart into two connected components. Let's call an edge nice if neither of the resulting components contain vertices of both red and blue colors.
+
+How many nice edges are there in the given tree?
 
 Input
 
-The first line of input contains two space-separated integers n and m (2 ≤ n ≤ 3·105, 1 ≤ m ≤ 3·105) — the number of cities and the number of roads.
+The first line contains a single integer n (2 ≤ n ≤ 3 ⋅ 10^5) — the number of vertices in the tree.
 
-Next, m lines follow. The i-th line contains two space-separated integers ui and vi (1 ≤ ui, vi ≤ n, ui ≠ vi) — the cities connected by the i-th road. It is guaranteed that there is at most one road between each pair of cities and it is possible to travel from any city to any other city using some roads.
+The second line contains n integers a_1, a_2, ..., a_n (0 ≤ a_i ≤ 2) — the colors of the vertices. a_i = 1 means that vertex i is colored red, a_i = 2 means that vertex i is colored blue and a_i = 0 means that vertex i is uncolored.
+
+The i-th of the next n - 1 lines contains two integers v_i and u_i (1 ≤ v_i, u_i ≤ n, v_i ≠ u_i) — the edges of the tree. It is guaranteed that the given edges form a tree. It is guaranteed that the tree contains at least one red vertex and at least one blue vertex.
 
 Output
 
-If the required labeling is not possible, output a single line containing the string "NO" (without quotes).
-
-Otherwise, output the string "YES" (without quotes) on the first line. On the next line, output n space-separated integers, x1, x2, ..., xn. The condition 1 ≤ xi ≤ 109 must hold for all i, and for all pairs of cities (u, v) the condition |xu - xv| ≤ 1 must hold if and only if there is a road connecting u and v.
+Print a single integer — the number of nice edges in the given tree.
 
 Examples
 
 Input
 
-4 4
+
+5
+2 0 0 1 2
 1 2
-1 3
-1 4
-3 4
-
-
-Output
-
-YES
-2 3 1 1 
-
-
-Input
-
-5 10
-1 2
-1 3
-1 4
-1 5
 2 3
 2 4
 2 5
-3 4
-3 5
-5 4
 
 
 Output
 
-YES
-1 1 1 1 1 
+
+1
 
 
 Input
 
-4 3
+
+5
+1 0 0 0 2
 1 2
-1 3
-1 4
+2 3
+3 4
+4 5
 
 
 Output
 
-NO
+
+4
+
+
+Input
+
+
+3
+1 1 2
+2 3
+1 3
+
+
+Output
+
+
+0
 
 Note
 
-For the first sample, x1 = 2, x2 = 3, x3 = x4 = 1 is a valid labeling. Indeed, (3, 4), (1, 2), (1, 3), (1, 4) are the only pairs of cities with difference of labels not greater than 1, and these are precisely the roads of Bankopolia.
+Here is the tree from the first example:
 
-For the second sample, all pairs of cities have difference of labels not greater than 1 and all pairs of cities have a road connecting them.
+<image>
 
-For the last sample, it is impossible to construct a labeling satisfying the given constraints.
-Difficulty: 10
+The only nice edge is edge (2, 4). Removing it makes the tree fall apart into components \{4\} and \{1, 2, 3, 5\}. The first component only includes a red vertex and the second component includes blue vertices and uncolored vertices.
+
+Here is the tree from the second example:
+
+<image>
+
+Every edge is nice in it.
+
+Here is the tree from the third example:
+
+<image>
+
+Edge (1, 3) splits the into components \{1\} and \{3, 2\}, the latter one includes both red and blue vertex, thus the edge isn't nice. Edge (2, 3) splits the into components \{1, 3\} and \{2\}, the former one includes both red and blue vertex, thus the edge also isn't nice. So the answer is 0.
+Difficulty: 12
 Solutions: #include <bits/stdc++.h>
 using namespace std;
-const int N = 1e6 + 1;
-const int M = 1e9 + 7;
-const double eps = 1e-6;
-const int inf = 1e9;
-const long long INF = 1e18;
-const double PI(acos(-1.0));
-vector<int> g[N];
-set<int> G[N];
-map<vector<int>, int> mp;
-int ans[N];
-int n, m;
-int t = 1, id[N];
-int main() {
-  cin >> n >> m;
-  for (int i = 0; i < (m); i++) {
-    int u, v;
-    cin >> u >> v;
-    g[u].push_back(v);
-    g[v].push_back(u);
+void DEB(istream_iterator<string> it) {}
+template <typename T, typename... Args>
+void DEB(istream_iterator<string> it, T a, Args... args) {
+  cout << *it << " = " << a << '\n';
+  DEB(++it, args...);
+}
+const int N = 3e5 + 5, mod = 1e9 + 7, inf = 1e9 + 7;
+int f[N][3];
+int n, res;
+int a[N];
+vector<int> adj[N];
+bool ck[N];
+void dfs1(int u, int e) {
+  if (a[u] == 1) {
+    f[u][1]++;
   }
-  for (int i = (1); i <= (n); i++) {
-    g[i].push_back(i);
-    sort((g[i]).begin(), (g[i]).end());
-    if (!mp[g[i]]) mp[g[i]] = mp.size();
-    id[i] = mp[g[i]];
+  if (a[u] == 2) {
+    f[u][2]++;
   }
-  for (int i = (1); i <= (n); i++)
-    for (auto j : g[i])
-      if (id[i] != id[j]) G[id[i]].insert(id[j]);
-  int s = 0;
-  for (int i = (1); i <= (((int)mp.size())); i++) {
-    if (((int)G[i].size()) > 2) {
-      return cout << "NO\n", 0;
+  for (auto v : adj[u]) {
+    if (v != e) {
+      dfs1(v, u);
+      f[u][1] += f[v][1];
+      f[u][2] += f[v][2];
     }
-    if (((int)G[i].size()) < 2) s = i;
   }
-  for (int i = (1); i <= (((int)mp.size())); i++) {
-    ans[s] = i;
-    for (auto t : G[s])
-      if (!ans[t]) s = t;
+}
+void dfs2(int u, int e) {
+  if (e != -1) {
+    f[e][1] -= f[u][1];
+    f[e][2] -= f[u][2];
+    if (!f[u][1] && !f[e][2]) {
+      res++;
+    } else if (!f[u][2] && !f[e][1]) {
+      res++;
+    }
+    f[u][1] += f[e][1];
+    f[u][2] += f[e][2];
   }
-  cout << "YES\n";
-  for (int i = (1); i <= (n); i++) cout << ans[id[i]] << " ";
-  cout << "\n";
+  for (auto v : adj[u]) {
+    if (v != e) {
+      dfs2(v, u);
+    }
+  }
+  if (e != -1) {
+    f[u][1] -= f[e][1];
+    f[u][2] -= f[e][2];
+    f[e][1] += f[u][1];
+    f[e][2] += f[u][2];
+  }
+}
+signed main() {
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  cin >> n;
+  for (int i = 1; i <= n; i++) {
+    cin >> a[i];
+  }
+  for (int i = 1; i < n; i++) {
+    int x, y;
+    cin >> x >> y;
+    adj[x].push_back(y);
+    adj[y].push_back(x);
+  }
+  dfs1(1, -1);
+  dfs2(1, -1);
+  cout << res;
 }
 
 
@@ -216,6 +329,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

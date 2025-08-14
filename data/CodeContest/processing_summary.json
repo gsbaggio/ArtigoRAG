@@ -3,7 +3,7 @@
   "processed_problems": 81,
   "skipped_problems": 84,
   "output_directory": "data/CodeContest",
-  "timestamp": "2025-08-13T18:50:15.564065",
+  "timestamp": "2025-08-14T20:17:56.430814",
   "results": [
     {
       "test_problem_name": "1575_C. Cyclic Sum",
@@ -26,7 +26,7 @@
       "test_problem_name": "1575_D. Divisible by Twenty-Five",
       "safe_directory_name": "1575_D_ Divisible by Twenty-Five",
       "similar_questions_count": 2,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7025604248046875,
         0.7006341218948364
@@ -58,7 +58,7 @@
       "test_problem_name": "1575_H. Holiday Wall Ornaments",
       "safe_directory_name": "1575_H_ Holiday Wall Ornaments",
       "similar_questions_count": 3,
-      "random_questions_count": 2,
+      "random_questions_count": 3,
       "similarity_scores": [
         0.7281451225280762,
         0.725213348865509,
@@ -74,7 +74,7 @@
       "test_problem_name": "1575_J. Jeopardy of Dropped Balls",
       "safe_directory_name": "1575_J_ Jeopardy of Dropped Balls",
       "similar_questions_count": 1,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7019662261009216
       ],
@@ -90,7 +90,7 @@
       "test_problem_name": "1575_L. Longest Array Deconstruction",
       "safe_directory_name": "1575_L_ Longest Array Deconstruction",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.8313300013542175,
         0.7915480136871338,
@@ -108,7 +108,7 @@
       "test_problem_name": "1580_B. Mathematics Curriculum",
       "safe_directory_name": "1580_B_ Mathematics Curriculum",
       "similar_questions_count": 1,
-      "random_questions_count": 1,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7125913500785828
       ],
@@ -124,7 +124,7 @@
       "test_problem_name": "1580_D. Subsequence",
       "safe_directory_name": "1580_D_ Subsequence",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7532214522361755,
         0.7300935387611389,
@@ -159,7 +159,7 @@
       "test_problem_name": "1582_D. Vupsen, Pupsen and 0",
       "safe_directory_name": "1582_D_ Vupsen_ Pupsen and 0",
       "similar_questions_count": 1,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7005815505981445
       ],
@@ -173,7 +173,7 @@
       "test_problem_name": "1582_F1. Korney Korneevich and XOR (easy version)",
       "safe_directory_name": "1582_F1_ Korney Korneevich and XOR (easy version)",
       "similar_questions_count": 1,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7056899666786194
       ],
@@ -188,7 +188,7 @@
       "test_problem_name": "1591_A. Life of a Flower",
       "safe_directory_name": "1591_A_ Life of a Flower",
       "similar_questions_count": 1,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7448618412017822
       ],
@@ -201,7 +201,7 @@
       "test_problem_name": "1591_B. Array Eversion",
       "safe_directory_name": "1591_B_ Array Eversion",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 3,
       "similarity_scores": [
         0.7825300097465515,
         0.771569013595581,
@@ -233,7 +233,7 @@
       "test_problem_name": "1591_F. Non-equal Neighbours",
       "safe_directory_name": "1591_F_ Non-equal Neighbours",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.8264801502227783,
         0.7941564321517944,
@@ -251,7 +251,7 @@
       "test_problem_name": "1594_B. Special Numbers",
       "safe_directory_name": "1594_B_ Special Numbers",
       "similar_questions_count": 1,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7293762564659119
       ],
@@ -283,7 +283,7 @@
       "test_problem_name": "1598_A. Computer Game",
       "safe_directory_name": "1598_A_ Computer Game",
       "similar_questions_count": 1,
-      "random_questions_count": 3,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7103230953216553
       ],
@@ -299,7 +299,7 @@
       "test_problem_name": "1598_B. Groups",
       "safe_directory_name": "1598_B_ Groups",
       "similar_questions_count": 1,
-      "random_questions_count": 3,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7673177719116211
       ],
@@ -330,7 +330,7 @@
       "test_problem_name": "1598_D. Training Session",
       "safe_directory_name": "1598_D_ Training Session",
       "similar_questions_count": 2,
-      "random_questions_count": 3,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7323801517486572,
         0.7103922963142395
@@ -348,7 +348,7 @@
       "test_problem_name": "1598_F. RBS",
       "safe_directory_name": "1598_F_ RBS",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 3,
       "similarity_scores": [
         0.8268795013427734,
         0.7688934803009033,
@@ -382,7 +382,7 @@
       "test_problem_name": "1599_G. Shortest path",
       "safe_directory_name": "1599_G_ Shortest path",
       "similar_questions_count": 1,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7189791202545166
       ],
@@ -398,7 +398,7 @@
       "test_problem_name": "1599_I. Desert",
       "safe_directory_name": "1599_I_ Desert",
       "similar_questions_count": 2,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.8129732608795166,
         0.7081465721130371
@@ -430,7 +430,7 @@
       "test_problem_name": "1600_F. Party Organization",
       "safe_directory_name": "1600_F_ Party Organization",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7254636883735657,
         0.7169507741928101,
@@ -447,7 +447,7 @@
       "test_problem_name": "1601_C. Optimal Insertion",
       "safe_directory_name": "1601_C_ Optimal Insertion",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7283926606178284,
         0.7161856889724731,
@@ -466,7 +466,7 @@
       "test_problem_name": "1601_F. Two Sorts",
       "safe_directory_name": "1601_F_ Two Sorts",
       "similar_questions_count": 2,
-      "random_questions_count": 1,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7374216318130493,
         0.7272123694419861
@@ -483,7 +483,7 @@
       "test_problem_name": "1603_D. Artistic Partition",
       "safe_directory_name": "1603_D_ Artistic Partition",
       "similar_questions_count": 3,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7422972917556763,
         0.7414177656173706,
@@ -500,7 +500,7 @@
       "test_problem_name": "1603_E. A Perfect Problem",
       "safe_directory_name": "1603_E_ A Perfect Problem",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7266250848770142,
         0.7110151052474976,
@@ -565,7 +565,7 @@
       "test_problem_name": "1604_D. Moderate Modular Mode",
       "safe_directory_name": "1604_D_ Moderate Modular Mode",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.8136565685272217,
         0.7302836179733276,
@@ -581,7 +581,7 @@
       "test_problem_name": "1604_E. Extreme Extension",
       "safe_directory_name": "1604_E_ Extreme Extension",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7818170189857483,
         0.734363317489624,
@@ -613,7 +613,7 @@
       "test_problem_name": "1606_D. Red-Blue Matrix",
       "safe_directory_name": "1606_D_ Red-Blue Matrix",
       "similar_questions_count": 1,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7024875283241272
       ],
@@ -629,7 +629,7 @@
       "test_problem_name": "1606_E. Arena",
       "safe_directory_name": "1606_E_ Arena",
       "similar_questions_count": 1,
-      "random_questions_count": 3,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7167812585830688
       ],
@@ -644,7 +644,7 @@
       "test_problem_name": "1606_F. Tree Queries",
       "safe_directory_name": "1606_F_ Tree Queries",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 3,
       "similarity_scores": [
         0.7598798871040344,
         0.75118088722229,
@@ -661,7 +661,7 @@
       "test_problem_name": "1607_B. Odd Grasshopper",
       "safe_directory_name": "1607_B_ Odd Grasshopper",
       "similar_questions_count": 2,
-      "random_questions_count": 1,
+      "random_questions_count": 3,
       "similarity_scores": [
         0.7253245115280151,
         0.715485155582428
@@ -675,7 +675,7 @@
       "test_problem_name": "1607_D. Blue-Red Permutation",
       "safe_directory_name": "1607_D_ Blue-Red Permutation",
       "similar_questions_count": 3,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7739709615707397,
         0.7179550528526306,
@@ -692,7 +692,7 @@
       "test_problem_name": "1607_E. Robot on the Board 1",
       "safe_directory_name": "1607_E_ Robot on the Board 1",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7987262010574341,
         0.7655519247055054,
@@ -707,7 +707,7 @@
       "test_problem_name": "1607_F. Robot on the Board 2",
       "safe_directory_name": "1607_F_ Robot on the Board 2",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7661534547805786,
         0.7596186399459839,
@@ -757,7 +757,7 @@
       "test_problem_name": "1608_B. Build the Permutation",
       "safe_directory_name": "1608_B_ Build the Permutation",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7744748592376709,
         0.7739283442497253,
@@ -773,7 +773,7 @@
       "test_problem_name": "1608_C. Game Master",
       "safe_directory_name": "1608_C_ Game Master",
       "similar_questions_count": 3,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.748893141746521,
         0.7486392855644226,
@@ -793,7 +793,7 @@
       "test_problem_name": "1608_D. Dominoes",
       "safe_directory_name": "1608_D_ Dominoes",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.780880868434906,
         0.7746754288673401,
@@ -812,7 +812,7 @@
       "test_problem_name": "1608_E. The Cells on the Paper",
       "safe_directory_name": "1608_E_ The Cells on the Paper",
       "similar_questions_count": 1,
-      "random_questions_count": 2,
+      "random_questions_count": 3,
       "similarity_scores": [
         0.7000242471694946
       ],
@@ -827,7 +827,7 @@
       "test_problem_name": "1608_F. MEX counting",
       "safe_directory_name": "1608_F_ MEX counting",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7855207920074463,
         0.7732469439506531,
@@ -844,7 +844,7 @@
       "test_problem_name": "1608_G. Alphabetic Tree",
       "safe_directory_name": "1608_G_ Alphabetic Tree",
       "similar_questions_count": 2,
-      "random_questions_count": 1,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7463743686676025,
         0.7302401065826416
@@ -864,7 +864,7 @@
       "test_problem_name": "1613_B. Absent Remainder",
       "safe_directory_name": "1613_B_ Absent Remainder",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7510272264480591,
         0.7287217974662781,
@@ -881,7 +881,7 @@
       "test_problem_name": "1613_D. MEX Sequences",
       "safe_directory_name": "1613_D_ MEX Sequences",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 3,
       "similarity_scores": [
         0.7548983097076416,
         0.7244285941123962,
@@ -947,7 +947,7 @@
       "test_problem_name": "1615_G. Maximum Adjacent Pairs",
       "safe_directory_name": "1615_G_ Maximum Adjacent Pairs",
       "similar_questions_count": 3,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.8137467503547668,
         0.792631983757019,
@@ -963,7 +963,7 @@
       "test_problem_name": "1617_A. Forbidden Subsequence",
       "safe_directory_name": "1617_A_ Forbidden Subsequence",
       "similar_questions_count": 3,
-      "random_questions_count": 2,
+      "random_questions_count": 3,
       "similarity_scores": [
         0.8122181296348572,
         0.7869315147399902,
@@ -981,7 +981,7 @@
       "test_problem_name": "1617_B. GCD Problem",
       "safe_directory_name": "1617_B_ GCD Problem",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 3,
       "similarity_scores": [
         0.8129249215126038,
         0.8074307441711426,
@@ -999,7 +999,7 @@
       "test_problem_name": "1617_C. Paprika and Permutation",
       "safe_directory_name": "1617_C_ Paprika and Permutation",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7467418909072876,
         0.7267851829528809,
@@ -1032,7 +1032,7 @@
       "test_problem_name": "1618_B. Missing Bigram",
       "safe_directory_name": "1618_B_ Missing Bigram",
       "similar_questions_count": 1,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7040718197822571
       ],
@@ -1045,7 +1045,7 @@
       "test_problem_name": "1618_C. Paint the Array",
       "safe_directory_name": "1618_C_ Paint the Array",
       "similar_questions_count": 3,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7685530185699463,
         0.7338051199913025,
@@ -1077,7 +1077,7 @@
       "test_problem_name": "1618_F. Reverse",
       "safe_directory_name": "1618_F_ Reverse",
       "similar_questions_count": 2,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7097235918045044,
         0.708369255065918
@@ -1111,7 +1111,7 @@
       "test_problem_name": "1619_E. MEX and Increments",
       "safe_directory_name": "1619_E_ MEX and Increments",
       "similar_questions_count": 3,
-      "random_questions_count": 2,
+      "random_questions_count": 3,
       "similarity_scores": [
         0.8591910600662231,
         0.7959192395210266,
@@ -1132,7 +1132,7 @@
       "test_problem_name": "1619_H. Permutation and Queries",
       "safe_directory_name": "1619_H_ Permutation and Queries",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7712738513946533,
         0.7686494588851929,
@@ -1150,7 +1150,7 @@
       "test_problem_name": "1620_A. Equal or Not Equal",
       "safe_directory_name": "1620_A_ Equal or Not Equal",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7746361494064331,
         0.7386803030967712,
@@ -1167,7 +1167,7 @@
       "test_problem_name": "1620_C. BA-String",
       "safe_directory_name": "1620_C_ BA-String",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7752931118011475,
         0.7617064714431763,
@@ -1186,7 +1186,7 @@
       "test_problem_name": "1620_D. Exact Change",
       "safe_directory_name": "1620_D_ Exact Change",
       "similar_questions_count": 2,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7292136549949646,
         0.7000763416290283
@@ -1202,7 +1202,7 @@
       "test_problem_name": "1620_E. Replace the Numbers",
       "safe_directory_name": "1620_E_ Replace the Numbers",
       "similar_questions_count": 3,
-      "random_questions_count": 3,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7602745294570923,
         0.7602745294570923,
@@ -1236,7 +1236,7 @@
       "test_problem_name": "1622_A. Construct a Rectangle",
       "safe_directory_name": "1622_A_ Construct a Rectangle",
       "similar_questions_count": 3,
-      "random_questions_count": 2,
+      "random_questions_count": 1,
       "similarity_scores": [
         0.7730615735054016,
         0.7147810459136963,
@@ -1270,7 +1270,7 @@
       "test_problem_name": "1622_D. Shuffle",
       "safe_directory_name": "1622_D_ Shuffle",
       "similar_questions_count": 3,
-      "random_questions_count": 1,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.787022054195404,
         0.7748996019363403,
@@ -1287,7 +1287,7 @@
       "test_problem_name": "1623_A. Robot Cleaner",
       "safe_directory_name": "1623_A_ Robot Cleaner",
       "similar_questions_count": 1,
-      "random_questions_count": 3,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.7387108206748962
       ],
@@ -1318,7 +1318,7 @@
       "test_problem_name": "1623_C. Balanced Stone Heaps",
       "safe_directory_name": "1623_C_ Balanced Stone Heaps",
       "similar_questions_count": 1,
-      "random_questions_count": 1,
+      "random_questions_count": 2,
       "similarity_scores": [
         0.8077884912490845
       ],

@@ -63,358 +63,593 @@ In the second sample, it's possible to leave 3 cells with indexes 1, 2, 3.
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1287_E2. Madhouse (Hard version)
-Tags: ['brute force', 'constructive algorithms', 'hashing', 'interactive', 'math']
-Description: This problem is different with easy version only by constraints on total answers length
+Name: p03357 AtCoder Regular Contest 097 - Sorted and Sorted
+Tags: ['']
+Description: There are 2N balls, N white and N black, arranged in a row. The integers from 1 through N are written on the white balls, one on each ball, and they are also written on the black balls, one on each ball. The integer written on the i-th ball from the left (1 ≤ i ≤ 2N) is a_i, and the color of this ball is represented by a letter c_i. c_i = `W` represents the ball is white; c_i = `B` represents the ball is black.
 
-It is an interactive problem
+Takahashi the human wants to achieve the following objective:
 
-Venya joined a tour to the madhouse, in which orderlies play with patients the following game. Orderlies pick a string s of length n, consisting only of lowercase English letters. The player can ask two types of queries: 
-
-  * ? l r – ask to list all substrings of s[l..r]. Substrings will be returned in random order, and in every substring, all characters will be randomly shuffled. 
-  * ! s – guess the string picked by the orderlies. This query can be asked exactly once, after that the game will finish. If the string is guessed correctly, the player wins, otherwise he loses. 
+* For every pair of integers (i,j) such that 1 ≤ i < j ≤ N, the white ball with i written on it is to the left of the white ball with j written on it.
+* For every pair of integers (i,j) such that 1 ≤ i < j ≤ N, the black ball with i written on it is to the left of the black ball with j written on it.
 
 
 
-The player can ask no more than 3 queries of the first type.
+In order to achieve this, he can perform the following operation:
 
-To make it easier for the orderlies, there is an additional limitation: the total number of returned substrings in all queries of the first type must not exceed \left⌈ 0.777(n+1)^2 \right⌉ (⌈ x ⌉ is x rounded up).
-
-Venya asked you to write a program, which will guess the string by interacting with the orderlies' program and acting by the game's rules.
-
-Your program should immediately terminate after guessing the string using a query of the second type. In case your program guessed the string incorrectly, or it violated the game rules, it will receive verdict Wrong answer.
-
-Note that in every test case the string is fixed beforehand and will not change during the game, which means that the interactor is not adaptive.
-
-Input
-
-First line contains number n (1 ≤ n ≤ 100) — the length of the picked string.
-
-Interaction
-
-You start the interaction by reading the number n.
-
-To ask a query about a substring from l to r inclusively (1 ≤ l ≤ r ≤ n), you should output
-
-? l r
-
-on a separate line. After this, all substrings of s[l..r] will be returned in random order, each substring exactly once. In every returned substring all characters will be randomly shuffled.
-
-In the case, if you ask an incorrect query, ask more than 3 queries of the first type or there will be more than \left⌈ 0.777(n+1)^2 \right⌉ substrings returned in total, you will receive verdict Wrong answer.
-
-To guess the string s, you should output
-
-! s
-
-on a separate line.
-
-After printing each query, do not forget to flush the output. Otherwise, you will get Idleness limit exceeded. To flush the output, you can use: 
-
-  * fflush(stdout) or cout.flush() in C++; 
-  * System.out.flush() in Java; 
-  * flush(output) in Pascal; 
-  * stdout.flush() in Python; 
-  * see documentation for other languages. 
+* Swap two adjacent balls.
 
 
 
-If you received - (dash) as an answer to any query, you need to terminate your program with exit code 0 (for example, by calling exit(0)). This means that there was an error in the interaction protocol. If you don't terminate with exit code 0, you can receive any unsuccessful verdict. 
+Find the minimum number of operations required to achieve the objective.
 
-Hack format
+Constraints
 
-To hack a solution, use the following format:
-
-The first line should contain one integer n (1 ≤ n ≤ 100) — the length of the string, and the following line should contain the string s.
-
-Example
+* 1 ≤ N ≤ 2000
+* 1 ≤ a_i ≤ N
+* c_i = `W` or c_i = `B`.
+* If i ≠ j, (a_i,c_i) ≠ (a_j,c_j).
 
 Input
 
+Input is given from Standard Input in the following format:
 
-4
 
-a
-aa
-a
+N
+c_1 a_1
+c_2 a_2
+:
+c_{2N} a_{2N}
 
-cb
-b
-c
-
-c
 
 Output
 
+Print the minimum number of operations required to achieve the objective.
 
-? 1 2
+Examples
 
-? 3 4
+Input
 
-? 4 4
+3
+B 1
+W 2
+B 3
+W 1
+W 3
+B 2
 
-! aabc
-Difficulty: 11
+
+Output
+
+4
+
+
+Input
+
+4
+B 4
+W 4
+B 3
+W 3
+B 2
+W 2
+B 1
+W 1
+
+
+Output
+
+18
+
+
+Input
+
+9
+W 3
+B 1
+B 4
+W 1
+B 5
+W 9
+W 2
+B 6
+W 5
+B 3
+W 8
+B 9
+W 7
+B 2
+B 8
+W 4
+W 6
+B 7
+
+
+Output
+
+41
+Difficulty: 0
 Solutions: #include <bits/stdc++.h>
-inline long long read() {
-  long long x = 0, f = 1;
-  char c = getchar();
-  for (; c > '9' || c < '0'; c = getchar()) {
-    if (c == '-') f = -1;
-  }
-  for (; c >= '0' && c <= '9'; c = getchar()) {
-    x = x * 10 + c - '0';
-  }
-  return x * f;
-}
-int cnt[27][105];
-char s[105], s1[105];
-std::string sss, halfans, halfans2;
-std::vector<char> ans;
-std::map<std::string, int> H1[105], H2[105];
-inline char getA(std::string a, std::string b) {
-  int c[30];
-  memset(c, 0, sizeof c);
-  for (int i = 0; i < a.size(); i++) c[a[i] - 'a']++;
-  for (int i = 0; i < b.size(); i++) c[b[i] - 'a']--;
-  for (int i = 0; i < 26; i++) {
-    if (c[i] > 0) return i + 'a';
-  }
-  return 'a';
-}
-inline std::string solve(int n) {
-  printf("? 1 %d\n", n);
-  fflush(stdout);
-  for (int i = 1; i <= n * (n + 1) >> 1; i++) {
-    scanf("%s", s);
-    sss = std::string(s);
-    std::sort(sss.begin(), sss.end());
-    H1[sss.size()][sss]++;
-  }
-  printf("? 2 %d\n", n);
-  fflush(stdout);
-  for (int i = 1; i <= n * (n - 1) >> 1; i++) {
-    scanf("%s", s);
-    sss = std::string(s);
-    std::sort(sss.begin(), sss.end());
-    H2[sss.size()][sss]++;
-  }
-  for (int i = 1; i <= n; i++) {
-    for (auto p : H2[i]) {
-      H1[i][p.first] -= H2[i][p.first];
-    }
-    for (auto p : H1[i]) {
-      if (p.second > 0) {
-        std::string new1 = ("");
-        for (int j = 0; j < ans.size(); j++) new1 += ans[j];
-        ans.push_back(getA(p.first, new1));
-      }
-    }
-  }
-  std::string new1 = ("");
-  for (int j = 0; j < ans.size(); j++) new1 += ans[j];
-  return new1;
-}
-inline void work() {
-  int n = read();
-  if (n == 1) {
-    puts("? 1 1");
-    fflush(stdout);
-    scanf("%s", s);
-    printf("! %s\n", s);
-    fflush(stdout);
-  } else if (n == 2) {
-    puts("? 1 1");
-    fflush(stdout);
-    scanf("%s", s);
-    puts("? 2 2");
-    fflush(stdout);
-    scanf("%s", s1);
-    printf("! %s%s\n", s, s1);
-    fflush(stdout);
-  } else {
-    halfans = solve(n + 1 >> 1);
-    printf("? 1 %d\n", n);
-    fflush(stdout);
-    for (int i = 1; i <= n * (n + 1) >> 1; i++) {
-      scanf("%s", s);
-      sss = std::string(s);
-      for (int j = 0; j < sss.size(); j++) {
-        cnt[sss[j] - 'a'][sss.size()]++;
-      }
-    }
-    halfans2 = std::string("");
-    for (int i = 1; i <= n >> 1; i++) {
-      for (int j = 0; j < 26; j++) {
-        int num = cnt[j][1] - (cnt[j][i + 1] - cnt[j][i]);
-        for (int k = 0; k < i; k++) {
-          if (halfans[k] - 'a' == j) {
-            num--;
-          }
-        }
-        for (int k = 0; k < halfans2.size(); k++) {
-          if (halfans2[k] - 'a' == j) {
-            num--;
-          }
-        }
-        if (num > 0) {
-          halfans2 += ('a' + j);
-          break;
-        }
-      }
-    }
-    for (int i = halfans2.size() - 1; ~i; i--) halfans += halfans2[i];
-    printf("! %s\n", halfans.c_str());
-    fflush(stdout);
-  }
-}
+#define SZ(x) ((int)x.size())
+#define ALL(x) (x).begin(), (x).end()
+using namespace std;
+typedef long long ll;
+typedef long double ld;
+int n, a[4010], b[4010], sum[2][4010][2010];
+int pos[2][2010];
+int dp[2010][2010];
 int main() {
-  work();
-  return 0;
+	scanf("%d", &n);
+	for(int i=1; i<=n+n; i++) {
+		char ch;
+		scanf(" %c %d", &ch, a+i);
+		b[i] = ch == 'B';
+		pos[b[i]][a[i]] = i;
+		for(int j=a[i]; j<=n; j++)
+			sum[b[i]][i][j]++;
+	}
+	for(int k=0; k<2; k++)
+		for(int i=1; i<=n+n; i++)
+			for(int j=1; j<=n; j++)
+				sum[k][i][j] += sum[k][i-1][j];
+	for(int i=0; i<=n; i++) {
+		for(int j=0; j<=n; j++) {
+			int p1 = pos[0][i];
+			int p2 = pos[1][j];
+			if(!i && !j) continue;
+			else if(!i) {
+				dp[i][j] = dp[i][j-1] + p2 - 1 - sum[1][p2][j-1] - sum[0][p2][i];
+			} else if(!j) {
+				dp[i][j] = dp[i-1][j] + p1 - 1 - sum[0][p1][i-1] - sum[1][p1][j];
+			} else {
+				dp[i][j] = min(dp[i-1][j] + p1 - 1 - sum[0][p1][i-1] - sum[1][p1][j], dp[i][j-1] + p2 - 1 - sum[1][p2][j-1] - sum[0][p2][i]);
+			}
+		}
+	}
+	printf("%d", dp[n][n]);
+	return 0;
 }
-
 
 Example question 2:
-Name: p00599 Combinatorial Topology
+Name: p01940 Unique Subsequence
 Tags: ['']
-Description: It was long believed that a 2-dimensional place can not be filled with a finite set of polygons in aperiodic way. British mathematician, Sir Roger Penrose, developed an aperiodic tiling over the years and established a theory of what is known today as quasicrystals.
+Description: C: Only one subsequence --Unique Subsequence-
 
-The classic Penrose tiles consist of two rhombi with angles 36 and 72 degrees, see Figure 1. The edges of the rhombi are all of equal unit length, 1. These can fill the entire place without holes and overlaps (see Figure 2). Example: the bold line boundary in Figure 1 is filled with 20 thin tiles and 20 thick tiles.
+problem
 
-Given a boundary (set of adjacent vertices counter-clock-wise oriented), how many thin tiles (36 degrees) and how many thick tiles (72 degrees) do you need to fill it (without any holes and intersections)?
+One day Ebi-chan noticed that a text string T of length n and a pattern string P (m \ leq n) of length m were placed on the desk. Ebi-chan loves the "only one subsequence" that appears in strings, so she immediately began investigating whether P was the only subsequence of T.
 
-<image>
+The property that P is the only subsequence of T is expressed as follows: Now write the i-th character of the string X as X_i.
+
+* A sequence of length m S = (s_1, ..., s_m) (where s_1 <s_2 <... <s_m) and for each i (i = 1, ..., m) T_ {s_i} The sequence S with = P_i is uniquely determined.
 
 
 
-Input
+For several hours after starting the investigation, Ebi-chan was staring at the string, but it seems that she was tired because the string was too long. If you couldn't see it, you decided to help Ebi-chan. For Ebi-chan, write a program that outputs “yes” if P is only one subsequence of T, and “no” otherwise.
 
-Each data set is defined as follows:
+Input format
 
-Line 1: Number of vertices N (N < 100).
 
-N lines: x and y coordinates of each vertex per line separated by blanks (|x| < 100, |y| < 100).
+T
+P
 
-All floats in the input have 6 digits after the decimal point.
 
-The required precision is 4 digits.
+The first line is given the text string T. The second line is given the pattern string P.
 
-Input file includes several data sets. The number of data sets is less than 20.
+Constraint
 
-Output
+* 1 \ leq | P | \ leq | T | \ leq 5 \ times 10 ^ 5
+* T and P are composed of lowercase letters ‘a’-’z’.
 
-Each line contains the solution for one set. First, there is the number of thin tiles, then the number of thick tiles, separated by a space. If the boundary is illegal for the above problem, the output should be "-1 -1".
+
+
+Output format
+
+Print “yes” if P is a single subsequence of T, otherwise “no” on one line.
+
+Input example 1
+
+
+aizucamp
+azu
+
+
+Output example 1
+
+
+yes
+
+Input example 2
+
+
+abracadabra
+rada
+
+
+Output example 2
+
+
+no
+
+Input example 3
+
+
+hokkaido
+dekai
+
+
+Output example 3
+
+
+no
+
+
+
+
 
 Example
 
 Input
 
-4
--5.000000 0.000000
-5.000000 0.000000
-9.635255 14.265848
--0.364745 14.265848
-3
--1.000000 0.000000
-0.000000 0.000000
-0.000000 1.000000
+aizucamp
+azu
 
 
 Output
 
-0 150
--1 -1
+yes
 Difficulty: 0
-Solutions: #include <iostream>
-#include <complex>
-#include <vector>
-#include <algorithm>
-#include <cmath>
+Solutions: #include<bits/stdc++.h>
 using namespace std;
-const double EPS = 1e-5;
-const double INF = 1e12;
-const double PI = acos(-1);
-#define EQ(n,m) (abs((n)-(m)) < EPS)
-#define X real()
-#define Y imag()
-typedef complex<double> P;
-typedef vector<P> VP;
 
-namespace std{
-    bool operator < (const P& a, const P& b){
-        return !EQ(a.X,b.X) ? a.X<b.X : a.Y+EPS<b.Y;
+// macro
+#define rep(i,n) for(i=0;i<n;i++)
+#define ll long long
+#define all(v) v.begin(), v.end()
+
+// code starts
+int main()
+{
+  string t,p;cin>>t>>p;
+  int nowi=0;
+  vector<int> use_front(0);
+  vector<int> use_back(0);
+  int i;
+  rep(i,t.size())
+  {
+    if(t[i]==p[nowi])
+    {
+      use_front.emplace_back(i);
+      nowi++;
     }
-    bool operator == (const P& a, const P& b){
-        return abs(a-b) < EPS;
+    if(nowi>=p.size())break;
+  }
+  nowi=p.size()-1;
+  for(i=t.size()-1;i>=0;i--)
+  {
+    if(t[i]==p[nowi])
+    {
+      use_back.emplace_back(i);
+      nowi--;
     }
+    if(nowi<0)break;
+  }
+  if(use_front.size()<p.size()||use_back.size()<p.size())
+  {
+    cout<<"no"<<endl;
+  }
+  else
+  {
+    reverse(all(use_back));
+    if(use_back==use_front)cout<<"yes"<<endl;
+    else cout<<"no"<<endl;
+  }
+  
 }
 
-double dot(P a, P b){
-    return (conj(a)*b).X;
-}
-double cross(P a, P b){
-    return (conj(a)*b).Y;
-}
 
-double getangle(P a, P b){
-    return abs(arg(a/b));
-}
-double getarea(const VP &poly){
-    double ret = 0;
-    for (int i=0; i<(int)poly.size(); i++){ 
-        ret += cross(poly[i], poly[(i+1)%poly.size()]);
+
+Example question 3:
+Name: 1015_E2. Stars Drawing (Hard Edition)
+Tags: ['binary search', 'dp', 'greedy']
+Description: A star is a figure of the following type: an asterisk character '*' in the center of the figure and four rays (to the left, right, top, bottom) of the same positive length. The size of a star is the length of its rays. The size of a star must be a positive number (i.e. rays of length 0 are not allowed).
+
+Let's consider empty cells are denoted by '.', then the following figures are stars:
+
+<image> The leftmost figure is a star of size 1, the middle figure is a star of size 2 and the rightmost figure is a star of size 3.
+
+You are given a rectangular grid of size n × m consisting only of asterisks '*' and periods (dots) '.'. Rows are numbered from 1 to n, columns are numbered from 1 to m. Your task is to draw this grid using any number of stars or find out that it is impossible. Stars can intersect, overlap or even coincide with each other. The number of stars in the output can't exceed n ⋅ m. Each star should be completely inside the grid. You can use stars of same and arbitrary sizes.
+
+In this problem, you do not need to minimize the number of stars. Just find any way to draw the given grid with at most n ⋅ m stars.
+
+Input
+
+The first line of the input contains two integers n and m (3 ≤ n, m ≤ 1000) — the sizes of the given grid.
+
+The next n lines contains m characters each, the i-th line describes the i-th row of the grid. It is guaranteed that grid consists of characters '*' and '.' only.
+
+Output
+
+If it is impossible to draw the given grid using stars only, print "-1".
+
+Otherwise in the first line print one integer k (0 ≤ k ≤ n ⋅ m) — the number of stars needed to draw the given grid. The next k lines should contain three integers each — x_j, y_j and s_j, where x_j is the row index of the central star character, y_j is the column index of the central star character and s_j is the size of the star. Each star should be completely inside the grid.
+
+Examples
+
+Input
+
+6 8
+....*...
+...**...
+..*****.
+...**...
+....*...
+........
+
+
+Output
+
+3
+3 4 1
+3 5 2
+3 5 1
+
+
+Input
+
+5 5
+.*...
+****.
+.****
+..**.
+.....
+
+
+Output
+
+3
+2 2 1
+3 3 1
+3 4 1
+
+
+Input
+
+5 5
+.*...
+***..
+.*...
+.*...
+.....
+
+
+Output
+
+-1
+
+
+Input
+
+3 3
+*.*
+.*.
+*.*
+
+
+Output
+
+-1
+
+Note
+
+In the first example the output 
+    
+    
+    2  
+    3 4 1  
+    3 5 2  
+    
+
+is also correct.
+Difficulty: 11
+Solutions: import java.io.OutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collection;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.io.BufferedOutputStream;
+import java.util.stream.Stream;
+import java.util.StringTokenizer;
+import java.io.BufferedReader;
+import java.io.InputStream;
+
+/**
+ * Built using CHelper plug-in
+ * Actual solution is at the top
+ */
+public class Main {
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        Kattio in = new Kattio(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        TaskE2 solver = new TaskE2();
+        solver.solve(1, in, out);
+        out.close();
     }
-    return ret*0.5;
-}
 
-int main(){
-    int n;
-    while(cin >> n){
-        VP p(n);
-        for(int i=0; i<n; i++){
-            double x,y;
-            cin >> x >> y;
-            p[i] = P(x, y);
-        }
-        if(p[0] == p.back()){
-            p.pop_back();
-            n--;
-        }
+    static class TaskE2 {
+        public void solve(int testNumber, Kattio in, PrintWriter out) {
+            int n = in.nextInt();
+            int m = in.nextInt();
 
-        bool ng = false;
-        double len = abs(p[1] -p[0]);
-        for(int i=0; i<n; i++){
-            double a = getangle(p[i] -p[(i+1)%n], p[(i+2)%n] -p[(i+1)%n]);
-            a *= 5/PI;
-            double l = abs(p[(i+1)%n] -p[i]);
-            if(!EQ(len, l)) len = -1;
-            if(!EQ(a, round(a)) || !EQ(l, round(l))){
-                ng = true;
-                break;
+            char[][] arr = new char[n + 1][m + 1];
+            int[][][] pre = new int[n + 2][m + 2][2];
+            int[][][] clo = new int[n + 2][m + 2][4];
+
+            for (int i = 1; i <= n; ++i) {
+                char[] tmp = in.next().toCharArray();
+                Arrays.fill(clo[i][0], -1);
+                Arrays.fill(clo[i][m + 1], -1);
+                for (int j = 1; j <= m; ++j) {
+                    arr[i][j] = tmp[j - 1];
+                    Arrays.fill(clo[i][j], -1);
+                }
             }
-        }
-        if(len != -1 && n == 5) ng = true;
-        if(ng){
-            cout << -1 << " " << -1 << endl;
-            continue;
+
+            for (int j = 0; j <= m + 1; ++j) {
+                Arrays.fill(clo[0][j], -1);
+                Arrays.fill(clo[n + 1][j], -1);
+            }
+
+            // Mark the index of the furthest * from the left and top
+            for (int i = 1; i <= n; ++i) {
+                for (int j = 1; j <= m; ++j) {
+                    if (arr[i][j] == '*') {
+
+                        clo[i][j][0] = j;
+                        clo[i][j][2] = i;
+
+                        if (clo[i][j - 1][0] != -1) {
+                            clo[i][j][0] = clo[i][j - 1][0];
+                        }
+
+                        if (clo[i - 1][j][2] != -1) {
+                            clo[i][j][2] = clo[i - 1][j][2];
+                        }
+                    }
+                }
+            }
+
+
+            // Mark the index of the furthest * from the right and bottom
+            for (int i = n; i > 0; --i) {
+                for (int j = m; j > 0; --j) {
+                    if (arr[i][j] == '*') {
+                        clo[i][j][1] = j;
+                        clo[i][j][3] = i;
+
+                        if (clo[i][j + 1][1] != -1) {
+                            clo[i][j][1] = clo[i][j + 1][1];
+                        }
+
+                        if (clo[i + 1][j][3] != -1) {
+                            clo[i][j][3] = clo[i + 1][j][3];
+                        }
+                    }
+                }
+            }
+
+            ArrayList<Star> ans = new ArrayList<>();
+            for (int i = 1; i <= n; ++i) {
+                for (int j = 1; j <= m; ++j) {
+                    if (arr[i][j] == '*') {
+                        int diff1 = Math.min(j - clo[i][j][0], clo[i][j][1] - j);
+                        int diff2 = Math.min(i - clo[i][j][2], clo[i][j][3] - i);
+                        int diff = Math.min(diff1, diff2);
+
+                        if (diff == 0)
+                            continue;
+
+                        pre[i][j - diff][0] += 1;
+                        pre[i][j + diff + 1][0] -= 1;
+
+                        pre[i - diff][j][1] += 1;
+                        pre[i + diff + 1][j][1] -= 1;
+
+                        ans.add(new Star(i, j, diff));
+                    }
+                }
+            }
+
+
+            for (int i = 1; i <= n; ++i) {
+                for (int j = 1; j <= m; ++j) {
+                    pre[i][j][0] += pre[i][j - 1][0];
+                    pre[i][j][1] += pre[i - 1][j][1];
+
+                    if (pre[i][j][0] + pre[i][j][1] == 0 && arr[i][j] == '*') {
+                        out.println(-1);
+                        return;
+                    }
+                }
+            }
+
+            out.println(ans.size());
+            ans.stream().forEach(out::println);
         }
 
-        double area = getarea(p);
-        double thin = sin(PI/5);
-        double thick = sin(2*PI/5);
-        int a=-1, b=-1;
-        for(int i=0; thin*i < area +EPS; i++){
-            double rem = area -thin*i;
-            double j = rem/thick;
-            if(EQ(j, round(j))){
-                a = i;
-                b = round(j) +EPS;
-                break;
+        public class Star {
+            int x;
+            int y;
+            int l;
+
+            public Star(int x, int y, int l) {
+                this.x = x;
+                this.y = y;
+                this.l = l;
             }
+
+
+            public String toString() {
+                return x + " " + y + " " + l;
+            }
+
         }
-        cout << a << " " << b << endl;
+
     }
-    return 0;
+
+    static class Kattio extends PrintWriter {
+        private BufferedReader r;
+        private String line;
+        private StringTokenizer st;
+        private String token;
+
+        public Kattio(InputStream i) {
+            super(new BufferedOutputStream(System.out));
+            r = new BufferedReader(new InputStreamReader(i));
+        }
+
+        public Kattio(InputStream i, OutputStream o) {
+            super(new BufferedOutputStream(o));
+            r = new BufferedReader(new InputStreamReader(i));
+        }
+
+        public int nextInt() {
+            return Integer.parseInt(nextToken());
+        }
+
+        public String next() {
+            return nextToken();
+        }
+
+        private String peekToken() {
+            if (token == null)
+                try {
+                    while (st == null || !st.hasMoreTokens()) {
+                        line = r.readLine();
+                        if (line == null) return null;
+                        st = new StringTokenizer(line);
+                    }
+                    token = st.nextToken();
+                } catch (IOException e) {
+                }
+            return token;
+        }
+
+        private String nextToken() {
+            String ans = peekToken();
+            token = null;
+            return ans;
+        }
+
+    }
 }
+
 
 
 
@@ -426,6 +661,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

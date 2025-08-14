@@ -72,280 +72,59 @@ All balls will be dropped from the first row and on the c_1, c_2, ..., c_k-th co
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: p01721 Wave Attack
-Tags: ['']
-Description: The fearless Ikta has finally hunted down the infamous Count Big Bridge! Count Bigbridge is now trapped in a rectangular room w meters wide and h meters deep, waiting for his end.
-
-If you select a corner of the room and take the coordinate system so that the width direction is the x-axis and the depth direction is the y-axis, and the inside of the room is in the positive direction, Count Big Bridge is at the point (p, q). .. At point (x, y), there is a shock wave launcher, which is Ikta's ultimate weapon, from which a shock wave of v meters per second is emitted in all directions. This shock wave is valid for t seconds and is reflected off the walls of the room.
-
-Ikta, who is outside the room, wants to know how much Count Big Bridge will suffer, so let's write a program that asks Count Big Bridge how many shock waves he will hit. At this time, if the shock wave hits the enemy from the n direction at the same time, it is considered to have hit the enemy n times, and it is also effective if the shock wave hits the enemy exactly t seconds later. The shock wave does not disappear due to obstacles such as the launcher itself and Count Big Bridge, and the shock waves do not interfere with each other.
-
-
+Name: anubtg
+Tags: []
+Description: Problem description
+It is winter super sale and all the shops have various offers. Suraj selected N items to buy and he is standing in the billing queue. It was then he noticed the offer "Buy two, get two". That means for every two items you buy, they give you two items for free. However, items can be of varying price, they always charge for 2 most costly items and give other 2 as free. For example, if the items cost 1, 1, 2, 2, then you have to pay 4 and take all 4 items.
+Suraj is busy reordering his items to reduce the total price he has to pay. He can separate the items and get them on different bills if needed. Can you tell me what is the least price Suraj has to pay to buy all the N items?
 
 Input
+The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows. First line of each test case has single integer N. Second line of each test case has N space separated integers, which are the costs of items Suraj want to buy.
 
-The input is given in the following format.
-
-> w h v t x y p q
->
-
-* Each is a positive integer as explained in the problem statement.
-
-
+Output
+For each test case, output a single line containing the required answer.
 
 Constraints
 
-* v × t ≤ 106
-* 2 ≤ w, h ≤ 108
-* 0 <x, p <w
-* 0 <y, q <h
-* (x, y) ≠ (p, q)
+1 ≤ T ≤ 1000
+1 ≤ N ≤ 1000
+1 ≤ Cost of items ≤ 1000
 
-Output
-
-Output the number of times the shock wave hits Count Big Bridge on one line.
-
-Examples
-
-Input
-
-10 10 1 10 3 3 7 7
-
-
-Output
-
-1
-
-
-Input
-
-10 10 1 11 3 3 7 7
-
-
-Output
-
-5
-
-
-Input
-
-2 3 1000 1000 1 1 1 2
-
-
-Output
-
-523598775681
-Difficulty: 0
-Solutions: #include<bits/stdc++.h>
-#define inf 1<<29
-#define linf 1e16
-#define eps (1e-3)
-#define mod 1000000007
-#define pi acos(-1)
-#define phi (1.0+sqrt(5))/2.0
-#define f first
-#define s second
-#define mp make_pair
-#define pb push_back
-#define all(a) (a).begin(),(a).end()
-#define pd(a) printf("%.10f\n",(double)(a))
-#define FOR(i,a,b) for(int i=(a);i<(b);i++)
-#define RFOR(i,a,b) for(int i=(a)-1;(b)<=i;i--)
-#define equals(a,b) (fabs((a)-(b))<eps)
-using namespace std;
-typedef long long ll;
-typedef unsigned long long ull;
-typedef pair<int,int> pii;
-typedef pair<int,double> pid;
-typedef pair<double,int> pdi;
-typedef vector<int> vi;
-typedef vector<pii> vpi;
-const int dx[8]={1,0,-1,0,1,1,-1,-1};
-const int dy[8]={0,1,0,-1,1,-1,1,-1};
-
-double w,h,v,t,x,y,p,q,r;
-
-ull count(double W){
-  if(r-(W-x)<-eps)return 0;
-  double H=sqrt(r*r-(W-x)*(W-x));
-  ull res=0;
-  res+=(int)((y+H-q)/h)-(int)((y-H-q)/h);
-  res+=(int)((y+H+q)/h)-(int)((y-H+q)/h);
-  if(y-H<=q && q<=y+H)res++;
-  if(y-H<=-q && -q<=y+H)res++;
-
-  return res;
-}
-
-ull solve(){
-  ull res=0;
-  r=v*t;w*=2.0;h*=2.0;
-  for(double i=p;i-x-r<eps;i+=w)res+=count(i);
-  for(double i=-p;i-x-r<eps;i+=w)res+=count(i);
-  for(double i=p-w;x-r-i<eps;i-=w)res+=count(i);
-  for(double i=-p-w;x-r-i<eps;i-=w)res+=count(i);
-  return res;
-}
-
-int main()
-{
-  cin>>w>>h>>v>>t>>x>>y>>p>>q;
-  cout<<solve()<<endl;
-  return 0;
-}
-
-Example question 2:
-Name: 1425_C. Captain of Knights
-Tags: ['math']
-Description: Mr. Chanek just won the national chess tournament and got a huge chessboard of size N × M. Bored with playing conventional chess, Mr. Chanek now defines a function F(X, Y), which denotes the minimum number of moves to move a knight from square (1, 1) to square (X, Y). It turns out finding F(X, Y) is too simple, so Mr. Chanek defines:
-
-G(X, Y) = ∑_{i=X}^{N} ∑_{j=Y}^{M} F(i, j)
-
-Given X and Y, you are tasked to find G(X, Y).
-
-A knight can move from square (a, b) to square (a', b') if and only if |a - a'| > 0, |b - b'| > 0, and |a - a'| + |b - b'| = 3. Of course, the knight cannot leave the chessboard.
-
-Input
-
-The first line contains an integer T (1 ≤ T ≤ 100), the number of test cases.
-
-Each test case contains a line with four integers X Y N M (3 ≤ X ≤ N ≤ 10^9, 3 ≤ Y ≤ M ≤ 10^9).
-
-Output
-
-For each test case, print a line with the value of G(X, Y) modulo 10^9 + 7.
 
 Example
-
-Input
-
-
+Input:
+3
+4
+1 1 2 2
 2
-3 4 5 6
-5 5 8 8
+10 200
+7
+1 1 10 2 2 2 1
 
+Output:
+4
+210
+14
 
-Output
-
-
-27
-70
-Difficulty: 9
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-namespace modular {
-const int mod = 1000000007;
-inline int add(int x, int y) { return x + y >= mod ? x + y - mod : x + y; }
-inline int dec(int x, int y) { return x - y < 0 ? x - y + mod : x - y; }
-inline int mul(int x, int y) { return 1ll * x * y % mod; }
-}  // namespace modular
-using namespace modular;
-inline int poww(int a, int b) {
-  int ans = 1;
-  while (b) {
-    if (b & 1) ans = mul(ans, a);
-    a = mul(a, a);
-    b >>= 1;
-  }
-  return ans;
-}
-const int inv2 = poww(2, mod - 2);
-const int inv3 = poww(3, mod - 2);
-inline int read() {
-  int x = 0, f = 1;
-  char ch = getchar();
-  while (ch < '0' || ch > '9') {
-    if (ch == '-') f = -1;
-    ch = getchar();
-  }
-  while (ch >= '0' && ch <= '9') {
-    x = (x << 1) + (x << 3) + (ch ^ '0');
-    ch = getchar();
-  }
-  return x * f;
-}
-int T;
-int f(int a, int b, int c, int n) {
-  return add(add(mul(a, mul(n, n)), mul(b, n)), c);
-}
-int s(int n) { return (n / 3) + (n % 3); }
-int t(int n) {
-  int nn = n / 3;
-  int res = f(mul(3, inv2), mul(5, inv2), 0, nn);
-  for (int i = nn * 3 + 1; i <= n; i++) res = add(res, s(i));
-  return res;
-}
-int a(int n) {
-  int nn = n / 3;
-  int res = mul(nn, f(mul(3, inv2), mul(9, inv2), 2, nn));
-  for (int i = nn * 3 + 1; i <= n; i++) res = add(res, t(i));
-  return res;
-}
-int b(int n) { return mul(n, f(inv2, 2, mul(3, inv2), n)); }
-int c(int n) {
-  int nn = n / 2;
-  int res = mul(nn, f(1, mul(5, inv2), inv2, nn));
-  if (n & 1) res = add(res, t((3ll * n - 1) / 2));
-  return res;
-}
-int C1(int X, int Y) {
-  X = min(X, 2 * Y), Y = min(Y, 2 * X);
-  int mid = Y / 2;
-  if (mid < 3) mid = 2;
-  if (mid > X) mid = X;
-  return dec(add(dec(b(mid), b(2)), dec(a(X + Y), a(mid + Y))),
-             dec(c(X), c(2)));
-}
-int S1(int n) {
-  int opt = n % 4;
-  if (!opt) return mul(f(1, mod - 3, mod - 4, n), mul(inv2, inv2));
-  if (opt == 1) return mul(f(1, mod - 1, mod - 8, n), mul(inv2, inv2));
-  if (opt == 2) return mul(f(1, mod - 3, mod - 2, n), mul(inv2, inv2));
-  return mul(f(1, mod - 1, mod - 6, n), mul(inv2, inv2));
-}
-int d(int n) {
-  int nn = n / 4;
-  int res = mul(nn, f(mul(16, inv3), mod - 2, dec(0, mul(19, inv3)), nn));
-  for (int i = nn * 4 + 1; i <= n; i++) res = add(res, S1(i));
-  return res;
-}
-int up(int x) { return (x + 1) / 2; }
-int S2(int n, int Y) {
-  int opt = n % 4;
-  if (!opt) return dec(add(mul(n / 2, Y - 1), (Y + 1) / 2), 1);
-  if (opt == 1) return dec(add(mul((n + 1) / 2, Y - 1), (Y + 1) / 2), 1);
-  if (opt == 2) return add(mul(n / 2, Y - 1), Y / 2);
-  return add(mul((n + 1) / 2, Y - 1), Y / 2);
-}
-int e(int n, int Y) {
-  int nn = n / 4;
-  int res = mul(dec(mul(4, Y), 4), add(mul(nn, nn), nn));
-  for (int i = nn * 4 + 1; i <= n; i++) res = add(res, S2(i, Y));
-  return res;
-}
-int C2(int X, int Y) {
-  if (2 * Y + 2 >= X) return dec(d(X), d(4));
-  return add(dec(d(2 * Y + 2), d(4)), dec(e(X, Y), e(2 * Y + 2, Y)));
-}
-int P(int X, int Y) {
-  if (X < 2 || Y < 2) return 0;
-  int ans = 0;
-  for (int i = 2; i <= min(4, Y); i++) ans += 6 - i;
-  ans = add(ans, C1(X, Y));
-  ans = add(ans, C2(X, Y));
-  ans = add(ans, C2(Y, X));
-  return ans;
-}
-int main() {
-  T = read();
-  while (T--) {
-    int x = read() - 1, y = read() - 1, n = read() - 1, m = read() - 1;
-    printf("%d\n",
-           dec(add(P(n, m), P(x - 1, y - 1)), add(P(x - 1, m), P(n, y - 1))));
-  }
-  return 0;
-}
-
+Explanation
+Example case 1
+Suraj pays for 2 costly items and gets other 2 for free.
+Example case 2
+Suraj has to pay for both the items, he wont get anything for free.
+Example case 3
+Suraj separates the items into 2 bills. In one bill he pays 12. And in another bill he pays 2.
+Difficulty: 2
+Solutions: T = int(raw_input())
+for t in range(T):
+    N = int(raw_input())
+    A = map(int, raw_input().split())
+    A.sort()
+    A = A[::-1]
+    B = []
+    for i in range(len(A)):
+        if i%4==0 or i%4==1:
+            B.append(A[i])
+    print sum(B)
 
 
 INSTRUCTIONS:
@@ -356,6 +135,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

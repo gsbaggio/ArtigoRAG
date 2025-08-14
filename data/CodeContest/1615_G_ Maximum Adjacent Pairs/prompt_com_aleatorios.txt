@@ -113,202 +113,184 @@ Output
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 55_C. Pie or die
-Tags: ['games']
-Description: Volodya and Vlad play the following game. There are k pies at the cells of n × m board. Each turn Volodya moves one pie to the neighbouring (by side) cell. If the pie lies at the border of the board then Volodya can move it outside the board, get the pie and win. After Volodya's move, Vlad bans some edge at the border of the board of length 1 (between two knots of the board) so that Volodya is not able to move the pie outside the board through this edge anymore. The question is: will Volodya win this game? We suppose both players follow the optimal strategy.
+Name: 645_G. Armistice Area Apportionment
+Tags: ['binary search', 'geometry']
+Description: After a drawn-out mooclear arms race, Farmer John and the Mischievous Mess Makers have finally agreed to establish peace. They plan to divide the territory of Bovinia with a line passing through at least two of the n outposts scattered throughout the land. These outposts, remnants of the conflict, are located at the points (x1, y1), (x2, y2), ..., (xn, yn).
 
-<image>
+In order to find the optimal dividing line, Farmer John and Elsie have plotted a map of Bovinia on the coordinate plane. Farmer John's farm and the Mischievous Mess Makers' base are located at the points P = (a, 0) and Q = ( - a, 0), respectively. Because they seek a lasting peace, Farmer John and Elsie would like to minimize the maximum difference between the distances from any point on the line to P and Q.
+
+Formally, define the difference of a line <image> relative to two points P and Q as the smallest real number d so that for all points X on line <image>, |PX - QX| ≤ d. (It is guaranteed that d exists and is unique.) They wish to find the line <image> passing through two distinct outposts (xi, yi) and (xj, yj) such that the difference of <image> relative to P and Q is minimized.
 
 Input
 
-First line contains 3 integers, separated by space: 1 ≤ n, m ≤ 100 — dimensions of the board and 0 ≤ k ≤ 100 — the number of pies. Each of the next k lines contains 2 integers, separated by space: 1 ≤ x ≤ n, 1 ≤ y ≤ m — coordinates of the corresponding pie. There could be more than one pie at a cell. 
+The first line of the input contains two integers n and a (2 ≤ n ≤ 100 000, 1 ≤ a ≤ 10 000) — the number of outposts and the coordinates of the farm and the base, respectively.
+
+The following n lines describe the locations of the outposts as pairs of integers (xi, yi) (|xi|, |yi| ≤ 10 000). These points are distinct from each other as well as from P and Q.
 
 Output
 
-Output only one word: "YES" — if Volodya wins, "NO" — otherwise.
+Print a single real number—the difference of the optimal dividing line. Your answer will be considered correct if its absolute or relative error does not exceed 10 - 6. 
+
+Namely: let's assume that your answer is a, and the answer of the jury is b. The checker program will consider your answer correct, if <image>.
 
 Examples
 
 Input
 
-2 2 1
-1 2
+2 5
+1 0
+2 1
 
 
 Output
 
-YES
-
-Input
-
-3 4 0
-
-
-Output
-
-NO
-
-Input
-
-100 50 2
-50 25
-50 25
-
-
-Output
-
-NO
-Difficulty: 9
-Solutions: import java.util.Scanner;
-
-public class C {
-    public static void main(String[] args) {
-        Scanner sc=new Scanner(System.in);
-        int n=sc.nextInt();
-        int m=sc.nextInt();
-        int pies=sc.nextInt();
-        boolean win=false;
-        for(int i=0;i<pies;i++){
-            int r=sc.nextInt();
-            int c=sc.nextInt();
-            if(Math.abs(r-1)<=4||Math.abs(r-n)<=4||Math.abs(c-1)<=4||Math.abs(c-m)<=4)
-                win=true;
-        }
-        if(win) System.out.println("YES");
-        else System.out.println("NO");
-    }
-}
-
-
-Example question 2:
-Name: p01628 Amidakuji
-Tags: ['']
-Description: Problem Statement
-
-Mr. Takatsuki, who is planning to participate in the Aizu training camp, has a poor house and always tries to save as much paper as possible. She decided to play a ghost leg with other participants to decide the team for the Aizu training camp.
-
-How to make Amidakuji for this training camp is as follows. First, write N vertical bars in parallel on the paper. Then, write the M horizontal bars in order from the top so that they are perpendicular to the vertical bars and the heights of the horizontal bars are all different. For example, the Amida of Sample Input 1 is as shown in Fig. 1.
-
-Here, Mr. Takatsuki, a little dissatisfied expression. It's a waste of paper to write a ghost leg so vertically. You should be able to compress the height more. So, I want her to solve the problem of height compression of Amidakuji shown below.
-
-First, the height of the Amidakuji is the value obtained by counting the horizontal bars that exist at the same height together as the height 1 and counting this to the bottom horizontal bar. Here, it is assumed that each horizontal bar can be freely moved up and down in order to perform height compression. However, it is not permissible to remove or add horizontal bars. The Amidakuji after height compression must meet the following conditions.
-
-* The end points of the horizontal bar do not touch the end points of other horizontal bars.
-* The result of tracing the Amidakuji after compression and the result of tracing the Amidakuji before compression match.
-
-
-
-FIG. 2 is a compressed version of FIG. The "horizontal bar connecting vertical bars 1 and 2" moves to the top and becomes the same height as the "horizontal bar connecting vertical bars 4 and 5", and these two are height 1. After that, the "horizontal bar connecting the vertical bars 3 and 4" and the "horizontal bar connecting the vertical bars 2 and 3" have different heights, and the total height is 3.
-
-<image>
-
-Compress the height of the given Amidakuji and output the compressed height.
-
-Constraints
-
-* 2 <= N <= 8
-* 1 <= M <= 8
-* 1 <= ai <= N --1
-
-Input
-
-Each data set is input in the following format.
-
-
-N M
-a1
-a2
-...
-aM
-
-
-All inputs are integers. N indicates the number of vertical bars and M indicates the number of horizontal bars. Then, the information of the horizontal bar is input over M lines. ai indicates that the i-th horizontal bar connects the vertical bar ai and the vertical bar to the right of it. The i-th horizontal bar exists above the i + 1-th horizontal bar.
-
-Output
-
-Outputs the height of the compressed Amidakuji in one line.
-
-Examples
-
-Input
-
-5 4
-4
-3
-1
-2
-
-
-Output
-
-3
+7.2111025509
 
 
 Input
 
-4 3
-1
-2
-3
+3 6
+0 1
+2 5
+0 -3
 
 
 Output
 
-3
-Difficulty: 0
-Solutions: #include <iostream>
-#include <vector>
-#include <algorithm>
+0.0000000000
+
+Note
+
+In the first sample case, the only possible line <image> is y = x - 1. It can be shown that the point X which maximizes |PX - QX| is (13, 12), with <image>, which is <image>.
+
+In the second sample case, if we pick the points (0, 1) and (0, - 3), we get <image> as x = 0. Because PX = QX on this line, the minimum possible difference is 0.
+Difficulty: 13
+Solutions: #include <bits/stdc++.h>
 using namespace std;
-const int INF = 1e9;
-int N, M;
-vector<int> res;
-
-vector<int> simu(const vector<vector<bool>> &A){
-  vector<int> ret(N+1);
-  for(int i = 0; i < N+1; ++i) ret[i] = i;
-  for(size_t j = 0; j < A[0].size(); ++j){
-    for(size_t i = 0; i < ret.size(); ++i){
-      if(A[i][j]) swap(ret[i],ret[i+1]);
+const int maxn = 200010;
+const double eps = 1e-9;
+const double pi = acos(-1);
+int read() {
+  int tot = 0, fh = 1;
+  char c = getchar();
+  while ((c < '0') || (c > '9')) {
+    if (c == '-') fh = -1;
+    c = getchar();
+  }
+  while ((c >= '0') && (c <= '9')) {
+    tot = tot * 10 + c - '0';
+    c = getchar();
+  }
+  return tot * fh;
+}
+int i, j, k;
+int n, ll, rr;
+double l, r, mid;
+int d[maxn];
+double ans, w;
+struct node {
+  double x, y;
+  node(double xx = 0, double yy = 0) {
+    x = xx;
+    y = yy;
+  }
+} a[maxn];
+node operator-(node a, node b) { return node(a.x - b.x, a.y - b.y); }
+node operator/(node a, double b) { return node(a.x / b, a.y / b); }
+node operator*(node a, long double b) { return node(a.x * b, a.y * b); }
+node operator+(node a, node b) { return node(a.x + b.x, a.y + b.y); }
+double cha(node a, node b) { return (a.x * b.y - a.y * b.x); }
+double dian(node a, node b) { return (a.x * b.x + a.y * b.y); }
+double len(node a) { return sqrt(dian(a, a)); }
+node zhuan(node a, double w) {
+  node b = node(cos(w), sin(w));
+  return node(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
+}
+struct CC {
+  node a;
+  double l;
+  CC(node aa = node(0, 0), double ll = 0) {
+    a = aa;
+    l = ll;
+  }
+} b[maxn];
+struct nodee {
+  node a;
+  int l;
+  double ccc;
+  nodee(node aa = node(0, 0), int ll = 0) {
+    a = aa;
+    l = ll;
+  }
+} c[maxn * 2];
+void work(CC a, CC b, int fla) {
+  if (a.l < b.l) swap(a, b);
+  if (len(a.a - b.a) > a.l + b.l - eps) return;
+  if (len(a.a - b.a) + b.l - eps < a.l) return;
+  long double t1 = (long double)len(a.a - b.a) * (long double)len(a.a - b.a) +
+                   (long double)a.l * a.l - (long double)b.l * b.l;
+  t1 = t1 / 2 / len(a.a - b.a);
+  node t = ((b.a - a.a) / len(b.a - a.a)) * t1 + a.a;
+  t1 = sqrt(a.l * a.l - t1 * t1);
+  ll++;
+  c[ll].a = t + (zhuan(b.a - a.a, pi / 2) / len(b.a - a.a)) * t1;
+  c[ll].l = fla;
+  ll++;
+  c[ll].a = t + (zhuan(b.a - a.a, -pi / 2) / len(b.a - a.a)) * t1;
+  c[ll].l = fla;
+}
+bool cmp(nodee a, nodee b) { return (a.ccc < b.ccc); }
+int check(double mid) {
+  int i, j, k;
+  ll = 0, rr = 0;
+  for (i = 1; i <= n; i++) {
+    b[i].a = a[i];
+    b[i].l = len(a[i] - node(-w, 0));
+  }
+  for (i = 1; i <= n; i++) {
+    work(b[i], CC(node(w, 0), mid), i);
+  }
+  for (i = 1; i <= ll; i++) c[i].ccc = atan2(c[i].a.x - w, c[i].a.y);
+  sort(c + 1, c + ll + 1, cmp);
+  for (i = 1; i <= ll; i++) {
+    if (d[rr] != c[i].l) {
+      rr++;
+      d[rr] = c[i].l;
+    } else {
+      rr--;
     }
   }
-  return ret;
+  if (rr == 0)
+    return 0;
+  else
+    return 1;
 }
-
-int dfs(vector<int> &A, vector<int> &H, vector<vector<bool>> &B, int idx){
-  int ret = INF;
-  if(idx == A.size()){
-    vector<int> s = simu(B);
-    if(s == res) return *max_element(H.begin(),H.end());
-    else return INF;
+int main() {
+  n = read();
+  w = read();
+  ans = 2 * w;
+  for (i = 1; i <= n; i++) {
+    a[i].x = read();
+    a[i].y = read();
+    if (a[i].x == 0) j++;
   }
-  int a = A[idx];
-  for(int i = H[a]+1; i < M; ++i){
-    if(B[a+1][i] or B[a-1][i] or B[a][i]) continue;
-    B[a][i] = true;
-    int h = H[a];
-    H[a] = i;
-    ret = min(ret,dfs(A,H,B,idx+1));
-    H[a] = h;
-    B[a][i] = false;
+  if (j >= 2) {
+    printf("0\n");
+    return 0;
   }
-  return ret;
+  l = 0;
+  r = 2 * w;
+  while (r - l >= eps) {
+    mid = (l + r) / 2.0;
+    if (check(mid) == 1) {
+      ans = mid;
+      r = mid;
+    } else
+      l = mid;
+  }
+  printf("%.8lf\n", ans);
+  return 0;
 }
-
-int main(){
-  cin >> N >> M;
-  vector<int> A(M);
-  vector<vector<bool>> B(N+1,vector<bool>(M,false));
-  for(int i = 0; i < M; ++i){
-    cin >> A[i];
-    B[A[i]][i] = true;
-  }
-  res = simu(B);
-  vector<vector<bool>> B_(N+1,vector<bool>(M,false));
-  vector<int> H(N,-1);
-  cout << dfs(A,H,B_,0)+1 << endl;
-}
-
 
 
 
@@ -320,6 +302,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

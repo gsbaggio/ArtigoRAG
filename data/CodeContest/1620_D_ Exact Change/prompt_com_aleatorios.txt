@@ -56,389 +56,138 @@ In the third test case, it's enough to take 1 coin of value 3 and 2 coins of val
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1440_C1. Binary Table (Easy Version)
-Tags: ['constructive algorithms', 'implementation']
-Description: This is the easy version of the problem. The difference between the versions is in the number of possible operations that can be made. You can make hacks if and only if you solved both versions of the problem.
+Name: 311_D. Interval Cubing
+Tags: ['data structures', 'math']
+Description: While learning Computational Geometry, Tiny is simultaneously learning a useful data structure called segment tree or interval tree. He has scarcely grasped it when comes out a strange problem:
 
-You are given a binary table of size n × m. This table consists of symbols 0 and 1.
+Given an integer sequence a1, a2, ..., an. You should run q queries of two types:
 
-You can make such operation: select 3 different cells that belong to one 2 × 2 square and change the symbols in these cells (change 0 to 1 and 1 to 0).
+  1. Given two integers l and r (1 ≤ l ≤ r ≤ n), ask the sum of all elements in the sequence al, al + 1, ..., ar. 
+  2. Given two integers l and r (1 ≤ l ≤ r ≤ n), let each element x in the sequence al, al + 1, ..., ar becomes x3. In other words, apply an assignments al = al3, al + 1 = al + 13, ..., ar = ar3. 
 
-Your task is to make all symbols in the table equal to 0. You are allowed to make at most 3nm operations. You don't need to minimize the number of operations.
 
-It can be proved that it is always possible.
 
-Input
+For every query of type 1, output the answer to it.
 
-The first line contains a single integer t (1 ≤ t ≤ 5000) — the number of test cases. The next lines contain descriptions of test cases.
-
-The first line of the description of each test case contains two integers n, m (2 ≤ n, m ≤ 100).
-
-Each of the next n lines contains a binary string of length m, describing the symbols of the next row of the table.
-
-It is guaranteed that the sum of nm for all test cases does not exceed 20000.
-
-Output
-
-For each test case print the integer k (0 ≤ k ≤ 3nm) — the number of operations.
-
-In the each of the next k lines print 6 integers x_1, y_1, x_2, y_2, x_3, y_3 (1 ≤ x_1, x_2, x_3 ≤ n, 1 ≤ y_1, y_2, y_3 ≤ m) describing the next operation. This operation will be made with three cells (x_1, y_1), (x_2, y_2), (x_3, y_3). These three cells should be different. These three cells should belong into some 2 × 2 square.
-
-Example
+Tiny himself surely cannot work it out, so he asks you for help. In addition, Tiny is a prime lover. He tells you that because the answer may be too huge, you should only output it modulo 95542721 (this number is a prime number).
 
 Input
 
+The first line contains an integer n (1 ≤ n ≤ 105), representing the length of the sequence. The second line contains n space-separated integers a1, a2, ..., an (0 ≤ ai ≤ 109).
 
-5
-2 2
-10
-11
-3 3
-011
-101
-110
-4 4
-1111
-0110
-0110
-1111
-5 5
-01011
-11001
-00010
-11011
-10000
-2 3
-011
-101
-
+The third line contains an integer q (1 ≤ q ≤ 105), representing the number of queries. Then follow q lines. Each line contains three integers ti (1 ≤ ti ≤ 2), li, ri (1 ≤ li ≤ ri ≤ n), where ti stands for the type of the query while li and ri is the parameters of the query, correspondingly.
 
 Output
 
+For each 1-type query, print the answer to it per line.
 
-1
-1 1 2 1 2 2
-2 
-2 1 3 1 3 2
-1 2 1 3 2 3
-4
-1 1 1 2 2 2 
-1 3 1 4 2 3
-3 2 4 1 4 2
-3 3 4 3 4 4
-4
-1 2 2 1 2 2 
-1 4 1 5 2 5 
-4 1 4 2 5 1
-4 4 4 5 3 4
-2
-1 3 2 2 2 3
-1 2 2 1 2 2
-
-Note
-
-In the first test case, it is possible to make only one operation with cells (1, 1), (2, 1), (2, 2). After that, all symbols will be equal to 0.
-
-In the second test case:
-
-  * operation with cells (2, 1), (3, 1), (3, 2). After it the table will be: 
-    
-          
-    011  
-    001  
-    000  
-    
-
-  * operation with cells (1, 2), (1, 3), (2, 3). After it the table will be: 
-    
-          
-    000  
-    000  
-    000  
-    
-
-
-
-
-In the fifth test case:
-
-  * operation with cells (1, 3), (2, 2), (2, 3). After it the table will be: 
-    
-          
-    010  
-    110  
-    
-
-  * operation with cells (1, 2), (2, 1), (2, 2). After it the table will be: 
-    
-          
-    000  
-    000  
-    
-Difficulty: 9
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-void setIO(string name = "") {
-  ios_base::sync_with_stdio(NULL);
-  cin.tie(NULL);
-  cout.tie(NULL);
-  if ((int)(name).size()) {
-    freopen((name + ".in").c_str(), "r", stdin);
-    freopen((name + ".out").c_str(), "w", stdout);
-  }
-}
-const int inf = 1e9;
-const ll INF = 1e18;
-const int mod = 1e9 + 7;
-const int MAXN = 1e6 + 5;
-struct point {
-  int x, y;
-};
-int n, m;
-bool col[105][105];
-vector<point> res;
-void add(point a) {
-  col[a.x][a.y] ^= 1;
-  res.push_back(a);
-}
-void fix(point a, point b, point c, point d) {
-  vector<point> black;
-  if (col[a.x][a.y]) black.push_back(a);
-  if (col[b.x][b.y]) black.push_back(b);
-  if (col[c.x][c.y]) black.push_back(c);
-  if (col[d.x][d.y]) black.push_back(d);
-  if ((int)(black).size() == 0) return;
-  if ((int)(black).size() >= 3) {
-    int j = 0;
-    for (point i : black) {
-      add(i);
-      j++;
-      if (j == 3) break;
-    }
-    if ((int)(black).size() > 3) fix(a, b, c, d);
-    return;
-  }
-  if ((int)(black).size() == 2) {
-    map<pair<int, int>, bool> used;
-    for (point i : black) {
-      add(i);
-      used[make_pair(i.x, i.y)] = 1;
-    }
-    if (used[make_pair(a.x, a.y)] == 0) {
-      add(a);
-      fix(a, b, c, d);
-      return;
-    }
-    if (used[make_pair(b.x, b.y)] == 0) {
-      add(b);
-      fix(a, b, c, d);
-      return;
-    }
-    if (used[make_pair(c.x, c.y)] == 0) {
-      add(c);
-      fix(a, b, c, d);
-      return;
-    }
-    if (used[make_pair(d.x, d.y)] == 0) {
-      add(d);
-      fix(a, b, c, d);
-      return;
-    }
-  }
-  if ((int)(black).size() == 1) {
-    if (col[a.x][a.y]) {
-      add(a);
-      add(b);
-      add(c);
-      add(a);
-      add(b);
-      add(d);
-      add(a);
-      add(c);
-      add(d);
-      return;
-    }
-    if (col[b.x][b.y]) {
-      add(a);
-      add(b);
-      add(d);
-      add(a);
-      add(b);
-      add(c);
-      add(b);
-      add(c);
-      add(d);
-      return;
-    }
-    if (col[c.x][c.y]) {
-      add(a);
-      add(c);
-      add(d);
-      add(a);
-      add(c);
-      add(b);
-      add(b);
-      add(c);
-      add(d);
-      return;
-    }
-    if (col[d.x][d.y]) {
-      add(b);
-      add(c);
-      add(d);
-      add(a);
-      add(c);
-      add(d);
-      add(a);
-      add(b);
-      add(d);
-      return;
-    }
-  }
-}
-void solve() {
-  cin >> n >> m;
-  res.clear();
-  for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= m; j++) {
-      char c;
-      cin >> c;
-      if (c == '1')
-        col[i][j] = 1;
-      else
-        col[i][j] = 0;
-    }
-  }
-  for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= m; j++) {
-      if (i < n && j < m) {
-        point a, b, c, d;
-        a.x = i;
-        a.y = j;
-        b.x = i;
-        b.y = j + 1;
-        c.x = i + 1;
-        c.y = j;
-        d.x = i + 1;
-        d.y = j + 1;
-        fix(a, b, c, d);
-      }
-    }
-  }
-  cout << (int)(res).size() / 3 << '\n';
-  for (int i = 0; i < (int)(res).size(); i += 3) {
-    cout << res[i].x << ' ' << res[i].y << ' ' << res[i + 1].x << ' '
-         << res[i + 1].y << ' ' << res[i + 2].x << ' ' << res[i + 2].y << '\n';
-  }
-}
-int main() {
-  setIO();
-  int tt = 1;
-  cin >> tt;
-  while (tt--) {
-    solve();
-  }
-  return 0;
-}
-
-
-Example question 2:
-Name: p03009 diverta 2019 Programming Contest 2 - Balanced Piles
-Tags: ['']
-Description: There are N squares arranged in a row, numbered 1 to N from left to right. Takahashi will stack building blocks on these squares, on which there are no blocks yet.
-
-He wants to stack blocks on the squares evenly, so he will repeat the following operation until there are H blocks on every square:
-
-* Let M and m be the maximum and minimum numbers of blocks currently stacked on a square, respectively. Choose a square on which m blocks are stacked (if there are multiple such squares, choose any one of them), and add a positive number of blocks on that square so that there will be at least M and at most M + D blocks on that square.
-
-
-
-Tell him how many ways there are to have H blocks on every square by repeating this operation. Since there can be extremely many ways, print the number modulo 10^9+7.
-
-Constraints
-
-* 2 \leq N \leq 10^6
-* 1 \leq D \leq H \leq 10^6
-* All values in input are integers.
-
-Input
-
-Input is given from Standard Input in the following format:
-
-
-N H D
-
-
-Output
-
-Print the number of ways to have H blocks on every square, modulo 10^9+7.
+You should notice that each printed number should be non-negative and less than 95542721.
 
 Examples
 
 Input
 
-2 2 1
+8
+1 2 3 4 5 6 7 8
+5
+1 2 5
+2 2 5
+1 2 5
+2 3 6
+1 4 7
 
 
 Output
 
-6
-
-
-Input
-
-2 30 15
-
-
-Output
-
-94182806
-
-
-Input
-
-31415 9265 3589
-
-
-Output
-
-312069529
-Difficulty: 0
-Solutions: #pragma GCC optimize("Ofast,no-stack-protector,unroll-loops,fast-math")
-#include <bits/stdc++.h>
+14
+224
+2215492
+Difficulty: 10
+Solutions: #include <bits/stdc++.h>
 using namespace std;
-template<class t> inline t read(t &x){
-	char c=getchar();bool f=0;x=0;
-	while(!isdigit(c)) f|=c=='-',c=getchar();
-	while(isdigit(c)) x=(x<<1)+(x<<3)+(c^48),c=getchar();
-	if(f) x=-x;return x;
+const int MOD = 95542721;
+const int MAX = 100005;
+int seg[4 * MAX][48], mark[4 * MAX], tmp[48], a[MAX];
+int n, q;
+int next(int x) { return 1ll * x * x % MOD * x % MOD; }
+void fix(int& x) {
+  while (x >= MOD) x -= MOD;
+  while (x < 0) x += MOD;
 }
-template<class t,class ...A> inline void read(t &x,A &...a){
-	read(x);read(a...);
+void merge(int v) {
+  for (int i = 0; i < 48; i++) {
+    seg[v][i] = seg[2 * v][i] + seg[2 * v + 1][i];
+    fix(seg[v][i]);
+  }
 }
-template<class t> inline void write(t x){
-	if(x<0) putchar('-'),write(-x);
-	else{if(x>9) write(x/10);putchar('0'+x%10);}
+void rotate(int v, int k) {
+  for (int i = 0; i < 48; i++) tmp[i] = seg[v][(i + k) % 48];
+  for (int i = 0; i < 48; i++) seg[v][i] = tmp[i];
+}
+void shift(int v) {
+  mark[v] %= 48;
+  if (mark[v]) {
+    rotate(2 * v, mark[v]);
+    rotate(2 * v + 1, mark[v]);
+    mark[2 * v] += mark[v];
+    mark[2 * v + 1] += mark[v];
+    mark[v] = 0;
+  }
+}
+void build(int v = 1, int s = 0, int e = n) {
+  if (e - s < 2) {
+    seg[v][0] = a[s];
+    for (int i = 1; i < 48; i++) seg[v][i] = next(seg[v][i - 1]);
+    return;
+  }
+  int mid = (s + e) / 2;
+  build(2 * v, s, mid);
+  build(2 * v + 1, mid, e);
+  merge(v);
+}
+void upd(int l, int r, int v = 1, int s = 0, int e = n) {
+  if (l <= s && e <= r) {
+    mark[v]++;
+    rotate(v, 1);
+    return;
+  }
+  if (e <= l || r <= s) return;
+  shift(v);
+  int mid = (s + e) / 2;
+  upd(l, r, 2 * v, s, mid);
+  upd(l, r, 2 * v + 1, mid, e);
+  merge(v);
+}
+int get(int l, int r, int v = 1, int s = 0, int e = n) {
+  if (l <= s && e <= r) return seg[v][0];
+  if (e <= l || r <= s) return 0;
+  shift(v);
+  int mid = (s + e) / 2;
+  int ans = get(l, r, 2 * v, s, mid) + get(l, r, 2 * v + 1, mid, e);
+  fix(ans);
+  return ans;
+}
+int main() {
+  ios::sync_with_stdio(false);
+  cin >> n;
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+    a[i] %= MOD;
+  }
+  build();
+  cin >> q;
+  while (q--) {
+    int t, l, r;
+    cin >> t >> l >> r;
+    l--;
+    if (t == 2)
+      upd(l, r);
+    else
+      cout << get(l, r) << endl;
+  }
+  return 0;
 }
 
-const int mod=1e9+7,N=1e6+5;
-int pre[N],f[N],fac[N],sum,n,h,d;
-
-int calc(int l,int r){
-	return l>0?(pre[r]-pre[l-1]+mod)%mod:pre[r];
-}
-
-signed main(){
-	read(n,h,d);
-	fac[0]=1;for(int i=1;i<=n;i++) fac[i]=1ll*fac[i-1]*i%mod,sum=(sum+fac[i])%mod;
-	pre[0]=f[0]=fac[n];
-	for(int i=1;i<h;i++){
-		f[i]=1ll*calc(i-d,i-1)*sum%mod;
-		pre[i]=(pre[i-1]+f[i])%mod;
-	}
-	write(calc(h-d,h-1));
-}
 
 
 INSTRUCTIONS:
@@ -449,6 +198,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

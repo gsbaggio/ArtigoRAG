@@ -51,55 +51,29 @@ In the second testcase, it is impossible to divide the students into groups so t
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: p01602 Parentheses
-Tags: ['']
-Description: ()
+Name: 112_B. Petya and Square
+Tags: ['implementation', 'math']
+Description: Little Petya loves playing with squares. Mum bought him a square 2n × 2n in size. Petya marked a cell inside the square and now he is solving the following task.
 
-Problem Statement
+The task is to draw a broken line that would go along the grid lines and that would cut the square into two equal parts. The cutting line should not have any common points with the marked cell and the resulting two parts should be equal up to rotation.
 
-There is a string S. Initially, S is an empty string.
-Perform the following processing in order of n.
-
-* Add x_i p_i (=" (" or") ") to the end of S.
-
-
-
-After processing, determine if S is a well-balanced string.
-
-"The string is balanced" is defined as follows.
-
-* The empty string is well-balanced.
-* For balanced strings a and b, a + b (+ represents a concatenation of strings) is balanced.
-* For a balanced string a, "(" + a + ")" is balanced.
-
-Constraints
-
-* 1 ≤ n ≤ 1,000
-* 1 ≤ x_i ≤ 10 ^ 6
-* p_i is "(" or ")"
+Petya wants to determine whether it is possible to cut the square in the required manner given the sizes of the square side and the coordinates of the marked cell. Help him.
 
 Input
 
-Input follows the following format. All given numbers are integers.
+The first line contains three space-separated integers 2n, x and y (2 ≤ 2n ≤ 100, 1 ≤ x, y ≤ 2n), representing the length of a square's side and the coordinates of the marked cell. It is guaranteed that 2n is even.
 
-
-n
-p_1 x_1
-.. ..
-p_n x_n
+The coordinates of the marked cell are represented by a pair of numbers x y, where x represents the number of the row and y represents the number of the column. The rows and columns are numbered by consecutive integers from 1 to 2n. The rows are numbered from top to bottom and the columns are numbered from the left to the right.
 
 Output
 
-Output "YES" if balanced, otherwise output "NO" on one line.
+If the square is possible to cut, print "YES", otherwise print "NO" (without the quotes).
 
 Examples
 
 Input
 
-3
-( 5
-) 4
-) 1
+4 1 1
 
 
 Output
@@ -109,390 +83,212 @@ YES
 
 Input
 
-5
-( 2
-) 2
-( 3
-) 1
-) 2
-
-
-Output
-
-YES
-
-
-Input
-
-2
-) 1
-( 1
+2 2 2
 
 
 Output
 
 NO
-Difficulty: 0
-Solutions: #include <iostream>
 
+Note
+
+A sample test from the statement and one of the possible ways of cutting the square are shown in the picture: 
+
+<image>
+Difficulty: 8
+Solutions: #include <bits/stdc++.h>
 using namespace std;
-
-int main(){
-
-    long long int n,a=0,tmp;
-    char p;
-    cin>>n;
-    for(int i=0;i<n;i++){
-        cin>>p>>tmp;
-        if(p=='('){
-            a+=tmp;
-        }else{
-            a-=tmp;
-        }
-        if(a<0){
-             cout<<"NO"<<endl;
-             return 0;
-        }
-    }
-    if(a==0){
-        cout<<"YES"<<endl;
-    }else{
-        cout<<"NO"<<endl;
-    }
+const int N = 1000010;
+const long long MOD = 1e9 + 7;
+void solve() {
+  int a, x, y;
+  cin >> a >> x >> y;
+  int k = a / 2;
+  if (x == k && y == k) {
+    cout << "NO"
+         << "\n";
+    return;
+  }
+  if (x == k + 1 && y == k) {
+    cout << "NO"
+         << "\n";
+    return;
+  }
+  if (x == k && y == k + 1) {
+    cout << "NO"
+         << "\n";
+    return;
+  }
+  if (x == k + 1 && y == k + 1) {
+    cout << "NO"
+         << "\n";
+    return;
+  }
+  cout << "YES"
+       << "\n";
 }
+int main() { solve(); }
 
 
 Example question 2:
-Name: p01339 Alien's Counting
-Tags: ['']
-Description: Natsuki and her friends were taken to the space by an alien and made friends with a lot of aliens. During the space travel, she discovered that aliens’ hands were often very different from humans’. Generally speaking, in a kind of aliens, there are N fingers and M bend rules on a hand. Each bend rule describes that a finger A always bends when a finger B bends. However, this rule does not always imply that the finger B bends when the finger A bends.
+Name: 1121_D. Diana and Liana
+Tags: ['greedy', 'implementation', 'two pointers']
+Description: At the first holiday in spring, the town Shortriver traditionally conducts a flower festival. Townsfolk wear traditional wreaths during these festivals. Each wreath contains exactly k flowers.
 
-When she were counting numbers with the fingers, she was anxious how many numbers her alien friends can count with the fingers. However, because some friends had too complicated rule sets, she could not calculate those. Would you write a program for her?
+The work material for the wreaths for all n citizens of Shortriver is cut from the longest flowered liana that grew in the town that year. Liana is a sequence a_1, a_2, ..., a_m, where a_i is an integer that denotes the type of flower at the position i. This year the liana is very long (m ≥ n ⋅ k), and that means every citizen will get a wreath.
 
+Very soon the liana will be inserted into a special cutting machine in order to make work material for wreaths. The machine works in a simple manner: it cuts k flowers from the beginning of the liana, then another k flowers and so on. Each such piece of k flowers is called a workpiece. The machine works until there are less than k flowers on the liana.
 
+Diana has found a weaving schematic for the most beautiful wreath imaginable. In order to weave it, k flowers must contain flowers of types b_1, b_2, ..., b_s, while other can be of any type. If a type appears in this sequence several times, there should be at least that many flowers of that type as the number of occurrences of this flower in the sequence. The order of the flowers in a workpiece does not matter.
 
-Input
-
-N M
-S1 D1
-S2 D2
-.
-.
-.
-SM DM
-
-
-The first line contains two integers N and M (1 ≤ N ≤ 1000, 0 ≤ M ≤ 1000) in this order. The following M lines mean bend rules. Each line contains two integers Si and Di in this order, which mean that the finger Di always bends when the finger Si bends. Any finger appears at most once in S.
-
-Output
-
-Calculate how many numbers her alien friends can count with the fingers. Print the answer modulo 1000000007 in a line.
-
-Examples
+Diana has a chance to remove some flowers from the liana before it is inserted into the cutting machine. She can remove flowers from any part of the liana without breaking liana into pieces. If Diana removes too many flowers, it may happen so that some of the citizens do not get a wreath. Could some flowers be removed from the liana so that at least one workpiece would conform to the schematic and machine would still be able to create at least n workpieces?
 
 Input
 
-5 4
-2 3
-3 4
-4 3
-5 4
+The first line contains four integers m, k, n and s (1 ≤ n, k, m ≤ 5 ⋅ 10^5, k ⋅ n ≤ m, 1 ≤ s ≤ k): the number of flowers on the liana, the number of flowers in one wreath, the amount of citizens and the length of Diana's flower sequence respectively.
 
+The second line contains m integers a_1, a_2, ..., a_m (1 ≤ a_i ≤ 5 ⋅ 10^5) — types of flowers on the liana.
 
-Output
-
-10
-
-
-Input
-
-5 5
-1 2
-2 3
-3 4
-4 5
-5 1
-
+The third line contains s integers b_1, b_2, ..., b_s (1 ≤ b_i ≤ 5 ⋅ 10^5) — the sequence in Diana's schematic.
 
 Output
 
-2
+If it's impossible to remove some of the flowers so that there would be at least n workpieces and at least one of them fullfills Diana's schematic requirements, output -1.
 
+Otherwise in the first line output one integer d — the number of flowers to be removed by Diana.
 
-Input
+In the next line output d different integers — the positions of the flowers to be removed.
 
-5 0
-
-
-Output
-
-32
-Difficulty: 0
-Solutions: #include <iostream>
-#include <set>
-#include <vector>
-#include <string>
-#include <map>
-#include <algorithm>
-#include <cstring>
-
-#define REP(i,n) for(int i=0;i<(int)(n);i++)
-#define ALL(x) begin(x),end(x)
-
-using namespace std;
-
-#define MAX_V 1024
-
-vector<int> g[MAX_V], rg[MAX_V], vs;
-bool used[MAX_V];
-int cmp[MAX_V];
-
-void add_edge(int from, int to) {
-  g[from].push_back(to);
-  rg[to].push_back(from);
-}
-
-void dfs(int v) {
-  used[v] = true;
-  for (int i : g[v]) if (!used[i]) dfs(i);
-  vs.push_back(v);
-}
-
-void rdfs(int v, int k) {
-  used[v] = true; cmp[v] = k;
-  for (int i : rg[v]) if (!used[i]) rdfs(i, k);
-}
-
-int scc(int V) {
-  memset(used, 0, sizeof(used));
-  vs.clear();
-  REP(v, V) if (!used[v]) dfs(v);
-  memset(used, 0, sizeof(used));
-  reverse(ALL(vs));
-  int k = 0;
-  for (int i : vs) if (!used[i]) rdfs(i, k++);
-  return k;
-}
-
-vector<vector<int>> buildGraph(int V, int K) {
-  vector<set<int>> s(K);
-  vector<vector<int>> res(K,vector<int>(K));
-  REP(i,V) for (int j : g[i]) s[cmp[i]].insert(cmp[j]);
-  REP(i,K) for (int j : s[i]) ++res[i][j];
-  return res;
-}
-
-void dfs2(vector<vector<int>>& dag, int i, vector<int64_t>& dp, vector<bool>& vis) {
-  int n=dag.size();
-  vis[i] = true;
-  REP(j,n) {
-    if (dag[j][i]==0)continue;
-    if (j==i) continue;
-    if (!vis[j])
-      dfs2(dag, j, dp, vis);
-    dp[i] *= dp[j];
-    dp[i] %= 1000000007;
-  }
-  ++dp[i];
-  dp[i] %= 1000000007;
-}
-
-int main() {
-  int n,m;
-  cin>>n>>m;
-  REP(i,m){
-    int s,d;
-    cin>>s>>d;
-    --s;--d;
-    add_edge(s,d);
-  }
-  int k = scc(n);
-  auto dag = buildGraph(n, k);
-  vector<int64_t> dp(k, 1);
-  vector<bool> vis(k);
-  int64_t sum = 1;
-  REP(i,k) {
-    if(!vis[i]) {
-      bool ok = true;
-      REP(j,k){
-        if(j==i)continue;
-        if(dag[i][j] != 0){
-          ok=false;
-          break;
-        }
-      }
-      if (ok) {
-        dfs2(dag, i, dp, vis);
-        sum *= dp[i];
-        sum %= 1000000007;
-      }
-    }
-  }
-  cout<<sum<<endl;
-  return 0;
-}
-
-Example question 3:
-Name: 1271_E. Common Number
-Tags: ['binary search', 'combinatorics', 'dp', 'math']
-Description: At first, let's define function f(x) as follows: $$$ \begin{matrix} f(x) & = & \left\{ \begin{matrix} x/2 & \mbox{if } x  is even \\\ x - 1 & \mbox{otherwise } \end{matrix} \right. \end{matrix} $$$
-
-We can see that if we choose some value v and will apply function f to it, then apply f to f(v), and so on, we'll eventually get 1. Let's write down all values we get in this process in a list and denote this list as path(v). For example, path(1) = [1], path(15) = [15, 14, 7, 6, 3, 2, 1], path(32) = [32, 16, 8, 4, 2, 1].
-
-Let's write all lists path(x) for every x from 1 to n. The question is next: what is the maximum value y such that y is contained in at least k different lists path(x)?
-
-Formally speaking, you need to find maximum y such that \left| \{ x ~|~ 1 ≤ x ≤ n, y ∈ path(x) \} \right| ≥ k.
-
-Input
-
-The first line contains two integers n and k (1 ≤ k ≤ n ≤ 10^{18}).
-
-Output
-
-Print the only integer — the maximum value that is contained in at least k paths.
+If there are multiple answers, print any.
 
 Examples
 
 Input
 
 
-11 3
-
-
-Output
-
-
-5
-
-
-Input
-
-
-11 6
-
-
-Output
-
-
-4
-
-
-Input
-
-
-20 20
+7 3 2 2
+1 2 3 3 2 1 2
+2 2
 
 
 Output
 
 
 1
+4 
 
 
 Input
 
 
-14 5
+13 4 3 3
+3 2 6 4 1 4 4 7 1 3 3 2 4
+4 3 4
 
 
 Output
 
 
-6
+-1
 
 
 Input
 
 
-1000000 100
+13 4 1 3
+3 2 6 4 1 4 4 7 1 3 3 2 4
+4 3 4
 
 
 Output
 
 
-31248
+9
+1 2 3 4 5 9 11 12 13
 
 Note
 
-In the first example, the answer is 5, since 5 occurs in path(5), path(10) and path(11).
+In the first example, if you don't remove any flowers, the machine would put out two workpieces with flower types [1, 2, 3] and [3, 2, 1]. Those workpieces don't fit Diana's schematic. But if you remove flower on 4-th place, the machine would output workpieces [1, 2, 3] and [2, 1, 2]. The second workpiece fits Diana's schematic.
 
-In the second example, the answer is 4, since 4 occurs in path(4), path(5), path(8), path(9), path(10) and path(11).
+In the second example there is no way to remove flowers so that every citizen gets a wreath and Diana gets a workpiece that fits here schematic.
 
-In the third example n = k, so the answer is 1, since 1 is the only number occuring in all paths for integers from 1 to 20.
-Difficulty: 11
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-int main() {
-  ios::sync_with_stdio(0);
-  cin.tie(0);
-  long long n, k;
-  cin >> n >> k;
-  auto count = [&](long long x) {
-    if (x % 2 == 1) {
-      long long left = x, right = x;
-      long long ans = 0;
-      while (left <= n) {
-        ans += min(right, n) - left + 1;
-        left = left * 2;
-        right = right * 2 + 1;
-      }
-      return ans;
-    } else {
-      long long left = x, right = x + 1;
-      long long ans = 0;
-      while (left <= n) {
-        ans += min(right, n) - left + 1;
-        left = left * 2;
-        right = right * 2 + 1;
-      }
-      return ans;
-    }
-  };
-  cerr << count(2) << endl;
-  cerr << count(3) << endl;
-  long long ans = 1;
-  {
-    long long low = 1, high = n % 2 == 0 ? n - 1 : n;
-    while (low <= high) {
-      long long mid = (low + high) / 2;
-      if (mid % 2 == 0) {
-        if (low < mid) {
-          mid--;
-        } else {
-          mid++;
-        }
-      }
-      long long c = count(mid);
-      if (c >= k) {
-        ans = max(ans, mid);
-        low = mid + 2;
-      } else {
-        high = mid - 2;
-      }
-    }
-  }
-  {
-    long long low = 2, high = n % 2 == 0 ? n : n - 1;
-    while (low <= high) {
-      long long mid = (low + high) / 2;
-      if (mid % 2 == 1) {
-        if (low < mid) {
-          mid--;
-        } else {
-          mid++;
-        }
-      }
-      long long c = count(mid);
-      if (c >= k) {
-        ans = max(ans, mid);
-        low = mid + 2;
-      } else {
-        high = mid - 2;
-      }
-    }
-  }
-  cout << ans << '\n';
-}
+In the third example Diana is the only citizen of the town and that means she can, for example, just remove all flowers except the ones she needs.
+Difficulty: 10
+Solutions: def main():
+    m, k, n, s = map(int, input().split())
+    a = list(map(int, input().split()))  # prevbug: input in a line!
+    b = list(map(int, input().split()))  # prevbug: convert to list
+    b_dict = {}
+    for x in b:
+        b_dict.setdefault(x, 0)
+        b_dict[x] += 1  # prevbug: b or b_dict
+
+    left = 0
+    right = 0
+    max_cut = m - n * k
+    condition_not_met = len(b_dict)
+    a_dict = {}
+    while right < m and condition_not_met > 0:
+        x = a[right]
+        a_dict.setdefault(x, 0)
+        a_dict[x] += 1
+        if x in b_dict and a_dict[x] == b_dict[x]:
+            condition_not_met -= 1
+        right += 1  # prevbug: ftl
+    if condition_not_met > 0:
+        print(-1)
+        return
+
+    def num_to_remove(lft, rgt):
+        lft = lft // k * k
+        num_in_seq = rgt - lft
+        if num_in_seq < k:
+            return 0  # prevbug: if sequence is shorter than k, then no need to remove flowers
+        return num_in_seq - k
+
+    def test_plan():
+        nonlocal left
+        if num_to_remove(left, right) <= max_cut:
+            tot = num_to_remove(left, right)
+            print(tot)
+            left = left // k * k
+            while tot > 0:
+                x = a[left]
+                if x in b_dict:
+                    b_dict[x] -= 1
+                    if b_dict[x] == 0:
+                        del b_dict[x]
+                else:
+                    print(left + 1, end=' ')
+                    tot -= 1  # prevbug: ftl
+                left += 1
+            return True
+        return False
+
+    while True:
+        while left < right:  # prevbug: should shift left before shifting right
+            x = a[left]
+            if x in b_dict and a_dict[x] - 1 < b_dict[x]:
+                break
+            else:
+                a_dict[x] -= 1
+                if a_dict[x] == 0:
+                    del a_dict[x]  # prevbug: ftl
+                left += 1
+        if test_plan():
+            return
+        if right < m:
+            a_dict.setdefault(a[right], 0)
+            a_dict[a[right]] += 1
+            right += 1
+        else:
+            break
+
+    print(-1)
+
+
+if __name__ == '__main__':
+    main()
 
 
 
@@ -504,6 +300,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

@@ -80,229 +80,167 @@ Similarly, for number 3, there're two different maxima 3 and 4. For number 2, th
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1036_D. Vasya and Arrays
-Tags: ['greedy', 'two pointers']
-Description: Vasya has two arrays A and B of lengths n and m, respectively.
+Name: p02054 Skewering
+Tags: ['']
+Description: C: Skewering
 
-He can perform the following operation arbitrary number of times (possibly zero): he takes some consecutive subsegment of the array and replaces it with a single element, equal to the sum of all elements on this subsegment. For example, from the array [1, 10, 100, 1000, 10000] Vasya can obtain array [1, 1110, 10000], and from array [1, 2, 3] Vasya can obtain array [6].
+problem
 
-Two arrays A and B are considered equal if and only if they have the same length and for each valid i A_i = B_i.
+One day, when Homura was playing with blocks, Tempura came. Homura decided to play with blocks with Tempura.
 
-Vasya wants to perform some of these operations on array A, some on array B, in such a way that arrays A and B become equal. Moreover, the lengths of the resulting arrays should be maximal possible.
+There is a rectangular parallelepiped of A \ times B \ times C, which is made by stacking A \ times B \ times C blocks of cubic blocks with a side length of 1 without any gaps. Each side of all cubes and rectangular parallelepipeds is parallel to the x-axis, y-axis, or z-axis.
 
-Help Vasya to determine the maximum length of the arrays that he can achieve or output that it is impossible to make arrays A and B equal.
+Homura-chan and Tempura-kun alternately repeat the following operations.
+
+* Select a row of blocks of building blocks lined up in a row from a rectangular parallelepiped in any of the vertical, horizontal, and depth directions, and paint all the blocks included in the row in red. However, you cannot select columns that contain blocks that are already painted red.
+
+
+
+More precisely
+
+* Select one of the blocks contained in the rectangular parallelepiped and one of the three directions x, y, and z.
+* When the selected block is moved in the selected direction by an integer distance, all the blocks that completely overlap are painted in red (think of moving the distance of 0 or a negative integer). However, this operation cannot be performed if there is at least one block that meets the conditions and has already been painted.
+
+
+
+Homura-chan is the first player to lose the game if he can't operate it first.
+
+Also, initially all cubes are uncolored.
+
+Determine which one wins when the two act optimally.
+
+Input format
+
+
+A B C
+
+Constraint
+
+* 1 \ leq A, B, C \ leq 100
+* All inputs are integers.
+
+
+
+Output format
+
+When the two act optimally, if Homura wins, `Hom` is output, and if Tempura wins,` Tem` is output on one line.
+
+Input example 1
+
+
+1 1 10
+
+Output example 1
+
+
+Hom
+
+* The first time Homura can paint all the blocks red.
+
+
+
+Input example 2
+
+
+4 3 5
+
+Output example 2
+
+
+Hom
+
+Input example 3
+
+
+6 4 10
+
+Output example 3
+
+
+Tem
+
+
+
+
+
+Example
 
 Input
 
-The first line contains a single integer n~(1 ≤ n ≤ 3 ⋅ 10^5) — the length of the first array.
+1 1 10
 
-The second line contains n integers a_1, a_2, ⋅⋅⋅, a_n~(1 ≤ a_i ≤ 10^9) — elements of the array A.
-
-The third line contains a single integer m~(1 ≤ m ≤ 3 ⋅ 10^5) — the length of the second array.
-
-The fourth line contains m integers b_1, b_2, ⋅⋅⋅, b_m~(1 ≤ b_i ≤ 10^9) - elements of the array B.
 
 Output
 
-Print a single integer — the maximum length of the resulting arrays after some operations were performed on arrays A and B in such a way that they became equal.
+Hom
+Difficulty: 0
+Solutions: A,B,C=map(int,input().split())
+ANS=0
+for i in [A,B,C]:
+    if i%2==1:
+        ANS+=1
+if ANS>=2:
+    print("Hom")
+else:
+    print("Tem")
 
-If there is no way to make array equal, print "-1".
+
+
+Example question 2:
+Name: 21_C. Stripe 2
+Tags: ['binary search', 'dp', 'sortings']
+Description: Once Bob took a paper stripe of n squares (the height of the stripe is 1 square). In each square he wrote an integer number, possibly negative. He became interested in how many ways exist to cut this stripe into three pieces so that the sum of numbers from each piece is equal to the sum of numbers from any other piece, and each piece contains positive integer amount of squares. Would you help Bob solve this problem?
+
+Input
+
+The first input line contains integer n (1 ≤ n ≤ 105) — amount of squares in the stripe. The second line contains n space-separated numbers — they are the numbers written in the squares of the stripe. These numbers are integer and do not exceed 10000 in absolute value.
+
+Output
+
+Output the amount of ways to cut the stripe into three non-empty pieces so that the sum of numbers from each piece is equal to the sum of numbers from any other piece. Don't forget that it's allowed to cut the stripe along the squares' borders only.
 
 Examples
 
 Input
 
-5
-11 2 3 5 7
 4
-11 7 3 7
+1 2 3 3
 
 
 Output
 
-3
-
-
-Input
-
-2
-1 2
 1
-100
-
-
-Output
-
--1
 
 
 Input
 
-3
-1 2 3
-3
-1 2 3
+5
+1 2 3 4 5
 
 
 Output
 
-3
-Difficulty: 10
-Solutions: /*
- *
- * @author Mukesh Singh
- *
- */
-
-import java.io.*;
-import java.util.*;
-import java.text.DecimalFormat;
-@SuppressWarnings("unchecked")
-
-
-
-public class Main {	
-	//solve test cases
-	
-	void solve() throws Exception {
-		//int T = in.nextInt();
-		//for(int tid = 1; tid <= T; ++tid)
-			solveT();
-    }
-    
-    	void solveT() throws Exception{
-
-		int n = in.nextInt();
-		long []A=new long[n];
-
-		for(int i=0;i<n;i++){
-			A[i]=in.nextLong();
-		}
-		int m = in.nextInt();
-		long []B=new long[m];
-
-		for(int i=0;i<m;i++){
-			B[i]=in.nextLong();
-		}
-
-
-		
-
-
-		long a=0,b=0;
-		int i=0,j=0,p=1,q=1;
-		int count=0;
-
-		while(i<n && j<m){
-			if(p==1)
-			a+=A[i];
-			if(q==1)
-			b+=B[j];
-			p=0;
-			q=0;
-			if(a==b){
-				count++;
-				i++;
-				j++;
-				a=0;
-				b=0;
-				p=1;
-				q=1;
-			}else if(a<b){
-				i++;
-				p=1;
-			}else {
-				j++;
-				q=1;
-			}
-		}
-
-		
-
-		if(i<n|| j<m)
-		System.out.println("-1");
-		else
-		System.out.println(count);
-
-
-		
-
-	} 
-	//@ main function
-	public static void main(String[] args) throws Exception {
-		new Main();
-	}
-	
-	InputReader in;
-	PrintStream out ;
-	DecimalFormat df ;
-	Main() {
-		try {
-			File defaultInput = new File("file.in");
-			if (defaultInput.exists()) 
-				in = new InputReader("file.in");
-			else 
-				in = new InputReader();
-			defaultInput = new File("file.out");
-			if (defaultInput.exists()) 
-				out = new PrintStream(new FileOutputStream("file.out"));
-			else
-				out = new PrintStream(System.out);
-			df = new DecimalFormat("######0.00");
-			solve();
-			out.close();
-		} 
-		catch (Exception e) {
-			e.printStackTrace();
-			System.exit(261);
-		}
-	}
-	
-	class InputReader {
-		BufferedReader reader;
-		StringTokenizer tokenizer;
-		
-		InputReader() {
-			reader = new BufferedReader(new InputStreamReader(System.in));
-		}
-		
-		InputReader(String fileName) throws FileNotFoundException {
-			reader = new BufferedReader(new FileReader(new File(fileName)));
-		}
-		
-		String readLine() throws IOException {
-			return reader.readLine();
-		}
-		
-		String nextToken() throws IOException {
-			while (tokenizer == null || !tokenizer.hasMoreTokens())
-				tokenizer = new StringTokenizer(readLine());
-			return tokenizer.nextToken();
-		}
-		
-		boolean hasMoreTokens() throws IOException {
-			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-				String s = readLine();
-				if (s == null)
-					return false;
-				tokenizer = new StringTokenizer(s);
-			}
-			return true;
-		}
-		
-		int nextInt() throws NumberFormatException, IOException {
-			return Integer.parseInt(nextToken());
-		}
-		
-		long nextLong() throws NumberFormatException, IOException {
-			return Long.parseLong(nextToken());
-		}
-		
-		double nextDouble() throws NumberFormatException, IOException {
-			return Double.parseDouble(nextToken());
-		}
-	}
+0
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int n, cnt, sum, now, a[100000];
+long long ans;
+int main() {
+  scanf("%d", &n);
+  for (int i = 0; i < n; i++) {
+    scanf("%d", a + i);
+    sum += a[i];
+  }
+  if (sum % 3) return puts("0");
+  for (int i = 0; i < n - 1; i++) {
+    now += a[i];
+    if (now == sum / 3 * 2) ans += cnt;
+    if (now == sum / 3) cnt++;
+  }
+  printf("%I64d\n", ans);
 }
+
 
 
 INSTRUCTIONS:
@@ -313,6 +251,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

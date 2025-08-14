@@ -55,183 +55,481 @@ In the fourth test case, \operatorname{AB}(s) = 2 and \operatorname{BA}(s) = 1. 
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 13_E. Holes
-Tags: ['data structures', 'dsu']
-Description: Little Petya likes to play a lot. Most of all he likes to play a game «Holes». This is a game for one person with following rules:
+Name: p02167 Bus
+Tags: ['']
+Description: Problem
 
-There are N holes located in a single row and numbered from left to right with numbers from 1 to N. Each hole has it's own power (hole number i has the power ai). If you throw a ball into hole i it will immediately jump to hole i + ai, then it will jump out of it and so on. If there is no hole with such number, the ball will just jump out of the row. On each of the M moves the player can perform one of two actions: 
+There are $ N $ bus stops clockwise, numbered from $ 1 $ to $ N $ in a circle. Adjacent bus stops are connected by a road. For each $ i \ (1 \ le i \ le N) $, the length of the direct connection between the bus stop $ i $ and the bus stop $ i + 1 $ is $ d_i $ meters. However, bus stop $ N + 1 $ means bus stop $ 1 $.
 
-  * Set the power of the hole a to value b. 
-  * Throw a ball into the hole a and count the number of jumps of a ball before it jump out of the row and also write down the number of the hole from which it jumped out just before leaving the row. 
+There are $ M $ buses. The $ j \ (1 \ le j \ le M) $ th bus runs clockwise when $ c_j ='R'$ and counterclockwise when $ c_j ='L' $. It also takes $ t_j $ seconds to depart bus stop $ b_j $ at time $ 0 $ and travel $ 1 $ meters.
+
+In this matter
+
+* The bus keeps running forever
+* It doesn't take long to get on and off the bus
+* At a bus stop, you can get on and off the bus the moment it passes the bus stop.
+* You cannot get on and off the bus except at the bus stop
+* You can take as many buses as you like
 
 
 
-Petya is not good at math, so, as you have already guessed, you are to perform all computations.
+And.
+
+Process the following query a total of $ Q $ times.
+
+* Find the minimum time required to depart bus stop $ x_k $ at time $ 0 $ and travel to bus stop $ y_k $ using only the bus.
+
+Constraints
+
+The input satisfies the following conditions.
+
+* $ 3 \ leq N \ leq 10 ^ 5 $
+* $ 1 \ leq M \ leq 10 ^ 5 $
+* $ 1 \ leq Q \ leq 10 ^ 5 $
+* $ 1 \ leq d_i \ leq 10 ^ 2 \ (1 \ leq i \ leq N) $
+* $ c_j ='R' \ or \'L' \ (1 \ leq j \ leq M) $
+* $ 1 \ leq b_j \ leq N \ (1 \ leq j \ leq M) $
+* $ 1 \ leq t_j \ leq 10 ^ 5 \ (1 \ leq j \ leq M) $
+* $ 1 \ leq x_k, y_k \ leq N \ (1 \ leq k \ leq Q) $
+* $ x_k \ neq y_k \ (1 \ leq k \ leq Q) $
+* All numbers given in the input are integers
 
 Input
 
-The first line contains two integers N and M (1 ≤ N ≤ 105, 1 ≤ M ≤ 105) — the number of holes in a row and the number of moves. The second line contains N positive integers not exceeding N — initial values of holes power. The following M lines describe moves made by Petya. Each of these line can be one of the two types: 
+The input is given in the following format.
 
-  * 0 a b
-  * 1 a
 
-Type 0 means that it is required to set the power of hole a to b, and type 1 means that it is required to throw a ball into the a-th hole. Numbers a and b are positive integers do not exceeding N.
+$ N $ $ M $ $ Q $
+$ d_1 $ $ \ ldots $ $ d_N $
+$ c_1 $ $ b_1 $ $ t_1 $
+$ \ vdots $
+$ c_M $ $ b_M $ $ t_M $
+$ x_1 $ $ y_1 $
+$ \ vdots $
+$ x_Q $ $ y_Q $
+
+
+The number of bus stops $ N $, the number of buses $ M $, and the number of queries $ Q $ are given on the first line, separated by blanks.
+Information on the road connecting the adjacent bus stops is given on the second line, separated by blanks.
+Bus information is given on the $ M $ line starting from the third line, separated by blanks.
+Query information is given in the following $ Q $ line, separated by blanks.
 
 Output
 
-For each move of the type 1 output two space-separated numbers on a separate line — the number of the last hole the ball visited before leaving the row and the number of jumps it made.
+The output consists of $ Q $ lines.
+Output the minimum required time for each query.
+Print the answer to the $ k $ th query on the $ k $ line.
 
 Examples
 
 Input
 
-8 5
-1 1 1 1 1 2 8 2
-1 1
-0 1 3
-1 1
-0 3 4
+3 1 6
+1 2 3
+R 1 1
 1 2
+1 3
+2 1
+2 3
+3 1
+3 2
 
 
 Output
 
-8 7
-8 5
-7 3
-Difficulty: 11
-Solutions: #include <bits/stdc++.h>
+1
+3
+6
+3
+6
+7
+
+
+Input
+
+4 6 7
+45 72 81 47
+R 1 47202
+L 1 2156
+L 2 95728
+R 1 30739
+L 3 39679
+L 4 86568
+3 2
+3 4
+1 2
+2 4
+4 3
+1 4
+2 1
+
+
+Output
+
+431200
+629552
+431200
+629552
+275968
+101332
+528220
+Difficulty: 0
+Solutions: #include <iostream>
+#include <vector>
+#include <algorithm>
+
+#define llint long long
+#define inf 1e18
+
 using namespace std;
-const double PI =
-    3.141592653589793238462643383279502884197169399375105820974944;
-int n, m;
-int bl;
-int a[100005], nex[100005], steps[100005], b[100005];
-int main() {
-  scanf("%d%d", &n, &m);
-  bl = sqrt(n);
-  for (int i = 0; i < (n); i++) scanf("%d", &a[i]), b[i] = i / bl;
-  for (int i = (n - 1); i >= 0; i--) {
-    int x = i + a[i];
-    if (x >= n)
-      nex[i] = -1, steps[i] = 1;
-    else if (b[i] == b[x])
-      nex[i] = nex[x], steps[i] = 1 + steps[x];
-    else
-      nex[i] = x, steps[i] = 1;
-  }
-  while (m--) {
-    int type, x, y, z;
-    scanf("%d", &type);
-    if (type == 0) {
-      scanf("%d%d", &x, &y);
-      x--;
-      a[x] = y;
-      if (x + y >= n)
-        nex[x] = -1, steps[x] = 1;
-      else if (b[x] == b[x + y])
-        nex[x] = nex[x + y], steps[x] = 1 + steps[x + y];
-      else
-        nex[x] = x + y, steps[x] = 1;
-      while (x > 0 and b[x] == b[x - 1]) {
-        x--;
-        y = a[x];
-        if (x + y >= n)
-          nex[x] = -1, steps[x] = 1;
-        else if (b[x] == b[x + y])
-          nex[x] = nex[x + y], steps[x] = 1 + steps[x + y];
-        else
-          nex[x] = x + y, steps[x] = 1;
-      }
-    } else {
-      scanf("%d", &x);
-      x--;
-      int ans = 0, cur = x;
-      while (x != -1) {
-        ans += steps[x];
-        cur = x;
-        x = nex[x];
-      }
-      while (cur < n) x = cur, cur = cur + a[cur];
-      printf("%d %d\n", x + 1, ans);
-    }
-  }
+
+typedef pair<llint, llint> P;
+
+struct LiChaoTree{
+	int size;
+	vector<P> seg;
+	vector<llint> x;
+	
+	LiChaoTree(){}
+	LiChaoTree(int size){
+		this->size = size;
+		seg.resize(1<<(size+1));
+		x.resize(1<<size);
+	}
+	
+	void init()
+	{
+		for(int i = 0; i < (1<<(size+1)); i++) seg[i] = make_pair(0, inf);
+		for(int i = 0; i < (1<<size); i++) x[i] = i;
+	}
+	llint calc(P f, llint x)
+	{
+		return f.first * x + f.second;
+	}
+	llint query(int i) //x[i]における最小値を取得
+	{
+		llint X = x[i], ret = inf;
+		i += (1 << size);
+		while(i >= 1){
+			ret = min(ret, calc(seg[i], X));
+			i /= 2;
+		}
+		return ret;
+	}
+	void add(int k, int l, int r, P f)
+	{
+		int m = (l+r)/2;
+		if(calc(f, x[m]) < calc(seg[k], x[m])) swap(seg[k], f);
+		bool L = (calc(f, x[l]) < calc(seg[k], x[l])), R = (calc(f, x[r]) < calc(seg[k], x[r]));
+		if(L == R) return;
+		if(L) add(k*2, l, m, f);
+		if(R) add(k*2+1, m+1, r, f);
+	}
+	void addSegment(int a, int b, int k, int l, int r, P f)
+	{
+		if(b < l || r < a) return;
+		if(a <= l && r <= b){
+			add(k, l, r, f);
+			return;
+		}
+		addSegment(a, b, k*2, l, (l+r)/2, f);
+		addSegment(a, b, k*2+1, (l+r)/2+1, r, f);
+	}
+	void addSegment(int a, int b, llint p, llint q) //区間[x[a], x[b]]に線分px+qを追加
+	{
+		addSegment(a, b, 1, 0, (1<<size)-1, make_pair(p, q));
+	}
+	void addLine(llint p, llint q) //直線px+qを追加
+	{
+		return addSegment(0, (1<<size)-1, p, q);
+	}
+};
+
+llint n, m, Q, L;
+llint p[100005], np[100005];
+char c[100005];
+llint b[100005], t[100005];
+llint x[100005], y[100005];
+llint ans[100005];
+vector<llint> qvec[100005], bvec[100005];
+vector<llint> comp;
+LiChaoTree lct(17);
+
+llint dist(llint s, llint t)
+{
+	if(t >= s) return t-s;
+	else return t-s+L;
+}
+
+void solve()
+{
+	for(int i = 0; i < n; i++) qvec[i].clear();
+	for(int i = 1; i <= Q; i++) qvec[x[i]].push_back(i);
+	
+	for(int i = 0; i < n; i++) bvec[i].clear();
+	for(int i = 1; i <= m; i++){
+		if(c[i] == 'R') bvec[b[i]].push_back(i);
+	}
+	
+	comp.clear();
+	for(int i = 1; i <= Q; i++) comp.push_back(p[x[i]]+dist(p[x[i]], p[y[i]]));
+	sort(comp.begin(), comp.end());
+	comp.erase(unique(comp.begin(), comp.end()), comp.end());
+	int N = comp.size();
+	
+	lct.init();
+	for(int i = 0; i < (1<<17); i++){
+		if(i < N) lct.x[i] = comp[i];
+		else lct.x[i] = 1e9;
+	}
+	
+	for(int i = 1; i <= m; i++){
+		if(c[i] == 'R') lct.addLine(t[i], -(p[b[i]]-L)*t[i]);
+	}
+	for(int i = 0; i < n; i++){
+		for(int j = 0; j < bvec[i].size(); j++){
+			int bid = bvec[i][j];
+			lct.addLine(t[bid], -(p[b[bid]])*t[bid]);
+		}
+		for(int j = 0; j < qvec[i].size(); j++){
+			int qid = qvec[i][j];
+			llint id = lower_bound(comp.begin(), comp.end(), p[x[qid]] + dist(p[x[qid]], p[y[qid]])) - comp.begin();
+			ans[qid] = min(ans[qid], lct.query(id));
+		}
+	}
+}
+
+int main(void)
+{
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	
+	cin >> n >> m >> Q;
+	llint d;
+	for(int i = 0; i < n; i++){
+		cin >> d;
+		p[i] = L;
+		L += d;
+	}
+	for(int i = 1; i <= m; i++) cin >> c[i] >> b[i] >> t[i], b[i]--;
+	for(int i = 1; i <= Q; i++) cin >> x[i] >> y[i], x[i]--, y[i]--;
+	for(int i = 1; i <= Q; i++) ans[i] = inf;
+	
+	solve();
+	
+	for(int i = 1; i < n; i++) np[i] = L-p[n-i];
+	for(int i = 0; i < n; i++) p[i] = np[i];
+	for(int i = 1; i <= m; i++){
+		if(c[i] == 'L') c[i] = 'R';
+		else c[i] = 'L';
+		if(b[i] > 0) b[i] = n-b[i];
+	}
+	for(int i = 1; i <= Q; i++){
+		if(x[i] > 0) x[i] = n-x[i];
+		if(y[i] > 0) y[i] = n-y[i];
+	}
+	
+	solve();
+	
+	for(int i = 1; i <= Q; i++) cout << ans[i] << "\n";
+	flush(cout);
+	
+	return 0;
 }
 
 
 Example question 2:
-Name: 449_A. Jzzhu and Chocolate
-Tags: ['greedy', 'math']
-Description: Jzzhu has a big rectangular chocolate bar that consists of n × m unit squares. He wants to cut this bar exactly k times. Each cut must meet the following requirements:
+Name: 701_B. Cells Not Under Attack
+Tags: ['data structures', 'math']
+Description: Vasya has the square chessboard of size n × n and m rooks. Initially the chessboard is empty. Vasya will consequently put the rooks on the board one after another.
 
-  * each cut should be straight (horizontal or vertical); 
-  * each cut should go along edges of unit squares (it is prohibited to divide any unit chocolate square with cut); 
-  * each cut should go inside the whole chocolate bar, and all cuts must be distinct. 
+The cell of the field is under rook's attack, if there is at least one rook located in the same row or in the same column with this cell. If there is a rook located in the cell, this cell is also under attack.
 
-
-
-The picture below shows a possible way to cut a 5 × 6 chocolate for 5 times.
-
-<image>
-
-Imagine Jzzhu have made k cuts and the big chocolate is splitted into several pieces. Consider the smallest (by area) piece of the chocolate, Jzzhu wants this piece to be as large as possible. What is the maximum possible area of smallest piece he can get with exactly k cuts? The area of a chocolate piece is the number of unit squares in it.
+You are given the positions of the board where Vasya will put rooks. For each rook you have to determine the number of cells which are not under attack after Vasya puts it on the board.
 
 Input
 
-A single line contains three integers n, m, k (1 ≤ n, m ≤ 109; 1 ≤ k ≤ 2·109).
+The first line of the input contains two integers n and m (1 ≤ n ≤ 100 000, 1 ≤ m ≤ min(100 000, n2)) — the size of the board and the number of rooks. 
+
+Each of the next m lines contains integers xi and yi (1 ≤ xi, yi ≤ n) — the number of the row and the number of the column where Vasya will put the i-th rook. Vasya puts rooks on the board in the order they appear in the input. It is guaranteed that any cell will contain no more than one rook.
 
 Output
 
-Output a single integer representing the answer. If it is impossible to cut the big chocolate k times, print -1.
+Print m integer, the i-th of them should be equal to the number of cells that are not under attack after first i rooks are put.
 
 Examples
 
 Input
 
-3 4 1
+3 3
+1 1
+3 1
+2 2
 
 
 Output
 
-6
+4 2 0 
 
 
 Input
 
-6 4 2
+5 2
+1 5
+5 1
 
 
 Output
 
-8
+16 9 
 
 
 Input
 
-2 3 4
+100000 1
+300 400
 
 
 Output
 
--1
+9999800001 
 
 Note
 
-In the first sample, Jzzhu can cut the chocolate following the picture below:
+On the picture below show the state of the board after put each of the three rooks. The cells which painted with grey color is not under the attack.
 
 <image>
+Difficulty: 8
+Solutions: import java.io.*;
+import java.util.*;
 
-In the second sample the optimal division looks like this:
+/**
+ * @author Alexander Tsupko (alexander.tsupko@outlook.com)
+ * (c) Codeforces Round 364. All rights reserved. July 22, 2016.
+ */
+public class B {
+    private static class Solve {
+        // instance variables
 
-<image>
+        private void solve(InputReader in, OutputWriter out) {
+            int n = in.nextInt();
+            int m = in.nextInt();
+            long answer = (long) n * n;
+            boolean[] row = new boolean[n + 1];
+            boolean[] col = new boolean[n + 1];
+            int r, c; r = c = 0;
+            for (int i = 0; i < m; i++) {
+                int x = in.nextInt();
+                if (!row[x]) {
+                    row[x] = true;
+                    r++;
+                    answer -= (n - c);
+                }
+                int y = in.nextInt();
+                if (!col[y]) {
+                    col[y] = true;
+                    c++;
+                    answer -= (n - r);
+                }
+                out.println(answer);
+            }
+        }
 
-In the third sample, it's impossible to cut a 2 × 3 chocolate 4 times.
-Difficulty: 7
-Solutions: n,m,k=map(int,raw_input().split())
-if k>n+m-2:
-    print -1
-else:
-    print max((n*(m/(k+1))),(m*(n/(k+1))),(n/max(1,k-m+2)),(m/max(1,k-n+2)))
+        // instance methods
+    }
+
+    // static classes
+
+    private static class InputReader {
+        private BufferedReader bufferedReader;
+        private StringTokenizer stringTokenizer;
+
+        private InputReader(InputStream inputStream) {
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream), 32768);
+        }
+
+        private void close() throws IOException {
+            bufferedReader.close();
+        }
+
+        private String next() {
+            while (stringTokenizer == null || !stringTokenizer.hasMoreTokens()) {
+                try {
+                    stringTokenizer = new StringTokenizer(bufferedReader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return stringTokenizer.nextToken();
+        }
+
+        private byte nextByte() {
+            return Byte.parseByte(next());
+        }
+
+        private short nextShort() {
+            return Short.parseShort(next());
+        }
+
+        private int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        private long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        private float nextFloat() {
+            return Float.parseFloat(next());
+        }
+
+        private double nextDouble() {
+            return Double.parseDouble(next());
+        }
+
+        private boolean nextBoolean() {
+            return Boolean.parseBoolean(next());
+        }
+    }
+
+    private static class OutputWriter {
+        private final PrintWriter printWriter;
+
+        private OutputWriter(OutputStream outputStream) {
+            printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream)), true);
+        }
+
+        private void close() {
+            printWriter.close();
+        }
+
+        private void print(Object... objects) {
+            int n = objects.length;
+            for (int i = 0; i < n; i++) {
+                if (i != 0) {
+                    printWriter.print(' ');
+                }
+                printWriter.print(objects[i]);
+            }
+        }
+
+        private void println(Object... objects) {
+            print(objects);
+            printWriter.println();
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        InputReader in = new InputReader(inputStream);
+        OutputWriter out = new OutputWriter(outputStream);
+        Solve solve = new Solve();
+        solve.solve(in, out);
+        in.close();
+        out.close();
+    }
+}
 
 
 
@@ -243,6 +541,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

@@ -43,279 +43,276 @@ Output
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 889_B. Restoration of string
-Tags: ['constructive algorithms', 'graphs', 'implementation']
-Description: A substring of some string is called the most frequent, if the number of its occurrences is not less than number of occurrences of any other substring.
+Name: 522_A. Reposts
+Tags: ['*special', 'dfs and similar', 'dp', 'graphs', 'trees']
+Description: One day Polycarp published a funny picture in a social network making a poll about the color of his handle. Many of his friends started reposting Polycarp's joke to their news feed. Some of them reposted the reposts and so on.
 
-You are given a set of strings. A string (not necessarily from this set) is called good if all elements of the set are the most frequent substrings of this string. Restore the non-empty good string with minimum length. If several such strings exist, restore lexicographically minimum string. If there are no good strings, print "NO" (without quotes).
+These events are given as a sequence of strings "name1 reposted name2", where name1 is the name of the person who reposted the joke, and name2 is the name of the person from whose news feed the joke was reposted. It is guaranteed that for each string "name1 reposted name2" user "name1" didn't have the joke in his feed yet, and "name2" already had it in his feed by the moment of repost. Polycarp was registered as "Polycarp" and initially the joke was only in his feed.
 
-A substring of a string is a contiguous subsequence of letters in the string. For example, "ab", "c", "abc" are substrings of string "abc", while "ac" is not a substring of that string.
-
-The number of occurrences of a substring in a string is the number of starting positions in the string where the substring occurs. These occurrences could overlap.
-
-String a is lexicographically smaller than string b, if a is a prefix of b, or a has a smaller letter at the first position where a and b differ.
+Polycarp measures the popularity of the joke as the length of the largest repost chain. Print the popularity of Polycarp's joke.
 
 Input
 
-The first line contains integer n (1 ≤ n ≤ 105) — the number of strings in the set.
+The first line of the input contains integer n (1 ≤ n ≤ 200) — the number of reposts. Next follow the reposts in the order they were made. Each of them is written on a single line and looks as "name1 reposted name2". All the names in the input consist of lowercase or uppercase English letters and/or digits and have lengths from 2 to 24 characters, inclusive.
 
-Each of the next n lines contains a non-empty string consisting of lowercase English letters. It is guaranteed that the strings are distinct.
-
-The total length of the strings doesn't exceed 105.
+We know that the user names are case-insensitive, that is, two names that only differ in the letter case correspond to the same social network user.
 
 Output
 
-Print the non-empty good string with minimum length. If several good strings exist, print lexicographically minimum among them. Print "NO" (without quotes) if there are no good strings.
+Print a single integer — the maximum length of a repost chain.
 
 Examples
 
 Input
 
-4
-mail
-ai
-lru
-cf
+5
+tourist reposted Polycarp
+Petr reposted Tourist
+WJMZBMR reposted Petr
+sdya reposted wjmzbmr
+vepifanov reposted sdya
 
 
 Output
 
-cfmailru
+6
 
 
 Input
 
-3
-kek
-preceq
-cheburek
+6
+Mike reposted Polycarp
+Max reposted Polycarp
+EveryOne reposted Polycarp
+111 reposted Polycarp
+VkCup reposted Polycarp
+Codeforces reposted Polycarp
 
 
 Output
 
-NO
+2
 
-Note
 
-One can show that in the first sample only two good strings with minimum length exist: "cfmailru" and "mailrucf". The first string is lexicographically minimum.
-Difficulty: 8
-Solutions: import oracle.jrockit.jfr.events.*;
+Input
 
-import java.io.*;
+1
+SoMeStRaNgEgUe reposted PoLyCaRp
+
+
+Output
+
+2
+Difficulty: 7
+Solutions: 
 import java.util.*;
+import java.io.*;
 
-public class Template implements Runnable {
+public class CodeForces {
 
-    BufferedReader in;
-    PrintWriter out;
-    StringTokenizer tok = new StringTokenizer("");
-
-    void init() throws FileNotFoundException {
-        try {
-            in = new BufferedReader(new FileReader("input.txt"));
-            out = new PrintWriter("output.txt");
-        } catch (Exception e) {
-            String filename = "";
-            if (!filename.isEmpty()) {
-                in = new BufferedReader(new FileReader(filename + ".in"));
-                out = new PrintWriter(filename + ".out");
-            } else {
-                in = new BufferedReader(new InputStreamReader(System.in));
-                out = new PrintWriter(System.out);
+    static boolean g[][];
+    static boolean v[];
+    
+    public static void main(String[] args) throws IOException {
+        Reader.init(System.in);
+        int n = Reader.nextInt();
+        HashMap<String, Integer> map = new HashMap<>();
+    
+        g = new boolean[n*2][n*2];
+        v = new boolean[n*2];
+        
+        Integer x, y;
+        int cnt = 0;
+        
+        for(int i = 0; i < n; i++){
+            String a = Reader.next().toLowerCase(); Reader.next();
+            String b = Reader.next().toLowerCase();
+            
+            x = map.get(a);
+            if(x == null){
+                x = cnt++;
+                map.put(a, x);
             }
-        }
-    }
-
-    String readString() throws IOException {
-        while (!tok.hasMoreTokens()) {
-            try {
-                tok = new StringTokenizer(in.readLine());
-            } catch (Exception e) {
-                return null;
+            
+            y = map.get(b);
+            if(y == null){
+                y = cnt++;
+                map.put(b, y);
             }
+            
+            
+            g[y][x] = true;
         }
-        return tok.nextToken();
+        
+        DFS(1, 0);
+        System.out.println(max+1);
+        
     }
-
-    int readInt() throws IOException {
-        return Integer.parseInt(readString());
-    }
-
-    int[] readIntArray(int size) throws IOException {
-        int[] res = new int[size];
-        for (int i = 0; i < size; i++) {
-            res[i] = readInt();
-        }
-        return res;
-    }
-
-    long readLong() throws IOException {
-        return Long.parseLong(readString());
-    }
-
-    double readDouble() throws IOException {
-        return Double.parseDouble(readString());
-    }
-
-    <T> List<T>[] createGraphList(int size) {
-        List<T>[] list = new List[size];
-        for (int i = 0; i < size; i++) {
-            list[i] = new ArrayList<>();
-        }
-        return list;
-    }
-
-    public static void main(String[] args) {
-        new Template().run();
-//        new Thread(null, new Template(), "", 1l * 200 * 1024 * 1024).start();
-    }
-
-    long timeBegin, timeEnd;
-
-    void time() {
-        timeEnd = System.currentTimeMillis();
-        System.err.println("Time = " + (timeEnd - timeBegin));
-    }
-
-    long memoryTotal, memoryFree;
-
-    void memory() {
-        memoryFree = Runtime.getRuntime().freeMemory();
-        System.err.println("Memory = " + ((memoryTotal - memoryFree) >> 10)
-                + " KB");
-    }
-
-    public void run() {
-        try {
-            timeBegin = System.currentTimeMillis();
-            memoryTotal = Runtime.getRuntime().freeMemory();
-            init();
-            solve();
-            out.close();
-            if (System.getProperty("ONLINE_JUDGE") == null) {
-                time();
-                memory();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
+    
+    static int max;
+    
+    static void DFS(int cur, int counter){
+        if(v[cur])
+            return;
+       
+        max = Math.max(max, counter);
+       
+        for(int i = 0; i < g[cur].length; i++){
+            if(g[cur][i])
+               DFS(i, counter + 1);
         }
     }
+    
+}
 
-    private void solve() throws IOException {
-        int n = readInt();
-        String[] strings = new String[n];
-        for (int i = 0; i < n; i++) {
-            strings[i] = readString();
+class Reader {
+
+    static BufferedReader reader;
+    static StringTokenizer tokenizer;
+
+    public static int pars(String x) {
+        int num = 0;
+        int i = 0;
+        if (x.charAt(0) == '-') {
+            i = 1;
         }
-        int[] wasCnt = new int[26];
-        Arrays.fill(wasCnt, -1);
-        for (int i = 0; i < n; i++) {
-            int[] cnt = new int[26];
-            for (char x : strings[i].toCharArray()) {
-                cnt[x - 'a']++;
-            }
-            for (int j = 0; j < 26; j++) {
-                if (cnt[j] == 0) continue;
-                if (cnt[j] > 1) {
-                    out.println("NO");
-                    return;
-                }
-            }
+        for (; i < x.length(); i++) {
+            num = num * 10 + (x.charAt(i) - '0');
         }
 
-        List<String> list = new ArrayList<>();
-        for (String s : strings) {
-            list.add(s);
+        if (x.charAt(0) == '-') {
+            return -num;
         }
 
-        for (char letter = 'a'; letter <= 'z'; letter++) {
-            String maxBefore = "";
-            String maxAfter = "";
-            List<String> without = new ArrayList<>();
-            List<String> with = new ArrayList<>();
-            for (String s : list) {
-                int pos = s.indexOf(letter);
-                if (pos < 0) {
-                    without.add(s);
-                } else {
-                    with.add(s);
-                    int befLen = pos;
-                    if (befLen > maxBefore.length()) {
-                        maxBefore = s.substring(0, pos);
-                    }
-                    int aftLen = s.length() - 1 - pos;
-                    if (aftLen > maxAfter.length()) {
-                        maxAfter = s.substring(pos + 1);
-                    }
-                }
-            }
-            if (with.size() == 0) continue;
-            for (String s : with) {
-                int pos = s.indexOf(letter);
-                if (!endEq(maxBefore, s, 0, pos)) {
-                    out.println("NO");
-                    return;
-                }
-                if (!startEq(maxAfter, s, pos + 1, s.length())) {
-                    out.println("NO");
-                    return;
-                }
-            }
-
-            String res = maxBefore + letter + maxAfter;
-            int[] cnt = new int[26];
-            for (char x : res.toCharArray()) {
-                cnt[x - 'a']++;
-            }
-            for (int v : cnt) {
-                if (v > 1) {
-                    out.println("NO");
-                    return;
-                }
-            }
-            list.clear();
-            list.addAll(without);
-            list.add(res);
-        }
-
-        Collections.sort(list, (o1, o2) -> {
-            String a = o1 + o2;
-            String b = o2 + o1;
-            return a.compareTo(b);
-        });
-        for (String s : list) {
-            out.print(s);
-        }
-        out.println();
+        return num;
     }
 
-    boolean endEq(String whole, String full, int l, int r) {
-        int len = (r - l);
-        for (int i = 0; i < len; i++) {
-            if (whole.charAt(whole.length() - 1 - i) != full.charAt(r - 1 - i)) {
-                return false;
-            }
-        }
-        return true;
+    static void init(InputStream input) {
+        reader = new BufferedReader(
+                new InputStreamReader(input));
+        tokenizer = new StringTokenizer("");
     }
 
-    boolean startEq(String whole, String full, int l, int r) {
-        int len = (r - l);
-        for (int i = 0; i < len; i++) {
-            if (whole.charAt(i) != full.charAt(l + i)) {
-                return false;
-            }
-        }
-        return true;
+    static void init(FileReader input) {
+        reader = new BufferedReader(input);
+        tokenizer = new StringTokenizer("");
     }
 
+    static String next() throws IOException {
+        while (!tokenizer.hasMoreTokens()) {
+            tokenizer = new StringTokenizer(
+                    reader.readLine());
+        }
+        return tokenizer.nextToken();
+    }
 
+    static int nextInt() throws IOException {
+        return pars(next());
+    }
+
+    static long nextLong() throws IOException {
+        return Long.parseLong(next());
+    }
+
+    static double nextDouble() throws IOException {
+        return Double.parseDouble(next());
+    }
 }
 
 
+Example question 2:
+Name: p02928 Japanese Student Championship 2019 Qualification - Kleene Inversion
+Tags: ['']
+Description: We have a sequence of N integers A~=~A_0,~A_1,~...,~A_{N - 1}.
+
+Let B be a sequence of K \times N integers obtained by concatenating K copies of A. For example, if A~=~1,~3,~2 and K~=~2, B~=~1,~3,~2,~1,~3,~2.
+
+Find the inversion number of B, modulo 10^9 + 7.
+
+Here the inversion number of B is defined as the number of ordered pairs of integers (i,~j)~(0 \leq i < j \leq K \times N - 1) such that B_i > B_j.
+
+Constraints
+
+* All values in input are integers.
+* 1 \leq N \leq 2000
+* 1 \leq K \leq 10^9
+* 1 \leq A_i \leq 2000
+
+Input
+
+Input is given from Standard Input in the following format:
 
 
+N K
+A_0 A_1 ... A_{N - 1}
+
+
+Output
+
+Print the inversion number of B, modulo 10^9 + 7.
+
+Examples
+
+Input
+
+2 2
+2 1
+
+
+Output
+
+3
+
+
+Input
+
+3 5
+1 1 1
+
+
+Output
+
+0
+
+
+Input
+
+10 998244353
+10 9 8 7 5 6 3 4 2 1
+
+
+Output
+
+185297239
+Difficulty: 0
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int main() {
+	long long int mod = 1000000007;
+	long long int n, k;
+	long long int ans = 0LL;
+	//long long int scnt = 0LL;
+	//long long int lcnt = 0LL;
+	long long int a[2005];
+	cin >> n >> k;
+	for(int i=0;i<n;i++){
+		cin >> a[i];
+	}
+	for(int i=0;i<n;i++){
+		for(int j=i+1;j<n;j++){
+			if(a[i]>a[j]){
+				ans += k*(k+1)/2;
+				ans %= mod;
+			}
+			if(a[i]<a[j]){
+				ans += k*(k-1)/2;
+				ans %= mod;
+			}
+		}
+	}
+	cout << ans << endl;
+	return 0;
+}
 
 
 INSTRUCTIONS:
@@ -326,6 +323,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

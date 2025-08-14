@@ -66,546 +66,167 @@ Output
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 110_E. Lucky Tree
-Tags: ['dp', 'dsu', 'trees']
-Description: Petya loves lucky numbers. We all know that lucky numbers are the positive integers whose decimal representations contain only the lucky digits 4 and 7. For example, numbers 47, 744, 4 are lucky and 5, 17, 467 are not.
+Name: 626_B. Cards
+Tags: ['constructive algorithms', 'dp', 'math']
+Description: Catherine has a deck of n cards, each of which is either red, green, or blue. As long as there are at least two cards left, she can do one of two actions: 
 
-One day Petya encountered a tree with n vertexes. Besides, the tree was weighted, i. e. each edge of the tree has weight (a positive integer). An edge is lucky if its weight is a lucky number. Note that a tree with n vertexes is an undirected connected graph that has exactly n - 1 edges.
+  * take any two (not necessarily adjacent) cards with different colors and exchange them for a new card of the third color; 
+  * take any two (not necessarily adjacent) cards with the same color and exchange them for a new card with that color. 
 
-Petya wondered how many vertex triples (i, j, k) exists that on the way from i to j, as well as on the way from i to k there must be at least one lucky edge (all three vertexes are pairwise distinct). The order of numbers in the triple matters, that is, the triple (1, 2, 3) is not equal to the triple (2, 1, 3) and is not equal to the triple (1, 3, 2). 
 
-Find how many such triples of vertexes exist.
+
+She repeats this process until there is only one card left. What are the possible colors for the final card?
 
 Input
 
-The first line contains the single integer n (1 ≤ n ≤ 105) — the number of tree vertexes. Next n - 1 lines contain three integers each: ui vi wi (1 ≤ ui, vi ≤ n, 1 ≤ wi ≤ 109) — the pair of vertexes connected by the edge and the edge's weight.
+The first line of the input contains a single integer n (1 ≤ n ≤ 200) — the total number of cards.
+
+The next line contains a string s of length n — the colors of the cards. s contains only the characters 'B', 'G', and 'R', representing blue, green, and red, respectively.
 
 Output
 
-On the single line print the single number — the answer.
-
-Please do not use the %lld specificator to read or write 64-bit numbers in С++. It is recommended to use the cin, cout streams or the %I64d specificator.
+Print a single string of up to three characters — the possible colors of the final card (using the same symbols as the input) in alphabetical order.
 
 Examples
 
 Input
 
-4
-1 2 4
-3 1 2
-1 4 7
+2
+RB
 
 
 Output
 
-16
+G
 
 
 Input
 
-4
-1 2 4
-1 3 47
-1 4 7447
+3
+GRG
 
 
 Output
 
-24
+BR
+
+
+Input
+
+5
+BBBBB
+
+
+Output
+
+B
 
 Note
 
-The 16 triples of vertexes from the first sample are: (1, 2, 4), (1, 4, 2), (2, 1, 3), (2, 1, 4), (2, 3, 1), (2, 3, 4), (2, 4, 1), (2, 4, 3), (3, 2, 4), (3, 4, 2), (4, 1, 2), (4, 1, 3), (4, 2, 1), (4, 2, 3), (4, 3, 1), (4, 3, 2).
+In the first sample, Catherine has one red card and one blue card, which she must exchange for a green card.
 
-In the second sample all the triples should be counted: 4·3·2 = 24.
-Difficulty: 11
-Solutions: import java.io.*;
-import java.util.*;
-import java.math.*;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
- 
-public class Main {
-      
-    int mod = 1000000007;
+In the second sample, Catherine has two green cards and one red card. She has two options: she can exchange the two green cards for a green card, then exchange the new green card and the red card for a blue card. Alternatively, she can exchange a green and a red card for a blue card, then exchange the blue card and remaining green card for a red card.
 
-    public class SegmentTree{
-
-       int n;
-       int[] tree;
-
-       SegmentTree(int[] arr){
-
-          this.n = arr.length; 
-          this.tree = new int[2 * n];
-
-          for(int i = n; i < 2 * n; i++){
-              this.tree[i] = arr[i - n];
-          }
-
-          for(int i = n - 1; i >= 1; i--){
-              this.tree[i] = Math.min(this.tree[2 * i], this.tree[2 * i + 1]);
-          }
-
-       }
-
-       public int query(int l, int r){
-
-          int res = Integer.MAX_VALUE;
-          l = l + n;
-          r = r + n;
-
-          while(l < r){
-
-              if(l % 2 == 1){
-                  res = Math.min(res, tree[l]); 
-                  l++;
-              }
-
-              if(r % 2 == 1){
-                  r--;
-                  res = Math.min(res, tree[r]);
-              }
-
-              l /= 2;
-              r /= 2;
-          }
-
-          return res;
-       }
+In the third sample, Catherine only has blue cards, so she can only exchange them for more blue cards.
+Difficulty: 8
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+enum { BC = 1, GC = 2, RC = 4 };
+char dp[201][201][201];
+static int f(int B, int G, int R) {
+  if (dp[B][G][R] != -1) return dp[B][G][R];
+  if (B == 1 && G == 0 && R == 0) return (dp[B][G][R] = BC);
+  if (B == 0 && G == 1 && R == 0) return (dp[B][G][R] = GC);
+  if (B == 0 && G == 0 && R == 1) return (dp[B][G][R] = RC);
+  char pos = 0;
+  if (B >= 2) pos |= f(B - 1, G, R);
+  if (G >= 2) pos |= f(B, G - 1, R);
+  if (R >= 2) pos |= f(B, G, R - 1);
+  if (B >= 1 && G >= 1) pos |= f(B - 1, G - 1, R + 1);
+  if (G >= 1 && R >= 1) pos |= f(B + 1, G - 1, R - 1);
+  if (R >= 1 && B >= 1) pos |= f(B - 1, G + 1, R - 1);
+  dp[B][G][R] = pos;
+  return pos;
+}
+int main() {
+  ios::sync_with_stdio(0);
+  int n;
+  cin >> n;
+  int R = 0, G = 0, B = 0;
+  for (int i = 0; i < n; i++) {
+    char c;
+    cin >> c;
+    switch (c) {
+      case 'R':
+        R++;
+        break;
+      case 'G':
+        G++;
+        break;
+      case 'B':
+        B++;
+        break;
     }
-
-    
-    HashMap<Integer, List<Integer>> map = new HashMap<>();
-    int n;
-    int[] visited;
-    public void solve() throws IOException{
-         
-         n = in.nextInt();
-         visited = new int[n + 1];
-         for(int i = 1; i <= n; i++){
-            map.put(i, new ArrayList<>());
-         }
-
-         for(int i = 0; i < n - 1; i++){
-               
-            int u = in.nextInt();
-            int v = in.nextInt();
-            int w = in.nextInt();
-         
-            if(isLucky(w))
-               continue;
-           
-            map.get(u).add(v);
-            map.get(v).add(u);
-         }
-        
-         long cnt = 0;
-         List<Long> res = new ArrayList<>();
-         for(int i = 1; i <= n; i++){
-            if(visited[i] == 0){
-               long s = dfs(i);
-               cnt += s;
-               res.add(s);
-            }
-         }
-         
-         long a = 0;
-         for(int i = 0; i < res.size(); i++){
-            a += (res.get(i) * (cnt - res.get(i) - 1) * (cnt - res.get(i)));
-         }
-         out.println(a);
-    }
-
-    public long dfs(int u){
-
-       visited[u] = 1;
-       long res = 1;
-       for(int v: map.get(u)){
-          if(visited[v] == 0)
-            res += dfs(v); 
-       }
-      
-       return res;
-    }
-
-
-    public boolean isLucky(int n){
-       while(n != 0){
-         if(n % 10 != 4 && n % 10 != 7){
-            return false;
-         }
-         n /= 10;
-       }
-       return true;
-    }
-
-    FastScanner in;
-    PrintWriter out;
-    
-    static class FastScanner {
- 
-        BufferedReader br;
-        StringTokenizer st;
- 
-        FastScanner(InputStream in) {
-            br = new BufferedReader(new InputStreamReader(in));
-            st = null;
-        }
- 
-        String next() throws IOException {
-            while (st == null || !st.hasMoreTokens())
-                st = new StringTokenizer(br.readLine());
-            return st.nextToken();
-        }
- 
-        String nextLine() throws IOException {
-            if (st == null || !st.hasMoreTokens())
-                return br.readLine();
-            StringBuilder result = new StringBuilder(st.nextToken());
-            while (st.hasMoreTokens()) {
-                result.append(" ");
-                result.append(st.nextToken());
-            }
-            return result.toString();
-        }
- 
-        int nextInt() throws IOException {
-            return Integer.parseInt(next());
-        }
- 
-        long nextLong() throws IOException {
-            return Long.parseLong(next());
-        }
- 
-        double nextDouble() throws IOException {
-            return Double.parseDouble(next());
-        }
- 
-    }
- 
-    void run() throws IOException {
-        in = new FastScanner(System.in);
-        out = new PrintWriter(System.out, false);
-        solve();
-        out.close();
-    }
- 
-    public static void main(String[] args) throws IOException{
-        new Main().run();
-    }
- 
-    public void printArr(int[] arr){
-        for(int i = 0; i < arr.length; i++){
-            out.print(arr[i] + " ");
-        }
-        out.println();
-    }
- 
-    public long gcd(long a, long b){
-        if(a == 0) return b;
-        return gcd(b % a, a);
-    }
-
-    public boolean isPrime(long num){
-
-        if(num == 0 || num == 1){
-            return false;
-        }
-
-        for(int i = 2; i * i <= num; i++){
-            if(num % i == 0){
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public class Pair<A, B>{
-        public A x; 
-        public B y;
-
-        Pair(A x, B y){
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Pair<?, ?> pair = (Pair<?, ?>) o;
-            if (!x.equals(pair.x)) return false;
-            return y.equals(pair.y);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = x.hashCode();
-            result = 31 * result + y.hashCode();
-            return result;
-        }
-
-    }
-
-    class Tuple{
-        int x; int y; int z;
-        Tuple(int ix, int iy, int iz){
-            x = ix;
-            y = iy;
-            z = iz;
-        }
-    }
+  }
+  memset(dp, -1, sizeof(dp));
+  int fr = f(B, G, R);
+  if (fr & BC) cout << "B";
+  if (fr & GC) cout << "G";
+  if (fr & RC) cout << "R";
+  cout << endl;
+  return 0;
 }
 
 
 Example question 2:
-Name: 1029_F. Multicolored Markers
-Tags: ['binary search', 'brute force', 'math', 'number theory']
-Description: There is an infinite board of square tiles. Initially all tiles are white.
-
-Vova has a red marker and a blue marker. Red marker can color a tiles. Blue marker can color b tiles. If some tile isn't white then you can't use marker of any color on it. Each marker must be drained completely, so at the end there should be exactly a red tiles and exactly b blue tiles across the board.
-
-Vova wants to color such a set of tiles that:
-
-  * they would form a rectangle, consisting of exactly a+b colored tiles; 
-  * all tiles of at least one color would also form a rectangle. 
-
-
-
-Here are some examples of correct colorings:
-
-<image>
-
-Here are some examples of incorrect colorings:
-
-<image>
-
-Among all correct colorings Vova wants to choose the one with the minimal perimeter. What is the minimal perimeter Vova can obtain?
-
-It is guaranteed that there exists at least one correct coloring.
-
-Input
-
-A single line contains two integers a and b (1 ≤ a, b ≤ 10^{14}) — the number of tiles red marker should color and the number of tiles blue marker should color, respectively.
-
-Output
-
-Print a single integer — the minimal perimeter of a colored rectangle Vova can obtain by coloring exactly a tiles red and exactly b tiles blue.
-
-It is guaranteed that there exists at least one correct coloring.
-
-Examples
-
-Input
-
-4 4
-
-
-Output
-
-12
-
-
-Input
-
-3 9
-
-
-Output
-
-14
-
-
-Input
-
-9 3
-
-
-Output
-
-14
-
-
-Input
-
-3 6
-
-
-Output
-
-12
-
-
-Input
-
-506 2708
-
-
-Output
-
-3218
-
-Note
-
-The first four examples correspond to the first picture of the statement.
-
-Note that for there exist multiple correct colorings for all of the examples.
-
-In the first example you can also make a rectangle with sides 1 and 8, though its perimeter will be 18 which is greater than 8.
-
-In the second example you can make the same resulting rectangle with sides 3 and 4, but red tiles will form the rectangle with sides 1 and 3 and blue tiles will form the rectangle with sides 3 and 3.
-Difficulty: 12
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-const long long N = 1e14;
-const long long oo = (1ll << 63) - 1;
-long long a, b, ab;
-vector<long long> A, B, AB;
-int tknp(const long long& a, const long long& b) {
-  int l = lower_bound(AB.begin(), AB.end(), a) - AB.begin(), r = AB.size() - 1;
-  while (l < r) {
-    int m = l + r + 1 >> 1;
-    if (ab / AB[m] < b)
-      r = m - 1;
-    else
-      l = m;
-  }
-  return AB[l] >= a && ab / AB[l] >= b ? l : -1;
-}
-long long sol() {
-  long long res = oo;
-  for (int i = 0, _n = (A.size()); i < _n; i++) {
-    long long x = A[i], y = a / x;
-    long long t = tknp(x, y);
-    if (t < 0) continue;
-    res = min(res, AB[t] + ab / AB[t]);
-  }
-  return res;
-}
-void calc() {
-  long long lim = sqrt(a + b);
-  for (long long i = 1; i <= lim; i++) {
-    if (a % i == 0) A.push_back(i);
-    if (b % i == 0) B.push_back(i);
-    if (ab % i == 0) AB.push_back(i);
-  }
-  sort(A.begin(), A.end());
-  sort(B.begin(), B.end());
-  sort(AB.begin(), AB.end());
-}
-int main() {
-  cin >> a >> b;
-  ab = a + b;
-  calc();
-  long long t1 = sol();
-  swap(a, b);
-  swap(A, B);
-  cout << min(t1, sol()) * 2;
-}
-
-
-Example question 3:
-Name: 1061_B. Views Matter
-Tags: ['greedy', 'implementation', 'sortings']
-Description: You came to the exhibition and one exhibit has drawn your attention. It consists of n stacks of blocks, where the i-th stack consists of a_i blocks resting on the surface.
-
-The height of the exhibit is equal to m. Consequently, the number of blocks in each stack is less than or equal to m.
-
-There is a camera on the ceiling that sees the top view of the blocks and a camera on the right wall that sees the side view of the blocks.
-
-<image>
-
-Find the maximum number of blocks you can remove such that the views for both the cameras would not change.
-
-Note, that while originally all blocks are stacked on the floor, it is not required for them to stay connected to the floor after some blocks are removed. There is no gravity in the whole exhibition, so no block would fall down, even if the block underneath is removed. It is not allowed to move blocks by hand either.
-
-Input
-
-The first line contains two integers n and m (1 ≤ n ≤ 100 000, 1 ≤ m ≤ 10^9) — the number of stacks and the height of the exhibit.
-
-The second line contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ m) — the number of blocks in each stack from left to right.
-
-Output
-
-Print exactly one integer — the maximum number of blocks that can be removed.
-
-Examples
-
-Input
-
-5 6
-3 3 3 3 3
-
-
-Output
-
-10
-
-Input
-
-3 5
-1 2 4
-
-
-Output
-
-3
-
-Input
-
-5 5
-2 3 1 4 4
-
-
-Output
-
-9
-
-Input
-
-1 1000
-548
-
-
-Output
-
-0
-
-Input
-
-3 3
-3 1 1
-
-
-Output
-
-1
-
-Note
-
-The following pictures illustrate the first example and its possible solution.
-
-Blue cells indicate removed blocks. There are 10 blue cells, so the answer is 10.
-
-<image>
-Difficulty: 8
-Solutions: n,m=map(int,input().split(' '))
-a=list(map(int,input().split(' ')))
-a.sort()
-count=0
-prev=0
-for i in range(n):
-    count+=1
-    if a[i]>prev:
-        prev+=1
-count+=a[n-1]-prev
-print(sum(a)-count)
-            
-            
-        
-
+Name: divisibility-test
+Tags: []
+Description: Rakesh is very good in divisibility. He can easily tell the number is divisible by the given number or not. To make him work harder his teacher changed the question slightly. He will give the number and the other number with which the first number is divisible or not to make it complicated he will mention the range in between he need to tell how many continuous sub numbers are divisible by it or not.
+
+Example:
+consider a number 123456
+number is 3,
+range is 1 to 3. Among all combinations between these ranges there are only 3 sub numbers i.e., 3,123,12 are divisilble. So print 3 as output.
+
+INPUT:
+First line consists of T testcases
+Evert test case has a number followed by the number in next line and range in the following next line.
+
+OUTPUT:
+Print the number of sub numbers divisible by the given number.
+
+Range:
+0<T<100
+0<number<10^50
+0<div<10000
+
+SAMPLE INPUT
+2
+1254756
+4
+1 5
+54789623
+6
+2 6
+
+SAMPLE OUTPUT
+2
+4
+Difficulty: 0
+Solutions: for _ in range(int(raw_input())):
+    li=[]
+    m=raw_input()
+    div=int(raw_input())
+    x,y=map(int,raw_input().split())
+    x-=1
+    y-=1
+    m=m[x:y+1]
+    #print(m)
+    for i in range(y-x+1):
+        for j in range(i+1,y-x+2):
+            if int(m[i:j])%div==0:
+                li.append(m[i:j])
+    print(len(li))
 
 
 INSTRUCTIONS:
@@ -616,6 +237,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

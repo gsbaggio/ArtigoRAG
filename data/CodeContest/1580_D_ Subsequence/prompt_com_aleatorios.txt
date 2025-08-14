@@ -74,142 +74,183 @@ In the first example, Alice can choose the subsequence [15, 2, 18, 13], which ha
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 555_D. Case of a Top Secret
-Tags: ['binary search', 'implementation', 'math']
-Description: Andrewid the Android is a galaxy-famous detective. Now he is busy with a top secret case, the details of which are not subject to disclosure.
+Name: atom
+Tags: []
+Description: Mr. Yagami is a scientist in the Bhabha Atomic Research Centre. They are
+  conducting a lab experiment on nuclear fission. In nuclear fission, one atom
+  breaks into more than one atom of the same type.
 
-However, he needs help conducting one of the investigative experiment. There are n pegs put on a plane, they are numbered from 1 to n, the coordinates of the i-th of them are (xi, 0). Then, we tie to the bottom of one of the pegs a weight on a tight rope of length l (thus, its coordinates will be equal to (xi, - l), where i is the number of the used peg). Then the weight is pushed to the right, so that it starts to rotate counterclockwise. At the same time, if the weight during rotation touches some of the other pegs, it then begins to rotate around that peg. Suppose that each peg itself is very thin and does not affect the rope length while weight is rotating around it.
+  Initially, there are N atoms in the lab. Starting from now (t=0), after each
+  second, every atom will break into K atoms of the same type. They don’t want
+  the number of atoms to exceed M, so they have to stop the reaction at some
+  time t=T. Can you find this value T for Mr. Yagami.
+  
 
-<image>
+Input Format:
 
-More formally, if at some moment the segment of the rope contains one or more pegs in addition to the peg around which the weight is rotating, the weight will then rotate around the farthermost one of them on a shorter segment of a rope. In particular, if the segment of the rope touches some peg by its endpoint, it is considered that the weight starts to rotate around that peg on a segment of the rope of length 0.
+  First line contains P, the number of test cases. Next P lines contain three
+  integers each. These three integers represent the values of N, K and M
+  respectively.
+  
 
-At some moment the weight will begin to rotate around some peg, without affecting the rest of the pegs. Andrewid interested in determining the number of this peg.
+Output Format:
 
-Andrewid prepared m queries containing initial conditions for pushing the weight, help him to determine for each of them, around what peg the weight will eventually rotate.
+  For each test case print the time at which the reaction will have to be
+  stopped.
+  
 
-Input
-
-The first line contains integers n and m (1 ≤ n, m ≤ 2·105) — the number of pegs and queries.
-
-The next line contains n integers x1, x2, ..., xn ( - 109 ≤ xi ≤ 109) — the coordinates of the pegs. It is guaranteed that the coordinates of all the pegs are distinct integers.
-
-Next m lines contain the descriptions of the queries of pushing the weight, each consists of two integers ai (1 ≤ ai ≤ n) and li (1 ≤ li ≤ 109) — the number of the starting peg and the length of the rope.
-
-Output
-
-Print m lines, the i-th line should contain the number of the peg around which the weight will eventually rotate after the i-th push.
-
-Examples
-
-Input
-
-3 2
-0 3 5
-2 3
-1 8
+Constraints:
 
 
-Output
+  1 ≤ P ≤ 10^4
+  2 ≤ N, K, M ≤ 10^18
 
-3
+
+
+Sample Input:
+
 2
+2 2 7
+2 2 8
+Sample Output:
 
+1
+2
+Explanation:
+
+  1st test case: 
+  at t=1, number of atoms=4
+  at t=2, number of atoms will be 8.
+  So reaction has to be stopped at t=1.
+  2nd test case:
+  at t=1, number of atoms=4
+  at t=2, number of atoms will be 8.
+  at t=3, number of atoms will be 16.
+  
+
+Problem Setter: Lalit Kundu
+Difficulty: 6
+Solutions: import math
+t=input("")
+while(t):
+	inp=raw_input("")
+	inp=inp.split()
+	n=int(inp[0]);k=int(inp[1]);m=int(inp[2])
+	m=m/n;
+	if(m>0):
+		print int(math.log(m,k))
+	else:
+		print 0
+	t=t-1
+
+Example question 2:
+Name: 1110_G. Tree-Tac-Toe 
+Tags: ['constructive algorithms', 'games', 'trees']
+Description: The tic-tac-toe game is starting on a tree of n vertices. Some vertices are already colored in white while the remaining are uncolored.
+
+There are two players — white and black. The players make moves alternatively. The white player starts the game. In his turn, a player must select one uncolored vertex and paint it in his color.
+
+The player wins if he paints some path of three vertices in his color. In case all vertices are colored and neither player won, the game ends in a draw.
+
+Could you please find who will win the game or whether it ends as a draw, assuming both players play optimally? 
 
 Input
 
-4 4
-1 5 7 15
-1 4
-2 15
-3 16
-1 28
+The first line contains a single integer T (1 ≤ T ≤ 50 000) — the number of test cases. Then descriptions of T test cases follow.
 
+The first line of each test contains a single integer n (1 ≤ n ≤ 5 ⋅ 10^5) — the number of vertices in the tree.
+
+Each of the following n - 1 lines contains integers v, u (1 ≤ v, u ≤ n) denoting an edge of the tree connecting vertices v and u.
+
+The last line of a test case contains a string of letters 'W' (for white) and 'N' (for not colored) of length n denoting already colored vertices. Vertexes already colored in white are denoted as 'W'.
+
+It's guaranteed that the given edges form a tree, that there is at least one uncolored vertex and that there is no path of three white vertices.
+
+It's guaranteed that sum of all n among all test cases is at most 5 ⋅ 10^5.
 
 Output
+
+For every test case, print either "White", "Draw" or "Black", depending on the result of the game.
+
+Example
+
+Input
+
 
 2
 4
-3
-1
+1 2
+1 3
+1 4
+NNNW
+5
+1 2
+2 3
+3 4
+4 5
+NNNNN
+
+
+Output
+
+
+White
+Draw
 
 Note
 
-Picture to the first sample test:
+In the first example, vertex 4 is already colored in white. The white player can win by coloring the vertex 1 in white first and the remaining vertex on his second turn. The process is illustrated with the pictures below.
 
 <image>
 
-Picture to the second sample test:
-
-<image>
-
-Note that in the last query weight starts to rotate around the peg 1 attached to a rope segment of length 0.
-Difficulty: 10
+In the second example, we can show that no player can enforce their victory.
+Difficulty: 13
 Solutions: #include <bits/stdc++.h>
 using namespace std;
-const int maxn = 200003;
-long long INF = 0x3f3f3f3f3f3f3f3fll;
-int n, Q, pos[maxn];
-pair<long long, int> a[maxn];
+vector<int> adjList[2000000];
 int main() {
-  scanf("%d%d", &n, &Q);
-  for (int i = 1; i <= n; i++) scanf("%lld", &a[i].first), a[i].second = i;
-  sort(a + 1, a + n + 1);
-  a[0].first = -INF, a[n + 1].first = INF;
-  for (int i = 1; i <= n; i++) pos[a[i].second] = i;
-  while (Q--) {
-    int y, p;
-    long long l;
-    scanf("%d%lld", &y, &l);
-    y = pos[y];
-    bool dir = 1;
-    int flag = 0;
-    while (1) {
-      if (flag == 2) {
-        printf("%d\n", a[p].second);
-        break;
-      }
-      if (dir) {
-        p = upper_bound(a + 1, a + n + 1,
-                        pair<long long, int>(a[y].first + l, maxn)) -
-            a - 1;
-        long long len = a[p].first - a[y].first;
-        if (p == y) {
-          flag++;
-          dir = 0;
-          continue;
-        }
-        flag = 0;
-        if (l < a[p + 1].first - a[y].first &&
-            a[y].first + len - l > a[y - 1].first) {
-          if (l / len % 2) dir = 0, y = p;
-          l %= len;
-        } else {
-          l -= len;
-          y = p;
-          dir = 0;
-        }
-      } else {
-        p = lower_bound(a + 1, a + n + 1,
-                        pair<long long, int>(a[y].first - l, 0)) -
-            a;
-        long long len = a[y].first - a[p].first;
-        if (p == y) {
-          flag++;
-          dir = 1;
-          continue;
-        }
-        flag = 0;
-        if (l > a[p - 1].first && a[y].first - len + l < a[y + 1].first) {
-          if (l / len % 2) dir = 0, y = p;
-          l %= len;
-        } else {
-          l -= len;
-          y = p;
-          dir = 1;
-        }
+  int i, j;
+  int T, t;
+  int n, u, v;
+  char c;
+  scanf("%d", &T);
+  for (t = 0; t < T; t++) {
+    scanf("%d", &n);
+    for (i = 0; i < n - 1; i++) {
+      scanf("%d %d", &u, &v);
+      u--, v--;
+      adjList[u].push_back(v);
+      adjList[v].push_back(u);
+    }
+    int nn = n;
+    for (i = 0; i < nn; i++) {
+      scanf(" %c", &c);
+      if (c == 'W') {
+        adjList[i].push_back(n), adjList[n].push_back(i);
+        adjList[n].push_back(n + 1), adjList[n + 1].push_back(n);
+        adjList[n].push_back(n + 2), adjList[n + 2].push_back(n);
+        n += 3;
       }
     }
+    int c = 0;
+    for (i = 0; i < n; i++) {
+      if (adjList[i].size() >= 4)
+        break;
+      else if (adjList[i].size() >= 3) {
+        c++;
+        int c2 = 0;
+        for (j = 0; j < adjList[i].size(); j++) {
+          v = adjList[i][j];
+          if (adjList[v].size() >= 2) c2++;
+        }
+        if (c2 >= 2) break;
+      }
+    }
+    if ((i < n) || ((c == 2) && (n & 1)))
+      printf("White\n");
+    else
+      printf("Draw\n");
+    for (i = 0; i < n; i++) adjList[i].clear();
   }
   return 0;
 }
@@ -224,6 +265,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

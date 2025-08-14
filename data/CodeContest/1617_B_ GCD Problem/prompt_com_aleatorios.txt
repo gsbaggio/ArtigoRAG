@@ -45,150 +45,378 @@ In the third test case, 29 + 43 + 1 = 73 and \operatorname{gcd}(29, 43) = 1.
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: tkconvex
-Tags: []
-Description: Given n sticks' lengths, determine whether there is a solution to choose 2k out of them and use these 2k sticks to form two k-convex polygons (non-degenerated), namely, two convex polygons each has exactly k sticks as its sides, and every adjacent sticks are not parallel.
+Name: 417_C. Football
+Tags: ['constructive algorithms', 'graphs', 'implementation']
+Description: One day, at the "Russian Code Cup" event it was decided to play football as an out of competition event. All participants was divided into n teams and played several matches, two teams could not play against each other more than once.
+
+The appointed Judge was the most experienced member — Pavel. But since he was the wisest of all, he soon got bored of the game and fell asleep. Waking up, he discovered that the tournament is over and the teams want to know the results of all the matches.
+
+Pavel didn't want anyone to discover about him sleeping and not keeping an eye on the results, so he decided to recover the results of all games. To do this, he asked all the teams and learned that the real winner was friendship, that is, each team beat the other teams exactly k times. Help Pavel come up with chronology of the tournir that meets all the conditions, or otherwise report that there is no such table.
+
+Input
+
+The first line contains two integers — n and k (1 ≤ n, k ≤ 1000).
+
+Output
+
+In the first line print an integer m — number of the played games. The following m lines should contain the information about all the matches, one match per line. The i-th line should contain two integers ai and bi (1 ≤ ai, bi ≤ n; ai ≠ bi). The numbers ai and bi mean, that in the i-th match the team with number ai won against the team with number bi. You can assume, that the teams are numbered from 1 to n.
+
+If a tournir that meets the conditions of the problem does not exist, then print -1.
+
+Examples
+
+Input
+
+3 1
+
+
+Output
+
+3
+1 2
+2 3
+3 1
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int n, k;
+int main() {
+  cin >> n >> k;
+  int total = (n * (n - 1)) / 2;
+  if (total >= n * k) {
+    total = n * k;
+    cout << total << "\n";
+    int nod1 = 1;
+    int nod2 = nod1 + 1;
+    int cate = 0;
+    while (total > 0) {
+      cate++;
+      if (nod2 > n) nod2 = 1;
+      cout << nod1 << " " << nod2 << "\n";
+      if (cate == k) {
+        nod1++;
+        nod2 = nod1 + 1;
+        cate = 0;
+      } else
+        nod2++;
+      total--;
+    }
+  } else
+    cout << -1 << "\n";
+}
+
+
+Example question 2:
+Name: 960_E. Alternating Tree
+Tags: ['combinatorics', 'dfs and similar', 'divide and conquer', 'dp', 'probabilities', 'trees']
+Description: Given a tree with n nodes numbered from 1 to n. Each node i has an associated value V_i.
+
+If the simple path from u_1 to u_m consists of m nodes namely u_1 → u_2 → u_3 → ... u_{m-1} → u_{m}, then its alternating function A(u_{1},u_{m}) is defined as A(u_{1},u_{m}) = ∑_{i=1}^{m} (-1)^{i+1} ⋅ V_{u_{i}}. A path can also have 0 edges, i.e. u_{1}=u_{m}.
+
+Compute the sum of alternating functions of all unique simple paths. Note that the paths are directed: two paths are considered different if the starting vertices differ or the ending vertices differ. The answer may be large so compute it modulo 10^{9}+7. 
+
+Input
+
+The first line contains an integer n (2 ≤ n ≤ 2⋅10^{5} ) — the number of vertices in the tree.
+
+The second line contains n space-separated integers V_1, V_2, …, V_n (-10^9≤ V_i ≤ 10^9) — values of the nodes.
+
+The next n-1 lines each contain two space-separated integers u and v (1≤ u, v≤ n, u ≠ v) denoting an edge between vertices u and v. It is guaranteed that the given graph is a tree.
+
+Output
+
+Print the total sum of alternating functions of all unique simple paths modulo 10^{9}+7. 
+
+Examples
+
+Input
+
+4
+-4 1 5 -2
+1 2
+1 3
+1 4
+
+
+Output
+
+40
 
 
 Input
-The first line contains two space-separated integers n and k, denoting the number of sticks and the size of convex polygon we needed.
-The second line contains n positive integers, denoting the lengths of sticks.
+
+8
+-2 6 -4 -4 -9 -3 -7 23
+8 2
+2 3
+1 4
+6 5
+7 6
+4 7
+5 8
+
 
 Output
-Print "Yes" (without quotes) in the first line if exists a solution. Otherwise print "No" (without quotes) instead.
-If such solution exists, you should output a plan in the second line. Print 2k indexes (indexes start from 1) of the sticks you chosen. First k sticks compose the first k-convex polygon. And the later k sticks form the second. If there are more than one solution, output any.
 
-Constraints
+4
 
-2k ≤ n ≤ 1000
-3 ≤ k ≤ 10
-1 ≤ length of each stick ≤ 10^9
+Note
 
+Consider the first example.
+
+A simple path from node 1 to node 2: 1 → 2 has alternating function equal to A(1,2) = 1 ⋅ (-4)+(-1) ⋅ 1 = -5.
+
+A simple path from node 1 to node 3: 1 → 3 has alternating function equal to A(1,3) = 1 ⋅ (-4)+(-1) ⋅ 5 = -9.
+
+A simple path from node 2 to node 4: 2 → 1 → 4 has alternating function A(2,4) = 1 ⋅ (1)+(-1) ⋅ (-4)+1 ⋅ (-2) = 3.
+
+A simple path from node 1 to node 1 has a single node 1, so A(1,1) = 1 ⋅ (-4) = -4.
+
+Similarly, A(2, 1) = 5, A(3, 1) = 9, A(4, 2) = 3, A(1, 4) = -2, A(4, 1) = 2, A(2, 2) = 1, A(3, 3) = 5, A(4, 4) = -2, A(3, 4) = 7, A(4, 3) = 7, A(2, 3) = 10, A(3, 2) = 10. So the answer is (-5) + (-9) + 3 + (-4) + 5 + 9 + 3 + (-2) + 2 + 1 + 5 + (-2) + 7 + 7 + 10 + 10 = 40.
+
+Similarly A(1,4)=-2, A(2,2)=1, A(2,1)=5, A(2,3)=10, A(3,3)=5, A(3,1)=9, A(3,2)=10, A(3,4)=7, A(4,4)=-2, A(4,1)=2, A(4,2)=3 , A(4,3)=7 which sums upto 40. 
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+vector<int> krawedzie[200007];
+long long waga[200007];
+int ojciec[200007];
+int warstwa[200007];
+long long parz = 0;
+long long nparz = 0;
+long long wynik = 0;
+void dfs1(int u) {
+  if (warstwa[u] % 2 == 0) {
+    parz++;
+  } else {
+    nparz++;
+  }
+  for (int i = 0; i < krawedzie[u].size(); i++) {
+    int v = krawedzie[u][i];
+    if (v != ojciec[u]) {
+      warstwa[v] = warstwa[u] + 1;
+      ojciec[v] = u;
+      dfs1(v);
+    }
+  }
+}
+pair<long long, long long> dfs2(int u) {
+  long long p = 0;
+  long long np = 0;
+  long long mn = 1;
+  if (warstwa[u] % 2 == 1) {
+    mn = -1;
+  }
+  for (int i = 0; i < krawedzie[u].size(); i++) {
+    int v = krawedzie[u][i];
+    if (v != ojciec[u]) {
+      pair<long long, long long> tmp = dfs2(v);
+      wynik +=
+          (mn * (((p + np) * tmp.first) % 1000000007) * waga[u]) % 1000000007;
+      wynik = wynik % 1000000007;
+      wynik -=
+          (mn * (((p + np) * tmp.second) % 1000000007) * waga[u]) % 1000000007;
+      wynik = wynik % 1000000007;
+      wynik += (mn * (((tmp.first + tmp.second) * p) % 1000000007) * waga[u]) %
+               1000000007;
+      wynik = wynik % 1000000007;
+      wynik -= (mn * (((tmp.first + tmp.second) * np) % 1000000007) * waga[u]) %
+               1000000007;
+      wynik = wynik % 1000000007;
+      p += tmp.first;
+      np += tmp.second;
+    }
+  }
+  wynik += (mn * ((p * (parz + nparz - p - np)) % 1000000007) * waga[u]) %
+           1000000007;
+  wynik = wynik % 1000000007;
+  wynik -= (mn * ((np * (parz + nparz - p - np)) % 1000000007) * waga[u]) %
+           1000000007;
+  wynik = wynik % 1000000007;
+  wynik += (mn * (((parz - p) * (p + np)) % 1000000007) * waga[u]) % 1000000007;
+  wynik = wynik % 1000000007;
+  wynik -=
+      (mn * (((nparz - np) * (p + np)) % 1000000007) * waga[u]) % 1000000007;
+  wynik = wynik % 1000000007;
+  wynik += (waga[u] * (parz + nparz - p - np)) % 1000000007;
+  wynik = wynik % 1000000007;
+  if (warstwa[u] % 2 == 0) {
+    p++;
+  } else {
+    np++;
+  }
+  wynik += (((mn * (parz - p)) % 1000000007) * waga[u]) % 1000000007;
+  wynik -= (((mn * (nparz - np)) % 1000000007) * waga[u]) % 1000000007;
+  wynik = wynik % 1000000007;
+  return make_pair(p, np);
+}
+int main() {
+  int n;
+  cin >> n;
+  for (int i = 0; i < n; i++) {
+    cin >> waga[i];
+  }
+  for (int i = 0; i < n - 1; i++) {
+    int a, b;
+    cin >> a >> b;
+    a--;
+    b--;
+    krawedzie[a].push_back(b);
+    krawedzie[b].push_back(a);
+  }
+  dfs1(0);
+  dfs2(0);
+  if (wynik < 0) {
+    wynik += 1000000007;
+  }
+  cout << wynik;
+  return 0;
+}
+
+
+Example question 3:
+Name: 1300_A. Non-zero
+Tags: ['implementation', 'math']
+Description: Guy-Manuel and Thomas have an array a of n integers [a_1, a_2, ..., a_n]. In one step they can add 1 to any element of the array. Formally, in one step they can choose any integer index i (1 ≤ i ≤ n) and do a_i := a_i + 1.
+
+If either the sum or the product of all elements in the array is equal to zero, Guy-Manuel and Thomas do not mind to do this operation one more time.
+
+What is the minimum number of steps they need to do to make both the sum and the product of all elements in the array different from zero? Formally, find the minimum number of steps to make a_1 + a_2 + ... + a_n ≠ 0 and a_1 ⋅ a_2 ⋅ ... ⋅ a_n ≠ 0.
+
+Input
+
+Each test contains multiple test cases. 
+
+The first line contains the number of test cases t (1 ≤ t ≤ 10^3). The description of the test cases follows.
+
+The first line of each test case contains an integer n (1 ≤ n ≤ 100) — the size of the array.
+
+The second line of each test case contains n integers a_1, a_2, ..., a_n (-100 ≤ a_i ≤ 100) — elements of the array .
+
+Output
+
+For each test case, output the minimum number of steps required to make both sum and product of all elements in the array different from zero.
 
 Example
 
-Input 1:
-6 3
-1 1 1 2 2 2
-
-Output 1:
-Yes
-1 2 3 4 5 6
+Input
 
 
-Input 2:
-6 3
-1 2 3 100 200 300
+4
+3
+2 -1 -1
+4
+-1 0 0 1
+2
+-1 2
+3
+0 -2 1
 
-Output 2:
-No
 
-Explanation
-Example case 1: 1 1 1 and 2 2 2 form two triangles.
-Example case 2: Please be careful that convex polygons must be non-degenerated.
-Difficulty: 4
-Solutions: from itertools import combinations
-from collections import defaultdict
- 
- 
-def small_j(sticks, cum, k):
-    for j in range(k - 1, len(sticks)):
-        i = j - k + 1
-        hyp = sticks[j]
-        rest = cum[j - 1] - cum[i] + sticks[i]
-        if rest > hyp:
-            return i, j
-    return None, None
- 
-def small_ii(sticks, cum, k):
-    for jj in range(-1, k - len(sticks) - 1, -1):
-        ii = jj - k + 1
-        hyp = sticks[jj]
-        rest = cum[jj - 1] - cum[ii] + sticks[ii]
-        if rest > hyp:
-            return len(sticks) + ii, len(sticks) + jj
-    assert False
- 
- 
- 
- 
- 
- 
-def solve(n, k, sticks):
-    len_pos = defaultdict(list)
-    for pos, len_ in enumerate(sticks):
-        len_pos[len_].append(str(pos + 1))
- 
-    sticks.sort()
-    tot = 0
-    cum = []
-    for s in sticks:
-        tot += s
-        cum.append(tot)
- 
-    i, j = small_j(sticks, cum, k)
-    if j is None:
-        return "No"
- 
-    ii, jj = small_ii(sticks, cum, k)
- 
-    if ii > j:
-        ans = sticks[i:j+1] + sticks[ii:jj+1]
-        ans_i = []
-        for len_ in ans:
-            ans_i.append(len_pos[len_].pop())
-        return "Yes\n" + " ".join(ans_i)
- 
-    if jj < 2*k - 1:
-        return "No"
- 
-    chosen_sticks = list(enumerate(sticks[jj - 2*k + 1: jj+1]))
-    assert len(chosen_sticks) == 2*k
- 
-    positions = range(len(chosen_sticks))
- 
-    solution = None
-    for poly1 in combinations(positions, r=k):
-        poly1 = list(poly1)
-        i1 = 0
-        sum1 = 0
-        sum2 = 0
-        hyp1 = 0
-        hyp2 = 0
-        for pos, cs in chosen_sticks:
-            if i1 < k and pos == poly1[i1]:
-                sum1 += cs
-                i1 += 1
-                hyp1 = cs
-            else:
-                sum2 += cs
-                hyp2 = cs
-        sum1 -= hyp1
-        sum2 -= hyp2
-        if sum1 > hyp1 and sum2 > hyp2:
-            solution = poly1
-            break
- 
-    if solution is None:
-        return "No"
-    else:
-        chosen_sticks = [v for _, v in chosen_sticks]
-        poly1 = [chosen_sticks[i] for i in solution]
-        for v in poly1:
-            chosen_sticks.remove(v)
-        poly2 = chosen_sticks
-        ans = poly1 + poly2
-        ans_i = []
-        for len_ in ans:
-            ans_i.append(len_pos[len_].pop())
-        return "Yes\n" + " ".join(ans_i)
- 
- 
+Output
 
- 
-n, k = map(int, raw_input().split())
-sticks = map(int, raw_input().split())
-print solve(n, k, sticks)
+
+1
+2
+0
+2
+
+Note
+
+In the first test case, the sum is 0. If we add 1 to the first element, the array will be [3,-1,-1], the sum will be equal to 1 and the product will be equal to 3.
+
+In the second test case, both product and sum are 0. If we add 1 to the second and the third element, the array will be [-1,1,1,1], the sum will be equal to 2 and the product will be equal to -1. It can be shown that fewer steps can't be enough.
+
+In the third test case, both sum and product are non-zero, we don't need to do anything.
+
+In the fourth test case, after adding 1 twice to the first element the array will be [2,-2,1], the sum will be 1 and the product will be -4.
+Difficulty: 7
+Solutions: import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+
+
+
+public class Main{
+    public static void main(String[] args) throws IOException, InterruptedException {
+
+        Scanner sc = new Scanner(System.in);
+        PrintWriter out = new PrintWriter(System.out);
+
+        int t = sc.nextInt();
+
+        for (int m = 0; m < t; m++) {
+            int n = sc.nextInt();
+            int zero = 0;
+            int sum = 0;
+
+            for (int i = 0; i < n; i++) {
+                int cur = sc.nextInt();
+
+                if (cur == 0) zero++;
+                sum += cur;
+            }
+            int ans = zero;
+            sum+= zero;
+            if (sum == 0)  ans ++;
+            out.println(ans);
+        }
+
+        out.flush();
+
+
+    }
+
+
+}
+
+class Scanner{
+    StringTokenizer st;
+    BufferedReader br;
+    public Scanner(InputStream s){
+        br = new BufferedReader(new InputStreamReader(s));
+    }
+    public Scanner (String s) throws FileNotFoundException { br = new BufferedReader(new FileReader(s));}
+
+    public String next() throws IOException {
+        while (st == null || !st.hasMoreTokens())
+            st = new StringTokenizer(br.readLine());
+        return st.nextToken();
+    }
+
+    public int[] nextIntArray(int n) throws IOException {
+        int[] temp = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            temp[i] = nextInt();
+        }
+
+        return temp;
+    }
+
+    public int nextInt() throws IOException {
+        return Integer.parseInt(next());
+    }
+
+    public long nextLong() throws IOException {
+        return  Long.parseLong(next());
+    }
+
+    public String nextLine() throws IOException {
+        return br.readLine();
+    }
+
+    public double nextDouble() throws IOException {
+        return Double.parseDouble(next());
+    }
+
+    public boolean ready() throws IOException {
+        return br.ready();
+    }
+}
+
 
 
 INSTRUCTIONS:
@@ -199,6 +427,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

@@ -57,194 +57,122 @@ In the fourth testcase, the third stick can be broken into parts of length 2 and
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1494_B. Berland Crossword
-Tags: ['bitmasks', 'brute force', 'greedy', 'implementation']
-Description: Berland crossword is a puzzle that is solved on a square grid with n rows and n columns. Initially all the cells are white.
-
-To solve the puzzle one has to color some cells on the border of the grid black in such a way that: 
-
-  * exactly U cells in the top row are black; 
-  * exactly R cells in the rightmost column are black; 
-  * exactly D cells in the bottom row are black; 
-  * exactly L cells in the leftmost column are black. 
-
-
-
-Note that you can color zero cells black and leave every cell white.
-
-Your task is to check if there exists a solution to the given puzzle.
-
-Input
-
-The first line contains a single integer t (1 ≤ t ≤ 1000) — the number of testcases.
-
-Then the descriptions of t testcases follow.
-
-The only line of each testcase contains 5 integers n, U, R, D, L (2 ≤ n ≤ 100; 0 ≤ U, R, D, L ≤ n).
-
-Output
-
-For each testcase print "YES" if the solution exists and "NO" otherwise.
-
-You may print every letter in any case you want (so, for example, the strings yEs, yes, Yes and YES are all recognized as positive answer).
-
-Example
-
-Input
-
-
-4
-5 2 5 3 1
-3 0 0 0 0
-4 4 1 4 0
-2 1 1 1 1
-
-
-Output
-
-
-YES
-YES
-NO
-YES
-
-Note
-
-Here are possible solutions to testcases 1, 2 and 4: 
-
-<image>
-Difficulty: 8
-Solutions: 
-
-
-def solve():
-    n, u, r, d, l = map(int, input().split())
-    for i in range(16):
-        ur = i & 1
-        dr = bool(i & 1<<1)
-        dl = bool(i & 1<<2)
-        ul = bool(i & 1<<3)
-        uu=u
-        rr=r
-        dd=d
-        ll=l
-        uu -= ur + ul
-        rr -= ur + dr
-        dd -= dr + dl
-        ll -= dl + ul
-        for side in (uu, rr, dd, ll):
-            if side<0 or side>n-2:
-                break
-        else:
-            print("YES")
-            return
-    print("NO")
-
-
-def main():
-    for i in range(int(input())):
-        solve()
-
-if __name__ == '__main__':
-    main()
-
-
-Example question 2:
-Name: p01845 Curry Making
+Name: p02265 Doubly Linked List
 Tags: ['']
-Description: Curry making
+Description: Your task is to implement a double linked list.
 
-As the ACM-ICPC domestic qualifying is approaching, you who wanted to put more effort into practice decided to participate in a competitive programming camp held at a friend's house. Participants decided to prepare their own meals.
+Write a program which performs the following operations:
 
-On the first night of the training camp, the participants finished the day's practice and began preparing dinner. Not only in competitive programming, but also in self-catering, you are often said to be a "professional", and you have spared time because you have finished making the menu for your charge in a blink of an eye. Therefore, I decided to help other people make curry.
+* insert x: insert an element with key x into the front of the list.
+* delete x: delete the first element which has the key of x from the list. If there is not such element, you need not do anything.
+* deleteFirst: delete the first element from the list.
+* deleteLast: delete the last element from the list.
 
-Now, there is a curry made by mixing R0 [g] roux with W0 [L] water. There is one type of roux used this time, and each roux is R [g]. Ru has a sufficient stockpile. When you use this roux, you think that the curry with a concentration of C [g / L] is the most delicious, so add some roux and water to this curry appropriately to make the concentration C [g / L]. I want to. Here, the concentration of curry in which roux R0 [g] is dissolved in water W0 [L] is R0 / W0 [g / L], and X roux of R [g] and water Y [L] are added to this curry. ] Is added, the concentration becomes (R0 + XR) / (W0 + Y) [g / L]. Although there are a lot of roux, you thought that it was not good to use too much, so you decided to make a curry with a concentration of C [g / L] by reducing the number of roux to be added as much as possible.
+Notes
 
-When making a curry with a concentration of C [g / L] by properly adding either roux, water, or both to a curry with a concentration of R0 / W0 [g / L], the number of roux X to be added Find the minimum value.
+Template in C -->
 
-However, please note the following points regarding the curry making this time.
+Constraints
 
-* Number of roux to be added The value of X must be an integer greater than or equal to 0. In other words, it is not possible to add only 1/3 of the roux.
-* The value of the volume Y of water to be added can be a real number greater than or equal to 0, and does not have to be an integer.
-* In some cases, it is possible to make curry with a concentration of C without adding either roux, water, or both.
-* Since a sufficient amount of roux and water is secured, it is good that the situation that the curry with concentration C cannot be made due to lack of roux and water does not occur.
-
-
+* The number of operations ≤ 2,000,000
+* The number of delete operations ≤ 20
+* 0 ≤ value of a key ≤ 109
+* The number of elements in the list does not exceed 106
+* For a delete, deleteFirst or deleteLast operation, there is at least one element in the list.
 
 Input
 
-The input consists of multiple datasets. Each dataset consists of one line and is expressed in the following format.
+The input is given in the following format:
 
-> R0 W0 C R
+n
+command1
+command2
+...
+commandn
 
-Here, R0, W0, C, and R are the mass of roux already dissolved in the curry that is being made [g], the volume of water contained in the curry [L], and the concentration of the curry you want to make [g / L]. , Represents the mass [g] per roux. All of these values ​​are integers between 1 and 100. The end of the input is indicated by a line of four zeros separated by blanks.
+
+In the first line, the number of operations n is given. In the following n lines, the above mentioned operations are given in the following format:
+
+* insert x
+* delete x
+* deleteFirst
+* deleteLast
 
 Output
 
-For each dataset, one line is the minimum number of roux that needs to be added to make a curry with a concentration of C from a fake curry that is a mixture of W0 [L] water and R0 [g] roux. To output. Do not output the amount of water to add.
+Print all the element (key) in the list after the given operations. Two consequtive keys should be separated by a single space.
 
-Note that due to input constraints, the minimum number of roux that is the answer for each dataset is guaranteed to be within the range represented by a 32-bit signed integer.
-
-Sample Input
-
-
-10 5 3 4
-2 5 2 3
-91 13 7 62
-10 1 3 5
-20 100 2 20
-2 14 7 1
-0 0 0 0
-
-Output for Sample Input
-
-
-2
-3
-0
-0
-9
-96
-
-
-
-
-
-
-Example
+Examples
 
 Input
 
-10 5 3 4
-2 5 2 3
-91 13 7 62
-10 1 3 5
-20 100 2 20
-2 14 7 1
-0 0 0 0
+7
+insert 5
+insert 2
+insert 3
+insert 1
+delete 3
+insert 6
+delete 5
 
 
 Output
 
-2
-3
-0
-0
+6 1 2
+
+
+Input
+
 9
-96
+insert 5
+insert 2
+insert 3
+insert 1
+delete 3
+insert 6
+delete 5
+deleteFirst
+deleteLast
+
+
+Output
+
+1
 Difficulty: 0
-Solutions: #include "bits/stdc++.h"
+Solutions: #include <bits/stdc++.h>
 using namespace std;
 
-int main() {
-	int R0, W0, C, R;
-	while (cin >> R0 >> W0 >> C >> R) {
-		if (R0 == 0 && W0 == 0 && C == 0 && R == 0) return 0;
-		int LOSS = W0 * C - R0;
-		if (LOSS <= 0) cout << 0 << endl;
-		else if (LOSS % R == 0) cout << LOSS / R << endl;
-		else cout << LOSS / R + 1 << endl;
-	}
+int main(){
+    int n, c; cin >> n;
+    string s;
+    list<int> l;
+    for(int i=0; i<n; i++){
+        cin >> s;
+        if(s =="insert"){
+            cin >> c;
+            l.push_front(c);
+        }else if(s=="delete"){
+            cin >> c;
+            for (list<int>::iterator it=l.begin(); it!=l.end(); it++) {
+                if( (*it) == c){
+                    l.erase(it);
+                    break;
+                }
+            }
+        }else if(s=="deleteFirst"){
+            l.pop_front();
+        }else{
+            l.pop_back();
+        }
+    }
+    
+    for(list<int>::iterator i=l.begin(); i!=l.end(); ){
+    	cout << *i;
+    	if(++i==l.end()) cout << endl;
+    	else cout << " ";
+    }
+    
+    return 0;
 }
 
 
@@ -257,6 +185,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

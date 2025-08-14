@@ -62,25 +62,55 @@ In the 7-th test case Petya can apply 1 → 3 → 2 → 1 and make a = [1, 4, 2,
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 52_B. Right Triangles
-Tags: ['combinatorics']
-Description: You are given a n × m field consisting only of periods ('.') and asterisks ('*'). Your task is to count all right triangles with two sides parallel to the square sides, whose vertices are in the centers of '*'-cells. A right triangle is a triangle in which one angle is a right angle (that is, a 90 degree angle).
+Name: p01729 Air Pollution
+Tags: ['']
+Description: In 20XX, the owners of the ICPC (Ikuta's Computer Pollutes Community) shopping district were suffering from air pollution. In order to regain the vitality of the past, the cleanliness of the atmosphere must be kept above a certain level.
+
+The shops in the shopping district are lined up in a row and are numbered from 1 to n. Currently, the cleanliness of the atmosphere around each store is pi. You can change the cleanliness of the atmosphere in that store and the surrounding stores by choosing the 2nd to n-1st stores and circulating the air around them. To be precise, when the i (2 ≤ i ≤ n−1) th is selected, only pi is added to pi−1 and pi + 1, and conversely, only 2 pi is subtracted from pi. In other words, the new cleanliness of the atmosphere p'is,
+
+* p'i−1 = pi−1 + pi
+* p'i = pi − 2 pi
+* p'i + 1 = pi + 1 + pi. The purpose is to repeat this operation to make the air cleanliness pi of all stores equal to or greater than the minimum acceptable air cleanliness li.
+
+
+
+It costs a lot to circulate the atmosphere, so we want to achieve it as few times as possible. I want you to help us for the future of the ICPC shopping district.
+
+
 
 Input
 
-The first line contains two positive integer numbers n and m (1 ≤ n, m ≤ 1000). The following n lines consist of m characters each, describing the field. Only '.' and '*' are allowed.
+The input is given in the following format.
+
+
+n
+p1 ... pn
+l1 ... ln
+
+
+n is the number of stores, pi is the current clean air of the i-th store, and li is the clean air that the i-th store should achieve.
+
+Constraints
+
+Each variable being input satisfies the following constraints.
+
+* 3 ≤ n ≤ 105
+* −108 ≤ pi ≤ 108
+* 1 ≤ li ≤ 108
 
 Output
 
-Output a single number — total number of square triangles in the field. Please, do not use %lld specificator to read or write 64-bit integers in C++. It is preffered to use cout (also you may use %I64d).
+Output the minimum number of air circulations required by all stores to achieve clean air in one line.
+
+If you cannot achieve it no matter how you operate it, output -1.
 
 Examples
 
 Input
 
-2 2
-**
-*.
+3
+3 -1 4
+2 1 3
 
 
 Output
@@ -90,39 +120,96 @@ Output
 
 Input
 
-3 4
-*..*
-.**.
-*.**
+3
+3 -1 4
+2 1 5
 
 
 Output
 
-9
-Difficulty: 8
+-1
+
+
+Input
+
+4
+3 -1 -1 3
+1 1 1 1
+
+
+Output
+
+3
+Difficulty: 0
 Solutions: #include <bits/stdc++.h>
 using namespace std;
-char arr[1001][1001];
-int main() {
-  int row[1001] = {0};
-  int col[1001] = {0};
-  int n, m;
-  cin >> n >> m;
-  for (int i = 0; i < n; i++)
-    for (int j = 0; j < m; j++) {
-      cin >> arr[i][j];
-      if (arr[i][j] == '*') {
-        row[i]++;
-        col[j]++;
-      }
-    }
-  long long int ans = 0;
-  for (int i = 0; i < n; i++)
-    for (int j = 0; j < m; j++)
-      if (arr[i][j] == '*') ans += (row[i] - 1) * (col[j] - 1);
-  cout << ans << endl;
-  return 0;
+using ll = long long;
+
+template <typename T>
+class fenwick_tree {
+	const int n;
+	vector<T> data;
+public:
+	fenwick_tree(int n_) : n(n_), data(n + 1) {}
+	T find(int p) const {
+		T res = 0;
+		while (p > 0) {
+			res += data[p];
+			p -= p & -p;
+		}
+		return res;
+	}
+	T find(int l, int r) const {
+		return find(r) - find(l);
+	}
+	void add(int p, T val) {
+		++p;
+		while (p <= n) {
+			data[p] += val;
+			p += p & -p;
+		}
+	}
+};
+
+int main()
+{
+	int n;
+	cin >> n;
+	vector<pair<ll, int>> sp(n);
+	vector<ll> l(n);
+	for (int i = 0; i < n; i++) {
+		sp[i].second = i;
+		cin >> sp[i].first;
+		if (0 <= i - 1) sp[i].first += sp[i - 1].first;
+	}
+	for (int i = 0; i < n; i++) {
+		cin >> l[i];
+	}
+	sort(sp.begin(), sp.end() - 1);
+	bool ng = false;
+	vector<pair<int, int>> all;
+	for (int i = 0; i < n; i++) {
+		if ((i ? sp[i].first - sp[i - 1].first : sp[i].first) < l[i]) {
+			ng = true;
+			break;
+		}
+		if (i + 1 < n) all.emplace_back(sp[i].second, i);
+	}
+	if (ng) {
+		cout << -1 << endl;
+		return 0;
+	}
+	sort(all.begin(), all.end());
+	ll res = 0;
+	fenwick_tree<int> ft(n);
+	for (auto p : all) {
+		res += ft.find(p.second, n);
+		ft.add(p.second, 1);
+	}
+	cout << res << endl;
+	return 0;
 }
+
 
 
 
@@ -134,6 +221,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

@@ -80,325 +80,520 @@ Output
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 164_B. Ancient Berland Hieroglyphs
-Tags: ['two pointers']
-Description: Polycarpus enjoys studying Berland hieroglyphs. Once Polycarp got hold of two ancient Berland pictures, on each of which was drawn a circle of hieroglyphs. We know that no hieroglyph occurs twice in either the first or the second circle (but in can occur once in each of them).
+Name: p02196 Queries with Six Inequeties
+Tags: ['']
+Description: Queries with Six Inequeties
 
-Polycarpus wants to save these pictures on his laptop, but the problem is, laptops do not allow to write hieroglyphs circles. So Polycarp had to break each circle and write down all of its hieroglyphs in a clockwise order in one line. A line obtained from the first circle will be called a, and the line obtained from the second one will be called b.
+Given a set of four integer pairs (a, b, c, d).
 
-There are quite many ways to break hieroglyphic circles, so Polycarpus chooses the method, that makes the length of the largest substring of string a, which occurs as a subsequence in string b, maximum.
+The jth query determines if i exists, x_j <a_i <y_j <b_i and z_j <c_i <w_j <d_i.
 
-Help Polycarpus — find the maximum possible length of the desired substring (subsequence) if the first and the second circles are broken optimally.
+input
 
-The length of string s is the number of characters in it. If we denote the length of string s as |s|, we can write the string as s = s1s2... s|s|.
 
-A substring of s is a non-empty string x = s[a... b] = sasa + 1... sb (1 ≤ a ≤ b ≤ |s|). For example, "code" and "force" are substrings of "codeforces", while "coders" is not. 
+N Q
+a_1 b_1 c_1 d_1
+a_2 b_2 c_2 d_2
+::
+a_n b_n c_n d_n
+x_1 y_1 z_1 w_1
+x_2 y_2 z_2 w_2
+::
+x_q y_q z_q w_q
 
-A subsequence of s is a non-empty string y = s[p1p2... p|y|] = sp1sp2... sp|y| (1 ≤ p1 < p2 < ... < p|y| ≤ |s|). For example, "coders" is a subsequence of "codeforces".
+
+output
+
+
+ans_1
+ans_2
+::
+ans_q
+
+
+On line j, print the answer to the jth query.
+
+If the subscript i that satisfies the condition exists, `Yes` is output, and if it does not exist,` No` is output.
+
+Constraint
+
+* 1 \ leq N, Q \ leq 10 ^ 5
+* 1 \ leq a_i <b_i \ leq 10 ^ 5
+* 1 \ leq c_i <d_i \ leq 10 ^ 5
+* 1 \ leq x_j <y_j \ leq 10 ^ 5
+* 1 \ leq z_j <w_j \ leq 10 ^ 5
+
+
+
+Input example
+
+
+twenty two
+14 86 9 121
+3 34 3 34
+1 14 5 14
+1 9 1 9
+
+
+Output example
+
+
+No
+Yes
+
+
+
+
+
+
+Example
 
 Input
 
-The first line contains two integers la and lb (1 ≤ la, lb ≤ 1000000) — the number of hieroglyphs in the first and second circles, respectively.
-
-Below, due to difficulties with encoding of Berland hieroglyphs, they are given as integers from 1 to 106.
-
-The second line contains la integers — the hieroglyphs in the first picture, in the clockwise order, starting with one of them.
-
-The third line contains lb integers — the hieroglyphs in the second picture, in the clockwise order, starting with one of them.
-
-It is guaranteed that the first circle doesn't contain a hieroglyph, which occurs twice. The second circle also has this property.
-
-Output
-
-Print a single number — the maximum length of the common substring and subsequence. If at any way of breaking the circles it does not exist, print 0.
-
-Examples
-
-Input
-
-5 4
-1 2 3 4 5
-1 3 5 6
+2 2
+14 86 9 121
+3 34 3 34
+1 14 5 14
+1 9 1 9
 
 
 Output
 
-2
-
-
-Input
-
-4 6
-1 3 5 2
-1 2 3 4 5 6
-
-
-Output
-
-3
-
-
-Input
-
-3 3
-1 2 3
-3 2 1
-
-
-Output
-
-2
-
-Note
-
-In the first test Polycarpus picks a string that consists of hieroglyphs 5 and 1, and in the second sample — from hieroglyphs 1, 3 and 5.
-Difficulty: 8
+No
+Yes
+Difficulty: 0
 Solutions: #include <bits/stdc++.h>
 using namespace std;
-int a, b;
-int L1[1 << 20], L2[1 << 20];
-int pos[1 << 20];
-int res = 0;
-int main() {
-  memset(pos, -1, sizeof(pos));
-  scanf("%d%d", &a, &b);
-  for (int i = 0; i < a; ++i) scanf("%d", &L1[i]);
-  for (int i = 0; i < b; ++i) {
-    scanf("%d", &L2[i]);
-    pos[L2[i]] = i;
-  }
-  int cur = -1;
-  int len = 0;
-  for (int i = 0; i < a; ++i) {
-    if (pos[L1[i]] == -1) {
-      cur = -1;
-      continue;
-    }
-    if (cur == -1) {
-      cur = i;
-      len = 1;
-    }
-    while (1) {
-      if (pos[L1[(cur + 1) % a]] == -1) break;
-      int dist = pos[L1[(cur + 1) % a]] - pos[L1[cur]];
-      if (dist <= 0) dist += b;
-      int p = pos[L1[i]] - pos[L1[cur]];
-      if (p <= 0) p += b;
-      if (dist >= p) break;
-      cur = (cur + 1) % a;
-      len++;
-    }
-    res = max(res, len);
-    len--;
-  }
-  cout << res << endl;
-  return 0;
+
+using ll=long long;
+//#define int ll
+
+#define rng(i,a,b) for(int i=int(a);i<int(b);i++)
+#define rep(i,b) rng(i,0,b)
+#define gnr(i,a,b) for(int i=int(b)-1;i>=int(a);i--)
+#define per(i,b) gnr(i,0,b)
+#define pb push_back
+#define eb emplace_back
+#define a first
+#define b second
+#define bg begin()
+#define ed end()
+#define all(x) x.bg,x.ed
+#ifdef LOCAL
+#define dmp(x) cerr<<__LINE__<<" "<<#x<<" "<<x<<endl
+#else
+#define dmp(x) void(0)
+#endif
+
+template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
+template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
+
+template<class t> using vc=vector<t>;
+template<class t> using vvc=vc<vc<t>>;
+
+using pi=pair<int,int>;
+using vi=vc<int>;
+
+template<class t,class u>
+ostream& operator<<(ostream& os,const pair<t,u>& p){
+	return os<<"{"<<p.a<<","<<p.b<<"}";
 }
+
+template<class t> ostream& operator<<(ostream& os,const vc<t>& v){
+	os<<"{";
+	for(auto e:v)os<<e<<",";
+	return os<<"}";
+}
+
+#define mp make_pair
+#define mt make_tuple
+#define one(x) memset(x,-1,sizeof(x))
+#define zero(x) memset(x,0,sizeof(x))
+#ifdef LOCAL
+void dmpr(ostream&os){os<<endl;}
+template<class T,class... Args>
+void dmpr(ostream&os,const T&t,const Args&... args){
+	os<<t<<" ";
+	dmpr(os,args...);
+}
+#define dmp2(...) dmpr(cerr,"Line:",__LINE__,##__VA_ARGS__)
+#else
+#define dmp2(...) void(0)
+#endif
+
+using uint=unsigned;
+using ull=unsigned long long;
+
+template<class t,size_t n>
+ostream& operator<<(ostream&os,const array<t,n>&a){
+	return os<<vc<t>(all(a));
+}
+
+template<int i,class T>
+void print_tuple(ostream&,const T&){
+}
+
+template<int i,class T,class H,class ...Args>
+void print_tuple(ostream&os,const T&t){
+	if(i)os<<",";
+	os<<get<i>(t);
+	print_tuple<i+1,T,Args...>(os,t);
+}
+
+template<class ...Args>
+ostream& operator<<(ostream&os,const tuple<Args...>&t){
+	os<<"{";
+	print_tuple<0,tuple<Args...>,Args...>(os,t);
+	return os<<"}";
+}
+
+void print(ll x,int suc=1){
+	cout<<x;
+	if(suc==1)
+		cout<<"\n";
+	if(suc==2)
+		cout<<" ";
+}
+
+ll read(){
+	ll i;
+	cin>>i;
+	return i;
+}
+
+vi readvi(int n,int off=0){
+	vi v(n);
+	rep(i,n)v[i]=read()+off;
+	return v;
+}
+
+template<class T>
+void print(const vector<T>&v,int suc=1){
+	rep(i,v.size())
+		print(v[i],i==int(v.size())-1?suc:2);
+}
+
+string readString(){
+	string s;
+	cin>>s;
+	return s;
+}
+
+template<class T>
+T sq(const T& t){
+	return t*t;
+}
+
+//#define CAPITAL
+void yes(bool ex=true){
+	#ifdef CAPITAL
+	cout<<"YES"<<endl;
+	#else
+	cout<<"Yes"<<"\n";
+	#endif
+	if(ex)exit(0);
+}
+void no(bool ex=true){
+	#ifdef CAPITAL
+	cout<<"NO"<<endl;
+	#else
+	cout<<"No"<<"\n";
+	#endif
+	if(ex)exit(0);
+}
+void possible(bool ex=true){
+	#ifdef CAPITAL
+	cout<<"POSSIBLE"<<endl;
+	#else
+	cout<<"Possible"<<endl;
+	#endif
+	if(ex)exit(0);
+}
+void impossible(bool ex=true){
+	#ifdef CAPITAL
+	cout<<"IMPOSSIBLE"<<endl;
+	#else
+	cout<<"Impossible"<<endl;
+	#endif
+	if(ex)exit(0);
+}
+
+constexpr ll ten(int n){
+	return n==0?1:ten(n-1)*10;
+}
+
+const ll infLL=LLONG_MAX/3;
+
+#ifdef int
+const int inf=infLL;
+#else
+const int inf=INT_MAX/2-100;
+#endif
+
+int topbit(signed t){
+	return t==0?-1:31-__builtin_clz(t);
+}
+int topbit(ll t){
+	return t==0?-1:63-__builtin_clzll(t);
+}
+int botbit(signed a){
+	return a==0?32:__builtin_ctz(a);
+}
+int botbit(ll a){
+	return a==0?64:__builtin_ctzll(a);
+}
+int popcount(signed t){
+	return __builtin_popcount(t);
+}
+int popcount(ll t){
+	return __builtin_popcountll(t);
+}
+bool ispow2(int i){
+	return i&&(i&-i)==i;
+}
+int mask(int i){
+	return (int(1)<<i)-1;
+}
+
+bool inc(int a,int b,int c){
+	return a<=b&&b<=c;
+}
+
+template<class t> void mkuni(vc<t>&v){
+	sort(all(v));
+	v.erase(unique(all(v)),v.ed);
+}
+
+ll rand_int(ll l, ll r) { //[l, r]
+	#ifdef LOCAL
+	static mt19937_64 gen;
+	#else
+    static random_device rd;
+    static mt19937_64 gen(rd());
+    #endif
+    return uniform_int_distribution<ll>(l, r)(gen);
+}
+
+template<class t>
+int lwb(const vc<t>&v,const t&a){
+	return lower_bound(all(v),a)-v.bg;
+}
+
+//CF Global3 H
+//ARC073 F
+//point update
+template<class T,class F>
+struct SegTree{
+	vc<T> buf;
+	int s;
+	const F f;
+	const T g;
+	SegTree(F ff,T gg):f(ff),g(gg){}
+	void init(const vc<T>& d){
+		int n=d.size();
+		s=1;
+		while(s<n)s*=2;
+		buf.resize(s*2,g);
+		rep(i,n)
+			buf[i+s]=d[i];
+		gnr(i,1,s)
+			u(i);
+	}
+	SegTree(const vc<T>& d,F ff,T gg):f(ff),g(gg){
+		init(d);
+	}
+	void u(int i){
+		buf[i]=f(buf[i*2],buf[i*2+1]);
+	}
+	void set(int i,T t){
+		i+=s;
+		buf[i]=t;
+		while(i>>=1)u(i);
+	}
+	void upd(int i,T t){
+		i+=s;
+		buf[i]=f(buf[i],t);
+		while(i>>=1)u(i);
+	}
+	T get(int b,int e,int l,int r,int i){
+		if(e<=l||r<=b)return g;
+		if(b<=l&&r<=e)return buf[i];
+		int m=(l+r)/2;
+		return f(get(b,e,l,m,i*2),get(b,e,m,r,i*2+1));
+	}
+	T get(int b,int e){
+		return get(b,e,0,s,1);
+	}
+};
+
+template<class t,class F>
+struct Point1D{
+	SegTree<t,F> seg;
+	vi pos;
+	const t g;
+	Point1D(F ff,t gg):seg(ff,gg),g(gg){}
+	void addp(int p){
+		pos.pb(p);
+	}
+	void init(){
+		mkuni(pos);
+		seg.init(vc<t>(pos.size(),g));
+	}
+	int idx(int p){
+		return lwb(pos,p);
+	}
+	//void addv(int p,t v){
+	void updv(int p,t v){
+		seg.upd(idx(p),v);
+	}
+	t get(int b,int e){
+		return seg.get(idx(b),idx(e));
+	}
+};
+
+template<class t,class F>
+struct Point2D{
+	vc<Point1D<t,F>> buf;
+	vi pos,xs,ys;
+	const F f;
+	const t g;
+	int s;
+	Point2D(F ff,t gg):f(ff),g(gg){}
+	void addp(int x,int y){
+		xs.pb(x);
+		ys.pb(y);
+	}
+	int idx(int p){
+		return lwb(pos,p);
+	}
+	void init(){
+		pos=xs;
+		mkuni(pos);
+		s=1;
+		while(s<(int)pos.size())s*=2;
+		//buf.resize(s*2,Point1D<t,F>(f,g));
+		rep(i,s*2)buf.emplace_back(f,g);
+		rep(i,xs.size()){
+			int j=lwb(pos,xs[i])+s;
+			while(j>=1){
+				buf[j].addp(ys[i]);
+				j>>=1;
+			}
+		}
+		for(auto&b:buf)b.init();
+	}
+	void updv(int x,int y,t v){
+		int j=idx(x)+s;
+		while(j>=1){
+			buf[j].updv(y,v);
+			j>>=1;
+		}
+	}
+	t get(int b,int e,int p,int q,int l,int r,int i){
+		if(e<=l||r<=b)return g;
+		if(b<=l&&r<=e)return buf[i].get(p,q);
+		int m=(l+r)/2;
+		return f(get(b,e,p,q,l,m,i*2),get(b,e,p,q,m,r,i*2+1));
+	}
+	//[x1,x2)*[y1,y2)
+	t get(int x1,int x2,int y1,int y2){
+		return get(idx(x1),idx(x2),y1,y2,0,s,1);
+	}
+};
+
+struct rect{
+	int a,b,c,d;
+	void init(){
+		cin>>a>>b>>c>>d;
+	}
+};
+
+struct query{
+	int y,t,i;
+	bool operator<(const query&q)const{
+		if(y!=q.y)return y>q.y;
+		return t<q.t;
+	}
+};
+
+signed main(){
+	cin.tie(0);
+	ios::sync_with_stdio(0);
+	cout<<fixed<<setprecision(20);
+	
+	int n,q;cin>>n>>q;
+	
+	vc<rect> x(n),y(q);
+	auto imax=[&](int a,int b){
+		return max(a,b);
+	};
+	vc<query> qs;
+	Point2D<int,decltype(imax)> p2(imax,-inf);
+	rep(i,n){
+		x[i].init();
+		p2.addp(x[i].a,x[i].c);
+		qs.pb({x[i].d,1,i});
+	}
+	rep(i,q){
+		y[i].init();
+		qs.pb({y[i].d,0,i});
+	}
+	p2.init();
+	vi ans(q);
+	sort(all(qs));
+	for(auto z:qs){
+		int i=z.i;
+		if(z.t==0){
+			int mx=p2.get(y[i].a+1,y[i].b,y[i].c+1,y[i].d);
+			dmp(mx);
+			ans[i]=y[i].b<mx;
+		}else{
+			p2.updv(x[i].a,x[i].c,x[i].b);
+		}
+	}
+	rep(i,q)
+		if(ans[i])
+			yes(0);
+		else
+			no(0);
+}
+
 
 
 Example question 2:
-Name: 875_B. Sorting the Coins
-Tags: ['dsu', 'implementation', 'sortings', 'two pointers']
-Description: Recently, Dima met with Sasha in a philatelic store, and since then they are collecting coins together. Their favorite occupation is to sort collections of coins. Sasha likes having things in order, that is why he wants his coins to be arranged in a row in such a way that firstly come coins out of circulation, and then come coins still in circulation. 
+Name: sherlock-and-xor
+Tags: []
+Description: You are given an array A1,A2...AN. You have to tell how many pairs (i, j) exist such that 1 ≤ i < j ≤ N and Ai XOR Aj is odd.      
 
-For arranging coins Dima uses the following algorithm. One step of his algorithm looks like the following:
+Input and Output 
+First line T, the number of testcases. Each testcase: first line N, followed by N integers in next line. For each testcase, print the required answer in one line.       
 
-  1. He looks through all the coins from left to right; 
-  2. If he sees that the i-th coin is still in circulation, and (i + 1)-th coin is already out of circulation, he exchanges these two coins and continues watching coins from (i + 1)-th. 
+Constraints 
+1 ≤ T ≤ 10 
+1 ≤ N ≤ 10^5 
+0 ≤ Ai ≤ 10^9
 
-
-
-Dima repeats the procedure above until it happens that no two coins were exchanged during this procedure. Dima calls hardness of ordering the number of steps required for him according to the algorithm above to sort the sequence, e.g. the number of times he looks through the coins from the very beginning. For example, for the ordered sequence hardness of ordering equals one.
-
-Today Sasha invited Dima and proposed him a game. First he puts n coins in a row, all of them are out of circulation. Then Sasha chooses one of the coins out of circulation and replaces it with a coin in circulation for n times. During this process Sasha constantly asks Dima what is the hardness of ordering of the sequence. 
-
-The task is more complicated because Dima should not touch the coins and he should determine hardness of ordering in his mind. Help Dima with this task. 
-
-Input
-
-The first line contains single integer n (1 ≤ n ≤ 300 000) — number of coins that Sasha puts behind Dima.
-
-Second line contains n distinct integers p1, p2, ..., pn (1 ≤ pi ≤ n) — positions that Sasha puts coins in circulation to. At first Sasha replaces coin located at position p1, then coin located at position p2 and so on. Coins are numbered from left to right.
-
-Output
-
-Print n + 1 numbers a0, a1, ..., an, where a0 is a hardness of ordering at the beginning, a1 is a hardness of ordering after the first replacement and so on. 
-
-Examples
-
-Input
-
-4
-1 3 4 2
-
-
-Output
-
-1 2 3 2 1
-
-
-Input
-
-8
-6 8 3 4 7 2 1 5
-
-
-Output
-
-1 2 2 3 4 3 4 5 1
-
-Note
-
-Let's denote as O coin out of circulation, and as X — coin is circulation.
-
-At the first sample, initially in row there are coins that are not in circulation, so Dima will look through them from left to right and won't make any exchanges.
-
-After replacement of the first coin with a coin in circulation, Dima will exchange this coin with next three times and after that he will finally look through the coins and finish the process.
-
-XOOO →  OOOX
-
-After replacement of the third coin, Dima's actions look this way:
-
-XOXO →  OXOX →  OOXX
-
-After replacement of the fourth coin, Dima's actions look this way:
-
-XOXX →  OXXX
-
-Finally, after replacement of the second coin, row becomes consisting of coins that are in circulation and Dima will look through coins from left to right without any exchanges.
-Difficulty: 8
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-int n, i, R, x, c[333333];
-void add(int x) {
-  for (; x; x -= x & -x) c[x]++;
-}
-int qu(int x) {
-  if (!x) return 0;
-  int V = 0;
-  for (; x <= n; x += x & -x) V += c[x];
-  return V;
-}
-int main() {
-  scanf("%d", &n);
-  R = n;
-  printf("1");
-  for (int i = 1; i <= n; i++) {
-    scanf("%d", &x);
-    add(x);
-    for (; qu(R) == n - R + 1 && R; R--)
-      ;
-    printf(" %d", i - (n - R) + 1);
-  }
-}
-
-
-Example question 3:
-Name: 919_C. Seat Arrangements
-Tags: ['brute force', 'implementation']
-Description: Suppose that you are in a campus and have to go for classes day by day. As you may see, when you hurry to a classroom, you surprisingly find that many seats there are already occupied. Today you and your friends went for class, and found out that some of the seats were occupied.
-
-The classroom contains n rows of seats and there are m seats in each row. Then the classroom can be represented as an n × m matrix. The character '.' represents an empty seat, while '*' means that the seat is occupied. You need to find k consecutive empty seats in the same row or column and arrange those seats for you and your friends. Your task is to find the number of ways to arrange the seats. Two ways are considered different if sets of places that students occupy differs.
-
-Input
-
-The first line contains three positive integers n,m,k (1 ≤ n, m, k ≤ 2 000), where n,m represent the sizes of the classroom and k is the number of consecutive seats you need to find.
-
-Each of the next n lines contains m characters '.' or '*'. They form a matrix representing the classroom, '.' denotes an empty seat, and '*' denotes an occupied seat.
-
-Output
-
-A single number, denoting the number of ways to find k empty seats in the same row or column.
-
-Examples
-
-Input
-
-2 3 2
-**.
-...
-
-
-Output
-
+SAMPLE INPUT
+2
 3
+1 2 3
+4
+1 2 3 4
 
+SAMPLE OUTPUT
+2
+4
 
-Input
+Explanation
 
-1 2 2
-..
-
-
-Output
-
-1
-
-
-Input
-
-3 3 4
-.*.
-*.*
-.*.
-
-
-Output
-
-0
-
-Note
-
-In the first sample, there are three ways to arrange those seats. You can take the following seats for your arrangement. 
-
-  * (1,3), (2,3) 
-  * (2,2), (2,3) 
-  * (2,1), (2,2) 
-Difficulty: 9
-Solutions: '''input
-1 10 1
-..........
-'''
-n,m,k = map(int,raw_input().split())
-arr = []
-for i in range(n):
-	tmp = list(raw_input().strip())
-	arr.append(tmp)
-ans = 0
-for i in range(n):
-	cnt = 0
-	tmp = []
-	for j in range(m):
-		if arr[i][j] == '.':
-			cnt += 1
-		else:
-			if cnt >= k:
-				tmp.append(cnt)
-			cnt = 0
-	if cnt >= k:
-		tmp.append(cnt)
-	for o in tmp:
-		ans += (o-k+1)
-for i in range(m):
-	cnt = 0
-	tmp = []
-	for j in range(n):
-		if arr[j][i] == '.':
-			cnt += 1
-		else:
-			if cnt >= k:
-				tmp.append(cnt)
-			cnt = 0
-	if cnt >= k:
-		tmp.append(cnt)
-	for o in tmp:
-		ans += (o-k+1)
-if k == 1:
-	print ans//2
-else:
-	print ans
-
-
+For first testcase: 1 XOR 2 is 3 and 2 XOR 3 is 1. So, 2 valid pairs.
+For second testcase: 1 XOR 2 is 3 and 2 XOR 3 is 1 and 1 XOR 4 is 5 and 3 XOR 4 is 7. So, 4 valid pairs.
+Difficulty: 0
+Solutions: t=input()
+for j in range(t):
+	n=input()
+	res=sum(int(i)%2 for i in raw_input().split())
+	print res*(n-res)
 
 
 INSTRUCTIONS:
@@ -409,6 +604,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

@@ -70,570 +70,134 @@ The coloring and the cut for the first testcase:
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: p01897 DAG Trio (Hard)
+Name: p03440 AtCoder Petrozavodsk Contest 001 - Forest
 Tags: ['']
-Description: This issue is the same configuration issue as D: DAG Trio (Easy), with only the constraints being different.
+Description: You are given a forest with N vertices and M edges. The vertices are numbered 0 through N-1. The edges are given in the format (x_i,y_i), which means that Vertex x_i and y_i are connected by an edge.
 
+Each vertex i has a value a_i. You want to add edges in the given forest so that the forest becomes connected. To add an edge, you choose two different vertices i and j, then span an edge between i and j. This operation costs a_i + a_j dollars, and afterward neither Vertex i nor j can be selected again.
 
+Find the minimum total cost required to make the forest connected, or print `Impossible` if it is impossible.
 
-input
+Constraints
 
-$ N \ M $
-$ a_1 \ b_1 $
-$ a_2 \ b_2 $
-$ \ vdots $
-$ a_M \ b_M $
-
-output
-
-Print "YES" or "NO" on the $ 1 $ line.
-
-Example
+* 1 ≤ N ≤ 100,000
+* 0 ≤ M ≤ N-1
+* 1 ≤ a_i ≤ 10^9
+* 0 ≤ x_i,y_i ≤ N-1
+* The given graph is a forest.
+* All input values are integers.
 
 Input
 
-3 3
-1 2
-2 3
-3 1
+Input is given from Standard Input in the following format:
+
+
+N M
+a_0 a_1 .. a_{N-1}
+x_1 y_1
+x_2 y_2
+:
+x_M y_M
 
 
 Output
 
-YES
-Difficulty: 0
-Solutions: #include<bits/stdc++.h>
-using namespace std;
-#define MAX_N 500
-#define MAX_M 50000
-struct edge{ int from,to,id; };
-
-int N,M;
-int a[MAX_M],b[MAX_M];
-bool flg[MAX_M];
-
-vector<edge> G[MAX_N];
-
-bool visited[MAX_N];
-int depth[MAX_N];
-int cnt[MAX_N];
-int par[MAX_N];
-
-
-vector<edge> bridges;
-
-
-vector<edge> edge_;
-
-void dfs(int pos,int prev){
-  visited[pos]=true;
-  for(int i=0;i<(int)G[pos].size();i++){
-    int to=G[pos][i].to;
-    if(to==prev)continue;
-    if(!visited[to]){
-      depth[to]=depth[pos]+1;
-      par[to]=pos;
-      dfs(to,pos);
-      cnt[pos]+=cnt[to];
-      if(cnt[to]==0)bridges.push_back(G[pos][i]);
-    }else if(depth[to]<depth[pos]){
-      cnt[pos]++;
-      cnt[to]--;
-      edge_.push_back(G[pos][i]);
-    }
-  }
-}
-
-int countB(int id){
-  bridges.clear();
-  edge_.clear();
-  
-  memset(visited,false,sizeof(visited));
-  memset(depth,0,sizeof(depth));
-  memset(cnt,0,sizeof(cnt));
-  memset(par,-1,sizeof(par));
-  
-  for(int i=0;i<N;i++)G[i].clear();
-  for(int i=0;i<M;i++){
-    if(i==id)continue;
-    G[ a[i] ].push_back( (edge){ a[i],b[i],i } );
-    G[ b[i] ].push_back( (edge){ b[i],a[i],i } );
-  }
-  for(int i=0;i<N;i++){
-    if(visited[i])continue;
-    dfs(i,-1);
-  }
-  return bridges.size();
-}
-
-bool isDag(int id){
-  queue<int> Q;  
-  vector<int> C(N,0);
-  int cc=0;
-  
-  for(int i=0;i<N;i++)G[i].clear();
-  for(int i=0;i<M;i++){
-    if(i==id)continue;
-    G[ a[i] ].push_back( (edge){a[i],b[i],i} );
-    C[ b[i] ]++;
-  }
-  for(int i=0;i<N;i++)if(C[i]==0)Q.push(i);
-
-  while(!Q.empty()){
-    int pos=Q.front();Q.pop();
-    cc++;
-    for(int i=0;i<(int)G[pos].size();i++){
-      int to=G[pos][i].to;
-      C[to]--;
-      if(C[to]==0)Q.push(to);
-    }
-  }
-  return (cc==N);
-}
-
-void visit(int v){
-  if(visited[v])return;
-  visited[v]=true;
-  for(int i=0;i<(int)G[v].size();i++){
-    visit(G[v][i].to);
-  }
-}
-
-int calcDec(int id){
-  for(int i=0;i<N;i++)G[i].clear();
-  for(int i=0;i<M;i++){
-    if(i==id)continue;
-    G[ a[i] ].push_back( (edge){a[i],b[i],i} );
-    G[ b[i] ].push_back( (edge){b[i],a[i],i} );
-  }
-  int res=0;
-  memset(visited,false,sizeof(visited));
-  for(int i=0;i<N;i++){
-    if(!visited[i]){
-      res++;
-      visit(i);
-    }
-  }
-  return res;
-}
-
-map<int,int> mm;
-bool check(int id){
-  if(mm.count(id))return false;
-  mm[id]=true;
-  
-  if(countB(id) + calcDec(id)>=3&&isDag(id))return true;
-  else return false;
-}
-
-vector<edge> loope;
-bool rec(int pos,int si){
-  if(visited[pos])return (pos==si);
-  visited[pos]=true;
-  for(int i=0;i<(int)G[pos].size();i++){
-    edge e=G[pos][i];
-    if( rec(e.to,si) ){
-      loope.push_back(e);
-      return true;
-    }
-  }
-  return false;
-}
-
-bool solve2(){
-  for(int i=0;i<N;i++)G[i].clear();
-  for(int i=0;i<M;i++)G[ a[i] ].push_back( (edge){a[i],b[i],i} );
-  
-  for(int i=0;i<N;i++){
-    memset(visited,false,sizeof(visited));
-    loope.clear();
-    if( rec(i,i) )break;
-  }
-  
-  for(int i=0;i<(int)loope.size();i++)
-    if(check( loope[i].id ))return true;
-
-  return false;
-}
-
-bool solve(){
-  int B=countB(-1);
-  if(B==M)return false;
-  
-  if( !isDag(-1) )return solve2();
-
-  /*
-  for(int i=0;i<M;i++){
-    if(check(i)){
-      return true;
-    }
-  }
-  */
-  int maxm=0;
-
-  
-  B=countB(-1);
-  for(int i=0;i<(int)edge_.size();i++){
-    edge e=edge_[i];
-    int a=e.from;
-    int cc=0;
-    while(1){
-      if(a==e.to)break;
-      if(cnt[a]==1)cc++;
-      a=par[a];
-    }
-    maxm=max(maxm,cc);
-  }
-
-  for(int i=0;i<M;i++)
-    if(check(i))return true;
-  /*
-  vector<edge> tmp=edge_;
-  for(int i=0;i<(int)tmp.size();i++){
-    edge e=tmp[i];
-    if(check(e.id))return true;
-  }
-  */
-  return (B+maxm>=2);
-}
-
-int main(){
-  cin>>N>>M;
-  for(int i=0;i<M;i++){
-    cin>>a[i]>>b[i];
-    a[i]--;
-    b[i]--;
-  }
-  cout<< ( solve() ? "YES" : "NO" ) <<endl;
-  return 0;
-}
-
-Example question 2:
-Name: 1180_C. Valeriy and Deque
-Tags: ['data structures', 'implementation']
-Description: Recently, on the course of algorithms and data structures, Valeriy learned how to use a deque. He built a deque filled with n elements. The i-th element is a_i (i = 1, 2, …, n). He gradually takes the first two leftmost elements from the deque (let's call them A and B, respectively), and then does the following: if A > B, he writes A to the beginning and writes B to the end of the deque, otherwise, he writes to the beginning B, and A writes to the end of the deque. We call this sequence of actions an operation.
-
-For example, if deque was [2, 3, 4, 5, 1], on the operation he will write B=3 to the beginning and A=2 to the end, so he will get [3, 4, 5, 1, 2].
-
-The teacher of the course, seeing Valeriy, who was passionate about his work, approached him and gave him q queries. Each query consists of the singular number m_j (j = 1, 2, …, q). It is required for each query to answer which two elements he will pull out on the m_j-th operation.
-
-Note that the queries are independent and for each query the numbers A and B should be printed in the order in which they will be pulled out of the deque.
-
-Deque is a data structure representing a list of elements where insertion of new elements or deletion of existing elements can be made from both sides.
-
-Input
-
-The first line contains two integers n and q (2 ≤ n ≤ 10^5, 0 ≤ q ≤ 3 ⋅ 10^5) — the number of elements in the deque and the number of queries. The second line contains n integers a_1, a_2, ..., a_n, where a_i (0 ≤ a_i ≤ 10^9) — the deque element in i-th position. The next q lines contain one number each, meaning m_j (1 ≤ m_j ≤ 10^{18}).
-
-Output
-
-For each teacher's query, output two numbers A and B — the numbers that Valeriy pulls out of the deque for the m_j-th operation.
+Print the minimum total cost required to make the forest connected, or print `Impossible` if it is impossible.
 
 Examples
 
 Input
 
-
-5 3
-1 2 3 4 5
-1
-2
-10
-
-
-Output
-
-
+7 5
+1 2 3 4 5 6 7
+3 0
+4 0
 1 2
-2 3
-5 2
-
-
-Input
-
-
-2 0
-0 0
+1 3
+5 6
 
 
 Output
 
-Note
-
-Consider all 10 steps for the first test in detail:
-  1. [1, 2, 3, 4, 5] — on the first operation, A and B are 1 and 2, respectively.
-
-So, 2 we write to the beginning of the deque, and 1 — to the end.
-
-We get the following status of the deque: [2, 3, 4, 5, 1].
-
-  2. [2, 3, 4, 5, 1] ⇒ A = 2, B = 3.
-  3. [3, 4, 5, 1, 2]
-  4. [4, 5, 1, 2, 3]
-  5. [5, 1, 2, 3, 4]
-  6. [5, 2, 3, 4, 1]
-  7. [5, 3, 4, 1, 2]
-  8. [5, 4, 1, 2, 3]
-  9. [5, 1, 2, 3, 4]
-  10. [5, 2, 3, 4, 1] ⇒ A = 5, B = 2. 
-Difficulty: 9
-Solutions: #include <bits/stdc++.h>
-const long long int INF = (long long int)1e9;
-const double EPS = 0.000000000001;
-using namespace std;
-int main() {
-  ios::sync_with_stdio(0);
-  cin.tie(0), cout.tie(0);
-  long long int n, q;
-  cin >> n >> q;
-  deque<long long int> deq;
-  long long int max_n = -1;
-  for (long long int i = 0; i < n; ++i) {
-    long long int temp;
-    cin >> temp;
-    max_n = max(max_n, temp);
-    deq.push_back(temp);
-  }
-  vector<pair<long long int, long long int> > operations_prev;
-  while (deq.front() != max_n) {
-    long long int a, b;
-    a = deq.front();
-    deq.pop_front();
-    b = deq.front();
-    deq.pop_front();
-    operations_prev.push_back({a, b});
-    if (a > b) {
-      deq.push_front(a);
-      deq.push_back(b);
-    } else {
-      deq.push_front(b);
-      deq.push_back(a);
-    }
-  }
-  vector<long long int> arr(n - 1);
-  deq.pop_front();
-  for (long long int i = 0; i < n - 1; ++i) {
-    arr[i] = deq.front();
-    deq.pop_front();
-  }
-  for (long long int i = 0; i < q; ++i) {
-    long long int temp;
-    cin >> temp;
-    if (temp <= operations_prev.size()) {
-      cout << operations_prev[temp - 1].first << ' '
-           << operations_prev[temp - 1].second << '\n';
-    } else {
-      temp -= operations_prev.size() + 1;
-      temp = (temp % (n - 1));
-      cout << max_n << ' ' << arr[temp] << '\n';
-    }
-  }
-}
-
-
-Example question 3:
-Name: 1494_F. Delete The Edges
-Tags: ['brute force', 'constructive algorithms', 'dfs and similar', 'graphs', 'implementation']
-Description: You are given an undirected connected graph consisting of n vertices and m edges. Your goal is to destroy all edges of the given graph.
-
-You may choose any vertex as the starting one and begin walking from it along the edges. When you walk along an edge, you destroy it. Obviously, you cannot walk along an edge if it is destroyed.
-
-You can perform the mode shift operation at most once during your walk, and this operation can only be performed when you are at some vertex (you cannot perform it while traversing an edge). After the mode shift, the edges you go through are deleted in the following way: the first edge after the mode shift is not destroyed, the second one is destroyed, the third one is not destroyed, the fourth one is destroyed, and so on. You cannot switch back to the original mode, and you don't have to perform this operation if you don't want to.
-
-Can you destroy all the edges of the given graph?
-
-Input
-
-The first line contains two integers n and m (2 ≤ n ≤ 3000; n - 1 ≤ m ≤ min((n(n-1))/(2), 3000)) — the numbef of vertices and the number of edges in the graph.
-
-Then m lines follow, each containing two integers x_i and y_i (1 ≤ x_i, y_i ≤ n; x_i ≠ y_i) — the endpoints of the i-th edge. 
-
-These edges form a connected undirected graph without multiple edges.
-
-Output
-
-If it's impossible to destroy all of the edges, print 0.
-
-Otherwise, print the sequence of your actions as follows. First, print k — the number of actions (k ≤ 2m + 2). Then, print the sequence itself, consisting of k integers. The first integer should be the index of the starting vertex. Then, each of the next integers should be either the index of the next vertex in your traversal, or -1 if you use mode shift. You are allowed to use mode shift at most once.
-
-If there are multiple answers, print any of them.
-
-Examples
-
-Input
-
-
-3 3
-1 2
-2 3
-3 1
-
-
-Output
-
-
-4
-1 2 3 1
+7
 
 
 Input
 
-
-4 3
-1 2
-2 3
-4 2
+5 0
+3 1 4 1 5
 
 
 Output
 
-
-8
-2 -1 1 2 3 2 4 2 
+Impossible
 
 
 Input
 
-
-5 5
-1 2
-2 3
-3 1
-2 4
-2 5
+1 0
+5
 
 
 Output
-
-
-9
-2 3 1 2 -1 4 2 5 2 
-
-
-Input
-
-
-5 5
-1 2
-2 3
-3 1
-2 4
-4 5
-
-
-Output
-
-
-8
-5 4 2 3 1 -1 2 1 
-
-
-Input
-
-
-6 5
-1 2
-2 3
-3 4
-4 5
-3 6
-
-
-Output
-
 
 0
-Difficulty: 12
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-typedef pair <int, int> pii;
-const int N = 3005, M = N << 1;
-int n, m, edgenum, Head[N], Next[M], vet[M], u, v, deg[N], tot, B, vis[N], ans[M], len; bool Cut[M], _Cut[M];
-inline void add(int u, int v) {
-	Next[++edgenum] = Head[u];
-	Head[u] = edgenum;
-	vet[edgenum] = v;
-}
-void dfs(int u) {
-	vis[u] = B;
-	for (int e=Head[u]; ~e; e=Next[e]) {
-		int v=vet[e];
-		if (! vis[v] && ! Cut[e])
-			dfs(v);
-	}
-}
-void Find(int u) {
-	for (int e=Head[u]; ~e; e=Next[e])
-		if (! Cut[e])
-			Cut[e] = Cut[e^1] = 1, Find(vet[e]);
-	ans[++len] = u;
-}
-inline void solve(int u) {
-	for (int e=Head[u]; ~e; e=Next[e])
-		_Cut[e] = Cut[e];
-	Find(u);
-	if (B) {
-		ans[++len] = -1;
-		for (int e=Head[u]; ~e; e=Next[e])
-			if (_Cut[e])
-				ans[++len] = vet[e], ans[++len] = u;
-	}
-	cout << len << endl;
-	for (int i=1; i<=len; i++)
-		printf ("%d ", ans[i]);
-}
-int main() {
-	cin >> n >> m;
-	edgenum = -1, memset (Head, -1, sizeof Head);
-	for (int i=1; i<=m; i++)
-		scanf ("%d%d", &u, &v), add(u, v), add(v, u), deg[u] ++, deg[v] ++;
-	for (int i=1; i<=n; i++)
-		tot += deg[i] & 1;
-	if (! tot) return solve(1), 0;
-	if (tot == 2) {
-		for (int i=1; i<=n; i++)
-			if (deg[i] & 1)
-				return solve(i), 0;
-	}
-	for (int i=1; i<=n; i++) {
-		int cnt = tot - (deg[i] & 1); B = 1;
-		for (int e=Head[i]; ~e; e=Next[e])
-			cnt -= deg[vet[e]] & 1;
-		if (cnt > 1) continue;
-		for (int e=Head[i]; ~e; e=Next[e]) {
-			int v=vet[e];
-			if (deg[v] & 1) {
-				Cut[e] = Cut[e^1] = 1;
-				if (deg[v] == 1) vis[v] = 1;
-			}
-		}
-		dfs(i);
-		for (int j=1; j<=n; j++)
-			if (! vis[j])
-				B ++, dfs(j);
-		if (B > 2 || B == 2 && cnt) continue;
-		if (B == 1)
-			return solve(i), 0;
-		for (int e=Head[i]; ~e; e=Next[e])
-			if (vis[vet[e]] == 2) {
-				Cut[e] = Cut[e^1] = 0;
-				return solve(i), 0;
-			}
-		for (int j=1; j<=n; j++)
-			vis[j] = 0;
-		for (int e=Head[i]; ~e; e=Next[e])
-			if (! (deg[vet[e]] & 1))
-				Cut[e] = Cut[e^1] = 0;
-	} return puts ("0"), 0;
-}
-/*
-10 14
-1 2 1 3 2 4 3 4
-1 5 1 6 5 6 5 7 6 7
-1 8 1 9 8 9 8 10 9 10
-*/
+Difficulty: 0
+Solutions: # -*- coding: utf-8 -*-
+from collections import defaultdict
+from heapq import merge
+import sys
+sys.setrecursionlimit(10**7)
+def inpl(): return tuple(map(int, input().split()))
+ 
+N, M = inpl()
+A = inpl()
+tree = [[-1, 1]  for _ in range(N)] # [next, rank]
+ 
+def find(i):
+    if tree[i][0] == -1:
+        group = i
+    else:
+        group = find(tree[i][0]) 
+        tree[i][0] = group
+    return group
+  
+def unite(x, y):
+    px = find(x)
+    py = find(y)
+      
+    if tree[px][1] == tree[py][1]: # rank is same
+        tree[py][0] = px
+        tree[px][1] += 1
+    else:
+        if tree[px][1] < tree[py][1]:
+            px, py = py, px
+        tree[py][0] = px
+  
+for _ in range(M):
+    x, y = tuple(map(int, input().split()))
+    if not int(find(x) == find(y)):
+        unite(x, y)
+ 
+D = defaultdict(list)
+for n in range(N):
+    D[find(n)].append(A[n])
+ 
+H = []
+res = 0 
 
+for k, v in D.items():
+    v = sorted(v)
+    res += v[0]
+    H.append(v[1:])
+ 
+if N < 2*(N-M-1):
+    print("Impossible")
+elif M == N-1:
+    print(0)
+else:
+    res += sum(list(merge(*H))[:2*(N-M-1) - len(D.keys())])
+    print(res)
 
 
 INSTRUCTIONS:
@@ -644,6 +208,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

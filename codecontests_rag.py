@@ -65,9 +65,9 @@ class CodeContestsRAG:
             if max_similarity > 0.85:
                 threshold = max(min_threshold, 0.8 * max_similarity)
             elif max_similarity > 0.75:
-                threshold = max(min_threshold, 0.7 * max_similarity)
-            else:
                 threshold = max(min_threshold, 0.85 * max_similarity)
+            else:
+                threshold = max(min_threshold, 0.9 * max_similarity)
         
         similar_questions = []
         for i, idx in enumerate(indices[0]):

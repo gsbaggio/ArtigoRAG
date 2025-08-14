@@ -74,4 +74,4 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. Don't use any external libraries.
+3. Don't use any external libraries. Any language is accepted.

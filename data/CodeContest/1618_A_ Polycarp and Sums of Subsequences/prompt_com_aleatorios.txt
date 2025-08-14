@@ -47,41 +47,236 @@ Two subsequences are considered different if index sets of elements included in 
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: choclate-weight
-Tags: []
-Description: Raju has a crush on girl of his class. He wanted to become close friend of her so he started trying to impress her. She came to know about raju and she also likes him but she is not ready to tell him about her feelings. She gave him a task,she will ask him a chocolate weighs x and raju has to get chocolate of exact weight from the series of chocolate stores which are present in the university. if he succeeds in it she will say "I Like You" else she will get anger and will tell "I Hate You". Raju came to know about his task and he don't want to loose his girl first impression so he wants a help from you to impress his crush.
+Name: 1391_E. Pairs of Pairs
+Tags: ['constructive algorithms', 'dfs and similar', 'graphs', 'greedy', 'trees']
+Description: You have a simple and connected undirected graph consisting of n nodes and m edges.
 
-NOTE: X weight should be one or only 2 different weights of other chocolates. 
+Consider any way to pair some subset of these n nodes such that no node is present in more than one pair. 
 
-SAMPLE INPUT
-5
-5 2 3 4 1
+This pairing is valid if for every pair of pairs, the induced subgraph containing all 4 nodes, two from each pair, has at most 2 edges (out of the 6 possible edges). More formally, for any two pairs, (a,b) and (c,d), the induced subgraph with nodes \\{a,b,c,d\} should have at most 2 edges. 
+
+Please note that the subgraph induced by a set of nodes contains nodes only from this set and edges which have both of its end points in this set.
+
+Now, do one of the following: 
+
+  * Find a simple path consisting of at least ⌈ n/2 ⌉ nodes. Here, a path is called simple if it does not visit any node multiple times. 
+  * Find a valid pairing in which at least ⌈ n/2 ⌉ nodes are paired. 
+
+
+
+It can be shown that it is possible to find at least one of the two in every graph satisfying constraints from the statement. 
+
+Input
+
+Each test contains multiple test cases. The first line contains the number of test cases t (1 ≤ t ≤ 10^5). Description of the test cases follows.
+
+The first line of each test case contains 2 integers n, m (2 ≤ n ≤ 5⋅ 10^5, 1 ≤ m ≤ 10^6), denoting the number of nodes and edges, respectively. 
+
+The next m lines each contain 2 integers u and v (1 ≤ u, v ≤ n, u ≠ v), denoting that there is an undirected edge between nodes u and v in the given graph.
+
+It is guaranteed that the given graph is connected, and simple — it does not contain multiple edges between the same pair of nodes, nor does it have any self-loops. 
+
+It is guaranteed that the sum of n over all test cases does not exceed 5⋅ 10^5.
+
+It is guaranteed that the sum of m over all test cases does not exceed 10^6.
+
+Output
+
+For each test case, the output format is as follows. 
+
+If you have found a pairing, in the first line output "PAIRING" (without quotes). 
+
+  * Then, output k (⌈ n/2 ⌉ ≤ 2⋅ k ≤ n), the number of pairs in your pairing. 
+  * Then, in each of the next k lines, output 2 integers a and b — denoting that a and b are paired with each other. Note that the graph does not have to have an edge between a and b!
+  * This pairing has to be valid, and every node has to be a part of at most 1 pair. 
+
+
+
+Otherwise, in the first line output "PATH" (without quotes). 
+
+  * Then, output k (⌈ n/2 ⌉ ≤ k ≤ n), the number of nodes in your path. 
+  * Then, in the second line, output k integers, v_1, v_2, …, v_k, in the order in which they appear on the path. Formally, v_i and v_{i+1} should have an edge between them for every i (1 ≤ i < k).
+  * This path has to be simple, meaning no node should appear more than once. 
+
+Example
+
+Input
+
+
 4
-10
-4
+6 5
+1 4
+2 5
+3 6
+1 5
+3 5
+6 5
+1 4
+2 5
+3 6
+1 5
+3 5
+12 14
+1 2
+2 3
+3 4
+4 1
+1 5
+1 12
+2 6
+2 7
+3 8
+3 9
+4 10
+4 11
+2 4
+1 3
+12 14
+1 2
+2 3
+3 4
+4 1
+1 5
+1 12
+2 6
+2 7
+3 8
+3 9
+4 10
+4 11
+2 4
+1 3
+
+
+Output
+
+
+PATH
+4 
+1 5 3 6
+PAIRING
 2
-12
+1 6
+2 4
+PAIRING
+3
+1 8
+2 5
+4 10
+PAIRING
+4
+1 7
+2 9
+3 11
+4 5
 
-SAMPLE OUTPUT
-I Hate You
-I Like You
-I Like You
-I Hate You
-Difficulty: 0
-Solutions: T = int(raw_input())
-num = map(int,raw_input().split())
-N = len(num)
-for i in range(N):
-	for j in range(i + 1, N):
-		num.append(num[i] + num[j])
+Note
 
-N = int(raw_input())
-for i in range(N):
-	j = int(raw_input())
-	if j in num:
-		print "I Like You"
-	else:
-		print "I Hate You"
+The path outputted in the first case is the following. 
+
+<image>
+
+The pairing outputted in the second case is the following. 
+
+<image>
+
+Here is an invalid pairing for the same graph — the subgraph \{1,3,4,5\} has 3 edges. 
+
+<image>
+
+Here is the pairing outputted in the third case. 
+
+<image>
+
+It's valid because — 
+
+  * The subgraph \{1,8,2,5\} has edges (1,2) and (1,5). 
+  * The subgraph \{1,8,4,10\} has edges (1,4) and (4,10). 
+  * The subgraph \{4,10,2,5\} has edges (2,4) and (4,10). 
+
+
+
+Here is the pairing outputted in the fourth case. 
+
+<image>
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int32_t main() {
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  long long T;
+  cin >> T;
+  while (T--) {
+    long long N, M;
+    cin >> N >> M;
+    vector<vector<long long>> L(N + 1);
+    for (long long i = 0; i < M; i++) {
+      long long a, b;
+      cin >> a >> b;
+      L[a].push_back(b);
+      L[b].push_back(a);
+    }
+    vector<long long> T(N + 1);
+    vector<long long> H(N + 1);
+    vector<bool> mk(N + 1);
+    bool flag = false;
+    vector<long long> path;
+    vector<long long> temp;
+    function<void(long long, long long)> DFS = [&](long long nodo,
+                                                   long long lvl) {
+      mk[nodo] = true;
+      temp.push_back(nodo);
+      if (flag == false && lvl == ((N - 1) / 2 + 1)) {
+        flag = true;
+        path = temp;
+      }
+      for (auto v : L[nodo]) {
+        if (!mk[v]) {
+          DFS(v, lvl + 1);
+          T[v] = nodo;
+          H[nodo]++;
+        }
+      }
+      temp.pop_back();
+    };
+    DFS(1, 1);
+    if (flag) {
+      cout << "PATH" << '\n';
+      cout << path.size() << '\n';
+      for (auto x : path) {
+        cout << x << " ";
+      }
+      cout << '\n';
+      continue;
+    }
+    cout << "PAIRING" << '\n';
+    vector<pair<long long, long long>> vect;
+    queue<long long> Q;
+    for (long long i = 1; i <= N; i++) {
+      if (H[i] == 0) {
+        Q.push(i);
+      }
+    }
+    while (Q.size() > 1) {
+      long long p1 = Q.front();
+      Q.pop();
+      long long p2 = Q.front();
+      Q.pop();
+      vect.push_back({p1, p2});
+      H[T[p1]]--;
+      if (H[T[p1]] == 0) Q.push(T[p1]);
+      H[T[p2]]--;
+      if (H[T[p2]] == 0) Q.push(T[p2]);
+    }
+    cout << vect.size() << '\n';
+    for (auto x : vect) {
+      cout << x.first << " " << x.second << '\n';
+    }
+  }
+  return 0;
+}
+
 
 
 INSTRUCTIONS:
@@ -92,6 +287,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

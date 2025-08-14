@@ -79,325 +79,313 @@ In the second example: The answer for the first query is F(1 + 4) + F(3 + 2) + F
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 616_B. Dinner with Emma
-Tags: ['games', 'greedy']
-Description: Jack decides to invite Emma out for a dinner. Jack is a modest student, he doesn't want to go to an expensive restaurant. Emma is a girl with high taste, she prefers elite places.
+Name: 1295_E. Permutation Separation
+Tags: ['data structures', 'divide and conquer']
+Description: You are given a permutation p_1, p_2, ... , p_n (an array where each integer from 1 to n appears exactly once). The weight of the i-th element of this permutation is a_i.
 
-Munhattan consists of n streets and m avenues. There is exactly one restaurant on the intersection of each street and avenue. The streets are numbered with integers from 1 to n and the avenues are numbered with integers from 1 to m. The cost of dinner in the restaurant at the intersection of the i-th street and the j-th avenue is cij.
+At first, you separate your permutation into two non-empty sets — prefix and suffix. More formally, the first set contains elements p_1, p_2, ... , p_k, the second — p_{k+1}, p_{k+2}, ... , p_n, where 1 ≤ k < n.
 
-Jack and Emma decide to choose the restaurant in the following way. Firstly Emma chooses the street to dinner and then Jack chooses the avenue. Emma and Jack makes their choice optimally: Emma wants to maximize the cost of the dinner, Jack wants to minimize it. Emma takes into account that Jack wants to minimize the cost of the dinner. Find the cost of the dinner for the couple in love.
+After that, you may move elements between sets. The operation you are allowed to do is to choose some element of the first set and move it to the second set, or vice versa (move from the second set to the first). You have to pay a_i dollars to move the element p_i.
+
+Your goal is to make it so that each element of the first set is less than each element of the second set. Note that if one of the sets is empty, this condition is met.
+
+For example, if p = [3, 1, 2] and a = [7, 1, 4], then the optimal strategy is: separate p into two parts [3, 1] and [2] and then move the 2-element into first set (it costs 4). And if p = [3, 5, 1, 6, 2, 4], a = [9, 1, 9, 9, 1, 9], then the optimal strategy is: separate p into two parts [3, 5, 1] and [6, 2, 4], and then move the 2-element into first set (it costs 1), and 5-element into second set (it also costs 1).
+
+Calculate the minimum number of dollars you have to spend.
 
 Input
 
-The first line contains two integers n, m (1 ≤ n, m ≤ 100) — the number of streets and avenues in Munhattan.
+The first line contains one integer n (2 ≤ n ≤ 2 ⋅ 10^5) — the length of permutation.
 
-Each of the next n lines contains m integers cij (1 ≤ cij ≤ 109) — the cost of the dinner in the restaurant on the intersection of the i-th street and the j-th avenue.
+The second line contains n integers p_1, p_2, ... , p_n (1 ≤ p_i ≤ n). It's guaranteed that this sequence contains each element from 1 to n exactly once.
+
+The third line contains n integers a_1, a_2, ... , a_n (1 ≤ a_i ≤ 10^9).
 
 Output
 
-Print the only integer a — the cost of the dinner for Jack and Emma.
+Print one integer — the minimum number of dollars you have to spend.
 
 Examples
 
 Input
 
-3 4
-4 1 3 5
-2 2 2 2
-5 4 5 1
 
-
-Output
-
-2
-
-
-Input
-
-3 3
-1 2 3
-2 3 1
+3
 3 1 2
-
-
-Output
-
-1
-
-Note
-
-In the first example if Emma chooses the first or the third streets Jack can choose an avenue with the cost of the dinner 1. So she chooses the second street and Jack chooses any avenue. The cost of the dinner is 2.
-
-In the second example regardless of Emma's choice Jack can choose a restaurant with the cost of the dinner 1.
-Difficulty: 8
-Solutions: import math
-n=raw_input().split()
-t=[]
-for i in range(int(n[0])):
-    a=raw_input().split()
-    mini=int(a[0])
-    for i in a:
-        if mini>int(i):
-            mini=int(i)
-    t.append(mini)
-print max(t)
-
-
-
-Example question 2:
-Name: 1505_F. Math
-Tags: ['*special', 'math']
-Description: <image> <image>
-
-*The two images are equivalent, feel free to use either one.
-
-Input
-
-The input contains a single integer a (-100 ≤ a ≤ 100).
-
-Output
-
-Output the result – an integer number.
-
-Example
-
-Input
-
-
-1
-
-
-Output
-
-
-1
-Difficulty: 12
-Solutions: import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.lang.reflect.Array;
-import java.util.*;
-public class Main{
-    static class FastScanner {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer("");
-
-        String next() {
-            while (!st.hasMoreTokens())
-                try {
-                    st = new StringTokenizer(br.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            return st.nextToken();
-        }
-
-        int nextInt() {
-            return Integer.parseInt(next());
-        }
-
-        int[] nextArray(int n) {
-            int[] a = new int[n];
-            for (int i = 0; i < n; i++) a[i] = nextInt();
-            return a;
-        }
-        long[] nextArray(long n) {
-            long[] a = new long[(int) n];
-            for (int i = 0; i < n; i++) a[i] = nextLong();
-            return a;
-        }
-
-        long nextLong() {
-            return Long.parseLong(next());
-        }
-    }
-    static class FastWriter extends PrintWriter {
-            FastWriter(){
-                super(System.out);
-            }
-            void println(int[] array) {
-                for(int i=0; i<array.length; i++) {
-                    print(array[i]+" ");
-                }
-                println();
-            }
-            void println(long [] array) {
-                for(int i=0; i<array.length; i++) {
-                    print(array[i]+" ");
-                }
-                println();
-            }
-        }
-        static ArrayList<Integer> list=new ArrayList<>();
-    public static void main(String[] args){
-        FastScanner in = new FastScanner();
-        FastWriter out = new FastWriter();
-        int n=in.nextInt();
-        out.println(2-n*n);
-        out.close();
-    }
-}
-
-Example question 3:
-Name: 1242_E. Planar Perimeter
-Tags: ['constructive algorithms', 'graphs']
-Description: Ujan has finally cleaned up his house and now wants to decorate the interior. He decided to place a beautiful carpet that would really tie the guest room together.
-
-He is interested in carpets that are made up of polygonal patches such that each side of a patch is either a side of another (different) patch, or is an exterior side of the whole carpet. In other words, the carpet can be represented as a planar graph, where each patch corresponds to a face of the graph, each face is a simple polygon. The perimeter of the carpet is the number of the exterior sides. 
-
-Ujan considers a carpet beautiful if it consists of f patches, where the i-th patch has exactly a_i sides, and the perimeter is the smallest possible. Find an example of such a carpet, so that Ujan can order it!
-
-Input
-
-The first line of input contains a single integer f (1 ≤ f ≤ 10^5), the number of patches in the carpet. 
-
-The next line contains f integers a_1, …, a_f (3 ≤ a_i ≤ 3⋅ 10^5), the number of sides of the patches. The total number of the sides of the patches a_1 + … + a_f does not exceed 3⋅10^5.
-
-Output
-
-Output the description of the carpet as a graph. 
-
-First, output a single integer n (3 ≤ n ≤ 3 ⋅ 10^5), the total number of vertices in your graph (the vertices must be numbered from 1 to n). 
-
-Then output f lines containing the description of the faces. The i-th line should describe the i-th face and contain a_i distinct integers v_{i,1}, …, v_{i,a_i} (1 ≤ v_{i,j} ≤ n), which means that the vertices v_{i,j} and v_{i,(j mod{a_i})+1} are connected by an edge for any 1 ≤ j ≤ a_i.
-
-The graph should be planar and satisfy the restrictions described in the problem statement. Its perimeter should be the smallest possible. There should be no double edges or self-loops in the graph. The graph should be connected. Note that a solution always exists; if there are multiple solutions, output any of them.
-
-Examples
-
-Input
-
-
-2
-3 3
+7 1 4
 
 
 Output
 
 
 4
-2 1 4 
-1 2 3 
 
 
 Input
 
 
-3
-5 3 5
+4
+2 4 1 3
+5 9 8 3
 
 
 Output
 
 
+3
+
+
+Input
+
+
 6
-1 2 3 4 5
-4 5 6
-1 3 4 6 5
+3 5 1 6 2 4
+9 1 9 9 1 9
+
+
+Output
+
+
+2
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+using lld = long long int;
+using pii = pair<int, int>;
+using pll = pair<lld, lld>;
+using pli = pair<lld, int>;
+using pil = pair<int, lld>;
+int n, m;
+lld ms[2 * 262144];
+lld mt[2 * 262144];
+pii a[200009];
+pii b[200009];
+void update(int dep, int ql, int qr, int ll, int rr, int v) {
+  if (ql <= ll && rr <= qr) {
+    mt[dep] += v;
+    return;
+  }
+  if (qr < ll || rr < ql) return;
+  update(dep * 2, ql, qr, ll, (ll + rr) / 2, v);
+  update(dep * 2 + 1, ql, qr, (ll + rr) / 2 + 1, rr, v);
+  ms[dep] = min(ms[dep * 2] + mt[dep * 2], ms[dep * 2 + 1] + mt[dep * 2 + 1]);
+}
+lld getms(int dep, int ql, int qr, int ll, int rr) {
+  if (ql <= ll && rr <= qr) {
+    return ms[dep] + mt[dep];
+  }
+  if (qr < ll || rr < ql) return 1000000000000009LL;
+  lld p = getms(dep * 2, ql, qr, ll, (ll + rr) / 2);
+  lld q = getms(dep * 2 + 1, ql, qr, (ll + rr) / 2 + 1, rr);
+  return min(p, q) + mt[dep];
+}
+int main() {
+  int i, j, k;
+  int t = 1, tv = 0;
+  while (t--) {
+    scanf("%d", &n);
+    for (i = 0; i < n; i++) {
+      scanf("%d", &a[i].first);
+    }
+    for (i = 0; i < n; i++) {
+      scanf("%d", &a[i].second);
+    }
+    for (i = 0; i < n; i++) {
+      b[a[i].first - 1] = pii(i, a[i].second);
+    }
+    for (i = 0; i < n; i++) {
+      ms[i + 262144 + 1] = ms[i + 262144] + a[i].second;
+    }
+    for (; i + 1 < 262144; i++) {
+      ms[i + 262144 + 1] = ms[i + 262144];
+    }
+    for (i = 262144 - 1; i > 0; i--) {
+      ms[i] = min(ms[i * 2], ms[i * 2 + 1]);
+    }
+    lld res = getms(1, 1, n - 1, 0, 262144 - 1);
+    for (i = 0; i < n; i++) {
+      j = b[i].first;
+      update(1, 0, j, 0, 262144 - 1, b[i].second);
+      update(1, j + 1, 262144 - 1, 0, 262144 - 1, -b[i].second);
+      lld cur = getms(1, 1, n - 1, 0, 262144 - 1);
+      res = min(res, cur);
+    }
+    printf("%lld\n", res);
+  }
+}
+
+
+Example question 2:
+Name: 902_D. GCD of Polynomials
+Tags: ['constructive algorithms', 'math']
+Description: Suppose you have two polynomials <image> and <image>. Then polynomial <image> can be uniquely represented in the following way:
+
+<image>
+
+This can be done using [long division](https://en.wikipedia.org/wiki/Polynomial_long_division). Here, <image> denotes the degree of polynomial P(x). <image> is called the remainder of division of polynomial <image> by polynomial <image>, it is also denoted as <image>. 
+
+Since there is a way to divide polynomials with remainder, we can define Euclid's algorithm of finding the greatest common divisor of two polynomials. The algorithm takes two polynomials <image>. If the polynomial <image> is zero, the result is <image>, otherwise the result is the value the algorithm returns for pair <image>. On each step the degree of the second argument decreases, so the algorithm works in finite number of steps. But how large that number could be? You are to answer this question. 
+
+You are given an integer n. You have to build two polynomials with degrees not greater than n, such that their coefficients are integers not exceeding 1 by their absolute value, the leading coefficients (ones with the greatest power of x) are equal to one, and the described Euclid's algorithm performs exactly n steps finding their greatest common divisor. Moreover, the degree of the first polynomial should be greater than the degree of the second. By a step of the algorithm we mean the transition from pair <image> to pair <image>. 
+
+Input
+
+You are given a single integer n (1 ≤ n ≤ 150) — the number of steps of the algorithm you need to reach.
+
+Output
+
+Print two polynomials in the following format.
+
+In the first line print a single integer m (0 ≤ m ≤ n) — the degree of the polynomial. 
+
+In the second line print m + 1 integers between  - 1 and 1 — the coefficients of the polynomial, from constant to leading. 
+
+The degree of the first polynomial should be greater than the degree of the second polynomial, the leading coefficients should be equal to 1. Euclid's algorithm should perform exactly n steps when called using these polynomials.
+
+If there is no answer for the given n, print -1.
+
+If there are multiple answer, print any of them.
+
+Examples
+
+Input
+
+1
+
+
+Output
+
+1
+0 1
+0
+1
+
+
+Input
+
+2
+
+
+Output
+
+2
+-1 0 1
+1
+0 1
 
 Note
 
-In the first sample, the two triangular faces are connected by a single edge, which results in the minimum perimeter 4.
+In the second example you can print polynomials x2 - 1 and x. The sequence of transitions is
 
-The figure shows one possible configuration for the second sample. The minimum perimeter in this case is 3. 
+(x2 - 1, x) → (x, - 1) → ( - 1, 0).
 
-<image>
-Difficulty: 11
-Solutions: #include <bits/stdc++.h>
-int pp[300000], n, cnt;
-void connect(int *qq, int a, int b) {
-  int h, j, k;
-  k = 0;
-  for (h = cnt - 1; h >= cnt - b; h--) qq[k++] = pp[h];
-  j = pp[cnt - 1];
-  cnt -= b - 1;
-  for (h = 0; h < a - b; h++) qq[k++] = pp[cnt++] = n++;
-  pp[cnt++] = j;
-}
-int main() {
-  static int aa[300000], hh[300000], *qq[300000];
-  int f, g, h, h_, tmp, sum, odd;
-  scanf("%d", &f);
-  odd = 0;
-  for (h = 0; h < f; h++) {
-    scanf("%d", &aa[h]);
-    hh[h] = h;
-    if (aa[h] > 3) odd ^= aa[h] & 1;
-  }
-  h_ = 0;
-  for (h = 1; h < f; h++)
-    if (aa[h_] < aa[h]) h_ = h;
-  tmp = hh[0], hh[0] = hh[h_], hh[h_] = tmp;
-  for (h = 0; h < f; h++)
-    qq[hh[h]] = (int *)malloc(aa[hh[h]] * sizeof *qq[hh[h]]);
-  sum = 0;
-  for (h = 1; h < f; h++)
-    if (aa[hh[h]] > 3) sum += aa[hh[h]] - 2;
-  for (g = 0; g < aa[hh[0]]; g++) qq[hh[0]][g] = pp[cnt++] = n++;
-  if (aa[hh[0]] - sum >= 3) {
-    for (h = 1; h < f; h++) {
-      int a = aa[hh[h]];
-      if (a > 3) connect(qq[hh[h]], a, a);
-    }
-  } else if (odd) {
-    for (h = 1; h < f; h++) {
-      int a = aa[hh[h]];
-      if (a > 3) {
-        sum -= a - 2;
-        if (cnt + a - 4 - sum < 3)
-          connect(qq[hh[h]], a, 3);
-        else {
-          int x;
-          x = (cnt + a - sum - 3) / 2 + 1;
-          connect(qq[hh[h]], a, x);
-          break;
-        }
-      }
-    }
-    for (h++; h < f; h++) {
-      int a = aa[hh[h]];
-      if (a > 3) connect(qq[hh[h]], a, a);
-    }
-  } else {
-    for (h = 1; h < f; h++) {
-      int a = aa[hh[h]];
-      if (a > 3) {
-        sum -= a - 2;
-        if (cnt + a - 4 - sum < 4)
-          connect(qq[hh[h]], a, 3);
-        else {
-          int x;
-          x = (cnt + a - sum - 4) / 2 + 1;
-          connect(qq[hh[h]], a, x);
-          break;
-        }
-      }
-    }
-    for (h++; h < f; h++) {
-      int a = aa[hh[h]];
-      if (a > 3) connect(qq[hh[h]], a, a);
-    }
-  }
-  for (h = 1; h < f; h++) {
-    int a = aa[hh[h]];
-    if (a == 3)
-      if (cnt > 3)
-        connect(qq[hh[h]], a, 3);
-      else {
-        int tmp;
-        connect(qq[hh[h]], a, 2);
-        tmp = pp[0], pp[0] = pp[1], pp[1] = pp[2], pp[2] = pp[3], pp[3] = tmp;
-      }
-  }
-  printf("%d\n", n);
-  for (h = 0; h < f; h++) {
-    for (g = 0; g < aa[h]; g++) printf("%d ", qq[h][g] + 1);
-    printf("\n");
-  }
-  return 0;
-}
+There are two steps in it.
+Difficulty: 10
+Solutions: class polynomial:
+    def __init__(self, data):
+        self.data = data
+    
+    def __lshift__(self, x):
+        return polynomial([0] * x + self.data)
+    
+    def __len__(self):
+        return len(self.data)
+    
+    def __sub__(self, other):
+        newData = [y - x for y, x in zip(self.data, other.data + [0] * 1000)]
+        while len(newData) > 0 and newData[-1] == 0:
+            del newData[-1]
+        return polynomial(newData)
+    
+    def __add__(self, other):
+        newData = [(y + x) % 2 for y, x in zip(self.data + [0] * 1000, other.data + [0] * 1000)]
+        while len(newData) > 0 and newData[-1] == 0:
+            del newData[-1]
+        return polynomial(newData)
+    
+    def __mul__(self, amt):
+        return polynomial([x * amt for x in self.data])
+    
+    def __getitem__(self, idx):
+        return self.data[idx]
+    
+    def __mod__(self, other):
+        tmp = self
+        times = 0
+        while len(tmp) >= len(other):
+            times += 1
+            if times > 1000:
+                print(*tmp.data)
+                print(*other.data)
+                exit(0)
+            tmp = tmp - (other << (len(tmp) - len(other))) * (tmp[-1] // other[-1])
+        return tmp
 
+def gcdSteps(p1, p2, steps=0):
+    # print(*p1.data)
+    if len(p1) == 0 or len(p2) == 0:
+        return steps
+    else:
+        return gcdSteps(p2, p1 % p2, steps + 1)
+
+a, b = polynomial([0, 1]), polynomial([1])
+# x = b + (a << 1)
+for i in range(int(input()) - 1):
+    # print(gcdSteps(a, b))
+    if gcdSteps(a, b) != i + 1:
+        print("error", i)
+    a, b = b + (a << 1), a
+    
+print(len(a) - 1)
+print(*a.data)
+print(len(b) - 1)
+print(*b.data)
+# print(gcdSteps(x, a))
+
+Example question 3:
+Name: logically-correct
+Tags: []
+Description: Tired of playing Counter strike at every fest, well we can't do anything about it but we can sure give you a new game to play regardless of the fact that it ain't anything like GTA V or Mad Max but it sure can get you one step closer to glory you are entitled for.   
+
+So the rules are simple we would provide you with first(A) and second(B) number of the series and the rest you have to figure out by the given formula. To simplify it we will give you the first and second number of the series and will ask you to calculate the Nth number of that series.  
+
+To calculate I(n+2) =(I(n+1))^2 +I(n) 
+So, if the first two terms of the series are 0 and 1: 
+the third term = 1^2 + 0 = 1
+fourth term = 1^2 + 1 = 2 
+fifth term = 2^2 + 1 = 5 
+... And so on.
+
+Input format:
+Three spaced integer. First is A, second is B and third is Nth number you’ve to calculate.
+
+Output format:
+One integer i.e the Nth number of the series when the first and second number of the series A and B are given.
+
+Constraints:
+A ≥ 0
+B ≥ 0
+0 < N < 9,223,372,036,854,775,807
+
+SAMPLE INPUT
+0 1 5
+
+SAMPLE OUTPUT
+5
+Difficulty: 0
+Solutions: '''
+# Read input from stdin and provide input before running code
+
+name = raw_input('What is your name?\n')
+print 'Hi, %s.' % name
+'''
+#print 'Hello World!'
+a,b,c=map(int,raw_input().split())
+for i in range(2,c):
+	d=pow(b,2)+a
+	a=b
+	b=d
+print d
 
 
 INSTRUCTIONS:
@@ -408,6 +396,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

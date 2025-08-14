@@ -57,389 +57,246 @@ For the second test, it is impossible to obtain a permutation of integers from 1
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1200_B. Block Adventure
-Tags: ['dp', 'greedy']
-Description: Gildong is playing a video game called Block Adventure. In Block Adventure, there are n columns of blocks in a row, and the columns are numbered from 1 to n. All blocks have equal heights. The height of the i-th column is represented as h_i, which is the number of blocks stacked in the i-th column.
+Name: 1322_B. Present
+Tags: ['binary search', 'bitmasks', 'constructive algorithms', 'data structures', 'math', 'sortings']
+Description: Catherine received an array of integers as a gift for March 8. Eventually she grew bored with it, and she started calculated various useless characteristics for it. She succeeded to do it for each one she came up with. But when she came up with another one — xor of all pairwise sums of elements in the array, she realized that she couldn't compute it for a very large array, thus she asked for your help. Can you do it? Formally, you need to compute
 
-Gildong plays the game as a character that can stand only on the top of the columns. At the beginning, the character is standing on the top of the 1-st column. The goal of the game is to move the character to the top of the n-th column.
+$$$ (a_1 + a_2) ⊕ (a_1 + a_3) ⊕ … ⊕ (a_1 + a_n) \\\ ⊕ (a_2 + a_3) ⊕ … ⊕ (a_2 + a_n) \\\ … \\\ ⊕ (a_{n-1} + a_n) \\\ $$$
 
-The character also has a bag that can hold infinitely many blocks. When the character is on the top of the i-th column, Gildong can take one of the following three actions as many times as he wants: 
-
-  * if there is at least one block on the column, remove one block from the top of the i-th column and put it in the bag; 
-  * if there is at least one block in the bag, take one block out of the bag and place it on the top of the i-th column; 
-  * if i < n and |h_i - h_{i+1}| ≤ k, move the character to the top of the i+1-st column. k is a non-negative integer given at the beginning of the game. Note that it is only possible to move to the next column. 
-
-
-
-In actions of the first two types the character remains in the i-th column, and the value h_i changes.
-
-The character initially has m blocks in the bag. Gildong wants to know if it is possible to win the game. Help Gildong find the answer to his question.
+Here x ⊕ y is a bitwise XOR operation (i.e. x ^ y in many modern programming languages). You can read about it in Wikipedia: <https://en.wikipedia.org/wiki/Exclusive_or#Bitwise_operation>.
 
 Input
 
-Each test contains one or more test cases. The first line contains the number of test cases t (1 ≤ t ≤ 1000). Description of the test cases follows.
+The first line contains a single integer n (2 ≤ n ≤ 400 000) — the number of integers in the array.
 
-The first line of each test case contains three integers n, m, and k (1 ≤ n ≤ 100, 0 ≤ m ≤ 10^6, 0 ≤ k ≤ 10^6) — the number of columns in the game, the number of blocks in the character's bag at the beginning, and the non-negative integer k described in the statement.
-
-The second line of each test case contains n integers. The i-th integer is h_i (0 ≤ h_i ≤ 10^6), the initial height of the i-th column.
+The second line contains integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 10^7).
 
 Output
 
-For each test case, print "YES" if it is possible to win the game. Otherwise, print "NO".
-
-You can print each letter in any case (upper or lower).
-
-Example
-
-Input
-
-5
-3 0 1
-4 3 5
-3 1 2
-1 4 7
-4 10 0
-10 20 10 20
-2 5 5
-0 11
-1 9 9
-99
-
-
-Output
-
-YES
-NO
-YES
-NO
-YES
-
-Note
-
-In the first case, Gildong can take one block from the 1-st column, move to the 2-nd column, put the block on the 2-nd column, then move to the 3-rd column.
-
-In the second case, Gildong has to put the block in his bag on the 1-st column to get to the 2-nd column. But it is impossible to get to the 3-rd column because |h_2 - h_3| = 3 > k and there is no way to decrease the gap.
-
-In the fifth case, the character is already on the n-th column from the start so the game is won instantly.
-Difficulty: 8
-Solutions: t = int(input())
-for _ in range(t):
-    n, m, k = map(int, input().split())
-    h = list(map(int, input().split()))
-    for i in range(n - 1):
-        m += h[i] - max(0, (h[i + 1] - k))
-        if m < 0:
-            print("NO")
-            break
-    if(m >= 0):
-        print("YES")
-
-
-Example question 2:
-Name: 1108_E1. Array and Segments (Easy version)
-Tags: ['brute force', 'greedy', 'implementation']
-Description: The only difference between easy and hard versions is a number of elements in the array.
-
-You are given an array a consisting of n integers. The value of the i-th element of the array is a_i.
-
-You are also given a set of m segments. The j-th segment is [l_j; r_j], where 1 ≤ l_j ≤ r_j ≤ n.
-
-You can choose some subset of the given set of segments and decrease values on each of the chosen segments by one (independently). For example, if the initial array a = [0, 0, 0, 0, 0] and the given segments are [1; 3] and [2; 4] then you can choose both of them and the array will become b = [-1, -2, -2, -1, 0].
-
-You have to choose some subset of the given segments (each segment can be chosen at most once) in such a way that if you apply this subset of segments to the array a and obtain the array b then the value max_{i=1}^{n}b_i - min_{i=1}^{n}b_i will be maximum possible.
-
-Note that you can choose the empty set.
-
-If there are multiple answers, you can print any.
-
-If you are Python programmer, consider using PyPy instead of Python when you submit your code.
-
-Input
-
-The first line of the input contains two integers n and m (1 ≤ n ≤ 300, 0 ≤ m ≤ 300) — the length of the array a and the number of segments, respectively.
-
-The second line of the input contains n integers a_1, a_2, ..., a_n (-10^6 ≤ a_i ≤ 10^6), where a_i is the value of the i-th element of the array a.
-
-The next m lines are contain two integers each. The j-th of them contains two integers l_j and r_j (1 ≤ l_j ≤ r_j ≤ n), where l_j and r_j are the ends of the j-th segment.
-
-Output
-
-In the first line of the output print one integer d — the maximum possible value max_{i=1}^{n}b_i - min_{i=1}^{n}b_i if b is the array obtained by applying some subset of the given segments to the array a.
-
-In the second line of the output print one integer q (0 ≤ q ≤ m) — the number of segments you apply.
-
-In the third line print q distinct integers c_1, c_2, ..., c_q in any order (1 ≤ c_k ≤ m) — indices of segments you apply to the array a in such a way that the value max_{i=1}^{n}b_i - min_{i=1}^{n}b_i of the obtained array b is maximum possible.
-
-If there are multiple answers, you can print any.
+Print a single integer — xor of all pairwise sums of integers in the given array.
 
 Examples
 
 Input
 
 
-5 4
-2 -2 3 1 2
-1 3
-4 5
-2 5
-1 3
+2
+1 2
 
 
 Output
 
 
-6
-2
-1 4 
-
+3
 
 Input
 
 
-5 4
-2 -2 3 1 4
-3 5
-3 4
-2 4
-2 5
+3
+1 2 3
 
 
 Output
 
 
-7
 2
-3 2 
-
-
-Input
-
-
-1 0
-1000000
-
-
-Output
-
-
-0
-0
 
 Note
 
-In the first example the obtained array b will be [0, -4, 1, 1, 2] so the answer is 6.
+In the first sample case there is only one sum 1 + 2 = 3.
 
-In the second example the obtained array b will be [2, -3, 1, -1, 4] so the answer is 7.
+In the second sample case there are three sums: 1 + 2 = 3, 1 + 3 = 4, 2 + 3 = 5. In binary they are represented as 011_2 ⊕ 100_2 ⊕ 101_2 = 010_2, thus the answer is 2.
 
-In the third example you cannot do anything so the answer is 0.
+⊕ is the bitwise xor operation. To define x ⊕ y, consider binary representations of integers x and y. We put the i-th bit of the result to be 1 when exactly one of the i-th bits of x and y is 1. Otherwise, the i-th bit of the result is put to be 0. For example, 0101_2   ⊕   0011_2 = 0110_2.
+Difficulty: 8
+Solutions: import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static int lower_bound(int[] A, int low, int high, int x) {
+		if (A[low] >= x) {
+			return low;
+		} else if (A[high] < x) {
+			return high + 1;
+		}
+		while (low <= high) {
+			int mid = (low + high) / 2;
+			if (A[mid] < x) {
+				low = mid + 1;
+			} else {
+				high = mid - 1;
+			}
+		}
+		return high + 1;
+	}
+
+	public static int upper_bound(int[] A, int low, int high, int x) {
+		if (A[low] > x) {
+			return low;
+		} else if (A[high] <= x) {
+			return high + 1;
+		}
+		while (low <= high) {
+			int mid = (low + high) / 2;
+			if (A[mid] > x) {
+				high = mid - 1;
+			} else {
+				low = mid + 1;
+			}
+		}
+		return low;
+	}
+
+	public static void main(String[] args) {
+		InputReader in = new InputReader();
+
+		int N = in.nextInt();
+		int[] A = new int[N];
+		for (int i = 0; i < N; i++) {
+			A[i] = in.nextInt();
+		}
+		Arrays.sort(A);
+		int ans = 0;
+		for (int i = 24; i >= 0; i--) {
+			for (int j = 0; j < N - 1; j++) {
+				int lb, ub;
+				lb = lower_bound(A, j + 1, N - 1, (1 << i) - A[j]);
+				ub = upper_bound(A, j + 1, N - 1, (2 << i) - 1 - A[j]);
+				ans ^= ((Math.max(ub - lb, 0)) % 2) << i;
+				lb = lower_bound(A, j + 1, N - 1, (3 << i) - A[j]);
+				ub = upper_bound(A, j + 1, N - 1, (4 << i) - 2 - A[j]);
+				ans ^= ((Math.max(ub - lb, 0)) % 2) << i;
+			}
+			if (i == 0) {
+				break;
+			}
+			for (int j = 0; j < N; j++) {
+				A[j] %= 1 << i;
+			}
+			Arrays.sort(A);
+		}
+
+		System.out.println(ans);
+	}
+
+	static class InputReader {
+		public BufferedReader reader;
+		public StringTokenizer st;
+
+		public InputReader() {
+			reader = new BufferedReader(new InputStreamReader(System.in));
+		}
+
+		public String next() {
+			while (st == null || !st.hasMoreTokens()) {
+				st = new StringTokenizer(nextLine());
+			}
+			return st.nextToken();
+		}
+
+		public String nextLine() {
+			try {
+				return reader.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		public int nextInt() {
+			return Integer.parseInt(next());
+		}
+	}
+}
+
+
+Example question 2:
+Name: 985_E. Pencils and Boxes
+Tags: ['binary search', 'data structures', 'dp', 'greedy', 'two pointers']
+Description: Mishka received a gift of multicolored pencils for his birthday! Unfortunately he lives in a monochrome world, where everything is of the same color and only saturation differs. This pack can be represented as a sequence a1, a2, ..., an of n integer numbers — saturation of the color of each pencil. Now Mishka wants to put all the mess in the pack in order. He has an infinite number of empty boxes to do this. He would like to fill some boxes in such a way that:
+
+  * Each pencil belongs to exactly one box; 
+  * Each non-empty box has at least k pencils in it; 
+  * If pencils i and j belong to the same box, then |ai - aj| ≤ d, where |x| means absolute value of x. Note that the opposite is optional, there can be pencils i and j such that |ai - aj| ≤ d and they belong to different boxes. 
+
+
+
+Help Mishka to determine if it's possible to distribute all the pencils into boxes. Print "YES" if there exists such a distribution. Otherwise print "NO".
+
+Input
+
+The first line contains three integer numbers n, k and d (1 ≤ k ≤ n ≤ 5·105, 0 ≤ d ≤ 109) — the number of pencils, minimal size of any non-empty box and maximal difference in saturation between any pair of pencils in the same box, respectively.
+
+The second line contains n integer numbers a1, a2, ..., an (1 ≤ ai ≤ 109) — saturation of color of each pencil.
+
+Output
+
+Print "YES" if it's possible to distribute all the pencils into boxes and satisfy all the conditions. Otherwise print "NO".
+
+Examples
+
+Input
+
+6 3 10
+7 2 7 7 4 2
+
+
+Output
+
+YES
+
+
+Input
+
+6 2 3
+4 5 3 13 4 10
+
+
+Output
+
+YES
+
+
+Input
+
+3 2 5
+10 16 22
+
+
+Output
+
+NO
+
+Note
+
+In the first example it is possible to distribute pencils into 2 boxes with 3 pencils in each with any distribution. And you also can put all the pencils into the same box, difference of any pair in it won't exceed 10.
+
+In the second example you can split pencils of saturations [4, 5, 3, 4] into 2 boxes of size 2 and put the remaining ones into another box.
 Difficulty: 11
 Solutions: #include <bits/stdc++.h>
 using namespace std;
-template <class T, size_t n>
-ostream &operator<<(ostream &os, array<T, n> V) {
-  os << "[";
-  for (auto vv : V) os << vv << ",";
-  return os << "]";
-}
-template <class L, class R>
-ostream &operator<<(ostream &os, pair<L, R> P) {
-  return os << "(" << P.first << "," << P.second << ")";
-}
-template <class T>
-ostream &operator<<(ostream &os, set<T> V) {
-  os << "[";
-  for (auto vv : V) os << vv << ",";
-  return os << "]";
-}
-template <class T>
-ostream &operator<<(ostream &os, vector<T> V) {
-  os << "[";
-  for (auto vv : V) os << vv << ",";
-  return os << "]";
-}
-template <class K, class X>
-ostream &operator<<(ostream &os, map<K, X> V) {
-  os << "[";
-  for (auto vv : V) os << vv << ",";
-  return os << "]";
-}
-void debug_out() { cerr << '\n'; }
-template <typename Head, typename... Tail>
-void debug_out(Head H, Tail... T) {
-  cerr << " " << H;
-  debug_out(T...);
-}
-using ii = pair<long long, long long>;
-using vb = vector<bool>;
-using vi = vector<long long>;
-using vii = vector<ii>;
-using vvi = vector<vi>;
-using vvii = vector<vii>;
-vi a;
-class segtree {
- public:
-  vi lazy;
-  vi tree;
-  vi li;
-  vi ri;
-  long long alloc(long long value, long long L = -1, long long R = -1) {
-    lazy.push_back(0);
-    tree.push_back(value);
-    li.push_back(L);
-    ri.push_back(R);
-    return tree.size() - 1;
+const int maxn = 5e6 + 5;
+int n, m;
+long long d;
+long long a[maxn], sum[maxn];
+int main() {
+  scanf("%d%d%lld", &n, &m, &d);
+  for (int i = 1; i <= n; i++) scanf("%lld", &a[i]);
+  sort(&a[1], &a[n + 1]);
+  int good = 1;
+  sum[0] = 1;
+  for (int i = 1, j = 1; i <= n; i++) {
+    while (a[i] - a[j] > d) j++;
+    good = sum[max(-1, i - m)] - sum[j - 2];
+    sum[i] = sum[i - 1];
+    if (good >= 1) sum[i]++;
   }
-  void apply(long long c, long long val) {
-    lazy[c] += val;
-    tree[c] += val;
-  }
-  long long build(long long ll, long long rr) {
-    if (ll == rr) {
-      return alloc(a[ll]);
-    }
-    long long mid = (ll + rr) / 2;
-    long long L = build(ll, mid);
-    long long R = build(mid + 1, rr);
-    return alloc(min(tree[L], tree[R]), L, R);
-  }
-  inline void push(long long c, long long ll, long long rr) {
-    if (lazy[c] == 0 or ll == rr) return;
-    apply(li[c], lazy[c]);
-    apply(ri[c], lazy[c]);
-    lazy[c] = 0;
-  }
-  void modify(long long c, long long ll, long long rr, long long ql,
-              long long qr, long long val) {
-    if (ql <= ll and rr <= qr) {
-      apply(c, val);
-      return;
-    }
-    push(c, ll, rr);
-    long long mid = (ll + rr) / 2;
-    if (ql <= mid) modify(li[c], ll, mid, ql, qr, val);
-    if (qr > mid) modify(ri[c], mid + 1, rr, ql, qr, val);
-    tree[c] = min(tree[li[c]], tree[ri[c]]);
-  }
-  long long get(long long c, long long ll, long long rr, long long ql,
-                long long qr) {
-    if (ql <= ll and rr <= qr) {
-      return tree[c];
-    }
-    push(c, ll, rr);
-    long long mid = (ll + rr) / 2;
-    if (qr <= mid) return get(li[c], ll, mid, ql, qr);
-    if (mid < ql) return get(ri[c], mid + 1, rr, ql, qr);
-    return min(get(li[c], ll, mid, ql, qr), get(ri[c], mid + 1, rr, ql, qr));
-  }
-};
-inline bool in(long long x, ii q) { return q.first <= x and x <= q.second; }
-int32_t main() {
-  ios::sync_with_stdio(0);
-  cin.tie(0);
-  cout.tie(0);
-  long long n;
-  cin >> n;
-  long long m;
-  cin >> m;
-  a = vi(n, 0);
-  vii q(m);
-  segtree st;
-  for (long long i = 0; i < n; i++) {
-    cin >> a[i];
-  }
-  set<pair<long long, pair<long long, bool>>> qset;
-  const long long root = st.build(0, n - 1);
-  for (long long i = 0; i < m; i++) {
-    cin >> q[i].first >> q[i].second;
-    q[i].first--;
-    q[i].second--;
-    qset.insert({q[i].first, {i, true}});
-    st.modify(root, 0, n - 1, q[i].first, q[i].second, -1);
-  }
-  long long best = 0;
-  long long argmax = -1;
-  for (long long i = 0; i < n; i++) {
-    while (not qset.empty() and i == qset.begin()->first) {
-      long long index = qset.begin()->second.first;
-      bool remove = qset.begin()->second.second;
-      qset.erase(qset.begin());
-      if (remove) {
-        st.modify(root, 0, n - 1, q[index].first, q[index].second, +1);
-        qset.insert({q[index].second + 1, {index, false}});
-      } else {
-        st.modify(root, 0, n - 1, q[index].first, q[index].second, -1);
-      }
-    }
-    long long res = a[i] - st.get(root, 0, n - 1, 0, n - 1);
-    if (res > best) {
-      argmax = i;
-      best = res;
-    }
-  }
-  cout << best << '\n';
-  vi apply;
-  for (long long i = 0; i < m; i++) {
-    if (not in(argmax, q[i])) {
-      apply.push_back(i + 1);
-    }
-  }
-  cout << apply.size() << '\n';
-  for (long long x : apply) {
-    cout << x << " ";
-  }
-  cout << '\n';
+  if (good > 0)
+    printf("YES");
+  else
+    printf("NO");
 }
 
-
-Example question 3:
-Name: carvans
-Tags: []
-Description: Most problems on CodeChef highlight chef's love for food and cooking but little is known about his love for racing sports. He is an avid Formula 1 fan. He went to watch this year's Indian Grand Prix at New Delhi. He noticed that one segment of the circuit was a long straight road. It was impossible for a car to overtake other cars on this segment. Therefore, a car had to lower down its speed if there was a slower car in front of it. While watching the race, Chef started to wonder how many cars were moving at their maximum speed.
-Formally, you're given the maximum speed of N cars in the order they entered the long straight segment of the circuit. Each car prefers to move at its maximum speed. If that's not possible because of the front car being slow, it might have to lower its speed. It still moves at the fastest possible speed while avoiding any collisions. For the purpose of this problem, you can assume that the straight segment is infinitely long.
-Count the number of cars which were moving at their maximum speed on the straight segment.
-
-Input
-The first line of the input contains a single integer T denoting the number of test cases to follow. Description of each test case contains 2 lines. The first of these lines contain a single integer N, the number of cars. The second line contains N space separated integers, denoting the maximum speed of the cars in the order they entered the long straight segment.
-
-Output
-For each test case, output a single line containing the number of cars which were moving at their maximum speed on the segment.
-
-Example
-
-Input:
-3
-1
-10
-3
-8 3 6
-5
-4 5 1 2 3
-
-Output:
-1
-2
-2
-
-Constraints
-
-1 ≤ T ≤ 100
-1 ≤ N ≤ 10,000
-All speeds are distinct positive integers that fit in a 32 bit signed integer.
-Each input file will not be larger than 4 MB (4,000,000,000 bytes) in size.
-
-WARNING! The input files are very large. Use faster I/O.
-Difficulty: 2
-Solutions: # cook your code here
-for testcases in xrange(int(raw_input() ) ) :
-    n = int(raw_input())
-    Arr = map(int, raw_input().split() )
-    m = Arr[0]
-    c = 1
-    for i in xrange(1, len(Arr)):
-        if (Arr[i] <= m ):
-            c += 1
-            m = Arr[i]
-    print c
 
 
 INSTRUCTIONS:
@@ -450,6 +307,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

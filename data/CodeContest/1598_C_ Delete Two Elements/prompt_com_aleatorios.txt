@@ -55,152 +55,246 @@ In the third example, it is possible to delete the elements on positions 1 and 3
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 91_B. Queue
-Tags: ['binary search', 'data structures']
-Description: There are n walruses standing in a queue in an airport. They are numbered starting from the queue's tail: the 1-st walrus stands at the end of the queue and the n-th walrus stands at the beginning of the queue. The i-th walrus has the age equal to ai.
+Name: p02032 Divisor Game
+Tags: ['']
+Description: C: Divisor Game
 
-The i-th walrus becomes displeased if there's a younger walrus standing in front of him, that is, if exists such j (i < j), that ai > aj. The displeasure of the i-th walrus is equal to the number of walruses between him and the furthest walrus ahead of him, which is younger than the i-th one. That is, the further that young walrus stands from him, the stronger the displeasure is.
+problem
 
-The airport manager asked you to count for each of n walruses in the queue his displeasure.
+tsutaj is trying to play about a few games.
+
+In a divisor game, a natural number N of 2 or more is given first, and then the game progresses according to the following procedure.
+
+* Declare one integer from the divisors of N other than N. However, at this time, it is not possible to declare a divisor of an integer that has already been declared.
+* Repeat this as long as there is an integer that can be declared, and if there is nothing that can be declared, the game ends.
+
+
+
+Find the minimum and maximum number of possible declarations before the end of the game.
+
+Input format
+
+Input is given on one line.
+
+
+N
+
+Constraint
+
+* 2 \ leq N \ leq 10 ^ {12}
+
+
+
+Output format
+
+Output the minimum and maximum number of declarations on one line separated by spaces.
+
+Input example 1
+
+
+18
+
+Output example 1
+
+
+twenty five
+
+The following is an example of setting the number of declarations to 2.
+
+* Declare 9.
+* Declare 6. (6 is not a divisor of 9, so it can be declared)
+
+
+
+If you do this, any integer that is a divisor of 18 and not 18 will be a divisor of the integers you have declared, and the game will end.
+
+Note that you cannot declare anything that is a divisor of an integer that you have already declared. For example, you cannot declare 3 after declaring 9. Because 3 is a divisor of 9.
+
+Input example 2
+
+
+99
+
+Output example 2
+
+
+twenty five
+
+Input example 3
+
+
+10000000019
+
+Output example 3
+
+
+1 1
+
+The input may not fit in a 32-bit integer type.
+
+
+
+
+
+Example
 
 Input
 
-The first line contains an integer n (2 ≤ n ≤ 105) — the number of walruses in the queue. The second line contains integers ai (1 ≤ ai ≤ 109).
-
-Note that some walruses can have the same age but for the displeasure to emerge the walrus that is closer to the head of the queue needs to be strictly younger than the other one.
-
-Output
-
-Print n numbers: if the i-th walrus is pleased with everything, print "-1" (without the quotes). Otherwise, print the i-th walrus's displeasure: the number of other walruses that stand between him and the furthest from him younger walrus.
-
-Examples
-
-Input
-
-6
-10 8 5 3 50 45
+18
 
 
 Output
 
-2 1 0 -1 0 -1 
+2 5
+Difficulty: 0
+Solutions: // need
+#include <iostream>
+#include <algorithm>
+// data structure
+#include <bitset>
+#include <map>
+#include <queue>
+#include <set>
+#include <stack>
+#include <string>
+#include <utility>
+#include <vector>
+#include <complex>
+//#include <deque>
+#include <valarray>
+#include <unordered_map>
+#include <unordered_set>
+#include <array>
+// stream
+//#include <istream>
+#include <sstream>
+//#include <ostream>
+#include <fstream>
+// etc
+#include <cassert>
+#include <cmath>
+#include <functional>
+#include <iomanip>
+#include <chrono>
+#include <random>
+#include <numeric>
 
-Input
+// input
+#define INIT std::ios::sync_with_stdio(false);std::cin.tie(0);
+#define VAR(type, ...)type __VA_ARGS__;MACRO_VAR_Scan(__VA_ARGS__);
+template<typename T> void MACRO_VAR_Scan(T& t) { std::cin >> t; }
+template<typename First, typename...Rest>void MACRO_VAR_Scan(First& first, Rest&...rest) { std::cin >> first; MACRO_VAR_Scan(rest...); }
+#define VEC_ROW(type, n, ...)std::vector<type> __VA_ARGS__;MACRO_VEC_ROW_Init(n, __VA_ARGS__); for(int w_=0; w_<n; ++w_){MACRO_VEC_ROW_Scan(w_, __VA_ARGS__);}
+template<typename T> void MACRO_VEC_ROW_Init(int n, T& t) { t.resize(n); }
+template<typename First, typename...Rest>void MACRO_VEC_ROW_Init(int n, First& first, Rest&...rest) { first.resize(n); MACRO_VEC_ROW_Init(n, rest...); }
+template<typename T> void MACRO_VEC_ROW_Scan(int p, T& t) { std::cin >> t[p]; }
+template<typename First, typename...Rest>void MACRO_VEC_ROW_Scan(int p, First& first, Rest&...rest) { std::cin >> first[p]; MACRO_VEC_ROW_Scan(p, rest...); }
+#define VEC(type, c, n) std::vector<type> c(n);for(auto& i:c)std::cin>>i;
+#define MAT(type, c, m, n) std::vector<std::vector<type>> c(m, std::vector<type>(n));for(auto& R:c)for(auto& w:R)std::cin>>w;
+// output
+#define OUT(dist) std::cout<<(dist);
+#define FOUT(n, dist) std::cout<<std::fixed<<std::setprecision(n)<<(dist);
+#define SOUT(n, c, dist) std::cout<<std::setw(n)<<std::setfill(c)<<(dist);
+#define SP std::cout<<" ";
+#define TAB std::cout<<"\t";
+#define BR std::cout<<"\n";
+#define SPBR(w, n) std::cout<<(w + 1 == n ? '\n' : ' ');
+#define ENDL std::cout<<std::endl;
+#define FLUSH std::cout<<std::flush;
+#define SHOW(dist) {std::cerr << #dist << "\t:" << (dist) << "\n";}
+#define SHOWVECTOR(v) {std::cerr << #v << "\t:";for(const auto& xxx : v){std::cerr << xxx << " ";}std::cerr << "\n";}
+#define SHOWVECTOR2(v) {std::cerr << #v << "\t:\n";for(const auto& xxx : v){for(const auto& yyy : xxx){std::cerr << yyy << " ";}std::cerr << "\n";}}
+#define SHOWQUEUE(a) {auto tmp(a);std::cerr << #a << "\t:";while(!tmp.empty()){std::cerr << tmp.front() << " ";tmp.pop();}std::cerr << "\n";}
+// utility
+#define ALL(a) (a).begin(),(a).end()
+#define FOR(w, a, n) for(int w=(a);w<(n);++w)
+#define RFOR(w, a, n) for(int w=(n)-1;w>=(a);--w)
+#define REP(w, n) for(int w=0;w<int(n);++w)
+#define RREP(w, n) for(int w=int(n)-1;w>=0;--w)
+#define FORLL(w, a, n) for(ll w=ll(a);w<ll(n);++w)
+#define RFORLL(w, a, n) for(ll w=ll(n)-1;w>=ll(a);--w)
+#define REPLL(w, n) for(ll w=0;w<ll(n);++w)
+#define RREPLL(w, n) for(ll w=ll(n)-1;w>=0;--w)
+#define IN(a, x, b) (a<=x && x<b)
+template<class T> inline T CHMAX(T& a, const T b) { return a = (a < b) ? b : a; }
+template<class T> inline T CHMIN(T& a, const T b) { return a = (a > b) ? b : a; }
+#define EXCEPTION(msg) throw std::string("Exception : " msg " [ in ") + __func__ + " : " + std::to_string(__LINE__) + " lines ]"
+#define TRY(cond, msg) try {if (cond) EXCEPTION(msg);}catch (std::string s) {std::cerr << s << std::endl;}
+//void CHECKTIME(std::function<void()> f) { auto start = std::chrono::system_clock::now(); f(); auto end = std::chrono::system_clock::now(); auto res = std::chrono::duration_cast<std::chrono::nanoseconds>((end - start)).count(); std::cerr << "[Time:" << res << "ns  (" << res / (1.0e9) << "s)]\n"; }
+// test
+template<class T> using V = std::vector<T>;
+template<class T> using VV = V<V<T>>;
 
-7
-10 4 6 3 2 8 15
+template<typename S, typename T>
+std::ostream& operator<<(std::ostream& os, std::pair<S, T> p) {
+	os << "(" << p.first << ", " << p.second << ")"; return os;
+}
 
+#define random_shuffle "USE std::shuffle!";
 
-Output
+// type/const
+#define int ll
+using ll = long long;
+using ull = unsigned long long;
+using ld = long double;
+using PAIR = std::pair<int, int>;
+using PAIRLL = std::pair<ll, ll>;
+constexpr int INFINT = 1 << 30;                          // 1.07x10^ 9
+constexpr int INFINT_LIM = (1LL << 31) - 1;              // 2.15x10^ 9
+constexpr ll INFLL = 1LL << 60;                          // 1.15x10^18
+constexpr ll INFLL_LIM = (1LL << 62) - 1 + (1LL << 62);  // 9.22x10^18
+constexpr double EPS = 1e-6;
+constexpr int MOD = 1000000007;
+constexpr double PI = 3.141592653589793238462643383279;
+template<class T, size_t N> void FILL(T(&a)[N], const T& val) { for (auto& x : a) x = val; }
+template<class ARY, size_t N, size_t M, class T> void FILL(ARY(&a)[N][M], const T& val) { for (auto& b : a) FILL(b, val); }
+template<class T> void FILL(std::vector<T>& a, const T& val) { for (auto& x : a) x = val; }
+template<class ARY, class T> void FILL(std::vector<std::vector<ARY>>& a, const T& val) { for (auto& b : a) FILL(b, val); }
+// ------------>8------------------------------------->8------------
 
-4 2 1 0 -1 -1 -1 
-
-Input
-
-5
-10 3 1 10 11
-
-
-Output
-
-1 0 -1 -1 -1 
-Difficulty: 8
-Solutions: import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-public class A {
-		
-	public static void main(String[] args) throws IOException {
-
-		Scanner sc = new Scanner(System.in);
-		PrintWriter out = new PrintWriter(System.out);
-
-		int n = sc.nextInt(), a[] = new int[n];
-		TreeSet<Integer> set = new TreeSet<>();
-		for(int i = 0; i < n; ++i)
-			set.add(a[i] = sc.nextInt());
-		TreeMap<Integer, Integer> map = new TreeMap<>();
-		int idx = 0;
-		for(int x: set)
-			map.put(x, ++idx);
-		for(int i = 0; i < n; ++i)
-			a[i] = map.get(a[i]);
-		SegmentTree st = new SegmentTree(idx);
-		for(int i = n - 1; i >= 0; --i)
-		{
-			int q = st.query(0, a[i] - 1);
-			st.update(a[i], i + 1);
-			a[i] = q == 0 ? -1 : q - (i + 2);
-		}
-		for(int x: a)
-			out.print(x + " ");
-		out.flush();
-		out.close();
+std::vector<int> enumerateDivisors(ll n) {
+	std::set<int> set;
+	for (int i = 1; i*i <= n; ++i) {
+		if (n%i) continue;
+		set.insert(i);
+		set.insert(n / i);
 	}
-	
-	static class SegmentTree
-	{
-		int[] sTree;
-		int N;
-		
-		SegmentTree(int n)
-		{
-			N = 1; while(N < n) N <<= 1;
-			sTree = new int[N<<1];
-		}
-		
-		void update(int idx, int val)
-		{
-			idx += N - 1;
-			if(sTree[idx] != 0)
-				return;
-			sTree[idx] = val;
-			while(idx > 1)
-			{
-				idx >>= 1;
-				sTree[idx] = Math.max(sTree[idx<<1], sTree[idx<<1|1]);
-			}
-		}
-		
-		int query(int l, int r) { return query(1, 1, N, l, r); }
-		
-		int query(int node, int b, int e, int l, int r)
-		{
-			if(r < b || e < l)
-				return 0;
-			if(l <= b && e <= r)
-				return sTree[node];
-			int mid = b + e >> 1;
-			return Math.max(query(node<<1, b, mid, l, r), query(node<<1|1, mid + 1, e, l, r));
+	std::vector<int> res(set.size());
+	int p = 0;
+	for (const auto& x : set) {
+		res[p++] = x;
+	}
+	return res;
+}
+
+std::vector<std::pair<ll, ll>> primeFact(ll n) {
+	std::vector<std::pair<ll, ll>> result;
+	for (ll i = 2; i*i <= n; ++i) {
+		int divCount = 0;
+		if (n%i == 0) {
+			do {
+				++divCount;
+				n /= i;
+			} while (n%i == 0);
+			result.emplace_back(i, divCount);
 		}
 	}
+	if (n != 1) result.emplace_back(n, 1);
+	return result;
+}
 
-	static class Scanner 
-	{
-		StringTokenizer st;
-		BufferedReader br;
+signed main() {
+	INIT;
 
-		public Scanner(InputStream s){  br = new BufferedReader(new InputStreamReader(s));}
+	VAR(int, n);
+	auto dv(enumerateDivisors(n));
+	auto pv(primeFact(n));
 
-		public String next() throws IOException 
-		{
-			while (st == null || !st.hasMoreTokens()) 
-				st = new StringTokenizer(br.readLine());
-			return st.nextToken();
-		}
+	OUT(pv.size())SP OUT(dv.size() - 1)BR;
 
-		public int nextInt() throws IOException {return Integer.parseInt(next());}
+	return 0;
+}
 
-		public long nextLong() throws IOException {return Long.parseLong(next());}
-
-	}
-} 
 
 
 INSTRUCTIONS:
@@ -211,6 +305,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

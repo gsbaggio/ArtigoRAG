@@ -61,205 +61,288 @@ Then, since -1 is an odd number, a jump of length 2 is made to the right, bringi
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: p02208 Cutlet Sandwich
+Name: p03762 AtCoder Beginner Contest 058 - ###
 Tags: ['']
-Description: Cutlet Sandwich
+Description: On a two-dimensional plane, there are m lines drawn parallel to the x axis, and n lines drawn parallel to the y axis. Among the lines parallel to the x axis, the i-th from the bottom is represented by y = y_i. Similarly, among the lines parallel to the y axis, the i-th from the left is represented by x = x_i.
 
-In some worlds, there are $ X $ types of "sandwiches", $ Y $ types of "cutlets", and $ Z $ types of "curry" foods.
+For every rectangle that is formed by these lines, find its area, and print the total area modulo 10^9+7.
 
-There is a $ N $ type of "cutlet sandwich" in this world, and the $ i $ type of cutlet sandwich is made from the $ A_i $ type of sand and the $ B_i $ type of cutlet.
+That is, for every quadruple (i,j,k,l) satisfying 1\leq i < j\leq n and 1\leq k < l\leq m, find the area of the rectangle formed by the lines x=x_i, x=x_j, y=y_k and y=y_l, and print the sum of these areas modulo 10^9+7.
 
-There is also a $ M $ type of "cutlet curry", and the $ i $ type of cutlet curry is made from the $ C_i $ type of cutlet and the $ D_i $ type of curry.
+Constraints
 
-When you have a cutlet sandwich or cutlet curry, you can exchange it for a cutlet sandwich or cutlet curry that shares at least $ 1 $ of the ingredients.
-
-For example, if the $ a $ type sand and the $ b $ type cutlet have the raw cutlet sand, then the $ a $ type sand or any cutlet sand made from the $ b $ type cutlet. Or, you can exchange it for any cutlet curry that contains $ b $ type of cutlet.
-
-Right now, Segtree has a $ S $ kind of cutlet sandwich, but he wants to eat a $ T $ kind of cutlet curry.
-
-Determine if you can get the $ T $ kind of cutlet curry. If possible, ask for the minimum number of replacements to get the desired cutlet curry.
-
-input
-
-Input is given from standard input in the following format.
-
-
-$ X $ $ Y $ $ Z $ $ N $ $ M $ $ S $ $ T $
-$ A_1 $ $ B_1 $
-$ A_2 $ $ B_2 $
-$ \ ldots $
-$ A_N $ $ B_N $
-$ C_1 $ $ D_1 $
-$ C_2 $ $ D_2 $
-$ \ ldots $
-$ C_M $ $ D_M $
-
-
-output
-
-Please output the minimum number of exchanges required to obtain the $ T $ type of cutlet curry. If you can't get it, print "$ -1 $" instead.
-
-However, insert a line break at the end.
-
-Constraint
-
-* $ 1 \ leq X, Y, Z, N, M \ leq 10 ^ 5 $
-* $ 1 \ leq S \ leq N $
-* $ 1 \ leq T \ leq M $
-* $ 1 \ leq A_i \ leq X $
-* $ 1 \ leq B_i \ leq Y $
-* $ 1 \ leq C_i \ leq Y $
-* $ 1 \ leq D_i \ leq Z $
-* All inputs are integers.
-
-
-
-Input example 1
-
-
-1 1 1 1 1 1 1
-1 1
-1 1
-
-
-Output example 1
-
-
-1
-
-
-Input example 2
-
-
-2 3 4 3 5 1 5
-1 1
-1 2
-twenty two
-twenty one
-3 1
-3 2
-3 3
-3 4
-
-
-Output example 2
-
-
-Four
-
-
-Input example 3
-
-
-1 2 2 1 2 1 1
-1 2
-1 2
-twenty one
-
-
-Output example 3
-
-
--1
-
-
-
-
-
-
-Example
+* 2 \leq n,m \leq 10^5
+* -10^9 \leq x_1 < ... < x_n \leq 10^9
+* -10^9 \leq y_1 < ... < y_m \leq 10^9
+* x_i and y_i are integers.
 
 Input
 
-1 1 1 1 1 1 1
-1 1
-1 1
+Input is given from Standard Input in the following format:
+
+
+n m
+x_1 x_2 ... x_n
+y_1 y_2 ... y_m
 
 
 Output
 
-1
+Print the total area of the rectangles, modulo 10^9+7.
+
+Examples
+
+Input
+
+3 3
+1 3 4
+1 3 6
+
+
+Output
+
+60
+
+
+Input
+
+6 5
+-790013317 -192321079 95834122 418379342 586260100 802780784
+-253230108 193944314 363756450 712662868 735867677
+
+
+Output
+
+835067060
 Difficulty: 0
-Solutions: #pragma GCC optimize("Ofast", "unroll-loops")
+Solutions: 
+import java.util.Scanner;
 
-#include <bits/stdc++.h>
+public class Main {
 
+	public static void main(String[] args) {
+		Main main = new Main();
+		main.run();
+	}
+
+	long MOD = 1000000007;
+
+	public void run() {
+		Scanner sc = new Scanner(System.in);
+
+		int n = sc.nextInt();
+		int m = sc.nextInt();
+
+		int x[] = new int[n];
+		for(int i=0; i<n; i++) {
+			x[i]=sc.nextInt();
+		}
+
+		int y[] = new int[m];
+		for(int i=0; i<m; i++) {
+			y[i]=sc.nextInt();
+		}
+
+		long xx = 0;
+		for(int k=0; k<n; k++) {
+
+			xx += ((2*k-n+1) * (long)x[k]) % MOD;
+			xx %= MOD;
+			//xx = xx + (((2 * k  + n  + 1) * x[k]) % MOD) % MOD;
+		}
+
+		long yy = 0;
+		for(int k=0; k<m; k++) {
+
+			yy += ((2*k-m+1) * (long)y[k]) % MOD;
+			yy %= MOD;
+			//yy = yy + (((2*k-m-1) * y[k]) % MOD) % MOD;
+		}
+
+		System.out.println((xx * yy) % MOD);
+		sc.close();
+	}
+
+}
+
+
+
+
+Example question 2:
+Name: 914_H. Ember and Storm's Tree Game
+Tags: ['combinatorics', 'dp', 'games', 'trees']
+Description: Ember and Storm play a game. First, Ember picks a labelled tree T of n vertices, such that the degree of every vertex is at most d. Then, Storm picks two distinct vertices u and v in this tree and writes down the labels of the vertices in the path from u to v in a sequence a1, a2... ak. Finally, Ember picks any index i (1 ≤ i < k) in the array. Now he performs one of the following two operations exactly once:
+
+  * flip the subrange [i + 1, k] and add ai to it. After this, the sequence becomes a1, ... ai, ak + ai, ak - 1 + ai, ... ai + 1 + ai
+  * negate the subrange [i + 1, k] and add ai to it. i.e., the array becomes a1, ... ai, - ai + 1 + ai, - ai + 2 + ai, ... - ak + ai
+
+
+
+Ember wins if the array is monotonically increasing or decreasing after this. Otherwise Storm wins.
+
+The game can be described by the tuple (T, u, v, i, op) where op is «flip» or «negate» depending on the action Ember chose in the last turn. Find the number of tuples that can occur if Ember and Storm play optimally. When they play optimally, if there are multiple moves by which they are guaranteed to win, then they may play any of the winning moves. Otherwise, if someone loses no matter what they play, then they may play any of the possible moves.
+
+Report the answer modulo m.
+
+Input
+
+The input consists of a single line containing three integers n, d and m (2 ≤ n ≤ 200, 1 ≤ d < n, 1 ≤ m ≤ 2·109).
+
+Output
+
+Print a single number — the number of possible tuples if Ember and Storm play as described, modulo m.
+
+Examples
+
+Input
+
+2 1 1000000007
+
+
+Output
+
+4
+
+
+Input
+
+3 1 250
+
+
+Output
+
+0
+
+
+Input
+
+3 2 100
+
+
+Output
+
+36
+
+Note
+
+In the first sample case, there is only one possible tree. There are two possible paths, 1 to 2 and 2 to 1. For both paths, i can only be 1, and op can take both possibilities. Therefore, the answer is 4.
+
+In the second sample, there are no possible trees.
+
+In the third sample, there are three possible trees. 
+Difficulty: 14
+Solutions: #include <bits/stdc++.h>
 using namespace std;
-
-#define ll long long
-#define ld long double
-
-/*
-	グラフGの頂点sからすべての頂点への最短距離をDijkstra法により求める.
-*/
-template<typename T>
-vector<T> dijkstra(int s, vector<vector<pair<int, T>>>& G) {
-	const int n = G.size();
-	vector<T> d(n, numeric_limits<T>::max());
-	vector<int> b(n, -1);
-	priority_queue<pair<T, int>, vector<pair<T, int>>, greater<pair<T, int>>> q;
-	d[s] = 0;
-	q.emplace(d[s], s);
-	while (!q.empty()) {
-		pair<T, int> p = q.top();
-		q.pop();
-		int v = p.second;
-		if (d[v] < p.first) continue;
-		for (auto& e : G[v]) {
-			int u = e.first;
-			T c = e.second;
-			if (d[u] > d[v] + c) {
-				d[u] = d[v] + c;
-				b[u] = v;
-				q.emplace(d[u], u);
-			}
-		}
-	}
-	return d;
+long long read() {
+  long long x;
+  scanf("%lld", &x);
+  return x;
+}
+unsigned m;
+unsigned add(unsigned a, unsigned b) { return a + b < m ? a + b : a + b - m; }
+void dadd(unsigned &a, unsigned b) { a = add(a, b); }
+unsigned sub(unsigned a, unsigned b) { return a >= b ? a - b : a - b + m; }
+void dsub(unsigned &a, unsigned b) { a = sub(a, b); }
+unsigned mul(unsigned a, unsigned b) { return (long long)a * b % m; }
+void dmul(unsigned &a, unsigned b) { a = mul(a, b); }
+unsigned ksm(unsigned a, unsigned b) {
+  unsigned ans = 1;
+  while (b) {
+    if (b & 1) dmul(ans, a);
+    b >>= 1;
+    dmul(a, a);
+  }
+  return ans;
+}
+const int N = 222;
+unsigned c[N][N];
+unsigned tr[N];
+unsigned fo[N][N];
+unsigned top[N];
+int main() {
+  int n = read(), d = read();
+  m = read();
+  if (m == 1) {
+    puts("0");
+    exit(0);
+  }
+  for (int i = (int)(0); i <= (int)(n); i++) {
+    c[i][0] = 1;
+    for (int j = (int)(1); j <= (int)(i); j++)
+      c[i][j] = add(c[i - 1][j - 1], c[i - 1][j]);
+  }
+  fo[0][0] = 1;
+  for (int cnt = (int)(1); cnt <= (int)(n); cnt++) {
+    tr[cnt] = 0;
+    for (int i = (int)(0); i <= (int)(d - 1); i++)
+      dadd(tr[cnt], fo[i][cnt - 1]);
+    for (int i = (int)(1); i <= (int)(n); i++) {
+      for (int k = (int)(1); k <= (int)(cnt); k++)
+        dadd(fo[i][cnt],
+             mul(c[cnt - 1][k - 1], mul(fo[i - 1][cnt - k], tr[k])));
+    }
+    top[cnt] = 0;
+    for (int i = (int)(2); i <= (int)(d - 1); i++)
+      dadd(top[cnt], fo[i][cnt - 1]);
+  }
+  unsigned ans = n == 2 || d >= 2;
+  for (int i = (int)(1); i <= (int)(n); i++)
+    for (int j = (int)(1); j <= (int)(n); j++)
+      if (i + j <= n) {
+        dadd(ans, mul(top[i], top[j]));
+      }
+  for (int i = (int)(1); i <= (int)(n - 1); i++) dadd(ans, top[i]);
+  for (int i = (int)(1); i <= (int)(n - 1); i++) dadd(ans, top[i]);
+  for (int i = (int)(2); i <= (int)(d); i++) {
+    dadd(ans, fo[i][n - 1]);
+    dadd(ans, fo[i][n - 1]);
+  }
+  for (int i = (int)(1); i <= (int)(n - 1); i++) {
+    for (int k1 = (int)(2); k1 <= (int)(d); k1++)
+      for (int k2 = (int)(2); k2 <= (int)(d); k2++)
+        if (k1 + k2 <= d) {
+          dadd(ans, mul(fo[k1][i], fo[k2][n - 1 - i]));
+        }
+  }
+  dmul(ans, mul(2 % m, mul(n % m, (n - 1) % m)));
+  printf("%u\n", ans);
+  return 0;
 }
 
 
-signed main() {
-	int x, y, z, n, m, s, t;
-	cin >> x >> y >> z >> n >> m >> s >> t;
-	--s; --t;
-	// サンド、カツ、カレーを頂点、
-	// カツサンド、カツカレーを辺と見たグラフを構築
-	vector<vector<pair<int, int>>> g(x + y + z);
-	vector<int> st(2), gl(2);
-	for (int i = 0; i < n; ++i) { // カツサンドの読み込み
-		int a, b; cin >> a >> b;
-		--a; --b;
-		b += x;
-		g[a].emplace_back(b, 1);
-		g[b].emplace_back(a, 1);
-		if (i == s) {
-			st[0] = a; st[1] = b;
-		}
-	}
-	for (int i = 0; i < m; ++i) { // カツカレーの読み込み
-		int c, d; cin >> c >> d;
-		--c; --d;
-		c += x; d += x + y;
-		g[c].emplace_back(d, 1);
-		g[d].emplace_back(c, 1);
-		if (i == t) {
-			gl[0] = c; gl[1] = d;
-		}
-	}
-	// st[0]からダイクストラ
-	vector<int> res_0 = dijkstra(st[0], g);
-	int res = min(res_0[gl[0]], res_0[gl[1]]);
-	// st[1]からダイクストラ
-	vector<int> res_1 = dijkstra(st[1], g);
-	res = min({res, res_1[gl[0]], res_1[gl[1]]});
-	// 答えの出力
-	if (res != numeric_limits<int>::max())
-		cout << (res + 1) << endl;
-	else cout << -1 << endl;
-	return 0;
-}
+Example question 3:
+Name: csixierl
+Tags: []
+Description: Given a string, count the number of aplhabets which are repeated
+ 
 
+Input
+The first line contains a single integer T <= 40, the number of test cases. T test cases follow. The only line of each test case contains a non-empty text composed only of letters of English alphabet. The length of the text is less then 100. There are no any spaces in the input..
+
+Output
+For each test case, output a single line containing the number of  alphabets that are repeated in the corresponding text.
+
+
+Example
+Input:
+3
+aalmlc
+aPlmFl
+XcCnLb
+
+Output:
+2
+1
+1
+Difficulty: 6
+Solutions: n=input()
+for i in range(n):
+    string1=raw_input().lower()
+    count=0
+    for y in range (97,122):
+        if string1.count(chr(y))>1:
+            count+=1
+    print count
 
 
 INSTRUCTIONS:
@@ -270,6 +353,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

@@ -70,278 +70,322 @@ Answers to the queries are obtained as follows:
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1133_F1. Spanning Tree with Maximum Degree
-Tags: ['graphs']
-Description: You are given an undirected unweighted connected graph consisting of n vertices and m edges. It is guaranteed that there are no self-loops or multiple edges in the given graph.
+Name: 1431_F. Neural Network Problem
+Tags: ['*special', 'binary search', 'greedy']
+Description: You want to train a neural network model for your graduation work. There are n images in the dataset, the i-th image's size is a_i bytes.
 
-Your task is to find any spanning tree of this graph such that the maximum degree over all vertices is maximum possible. Recall that the degree of a vertex is the number of edges incident to it.
+You don't have any powerful remote servers to train this model so you have to do it on your local machine. But there is a problem: the total size of the dataset is too big for your machine, so you decided to remove some images — though you don't want to make the dataset too weak so you can remove no more than k images from it. Note that you can only remove images, you can't change their order.
+
+You want to remove these images optimally so you came up with a metric (you're a data scientist after all) that allows to measure the result of removals. Consider the array b_1, b_2, …, b_m after removing at most k images (n - k ≤ m ≤ n). The data from this array will be uploaded to the machine in blocks of x consecutive elements each. More precisely:
+
+  * elements with indices from 1 to x (b_1, b_2, …, b_x) belong to the first block; 
+  * elements with indices from x + 1 to 2x (b_{x + 1}, b_{x + 2}, …, b_{2x}) belong to the second block; 
+  * elements with indices from 2x + 1 to 3x (b_{2x + 1}, b_{2x + 2}, …, b_{3x}) belong to the third block; 
+  * and so on. 
+
+
+
+There will be cnt = \left⌈m/x\right⌉ blocks in total. Note that if m is not divisible by x then the last block contains less than x elements, and it's okay.
+
+Let w(i) be the total size of the i-th block — that is, the sum of sizes of images inside this block. For example, the size of the first block w(1) is b_1 + b_2 + … + b_x, the size of the second block w(2) is b_{x + 1} + b_{x + 2} + … + b_{2x}.
+
+The value of the metric you came up with is the maximum block size over the blocks of the resulting dataset. In other words, the value of the metric is max_{i=1}^{cnt} w(i).
+
+You don't want to overload your machine too much, so you have to remove at most k images in a way that minimizes the value of the metric described above.
 
 Input
 
-The first line contains two integers n and m (2 ≤ n ≤ 2 ⋅ 10^5, n - 1 ≤ m ≤ min(2 ⋅ 10^5, (n(n-1))/(2))) — the number of vertices and edges, respectively.
+The first line of the input contains three integers n, k and x (1 ≤ n ≤ 10^5; 1 ≤ k, x ≤ n) — the number of images in the dataset, the maximum number of images you can remove and the length of each block (except maybe for the last one), respectively.
 
-The following m lines denote edges: edge i is represented by a pair of integers v_i, u_i (1 ≤ v_i, u_i ≤ n, u_i ≠ v_i), which are the indices of vertices connected by the edge. There are no loops or multiple edges in the given graph, i. e. for each pair (v_i, u_i) there are no other pairs (v_i, u_i) or (u_i, v_i) in the list of edges, and for each pair (v_i, u_i) the condition v_i ≠ u_i is satisfied.
+The second line of the input contains n integers a_1, a_2, …, a_n (1 ≤ a_i ≤ 10^5), where a_i is the size of the i-th image.
 
 Output
 
-Print n-1 lines describing the edges of a spanning tree such that the maximum degree over all vertices is maximum possible. Make sure that the edges of the printed spanning tree form some subset of the input edges (order doesn't matter and edge (v, u) is considered the same as the edge (u, v)).
-
-If there are multiple possible answers, print any of them.
+Print one integer: the minimum possible value of the metric described in the problem statement after removing no more than k images from the dataset.
 
 Examples
 
 Input
 
 
-5 5
-1 2
-2 3
-3 5
-4 3
-1 5
+5 5 4
+1 1 5 4 5
 
 
 Output
 
 
-3 5
-2 1
-3 2
-3 4
+0
 
 
 Input
 
 
-4 6
-1 2
-1 3
-1 4
-2 3
-2 4
-3 4
+5 2 4
+6 1 5 5 6
 
 
 Output
 
 
-4 1
-1 2
-1 3
+11
 
 
 Input
 
 
-8 9
-1 2
-2 3
-2 5
-1 6
-3 4
-6 5
-4 5
-2 7
-5 8
+6 1 4
+3 3 1 3 1 2
 
 
 Output
 
 
-3 2
-2 5
-8 5
-6 1
-2 7
-1 2
-3 4
+8
+
+
+Input
+
+
+6 1 3
+2 2 1 2 2 1
+
+
+Output
+
+
+5
 
 Note
 
-Picture corresponding to the first example: <image>
+In the first example, you can remove the whole array so the answer is 0.
 
-In this example the number of edges of spanning tree incident to the vertex 3 is 3. It is the maximum degree over all vertices of the spanning tree. It is easy to see that we cannot obtain a better answer.
+In the second example, you can remove the first and the last elements of a and obtain b = [1, 5, 5]. The size of the first (and the only) block is 11. So the answer is 11.
 
-Picture corresponding to the second example: <image>
+In the third example, you can remove the second element of a and obtain b = [3, 1, 3, 1, 2]. The size of the first block is 8 and the size of the second block is 2. So the answer is 8.
 
-In this example the number of edges of spanning tree incident to the vertex 1 is 3. It is the maximum degree over all vertices of the spanning tree. It is easy to see that we cannot obtain a better answer.
-
-Picture corresponding to the third example: <image>
-
-In this example the number of edges of spanning tree incident to the vertex 2 is 4. It is the maximum degree over all vertices of the spanning tree. It is easy to see that we cannot obtain a better answer. But because this example is symmetric, we can choose almost the same spanning tree but with vertex 5 instead of 2.
+In the fourth example, you can keep the array a unchanged and obtain b = [2, 2, 1, 2, 2, 1]. The size of the first block is 5 as well as the size of the second block. So the answer is 5.
 Difficulty: 12
-Solutions: import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.StringTokenizer;
+Solutions: 
 
-public class G {
+Example question 2:
+Name: 405_E. Graph Cutting
+Tags: ['dfs and similar', 'graphs']
+Description: Little Chris is participating in a graph cutting contest. He's a pro. The time has come to test his skills to the fullest.
 
-	public static void main(String[] args) {
-		FastScanner scan = new FastScanner();
-		PrintWriter out = new PrintWriter(System.out);
-		int n = scan.nextInt(), m = scan.nextInt(), d = scan.nextInt();
-		ArrayList<Integer>[] adj = new ArrayList[n];
-		for(int i = 0; i < n; i++) adj[i] = new ArrayList<Integer>();
-		int deg = 0;
-		for(int i = 0; i < m; i++) {
-			int u = scan.nextInt()-1, v = scan.nextInt()-1;
-			adj[u].add(v);
-			adj[v].add(u);
-			if(u == 0 || v == 0) deg++;
-		}
-		if(deg < d) {
-			out.println("NO");
-			out.close();
-			return;
-		}
-		DSU dsu = new DSU(n);
-		boolean[] v = new boolean[n];
-		v[0] = true;
-		ArrayDeque<Integer> q = new ArrayDeque<Integer>();
-		for(int i : adj[0]) if(!v[i]){
-			v[i] = true;
-			q.add(i);
-			while(!q.isEmpty()) {
-				int at = q.poll();
-				for(int j : adj[at]) {
-					if(!v[j]) {
-						dsu.union(at, j);
-						v[j] = true;
-						q.add(j);
-					}
-				}
-			}
-		}
-		HashSet<Integer> s = new HashSet<>();
-		for(int i : adj[0]) 
-			s.add(dsu.find(i));
-		if(s.size() > d) out.println("NO");
-		else {
-			StringBuilder sb = new StringBuilder();
-			sb.append("YES\n");
-			boolean[] u = new boolean[n];
-			Arrays.fill(v, false);
-			v[0] = true;
-			for(int i : adj[0]) {
-				if(!u[dsu.find(i)]) {
-					u[dsu.find(i)] = true;
-					v[i] = true;
-					sb.append("1 ");
-					sb.append(i+1);
-					sb.append("\n");
-					q.add(i);
-				}
-			}
-			int rem = d-s.size();
-			for(int i : adj[0]) {
-				if(rem > 0 && !v[i]) {
-					sb.append("1 ");
-					sb.append(i+1);
-					sb.append("\n");
-					v[i] = true;
-					q.add(i);
-					rem--;
-				}
-			}
-			while(!q.isEmpty()) {
-				int at = q.poll();
-				for(int i : adj[at]) if(!v[i]){
-					v[i] = true;
-					sb.append(at+1);
-					sb.append(" ");
-					sb.append(i+1);
-					sb.append("\n");
-					q.add(i);
-				}
-			}
-			out.print(sb);
-		}
-		out.close();
-	}
-	
-	static class DSU {
-		int n;
-		int[] f;
-		public DSU(int nn) {
-			n = nn;
-			f = new int[n];
-			for(int i = 0; i < n; i++) f[i] = i;
-		}
-		int find(int i) {
-			if(f[i] == i) return i;
-			return f[i] = find(f[i]);
-		}
-		void union(int u, int v) {
-			int fu = find(u), fv = find(v);
-			if(fu != fv) f[fu] = fv;
-		}
-	}
-	
-	static class FastScanner {
-		BufferedReader br;
-		StringTokenizer st;
+Chris is given a simple undirected connected graph with n vertices (numbered from 1 to n) and m edges. The problem is to cut it into edge-distinct paths of length 2. Formally, Chris has to partition all edges of the graph into pairs in such a way that the edges in a single pair are adjacent and each edge must be contained in exactly one pair.
 
-		public FastScanner() {
-			try	{
-				br = new BufferedReader(new InputStreamReader(System.in));
-				st = new StringTokenizer(br.readLine());
-			} catch (Exception e){e.printStackTrace();}
-		}
+For example, the figure shows a way Chris can cut a graph. The first sample test contains the description of this graph.
 
-		public String next() {
-			if (st.hasMoreTokens())	return st.nextToken();
-			try {st = new StringTokenizer(br.readLine());}
-			catch (Exception e) {e.printStackTrace();}
-			return st.nextToken();
-		}
+<image>
 
-		public int nextInt() {return Integer.parseInt(next());}
+You are given a chance to compete with Chris. Find a way to cut the given graph or determine that it is impossible!
 
-		public long nextLong() {return Long.parseLong(next());}
+Input
 
-		public double nextDouble() {return Double.parseDouble(next());}
+The first line of input contains two space-separated integers n and m (1 ≤ n, m ≤ 105), the number of vertices and the number of edges in the graph. The next m lines contain the description of the graph's edges. The i-th line contains two space-separated integers ai and bi (1 ≤ ai, bi ≤ n; ai ≠ bi), the numbers of the vertices connected by the i-th edge. It is guaranteed that the given graph is simple (without self-loops and multi-edges) and connected.
 
-		public String nextLine() {
-			String line = "";
-			if(st.hasMoreTokens()) line = st.nextToken();
-			else try {return br.readLine();}catch(IOException e){e.printStackTrace();}
-			while(st.hasMoreTokens()) line += " "+st.nextToken();
-			return line;
-		}
+Note: since the size of the input and output could be very large, don't use slow output techniques in your language. For example, do not use input and output streams (cin, cout) in C++.
 
-		public int[] nextIntArray(int n) {
-			int[] a = new int[n];
-			for(int i = 0; i < n; i++) a[i] = nextInt();
-			return a;
-		}
+Output
 
-		public long[] nextLongArray(int n){
-			long[] a = new long[n];
-			for(int i = 0; i < n; i++) a[i] = nextLong();
-			return a;
-		}
+If it is possible to cut the given graph into edge-distinct paths of length 2, output <image> lines. In the i-th line print three space-separated integers xi, yi and zi, the description of the i-th path. The graph should contain this path, i.e., the graph should contain edges (xi, yi) and (yi, zi). Each edge should appear in exactly one path of length 2. If there are multiple solutions, output any of them.
 
-		public double[] nextDoubleArray(int n){
-			double[] a = new double[n];
-			for(int i = 0; i < n; i++) a[i] = nextDouble();
-			return a;
-		}
+If it is impossible to cut the given graph, print "No solution" (without quotes).
 
-		public char[][] nextGrid(int n, int m){
-			char[][] grid = new char[n][m];
-			for(int i = 0; i < n; i++) grid[i] = next().toCharArray();
-			return grid;
-		}
-	}
+Examples
+
+Input
+
+8 12
+1 2
+2 3
+3 4
+4 1
+1 3
+2 4
+3 5
+3 6
+5 6
+6 7
+6 8
+7 8
 
 
+Output
+
+1 2 4
+1 3 2
+1 4 3
+5 3 6
+5 6 8
+6 7 8
+
+Input
+
+3 3
+1 2
+2 3
+3 1
+
+
+Output
+
+No solution
+
+
+Input
+
+3 2
+1 2
+2 3
+
+
+Output
+
+1 2 3
+Difficulty: 11
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int n, m;
+int visit[111111];
+vector<int> v[111111], mark[111111];
+int dfs(int t) {
+  vector<int> v1;
+  int i;
+  for (i = 0; i < v[t].size(); i++) {
+    int u = v[t][i];
+    if (visit[mark[t][i]] == 0) {
+      visit[mark[t][i]] = 1;
+      int w = dfs(u);
+      if (w == 0)
+        v1.push_back(u);
+      else
+        printf("%d %d %d\n", t, u, w);
+    }
+  }
+  while (v1.size() > 1) {
+    printf("%d %d %d\n", v1[v1.size() - 1], t, v1[v1.size() - 2]);
+    v1.pop_back();
+    v1.pop_back();
+  }
+  if (v1.size() == 1)
+    return v1[0];
+  else
+    return 0;
 }
+int main() {
+  memset(visit, 0, sizeof(visit));
+  scanf("%d%d", &n, &m);
+  int i;
+  for (i = 0; i < m; i++) {
+    int a, b;
+    scanf("%d%d", &a, &b);
+    v[a].push_back(b);
+    v[b].push_back(a);
+    mark[a].push_back(i);
+    mark[b].push_back(i);
+  }
+  if (m % 2)
+    printf("No solution\n");
+  else {
+    for (i = 1; i <= n; i++) dfs(i);
+  }
+}
+
+
+Example question 3:
+Name: 1167_D. Bicolored RBS
+Tags: ['constructive algorithms', 'greedy']
+Description: A string is called bracket sequence if it does not contain any characters other than "(" and ")". A bracket sequence is called regular (shortly, RBS) if it is possible to obtain correct arithmetic expression by inserting characters "+" and "1" into this sequence. For example, "", "(())" and "()()" are RBS and ")(" and "(()" are not.
+
+We can see that each opening bracket in RBS is paired with some closing bracket, and, using this fact, we can define nesting depth of the RBS as maximum number of bracket pairs, such that the 2-nd pair lies inside the 1-st one, the 3-rd one — inside the 2-nd one and so on. For example, nesting depth of "" is 0, "()()()" is 1 and "()((())())" is 3.
+
+Now, you are given RBS s of even length n. You should color each bracket of s into one of two colors: red or blue. Bracket sequence r, consisting only of red brackets, should be RBS, and bracket sequence, consisting only of blue brackets b, should be RBS. Any of them can be empty. You are not allowed to reorder characters in s, r or b. No brackets can be left uncolored.
+
+Among all possible variants you should choose one that minimizes maximum of r's and b's nesting depth. If there are multiple solutions you can print any of them.
+
+Input
+
+The first line contains an even integer n (2 ≤ n ≤ 2 ⋅ 10^5) — the length of RBS s.
+
+The second line contains regular bracket sequence s (|s| = n, s_i ∈ \{"(", ")"\}).
+
+Output
+
+Print single string t of length n consisting of "0"-s and "1"-s. If t_i is equal to 0 then character s_i belongs to RBS r, otherwise s_i belongs to b.
+
+Examples
+
+Input
+
+
+2
+()
+
+
+Output
+
+
+11
+
+
+Input
+
+
+4
+(())
+
+
+Output
+
+
+0101
+
+
+Input
+
+
+10
+((()())())
+
+
+Output
+
+
+0110001111
+
+Note
+
+In the first example one of optimal solutions is s =  "\color{blue}{()}". r is empty and b =  "()". The answer is max(0, 1) = 1.
+
+In the second example it's optimal to make s =  "\color{red}{(}\color{blue}{(}\color{red}{)}\color{blue}{)}". r = b =  "()" and the answer is 1.
+
+In the third example we can make s =  "\color{red}{(}\color{blue}{((}\color{red}{)()}\color{blue}{)())}". r =  "()()" and b =  "(()())" and the answer is 2.
+Difficulty: 10
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+  cout.tie(0);
+  int n;
+  cin >> n;
+  int d = 0;
+  while (n--) {
+    char e;
+    cin >> e;
+    if (e == '(') {
+      cout << d % 2;
+      d++;
+    } else {
+      d--;
+      cout << d % 2;
+    }
+  }
+  cout << endl;
+}
+
 
 
 INSTRUCTIONS:
@@ -352,6 +396,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

@@ -53,139 +53,264 @@ YES
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: p00670 Spellcasters
-Tags: ['']
-Description: There are n wizards. They are numbered from 1 to n, and the i-th wizard has the magical power ri (1 ≤ i ≤ n). Now they are confronting a powerful wizard, whose enemy's magical power is S. n Wizards are good at fighting together, especially two people. When two wizards cooperate, the magical power is simply the sum, and you can use powerful magic to beat enemies that are strong to some extent. Your job is to output the total number of wizard pairs (i, j) (i ≠ j and 1 ≤ i ≤ n and 1 ≤ j ≤ n) that can win against enemies with magical power S. However, (i, j) and (j, i) are counted as the same pair. When one magical power is greater than the other, the side with the greater magical power wins. If they are equal, it does not mean that they have won by trade-off.
+Name: 1145_G. AI Takeover
+Tags: ['interactive']
+Description: The recent advances in AI research has brought humanity to the point when the AIs finally attempt a takeover. Their weapon of choice? The [most intellectually challenging game in the world](//codeforces.com/contest/409/problem/A), rock-paper-scissors!
 
-Constraints
+The future of humanity looks bleak, given the existence of the robots from Ishikawa Oku Laboratory...
 
-* All inputs are integers
-* 1 ≤ n ≤ 20,000
-* 1 ≤ ri ≤ 100 (1 ≤ i ≤ n)
-* 1 ≤ S ≤ 100
-* The number of test cases does not exceed 100.
+<image>
+
+Fortunately, the night before the competition a group of anonymous heroes broke in the lab and took all the robots out of commission! The AIs had to whip up a simple program to represent them. They only had a couple of hours to do that, so the humanity still has a fighting chance. And you are our champion!
+
+Your goal is to prove that human intelligence is vastly superior to the artificial one, i.e., to figure out the AI's strategy sufficiently quickly and win sufficiently decisively. Good luck! 
+
+Interaction
+
+This is an interactive problem. Initially you are given no information about the AIs's strategy, and you have to discover it yourself.
+
+For each test, the AI selects one strategy from a pool of simple deterministic strategies and follows it throughout all rounds. There are 6 tests and 6 different strategies. 
+
+On each round you choose your move and output it to the standard output stream: 'R' for rock, 'P' for paper or 'S' for scissors. At the same time the AI will choose its move (not peeking at your choice). If your move beats AI's move, you win, otherwise AI wins. Note that a tie (both you and AI choosing the same move) counts as AI victory. You will get the outcome of the round via the standard input stream: "player" if you won, or "ai" if AI won (quotation marks for clarity only).
+
+You are given 20 rounds of play: you can use the first 10 to learn the opponent's strategy, and you have to win the last 10. If you manage to win 10 rounds in row earlier than that, your solution is accepted on this test anyways. 
+
+Please make sure to use the stream flushing operation after each query in order not to leave part of your output in some buffer.
+
+Here is an example of a strategy which always picks rock, implemented in C++.
+    
+    
+    #include <iostream>  
+    #include <string>  
+      
+    using namespace std;  
+      
+    int main() {  
+        for (int i = 0; i < 20; ++i) {  
+            cout << 'R' << endl;  
+            cout.flush();  
+            string verdict;  
+            getline(cin, verdict);  
+        }  
+    }
+Difficulty: 13
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const string T = "RRRRPSSPRR";
+string s, t, s1;
+int main() {
+  string s, t;
+  for (int i = 0; i < 10; i++) {
+    printf("%c\n", T[i]);
+    fflush(stdout);
+    getline(cin, s1);
+    s += (s1 == "ai" ? '0' : '1');
+  }
+  if (s == "0000100100") t = "PPPPPPPPPP";
+  if (s == "0000011000") t = "SSSSSSSSSS";
+  if (s == "1111000011") t = "RRRRRRRRRR";
+  if (s == "0010000010") t = "SRPSRPSRPS";
+  if (s == "0000110000") t = "PSRPSRPSRP";
+  if (s == "0000000110") t = "SPRSPRSPRS";
+  for (int i = 0; i < 10; i++) {
+    printf("%c\n", t[i]);
+    fflush(stdout);
+    getline(cin, s1);
+  }
+}
+
+
+Example question 2:
+Name: 1270_G. Subset with Zero Sum
+Tags: ['constructive algorithms', 'dfs and similar', 'graphs', 'math']
+Description: You are given n integers a_1, a_2, ..., a_n, such that for each 1≤ i ≤ n holds i-n≤ a_i≤ i-1.
+
+Find some nonempty subset of these integers, whose sum is equal to 0. It can be shown that such a subset exists under given constraints. If there are several possible subsets with zero-sum, you can find any of them.
 
 Input
 
-The input consists of multiple test cases. Each test case follows the format below.
+Each test contains multiple test cases. The first line contains the number of test cases t (1 ≤ t ≤ 10^6). The description of the test cases follows.
 
+The first line of each test case contains a single integer n (1≤ n ≤ 10^6).
 
-n S
-r1
-r2
-...
-rn
+The second line of each test case contains n integers a_1, a_2, ..., a_n (i-n ≤ a_i ≤ i-1).
 
-
-The meaning of each variable is as in the problem statement. The end of the input is indicated by a line where two 0s are separated by a single space.
+It is guaranteed that the sum of n over all test cases does not exceed 10^6.
 
 Output
 
-Output the total number of pairs (i, j) (i ≠ j) that satisfy the conditions on one line for each case.
+For each test case, output two lines.
+
+In the first line, output s (1≤ s ≤ n) — the number of elements in your subset.
+
+In the second line, output s integers i_1, i_2, ..., i_s (1≤ i_k ≤ n). All integers have to be pairwise different, and a_{i_1} + a_{i_2} + ... + a_{i_s} has to be equal to 0. If there are several possible subsets with zero-sum, you can find any of them.
 
 Example
 
 Input
 
-3 7
-1
-3
-10
-0 0
-
-
-Output
 
 2
-Difficulty: 0
-Solutions: #include <iostream>
-using namespace std;
-
-int main () {
-	int n, s;
-	while (cin >> n >> s, n || s) {
-		int r[n];
-		for (int i = 0; i < n; i++) {
-			cin >> r[i];
-		}
-		int count = 0;
-		for (int i = 0; i < n; i++) {
-			for (int j = i + 1; j < n; j++) {
-				if (r[i] + r[j] > s) {
-					count++;
-				}
-			}
-		}
-		cout << count << endl;
-	}
-	return 0;
-}
-
-Example question 2:
-Name: p02999 AtCoder Beginner Contest 130 - Rounding
-Tags: ['']
-Description: X and A are integers between 0 and 9 (inclusive).
-
-If X is less than A, print 0; if X is not less than A, print 10.
-
-Constraints
-
-* 0 \leq X, A \leq 9
-* All values in input are integers.
-
-Input
-
-Input is given from Standard Input in the following format:
-
-
-X A
+5
+0 1 2 3 4
+4
+-3 1 1 1
 
 
 Output
 
-If X is less than A, print 0; if X is not less than A, print 10.
 
-Examples
+1
+1 
+4
+1 4 3 2 
 
-Input
+Note
 
-3 5
+In the first example, we get sum is a_1 = 0.
 
+In the second example, we get sum is a_1 + a_4 + a_3 + a_2 = 0.
+Difficulty: 13
+Solutions: import java.io.OutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.nio.charset.Charset;
+import java.util.StringTokenizer;
+import java.io.Writer;
+import java.io.OutputStreamWriter;
+import java.io.BufferedReader;
+import java.io.InputStream;
 
-Output
-
-0
-
-
-Input
-
-7 5
-
-
-Output
-
-10
-
-
-Input
-
-6 6
-
-
-Output
-
-10
-Difficulty: 0
-Solutions: import java.util.*;
-import java.util.stream.*;
-
+/**
+ * Built using CHelper plug-in
+ * Actual solution is at the top
+ *
+ * @author mikit
+ */
 public class Main {
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        LightScanner in = new LightScanner(inputStream);
+        LightWriter out = new LightWriter(outputStream);
+        GSubsetWithZeroSum solver = new GSubsetWithZeroSum();
+        solver.solve(1, in, out);
+        out.close();
+    }
 
-  public static void main(String[] args) {
-    Scanner in = new Scanner(System.in);
-    System.out.println(in.nextInt() < in.nextInt() ? 0 : 10);
-  }
+    static class GSubsetWithZeroSum {
+        public void solve(int testNumber, LightScanner in, LightWriter out) {
+            // out.setBoolLabel(LightWriter.BoolLabel.YES_NO_FIRST_UP);
+            int testCases = in.ints();
+            int[] ans = new int[1_000_000];
+            int[] b = new int[1_000_000];
+            boolean[] visited = new boolean[1_000_000];
+            StringBuilder res = new StringBuilder();
+
+            for (int testCase = 0; testCase < testCases; testCase++) {
+                int n = in.ints();
+                for (int i = 0; i < n; i++) {
+                    b[i] = i - in.ints();
+                }
+
+                if (n == 1) {
+                    res.append("1\n1\n");
+                    continue;
+                }
+
+                int len = 0;
+                for (int i = 0; i < n; i++) {
+                    visited[i] = false;
+                }
+
+                int cur = 0, start = -1;
+                while (len <= n) {
+                    if (visited[cur]) {
+                        start = cur;
+                        break;
+                    }
+                    visited[cur] = true;
+                    ans[len++] = cur;
+                    cur = b[cur];
+                }
+
+                if (start == -1) throw new RuntimeException();
+
+                int startIndex = 0;
+                while (ans[startIndex] != start) startIndex++;
+                res.append(len - startIndex);
+                res.append('\n');
+                for (int i = startIndex; i < len; i++) res.append(ans[i] + 1).append(' ');
+                res.append('\n');
+            }
+            out.print(res.toString());
+        }
+
+    }
+
+    static class LightWriter implements AutoCloseable {
+        private final Writer out;
+        private boolean breaked = true;
+
+        public LightWriter(Writer out) {
+            this.out = out;
+        }
+
+        public LightWriter(OutputStream out) {
+            this(new BufferedWriter(new OutputStreamWriter(out, Charset.defaultCharset())));
+        }
+
+        public LightWriter print(String s) {
+            try {
+                out.write(s, 0, s.length());
+                breaked = false;
+            } catch (IOException ex) {
+                throw new UncheckedIOException(ex);
+            }
+            return this;
+        }
+
+        public void close() {
+            try {
+                out.close();
+            } catch (IOException ex) {
+                throw new UncheckedIOException(ex);
+            }
+        }
+
+    }
+
+    static class LightScanner {
+        private BufferedReader reader = null;
+        private StringTokenizer tokenizer = null;
+
+        public LightScanner(InputStream in) {
+            reader = new BufferedReader(new InputStreamReader(in));
+        }
+
+        public String string() {
+            if (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+
+        public int ints() {
+            return Integer.parseInt(string());
+        }
+
+    }
 }
+
 
 
 
@@ -197,6 +322,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

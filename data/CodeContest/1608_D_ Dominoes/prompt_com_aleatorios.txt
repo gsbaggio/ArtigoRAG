@@ -73,380 +73,57 @@ BB WW and WB WB.
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 813_E. Army Creation
-Tags: ['binary search', 'data structures']
-Description: As you might remember from our previous rounds, Vova really likes computer games. Now he is playing a strategy game known as Rage of Empires.
+Name: p00052 Factorial II
+Tags: ['']
+Description: n! = n × (n − 1) × (n − 2) × ... × 3 × 2 × 1
 
-In the game Vova can hire n different warriors; ith warrior has the type ai. Vova wants to create a balanced army hiring some subset of warriors. An army is called balanced if for each type of warrior present in the game there are not more than k warriors of this type in the army. Of course, Vova wants his army to be as large as possible.
+Is called the factorial of n. For example, the factorial of 12
 
-To make things more complicated, Vova has to consider q different plans of creating his army. ith plan allows him to hire only warriors whose numbers are not less than li and not greater than ri.
+12! = 12 x 11 x 10 x 9 x 8 x 7 x 6 x 5 x 4 x 3 x 2 x 1 = 479001600
 
-Help Vova to determine the largest size of a balanced army for each plan.
+And there are two consecutive 0s at the end.
 
-Be aware that the plans are given in a modified way. See input section for details.
+Write a program that inputs the integer n and outputs the number of consecutive 0s at the end of n !. However, n is a positive integer less than or equal to 20000.
+
+
 
 Input
 
-The first line contains two integers n and k (1 ≤ n, k ≤ 100000).
+Multiple data are given. Each piece of data is given n (n ≤ 20000) on one line. When n is 0, it is the last input.
 
-The second line contains n integers a1, a2, ... an (1 ≤ ai ≤ 100000).
-
-The third line contains one integer q (1 ≤ q ≤ 100000).
-
-Then q lines follow. ith line contains two numbers xi and yi which represent ith plan (1 ≤ xi, yi ≤ n).
-
-You have to keep track of the answer to the last plan (let's call it last). In the beginning last = 0. Then to restore values of li and ri for the ith plan, you have to do the following:
-
-  1. li = ((xi + last) mod n) + 1; 
-  2. ri = ((yi + last) mod n) + 1; 
-  3. If li > ri, swap li and ri. 
+The number of data does not exceed 20.
 
 Output
 
-Print q numbers. ith number must be equal to the maximum size of a balanced army when considering ith plan.
+For each data, output the number of 0s that are consecutively arranged at the end of n! On one line.
 
 Example
 
 Input
 
-6 2
-1 1 1 2 2 2
-5
-1 6
-4 3
-1 1
-2 6
-2 6
+2
+12
+10000
+0
 
 
 Output
 
+0
 2
-4
-1
-3
-2
-
-Note
-
-In the first example the real plans are: 
-
-  1. 1 2
-  2. 1 6
-  3. 6 6
-  4. 2 4
-  5. 4 6
-Difficulty: 11
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-int N, K, NR = 1, a[100100], g[100100], root[100100], Q, lst;
-vector<int> c[100100];
-struct range {
-  int l, r, sum;
-} r[4400400];
-int u(int i, int rs, int re, int p, int d) {
-  int n = ++NR;
-  r[n] = r[i];
-  if (rs == re - 1)
-    r[n].sum += d;
-  else {
-    int m = (rs + re) / 2;
-    if (p < m)
-      r[n].l = u(r[n].l, rs, m, p, d);
-    else
-      r[n].r = u(r[n].r, m, re, p, d);
-    r[n].sum = r[r[n].l].sum + r[r[n].r].sum;
-  }
-  return n;
-}
-int q(int i, int rs, int re, int qs, int qe) {
-  if (rs == qs && re == qe) return r[i].sum;
-  int m = (rs + re) / 2, n = 0;
-  if (qs < m && r[i].l) n += q(r[i].l, rs, m, qs, min(m, qe));
-  if (qe > m && r[i].r) n += q(r[i].r, m, re, max(qs, m), qe);
-  return n;
-}
-int main() {
-  scanf("%d %d", &N, &K);
-  for (int i = (1); i < (N + 1); i++) {
-    scanf("%d", &a[i]);
-    c[a[i]].push_back(i);
-  }
-  for (int i = (1); i < (100100); i++) {
-    for (int j = 0; j + K < ((int)c[i].size()); j++) {
-      g[c[i][j]] = c[i][j + K];
-    }
-  }
-  root[N + 1] = 1;
-  for (int i = N; i >= 1; i--) {
-    root[i] = u(root[i + 1], 1, N + 1, i, 1);
-    if (g[i]) root[i] = u(root[i], 1, N + 1, g[i], -1);
-  }
-  scanf("%d", &Q);
-  for (int z = (0); z < (Q); z++) {
-    int x, y;
-    scanf("%d %d", &x, &y);
-    x = (x + lst) % N + 1, y = (y + lst) % N + 1;
-    if (x > y) swap(x, y);
-    lst = q(root[x], 1, N + 1, x, y + 1);
-    printf("%d\n", lst);
-  }
-  return 0;
-}
-
-
-Example question 2:
-Name: 4-3
-Tags: []
-Description: Scooby is stuck in a cave in barren islands. Shaggy decided to play a prank on scooby.
-in his ghostly voice shaggy asks a question to the scared scooby. 
-the ghost(shaggy) will make scooby's way out only if he answers the following problem. 
-since scooby is not a nerd help him get out of the cave. the question is as follows.
-Given a set S .
-value of subset of s is sum of numbers in that subset.
-Find sum of value of all subsets mod 10^9+7. 
-
-Note :- value of null set is 0
-
-Input
-
-first line contains T . no of test cases 
-
-first line of every test cases is n (set size) 
-
-second line of every test cases contains n numbers of the set  x(i).
-
-Output
-
-print on a new line sum of value of all subsets of S mod 10^9+7 for each test case
-
-Constraint
-
-0 < T < 10
-
-0 < n ≤ 100
-
-0 ≤ x(i) ≤ 100000
-
-SAMPLE INPUT
-1
-3
-1 2 3
-
-SAMPLE OUTPUT
-24
-
-Explanation
-
-for set {1,2,3}
-
-posssible subsets are {1},{2},{3},{1,2},{1,3},{2,3},{1,2,3}
-
-sum of value of all subset is 24
+2499
 Difficulty: 0
-Solutions: t = input();
-while(t > 0):
-	n = input(); a = [int(i) for i in raw_input().split()]; s = 0;
-	for i in range(0, n):	s += a[i];
-	print (pow(2, n - 1) * s) % 1000000007;
-	t -= 1;
-
-Example question 3:
-Name: 1168_D. Anagram Paths
-Tags: ['dp', 'implementation', 'trees']
-Description: Toad Ilya has a rooted binary tree with vertex 1 being the root. A tree is a connected graph without cycles. A tree is rooted if one vertex is selected and called the root. A vertex u is a child of a vertex v if u and v are connected by an edge and v is closer to the root than u. A leaf is a non-root vertex that has no children.
-
-In the tree Ilya has each vertex has at most two children, and each edge has some character written on it. The character can be a lowercase English letter or the question mark '?'.
-
-Ilya will q times update the tree a bit. Each update will replace exactly one character on some edge. After each update Ilya needs to find if the tree is anagrammable and if yes, find its anagramnity for each letter. Well, that's difficult to explain, but we'll try.
-
-To start with, a string a is an anagram of a string b if it is possible to rearrange letters in a (without changing the letters itself) so that it becomes b. For example, the string "fortyfive" is an anagram of the string "overfifty", but the string "aabb" is not an anagram of the string "bbba".
-
-Consider a path from the root of the tree to a leaf. The characters on the edges on this path form a string, we say that this string is associated with this leaf. The tree is anagrammable if and only if it is possible to replace each question mark with a lowercase English letter so that for all pair of leaves the associated strings for these leaves are anagrams of each other.
-
-If the tree is anagrammable, then its anagramnity for the letter c is the maximum possible number of letters c in a string associated with some leaf in a valid replacement of all question marks.
-
-Please after each update find if the tree is anagrammable and if yes, find the ∑{f(c) ⋅ ind(c)} for all letters c, where f(c) is the anagramnity for the letter c, and ind(x) is the index of this letter in the alphabet (ind("a") = 1, ind("b") = 2, ..., ind("z") = 26).
-
-Input
-
-The first line of input contains two integers n and q (2 ≤ n ≤ 150 000, 1 ≤ q ≤ 150 000) — the number of vertices in the tree and the number of queries.
-
-The next n-1 lines describe the initial tree. The i-th of them contains an integer p_i and a character c_i (1 ≤ p_i ≤ i, c_i is a lowercase English letter or the question mark '?') describing an edge between vertices p_i and i+1 with character c_i written on it.
-
-The root of this tree is the vertex 1, and each vertex has at most two children.
-
-The next q lines describe the queries. The i-th of them contains two integers v and c (2 ≤ v ≤ n, c is a lowercase English letter or the question mark '?'), meaning that updated character on the edge between p_{v-1} to v is c. The updated character can be the same as was written before.
-
-Output
-
-Output q lines. In the i-th of them print "Fou" if the tree is not anagrammable after the first i updates.
-
-Otherwise output "Shi" and the ∑{f(c) ⋅ ind(c)} for all letters c.
-
-Examples
-
-Input
-
-
-3 4
-1 ?
-1 ?
-2 ?
-2 a
-3 b
-2 b
-
-
-Output
-
-
-Shi 351
-Shi 1
-Fou
-Shi 2
-
-
-Input
-
-
-5 2
-1 ?
-1 ?
-2 ?
-3 ?
-4 a
-5 b
-
-
-Output
-
-
-Shi 352
-Shi 3
-
-Note
-
-In the first example after the first query, for each character, you can set all edges equal to that character, and you will get 1 such character on each path, so the answer is 1 ⋅ (1+2+…+26) = 351.
-
-In the first example after the second query, you know that all paths should be an anagram of "a", so all paths should be "a", so the answer is 1 ⋅ 1 = 1.
-
-In the first example after the third query, you have two paths with strings "a" and "b", but these strings are not anagrams, so the answer is "Fou".
-
-In the first example after the fourth query, you know that all paths should be "b", so the answer is 1 ⋅ 2 = 2.
-
-In the second example after the first query, you know that f('a') = 2 and f(c) = 1 for all other characters, so the answer is 1 ⋅ (2 + 3 + … + 26) + 2 = 352.
-
-In the second example after the second query, you know that each path should contain one 'a' and one 'b', so the answer is 1 ⋅ 1 + 1 ⋅ 2 = 3.
-Difficulty: 10
-Solutions: #include <bits/stdc++.h>
-const int maxn = 150005 + 7;
-int L[maxn], sum[maxn], d[maxn], fa[maxn], link[maxn], f[maxn][27], g[maxn][27],
-    belong[maxn], bad[maxn], len, old[maxn][27];
-int n, q, bad_cnt;
-char c[maxn], s[maxn];
-std::vector<int> ch[maxn], nxt[maxn], S[maxn][26];
-int is_single(int x) {
-  if (x == 0 || x == 1) return 0;
-  return ch[fa[x]].size() == 1;
-}
-int get(char c) {
-  if ('a' <= c && c <= 'z') return c - 'a';
-  return 26;
-}
-int calc() {
-  int ans = 0, free = L[1] - sum[1];
-  for (int i = 0; i < 26; ++i) ans += (i + 1) * (f[1][i] + free);
-  return ans;
-}
-void dfs(int u) {
-  d[u] = d[fa[u]] + 1;
-  if (ch[u].empty()) {
-    if (len && d[u] != len) {
-      while (q--) puts("Fou");
-      exit(0);
-    }
-    len = d[u];
-    return;
-  }
-  for (int v : ch[u]) dfs(v);
-}
-void shrink() {
-  for (int i = n; i >= 1; i--) {
-    if (belong[i]) continue;
-    belong[i] = i;
-    link[i] = fa[i];
-    g[i][get(c[i])]++;
-    while (is_single(i) && is_single(link[i])) {
-      g[i][get(c[link[i]])]++;
-      belong[link[i]] = i;
-      link[i] = fa[link[i]];
-    }
-    nxt[link[i]].push_back(i);
-  }
-  for (int i = n; i >= 1; i--) {
-    if (belong[i] != i) continue;
-    L[i] = len - d[i];
-    if (d[i] == len) continue;
-    for (int v : nxt[i])
-      for (int j = 0; j < 26; ++j)
-        S[i][j].push_back(old[v][j] = f[v][j] + g[v][j]);
-    for (int j = 0; j < 26; ++j) {
-      std::sort(S[i][j].begin(), S[i][j].end());
-      f[i][j] = *S[i][j].rbegin();
-    }
-    sum[i] = std::accumulate(f[i], f[i] + 26, 0);
-    bad[i] = (sum[i] > L[i]);
-    bad_cnt += bad[i];
-  }
-}
-void update(int x, int c) {
-  if ((x == 1) || (c == 26)) return;
-  int pre = link[x];
-  bad_cnt -= bad[pre];
-  sum[pre] -= f[pre][c];
-  S[link[x]][c].erase(
-      std::lower_bound(S[pre][c].begin(), S[pre][c].end(), old[x][c]));
-  old[x][c] = f[x][c] + g[x][c];
-  S[link[x]][c].insert(
-      std::lower_bound(S[pre][c].begin(), S[pre][c].end(), old[x][c]),
-      old[x][c]);
-  f[link[x]][c] = *S[link[x]][c].rbegin();
-  sum[pre] += f[pre][c];
-  bad[pre] = (sum[pre] > L[pre]);
-  bad_cnt += bad[pre];
-  update(link[x], c);
-}
-int main() {
-  scanf("%d%d", &n, &q);
-  for (int i = 2; i <= n; ++i) {
-    scanf("%d%s", &fa[i], s + 1);
-    c[i] = s[1];
-    ch[fa[i]].push_back(i);
-  }
-  dfs(1);
-  shrink();
-  while (q--) {
-    int x;
-    char y;
-    scanf("%d%s", &x, s + 1);
-    y = s[1];
-    int old = get(c[x]);
-    c[x] = y;
-    int z = get(y);
-    x = belong[x];
-    g[x][old]--;
-    g[x][z]++;
-    update(x, old);
-    update(x, z);
-    if (0 == bad_cnt)
-      printf("Shi %d\n", calc());
-    else
-      puts("Fou");
-  }
-  return 0;
-}
-
+Solutions: #include <iostream>
+int main(void){
+	int n,c;
+	while (true){
+		std::cin>>n;
+		if (n==0) break;
+		c=0;
+		for (;0<n;n/=5,c+=n);
+		std::cout<<c<<"\n";
+	}
+} 
 
 
 INSTRUCTIONS:
@@ -457,6 +134,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

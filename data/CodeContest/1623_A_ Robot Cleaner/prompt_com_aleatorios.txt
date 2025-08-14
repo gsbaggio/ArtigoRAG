@@ -63,452 +63,270 @@ In the last example, the robot was already standing in the same column as the di
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 478_E. Wavy numbers
-Tags: ['brute force', 'dfs and similar', 'meet-in-the-middle', 'sortings']
-Description: A wavy number is such positive integer that for any digit of its decimal representation except for the first one and the last one following condition holds: the digit is either strictly larger than both its adjacent digits or strictly less than both its adjacent digits. For example, numbers 35270, 102, 747, 20 and 3 are wavy and numbers 123, 1000 and 2212 are not.
+Name: file-statistics
+Tags: []
+Description: Write a command line tool which takes a file path as input and prints the number of lines, number of words, number of characters in the file, userid of the owner of the file, groupid of owner of the file and last modification time of the file in UNIX timestamp format. Please note that a word is identified as sequence of characters separated by space or newline from the next sequence of characters. Also newline character is counted in the number of characters in the file.
 
-The task is to find the k-th smallest wavy number r that is divisible by n for the given integer values n and k.
+Input constraint: File size is less than 100 MB.
 
-You are to write a program that will find the value of r if it doesn't exceed 1014.
+Output constraint: Output a new line after each number or result.
 
-Input
+Explanation: In the given sample input/output:
 
-The only line of input contains two integers n and k, separated by a single space (1 ≤ n, k ≤ 1014). 
+:~# cat /home/sample.txt
 
-Output
+hacker earth
 
-Your task is to output the only integer r — the answer to the given problem. If such number does not exist or it is larger than 1014, then print "-1" (minus one without the quotes) instead.
+SAMPLE INPUT
+/home/sample.txt
 
-Examples
+SAMPLE OUTPUT
+1
+2
+13
+1000
+1000
+1258001628
+Difficulty: 0
+Solutions: '''
+# Read input from stdin and provide input before running code
 
-Input
-
-123 4
-
-
-Output
-
-1845
-
-
-Input
-
-100 1
-
-
-Output
-
--1
-
-
-Input
-
-97461 457
-
-
-Output
-
-1805270103
-
-Note
-
-The values of the first four wavy numbers that are divisible by n for the first sample are: 492, 615, 738 and 1845.
-Difficulty: 11
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-const int maxs = 1000050, maxss = maxs * 10, mm = 1e7, mm1 = 1e6, mm2 = 1e5;
-long long n, K, ans = -1;
-int num1[maxs], s1 = 0, num2[maxs], s2 = 0;
-int hs = 0, he[maxss], ne[maxs], cnt[maxs];
-long long st[maxs];
-long long chg(int x, int y, long long z) { return (z * 10 + x) * 10 + y; }
-void push(long long sta) {
-  int i, st0 = sta % maxss;
-  for (i = he[st0]; i; i = ne[i])
-    if (st[i] == sta) {
-      cnt[i]++;
-      return;
-    }
-  ne[++hs] = he[st0], he[st0] = hs, st[hs] = sta, cnt[hs]++;
-}
-int query(long long sta) {
-  int i, st0 = sta % maxss;
-  for (i = he[st0]; i; i = ne[i])
-    if (st[i] == sta) return cnt[i];
-  return 0;
-}
-void dfs(int x, int d) {
-  if (d >= 7) {
-    if (x) num1[s1++] = x;
-    if (x / mm1 || (x / 100000 && x / 100000 > x / 10000 % 10)) num2[s2++] = x;
-    return;
-  }
-  int i;
-  if (x < 10) {
-    for (i = 0; i <= 9; i++)
-      if (!x || i != x) dfs(x * 10 + i, d + 1);
-  } else if (x / 10 % 10 > x % 10)
-    for (i = x % 10 + 1; i <= 9; i++) dfs(x * 10 + i, d + 1);
-  else if (x / 10 % 10 < x % 10)
-    for (i = 0; i < x % 10; i++) dfs(x * 10 + i, d + 1);
-}
-int main() {
-  int i, j, k, i2;
-  bool z = 0;
-  scanf("%I64d%I64d", &n, &K);
-  dfs(0, 0);
-  for (i = 0; i < s2; i++)
-    push(chg(num2[i] / mm1, num2[i] / mm2 % 10, num2[i] % n));
-  for (i = 0; i < s1; i++)
-    if (!(num1[i] % n) && !--K) {
-      ans = num1[i];
-      break;
-    }
-  if (K) {
-    for (i = 0; i < s1; i++) {
-      long long rem = (n - (long long)num1[i] * mm % n) % n;
-      int tt = num1[i] % 10,
-          t = (!(num1[i] / 10) ? 0 : (num1[i] / 10 % 10 > tt ? 1 : -1));
-      for (j = 0; j < 10; j++) {
-        for (k = 0; k < 10; k++)
-          if ((t > 0 && tt < j && j > k) || (t < 0 && tt > j && j < k) ||
-              (!t && tt != j && j != k && (tt > j) != (j > k))) {
-            int ts = query(chg(j, k, rem));
-            if (K <= ts) {
-              z = 1;
-              break;
-            }
-            K -= ts;
-          }
-        if (z) break;
-      }
-      if (z) {
-        for (i2 = 0; i2 < s2; i2++)
-          if (num2[i2] / mm1 == j && num2[i2] / mm2 % 10 == k &&
-              num2[i2] % n == rem && !(--K)) {
-            ans = (long long)num1[i] * mm + num2[i2];
-            break;
-          }
-        break;
-      }
-    }
-  }
-  printf("%I64d\n", ans);
-  return 0;
-}
-
+name = raw_input('What is your name?\n')
+print 'Hi, %s.' % name
+'''
+name = raw_input()
+	
+if name == "/home/sample.txt":
+	print 1
+	print 2
+	print 13
+	print 1000
+	print 1000
+	print 1258001628
+else:
+	print 19
+	print 402
+	print 2612
+	print 0
+	print 0
+	print 1358021928
 
 Example question 2:
-Name: 436_C. Dungeons and Candies
-Tags: ['dsu', 'graphs', 'greedy', 'trees']
-Description: During the loading of the game "Dungeons and Candies" you are required to get descriptions of k levels from the server. Each description is a map of an n × m checkered rectangular field. Some cells of the field contain candies (each cell has at most one candy). An empty cell is denoted as "." on the map, but if a cell has a candy, it is denoted as a letter of the English alphabet. A level may contain identical candies, in this case the letters in the corresponding cells of the map will be the same.
+Name: p02102 Tangled Cables
+Tags: ['']
+Description: Problem
 
-<image>
+On a company's network, there are $ n $ computers and $ m $ communication cables that connect them. Computers are distinguished by identifiers from $ 0 $ to $ n -1 $, and communication cables also have identifiers from $ 0 $ to $ m -1 $.
 
-When you transmit information via a network, you want to minimize traffic — the total size of the transferred data. The levels can be transmitted in any order. There are two ways to transmit the current level A:
+Any two different computers currently in the company can communicate with each other via several communication cables, but there is not always a single communication path.
 
-  1. You can transmit the whole level A. Then you need to transmit n·m bytes via the network. 
-  2. You can transmit the difference between level A and some previously transmitted level B (if it exists); this operation requires to transmit dA, B·w bytes, where dA, B is the number of cells of the field that are different for A and B, and w is a constant. Note, that you should compare only the corresponding cells of levels A and B to calculate dA, B. You cannot transform the maps of levels, i.e. rotate or shift them relatively to each other. 
+This network has the problem that there are too many communication cables to get entangled. So you decide to remove some communication cables so that there is only one communication path for any communication.
 
+The communication cable $ i $ connects the computer $ a_i $ and $ b_i $ in both directions, and its length is $ c_i $. Also, the effort you take to remove the communication cable $ i $ is $ d_i $.
 
+Before starting the work, you decided to estimate the minimum feeling of humor by setting the ratio of the sum of the lengths of the communication cables to be removed to the sum of the labor required to finish the work as "a feeling of humor".
+However, if you can't get rid of any of them, the feeling of humor is $ 0 $.
 
-Your task is to find a way to transfer all the k levels and minimize the traffic.
+Constraints
+
+The input satisfies the following conditions.
+
+* $ 2 \ leq n \ leq 10 ^ 4 $
+* $ n-1 \ leq m \ leq min (\ frac {n \ times (n -1)} {2}, 10 ^ 4) $
+* $ 0 \ leq a_i, b_i \ leq n --1 (a_i ≠ b_i) $
+* $ 1 \ leq c_i \ leq 10 ^ 6 $
+* $ 0 \ leq d_i \ leq 10 ^ 6 $
 
 Input
 
-The first line contains four integers n, m, k, w (1 ≤ n, m ≤ 10; 1 ≤ k, w ≤ 1000). Then follows the description of k levels. Each level is described by n lines, each line contains m characters. Each character is either a letter of the English alphabet or a dot ("."). Please note that the case of the letters matters.
+The input is given in the following format.
+
+$ n $ $ m $
+$ a_1 $ $ b_1 $ $ c_1 $ $ d_1 $
+$ a_2 $ $ b_2 $ $ c_2 $ $ d_2 $
+...
+$ a_m $ $ b_m $ $ c_m $ $ d_m $
+
+
+All inputs are given as integers.
+On the first line, the number of computers $ n $ and the number of communication cables $ m $ are given, separated by blanks.
+Communication cable information is given in the second and subsequent $ m $ lines, separated by blanks. The information of the $ i $ th communication cable represents the information of the communication cable $ i $.
 
 Output
 
-In the first line print the required minimum number of transferred bytes.
-
-Then print k pairs of integers x1, y1, x2, y2, ..., xk, yk, describing the way to transfer levels. Pair xi, yi means that level xi needs to be transferred by way yi. If yi equals 0, that means that the level must be transferred using the first way, otherwise yi must be equal to the number of a previously transferred level. It means that you will transfer the difference between levels yi and xi to transfer level xi. Print the pairs in the order of transferring levels. The levels are numbered 1 through k in the order they follow in the input.
-
-If there are multiple optimal solutions, you can print any of them.
+Outputs the minimum value of the feeling of humor as a real number on one line. However, it must not contain an error greater than $ 10 ^ {-5} $.
 
 Examples
 
 Input
 
-2 3 3 2
-A.A
-...
-A.a
-..C
-X.Y
-...
+4 5
+0 2 22 13
+0 3 15 25
+1 2 3 3
+1 3 28 5
+2 3 5 22
 
 
 Output
 
-14
-1 0
+0.36000
+
+
+Input
+
+5 6
+0 1 22 33
+0 2 43 11
+0 3 92 10
+1 3 50 12
+2 3 88 2
+3 4 58 89
+
+
+Output
+
+0.06667
+
+
+Input
+
 2 1
-3 1
-
-
-Input
-
-1 1 4 1
-A
-.
-B
-.
+0 1 1 1
 
 
 Output
 
-3
-1 0
-2 0
-4 2
-3 0
-
-
-Input
-
-1 3 5 2
-ABA
-BBB
-BBA
-BAB
-ABB
-
-
-Output
-
-11
-1 0
-3 1
-2 3
-4 2
-5 1
-Difficulty: 9
-Solutions: import random
-#dsu
-p = []
-def finds(v):
-    if p[v] != v:
-        p[v] = finds(p[v])
-    return p[v]
-def union(v1,v2):
-    r1 = finds(v1)
-    r2 = finds(v2)
-    if r1 != r2:
-        if random.choice([0,1]) == 0:
-            p[r1] = r2
-        else:
-            p[r2] = r1
-#input
-I = lambda:map(int,raw_input().split())
-n,m,k,w = I()
-#solution
-t = [[None for _ in xrange(n)] for _ in xrange(k)]
-for i in xrange(k):
-    for j in xrange(n):
-            t[i][j] = list(raw_input())
-def dif(a,b):
-    ans = 0
-    for i in xrange(n):
-        for j in xrange(m):
-            ans += int(a[i][j] != b[i][j])
-    return ans * w
-#G = [[] for _ in range(k)]
-edge = []
-for i in xrange(k):
-    for j in xrange(i + 1,k):
-        wig = dif (t[i],t[j])
-        if wig < n*m:
-            edge.append((i,j,wig))
-            #G[i].append((j,wig))
-            #G[j].append((i,wig))
-edge.sort(key=lambda x: x[2]) # sort by the wig parameter
-#Kruskal's algorithm
-p = list(xrange(0,k)) # parent array
-ans = 0
-g = [[] for _ in xrange(k)]
-for i in edge:
-    a,b,w = i
-    if finds(a) != finds(b):
-        g[a].append(b)
-        g[b].append(a)
-        union(a,b)
-        ans += w
-mark = [-1] * k
-def dfs(v):
-    mark[v] = 1
-    for u in g[v]:
-        if mark[u] == -1:
-            print u + 1,v + 1
-            dfs(u)
-ans += n * m * len(set([finds(x) for x in xrange(k)]))
-print (ans)
-for i in xrange(k):
-    if mark[i] == -1:
-        print i + 1,0
-        dfs(i)
-
-
-
-Example question 3:
-Name: p01863 Miko Mi String
-Tags: ['']
-Description: F: Miko Mi String-
-
-story
-
-Mikko Mikkomi ~! Everyone's idol, Miko Miko Tazawa! Today ~, with Mikoto ~, practice the string algorithm, let's do it ☆
-
-Miko's special ~~ character making ~~ The slogan "MikoMikomi" becomes "MikoMikoMi" in Roman letters! In other words, if A = “Mi” and B = “Ko”, you can write in the form of ABABA! In this way, a character string that can be decomposed into the form of ABABA by properly determining A and B is called "Mikomi character string"! Miko is a popular person for everyone to become the name of a character string!
-
-In order for everyone to use the Mikomi character string, I decided to make a program to judge whether the given character string is the Mikomi character string, but I can't write a program longer than Miko and FizzBuzz. !! So ~, for Miko ~, I want you to write a program that judges Mikomi character strings ☆
-
-...... You said it's cold now! ??
-
-problem
-
-A character string S consisting of uppercase and lowercase letters is given. Here, if there are two non-empty strings A and B that can be written as S = ABABA, then S is said to be a "Mikomi string". At this time, uppercase and lowercase letters of the alphabet shall be distinguished as different characters. Create a program that determines whether a given string is a string.
-
-Input format
-
-The input consists of only one line including the character string S. It can be assumed that S satisfies the following conditions.
-
-* 1 ≤ | S | ≤ 10 ^ 6. However, | S | represents the length of the character string S.
-* S consists only of uppercase or lowercase alphabets.
-
-
-
-Since the input may be very large, it is recommended to use a high-speed function to receive the input.
-
-Output format
-
-If S is a character string, output "Love AB!" For A and B that satisfy S = ABABA. However, if multiple pairs of A and B satisfy the condition, output the one with the smallest | AB |. If S is not a Mikomi string, output "mitomerarenaiWA".
-
-Input example 1
-
-
-NicoNicoNi
-
-Output example 1
-
-
-Love Nico!
-
-Input example 2
-
-
-Kashikoi Kawaii Elichika
-
-Output example 2
-
-
-mitomerarenaiWA
-
-Input example 3
-
-
-LiveLiveL
-
-Output example 3
-
-
-Love Live!
-
-Input example 4
-
-
-AizunyanPeroPero
-
-Output example 4
-
-
-mitomerarenaiWA
-
-Input example 5
-
-
-AAAAAAAAAAAAAA
-
-Output example 5
-
-
-Love AAAAA!
-
-
-
-
-
-Example
-
-Input
-
-NicoNicoNi
-
-
-Output
-
-Love Nico!
+0
 Difficulty: 0
-Solutions: #include<bits/stdc++.h>
-using namespace std;
-using Int = long long;
-template<typename T1,typename T2> inline void chmin(T1 &a,T2 b){if(a>b) a=b;}
-template<typename T1,typename T2> inline void chmax(T1 &a,T2 b){if(a<b) a=b;}
+Solutions: #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <cstdio>
+#include <cmath>
 
+constexpr double EPS = (1e-10);
+constexpr double INF = 252521;
+#define equals(a, b) (fabs(a - b) < EPS)
 
-struct FastIO{
-  FastIO(){
-    cin.tie(0);
-    ios::sync_with_stdio(0);
-  }
-}fastio_beet;
+std::vector<int> par, rnk;
 
-
-struct RollingHash{
-  using ull = unsigned long long;
-  vector<ull> hash,p;
-  RollingHash(){}
-  RollingHash(const string &s,ull B=1000000007LL){
-    int n=s.size();
-    hash.assign(n+1,0);
-    p.assign(n+1,1);
-    for(int i=0;i<n;i++){
-      hash[i+1]=hash[i]*B+s[i];
-      p[i+1]=p[i]*B;
+void init(int n)
+{
+    par.resize(n); rnk.resize(n);
+    for (int i = 0; i < n; i++) {
+        par[i] = i;
+        rnk[i] = 0;
     }
-  }
-  //S[l, r)
-  ull find(int l,int r){
-    return hash[r]-hash[l]*p[r-l];
-  }
-};
-
-//INSERT ABOVE HERE
-signed main(){
-  string s;
-  cin>>s;
-  int n=s.size();
-  int ans=n+1;
-
-  RollingHash rh(s);
-  for(int a=1;a*3<n;a++){
-    if((n-a*3)&1) continue;
-    int b=(n-a*3)/2;
-    using ull = RollingHash::ull;
-    ull u=rh.find(0,a);
-    ull v=rh.find(a,a+b);
-    ull w=rh.find(a+b,a+b+a);
-    ull x=rh.find(a+b+a,a+b+a+b);
-    ull y=rh.find(a+b+a+b,a+b+a+b+a);
-    if(u==w&&w==y&&v==x) chmin(ans,a+b);
-  }
-
-  if(ans<=n) cout<<"Love "<<s.substr(0,ans)<<"!"<<endl;
-  else cout<<"mitomerarenaiWA"<<endl;
-  return 0;
 }
 
+int find(int x)
+{
+    if (par[x] == x) {
+        return x;
+    }
+    return par[x] = find(par[x]);
+}
 
+void unite(int x, int y)
+{
+    x = find(x);
+    y = find(y);
+
+    if (x == y) return;
+
+    if (rnk[x] < rnk[y]) {
+        par[x] = y;
+    } else {
+        par[y] = x;
+        if (rnk[x] == rnk[y]) {
+            rnk[x]++;
+        }
+    }
+}
+
+bool same(int x, int y)
+{
+    return (find(x) == find(y));
+}
+
+struct Edge {
+    int u, v;
+    double w;
+
+    Edge() {}
+    Edge(int u, int v, double w) :
+        u{u}, v{v}, w{w} {}
+};
+
+struct Data {
+    int u, v;
+    double c, t;
+
+    Data() {}
+    Data(int u, int v, double c, double t) :
+        u{u}, v{v}, c{c}, t{t} {}
+};
+
+int N, M;
+std::vector<Data> d;
+std::vector<Edge> es;
+
+double kruskal()
+{
+    sort(es.begin(), es.end(), [](const Edge& e1, const Edge& e2) {
+            return e1.w > e2.w;
+    });
+    
+    init(N); 
+    double tw = 0;
+    for (Edge& e : es) {
+        if (!same(e.u, e.v)) {
+            unite(e.u, e.v);                       
+        } else {
+            tw += e.w;
+        }
+    }    
+    return tw;
+}
+
+bool c(double x)
+{
+    for (int i = 0; i < M; i++) {
+        es[i].u = d[i].u;
+        es[i].v = d[i].v;
+        es[i].w = d[i].t - x * d[i].c;
+    }
+    return kruskal() >= 0;
+}
+
+double solve()
+{
+    double lb = 0, ub = INF;
+    for (int i = 0; i < 50; i++) {
+        double mid = (lb + ub) / 2;
+        if (c(mid)) {
+            lb = mid;
+        } else {
+            ub = mid;
+        }
+    }
+    return ub;
+}
+
+int main()
+{
+    scanf("%d %d", &N, &M);
+    d.resize(M); es.resize(M);
+    
+    for (int i = 0; i < M; i++) {
+        scanf("%d %d %lf %lf", &d[i].u, &d[i].v, &d[i].c, &d[i].t);
+    }
+    
+    auto res = solve();
+    printf("%.15f\n", (equals(res, INF) ? 0 : res));
+    return 0;
+}
 
 
 INSTRUCTIONS:
@@ -519,6 +337,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

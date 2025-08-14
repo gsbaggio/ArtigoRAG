@@ -52,320 +52,204 @@ In the third test case, array [111, 1111, 11111, 111111, 1111111, 11111111, 1111
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 689_C. Mike and Chocolate Thieves
-Tags: ['binary search', 'combinatorics', 'math']
-Description: Bad news came to Mike's village, some thieves stole a bunch of chocolates from the local factory! Horrible! 
+Name: 430_C. Xor-tree
+Tags: ['dfs and similar', 'trees']
+Description: Iahub is very proud of his recent discovery, propagating trees. Right now, he invented a new tree, called xor-tree. After this new revolutionary discovery, he invented a game for kids which uses xor-trees.
 
-Aside from loving sweet things, thieves from this area are known to be very greedy. So after a thief takes his number of chocolates for himself, the next thief will take exactly k times more than the previous one. The value of k (k > 1) is a secret integer known only to them. It is also known that each thief's bag can carry at most n chocolates (if they intend to take more, the deal is cancelled) and that there were exactly four thieves involved. 
+The game is played on a tree having n nodes, numbered from 1 to n. Each node i has an initial value initi, which is either 0 or 1. The root of the tree is node 1.
 
-Sadly, only the thieves know the value of n, but rumours say that the numbers of ways they could have taken the chocolates (for a fixed n, but not fixed k) is m. Two ways are considered different if one of the thieves (they should be numbered in the order they take chocolates) took different number of chocolates in them.
+One can perform several (possibly, zero) operations on the tree during the game. The only available type of operation is to pick a node x. Right after someone has picked node x, the value of node x flips, the values of sons of x remain the same, the values of sons of sons of x flips, the values of sons of sons of sons of x remain the same and so on.
 
-Mike want to track the thieves down, so he wants to know what their bags are and value of n will help him in that. Please find the smallest possible value of n or tell him that the rumors are false and there is no such n.
+The goal of the game is to get each node i to have value goali, which can also be only 0 or 1. You need to reach the goal of the game by using minimum number of operations.
 
 Input
 
-The single line of input contains the integer m (1 ≤ m ≤ 1015) — the number of ways the thieves might steal the chocolates, as rumours say.
+The first line contains an integer n (1 ≤ n ≤ 105). Each of the next n - 1 lines contains two integers ui and vi (1 ≤ ui, vi ≤ n; ui ≠ vi) meaning there is an edge between nodes ui and vi. 
+
+The next line contains n integer numbers, the i-th of them corresponds to initi (initi is either 0 or 1). The following line also contains n integer numbers, the i-th number corresponds to goali (goali is either 0 or 1).
 
 Output
 
-Print the only integer n — the maximum amount of chocolates that thieves' bags can carry. If there are more than one n satisfying the rumors, print the smallest one.
+In the first line output an integer number cnt, representing the minimal number of operations you perform. Each of the next cnt lines should contain an integer xi, representing that you pick a node xi.
 
-If there is no such n for a false-rumoured m, print  - 1.
+Examples
+
+Input
+
+10
+2 1
+3 1
+4 2
+5 1
+6 2
+7 5
+8 6
+9 8
+10 5
+1 0 1 1 0 1 0 1 0 1
+1 0 1 0 0 1 1 1 0 1
+
+
+Output
+
+2
+4
+7
+Difficulty: 9
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+const int N = 100001;
+int n;
+vector<int> g[N];
+int a[N];
+int b[N];
+vector<int> ans;
+void dfs(int now, int fa, int depth, int k[2]) {
+  a[now] ^= k[depth & 1];
+  if (a[now] != b[now]) {
+    ans.push_back(now);
+    k[depth & 1] ^= 1;
+  }
+  for (int i = 0; i < g[now].size(); ++i)
+    if (g[now][i] != fa) {
+      int kk[2];
+      kk[0] = k[0];
+      kk[1] = k[1];
+      dfs(g[now][i], now, depth + 1, kk);
+    }
+}
+int main() {
+  scanf("%d", &n);
+  int u, v;
+  for (int i = 0; i < n - 1; ++i) {
+    scanf("%d%d", &u, &v);
+    g[u].push_back(v);
+    g[v].push_back(u);
+  }
+  for (int i = 1; i <= n; ++i) scanf("%d", &a[i]);
+  for (int i = 1; i <= n; ++i) scanf("%d", &b[i]);
+  int k[2] = {0, 0};
+  dfs(1, 0, 0, k);
+  printf("%d\n", ans.size());
+  for (int i = 0; i < ans.size(); ++i) printf("%d\n", ans[i]);
+  return 0;
+}
+
+
+Example question 2:
+Name: 66_B. Petya and Countryside
+Tags: ['brute force', 'implementation']
+Description: Little Petya often travels to his grandmother in the countryside. The grandmother has a large garden, which can be represented as a rectangle 1 × n in size, when viewed from above. This rectangle is divided into n equal square sections. The garden is very unusual as each of the square sections possesses its own fixed height and due to the newest irrigation system we can create artificial rain above each section.
+
+Creating artificial rain is an expensive operation. That's why we limit ourselves to creating the artificial rain only above one section. At that, the water from each watered section will flow into its neighbouring sections if their height does not exceed the height of the section. That is, for example, the garden can be represented by a 1 × 5 rectangle, where the section heights are equal to 4, 2, 3, 3, 2. Then if we create an artificial rain over any of the sections with the height of 3, the water will flow over all the sections, except the ones with the height of 4. See the illustration of this example at the picture:
+
+<image>
+
+As Petya is keen on programming, he decided to find such a section that if we create artificial rain above it, the number of watered sections will be maximal. Help him. 
+
+Input
+
+The first line contains a positive integer n (1 ≤ n ≤ 1000). The second line contains n positive integers which are the height of the sections. All the numbers are no less than 1 and not more than 1000.
+
+Output
+
+Print a single number, the maximal number of watered sections if we create artificial rain above exactly one section.
 
 Examples
 
 Input
 
 1
+2
 
 
 Output
 
-8
-
-
-Input
-
-8
-
-
-Output
-
-54
-
-
-Input
-
-10
-
-
-Output
-
--1
-
-Note
-
-In the first sample case the smallest n that leads to exactly one way of stealing chocolates is n = 8, whereas the amounts of stealed chocolates are (1, 2, 4, 8) (the number of chocolates stolen by each of the thieves).
-
-In the second sample case the smallest n that leads to exactly 8 ways is n = 54 with the possibilities: (1, 2, 4, 8), (1, 3, 9, 27), (2, 4, 8, 16), (2, 6, 18, 54), (3, 6, 12, 24), (4, 8, 16, 32), (5, 10, 20, 40), (6, 12, 24, 48).
-
-There is no n leading to exactly 10 ways of stealing chocolates in the third sample case.
-Difficulty: 9
-Solutions: n = int(input())
-be, en, ans = 8, 8 * 10 ** 15, float('inf')
-all = [x * x * x for x in range(2, 200001)]
-
-while be <= en:
-    cur, md, k = 0, (be + en) >> 1, 0
-
-    while all[k] <= md:
-        cur += md // all[k]
-        k += 1
-
-    if cur < n:
-        be = md + 1
-    else:
-        if cur == n:
-            ans = min(ans, md)
-        en = md - 1
-    # print(cur,ans,md)
-
-print(-1 if ans == float('inf') else ans)
-
-
-Example question 2:
-Name: gerald08
-Tags: []
-Description: Chef has a rooted tree G, consisting of N vertices. Each edge of the tree has a color black or white.
-Once Chef's friend Ksen offered Chef to play a game on the tree G. The game has very simple rule:
-
-The players make moves in the game alternately.
-On his move Chef deletes a single undeleted black edge. On her move Ksen deletes a single undeleted white edge.
-When some edge has been deleted, all the edges that now aren't connected (directly or indirectly) to the root will be deleted too.
-One who cannot move lose the game.
-
-Chef really likes the game. The only problem is that Ksen knows the game very well. So she always plays optimally. That's why Chef has decided to choose the order of moves. Help Chef: tell him who will win the game if he moves first, and also who will win the game if Ksen moves first. Consider that Chef plays optimally too.
-
-Input
-The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows.
-The first line of each testcase contains a single integer N. Then N - 1 lines follows. Each contains three integers Ui, Vi, Ci. These integers denotes the current edge of the tree: the first two numbers means the numbers of vertices connected by the edge, the last number denotes the color of the edge (zero means black, one means white). Consider all vertices of the tree G are numbered from 1 to N. The root has number 1.
-
-Output
-For each test case, output a single line containing two strings: the name of the winner if Chef moves first, and the name of the winner if Chef moves second.
-
-Constraints
-
-1 ≤ T ≤ 1000
-1 ≤ N ≤ 100000
-1 ≤ Ui, Vi ≤ N
-0 ≤ Ci ≤ 1
-It's guaranteed that the sum of N values for all tests doesn't exceed 100000.
-
-
-
-Example
-Input:
-5
 1
-2
-1 2 0
-2
-1 2 1
+
+
+Input
+
+5
+1 2 1 2 1
+
+
+Output
+
 3
-1 2 0
-1 3 1
-3
-1 2 0
-2 3 1
 
-Output:
-Ksen Chef
-Chef Chef
-Ksen Ksen
-Ksen Chef
-Chef Chef
-Difficulty: 4
-Solutions: import random
-class Ordinal(object):
-    def __init__(self, v, r = 0):
-        while (v&1)==0 and r > 0:
-            v >>= 1
-            r -= 1
-        self.v, self.r = v, r
 
-    def __repr__(self):
-        return '%d / 2^%d' % (self.v, self.r)
+Input
 
-    def __add__(self, o):
-        if isinstance(o, int):
-            o = Ordinal(o)
-        if o.r < self.r:
-            return Ordinal(self.v+(o.v<<(self.r-o.r)), self.r)
-        else:
-            return Ordinal(o.v+(self.v<<(o.r-self.r)), o.r)
+8
+1 2 1 1 1 3 3 4
 
-    def __eq__(self, o):
-        return self.r == o.r and self.v == o.v
 
-    def sign(self):
-        if self.v > 0:
-            return 1
-        elif self.v < 0:
-            return -1
-        else:
-            return 0
+Output
 
-    def colon(self, o):
-        if o == 1:
-            # return (1:x)
-            if self.v >= 0:
-                return Ordinal(self.v+(1L<<self.r), self.r)
-            else:
-                k = 1-(self.v >> self.r)
-                return Ordinal(self.v+(k<<self.r), self.r+(k-1))
-        elif o == -1:
-            # return (-1:x)
-            if self.v <= 0:
-                return Ordinal(self.v-(1L<<self.r), self.r)
-            else:
-                k = 1-((-self.v) >> self.r)
-                return Ordinal(self.v-(k<<self.r), self.r+(k-1))
-        else:
-            raise ValueError
+6
+Difficulty: 8
+Solutions: 
+def readints():
+    return map(int,raw_input().split())
 
-    @staticmethod
-    def stick_test(s):
-        r1 = Ordinal(0)
-        for x in s:
-            if r1.r == 0 and r1.v * x >= 0:
-                r1 += x
-            else:
-                r1 += Ordinal(x, r1.r+1)
-        r2 = Ordinal(0)
-        for x in s[::-1]:
-            r2 = r2.colon(x)
-        if not (r1 == r2):
-            print str(s) + ': exp ' + str(r1) + ',  got ' + str(r2)
-            raise ValueError
-
-def HackenbushTree(n, e):
-    ve = [list() for _ in range(n+1)]
-    for x in e:
-        ve[x[0]].append((x[1], x[2]))
-        ve[x[1]].append((x[0], x[2]))
-    q = [[1, 0, None, None]]
-    res = None
-    while len(q):
-        x, cx, px, v = q.pop()
-        if v is None:
-            cur = [x, cx, px, Ordinal(0)]
-            q.append(cur)
-            for y, cy in ve[x]:
-                if px is None or y != px[0]:
-                    q.append([y, cy, cur, None])
-        else:
-            if px is None:
-                res = v
-            else:
-                px[3] += v.colon(cx)
-    return res.sign()
-
+n=input()
+x=readints()
 def main():
-    t = int(raw_input())
-    for _ in range(t):
-        n = int(raw_input())
-        e = []
-        for _ in range(n-1):
-            u, v, c = map(int, raw_input().split())
-            e.append((u, v, 1-2*c))
-        res = HackenbushTree(n, e)
-        if res > 0:
-            print 'Chef Chef'
-        elif res < 0:
-            print 'Ksen Ksen'
-        else:
-            print 'Ksen Chef'
+    f=1
+    for i in xrange(n):
+        c=x[i]
+        nf=1
+        for k in xrange(i-1,-1,-1):
+            if c<x[k]:break
+            c=x[k]
+            nf+=1
+        c=x[i]
+        for k in xrange(i+1,n):
+            if c<x[k]:break
+            c=x[k]
+            nf+=1
+        f=max(f,nf)
+    print f
 
-if __name__ == '__main__':
-    main()
+main()
 
 Example question 3:
-Name: jal-mahal-lake
+Name: small-is-cute-1
 Tags: []
-Description: Jal Mahal Lake is famous tourist place in Jaipur. The lake has floating planks in a straight line. The planks are currently not attached to each other, and there may be gaps between some of them. You have to push them all together and connect them into a single long plank.
+Description: Given three positive integers N, A and B (A < B < N), find the sum of all positive integers less than N, which are divisible by either A or B.
 
-You are given the positions and lengths. For each valid i, there is a plank that is lengths[i] meters long and starts positions[i] meters from the beginning of the Tourist site of lake. (In other words, the coordinates currently occupied by this plank are in the interval from positions[i] to positions[i]+lengths[i].)
+For example, when N = 20, A = 4 and B = 7, the possible values are 4, 7, 8, 12, 14, and 16. Their sum is 61.
+Input Format
+The only line of the input file contains three space separated integers N, A and B.
 
-Moving a single plank one meter in either direction costs one unit of energy. Compute the smallest total amount of energy sufficient to push all planks together. In the final configuration the planks must be located one after another with no gaps between them.
+Output Format
+Output the required sum.
 
-(Note that there is no restriction on the movement of planks or on the final position of the single long plank. You may push the cars in any order, and he may even push some planks by a non-integer number of meters if he wants to.)
-
-Input :
-
-First line of input contains number of test cases T
-Each test case contains three lines of input containing space separated integers.
-First line of each test case, contains an integer N, denoting number of planks.
-Next line contains N space separated integers, which is the position of N planks on x co-ordinate.
-Next line contains again N separated integers denoting the lengths of the N planks.
-
-Output :
-
-Print the minimum energy required on a line for each test case.
-
-Constraints :
-1 ≤ T ≤ 10
-2 ≤ Total Number of Planks ≤ 50
-1 ≤ Length[i], Position[i] ≤ 10^9
-Planks cannot overlap each other
+Constraints
+10 ≤ N ≤ 50000
+2 ≤ A < B < N
 
 SAMPLE INPUT
-2
-4
-1 3 10 20
-2 2 5 3
-3
-100 50 1
-10 2 1
+20 4 7
 
 SAMPLE OUTPUT
-15
-96
-
-Explanation
-
-Test Case #1:
-
-There are four planks. The intervals currently occupied by the planks are (1,3), (3,5), (10,15), and (20,23). In one optimal solution you would move each of the first two planks three meters to the right, the third plank two meters to the left, and the fourth plank seven meters to the left. At the end, the planks occupy the intervals (4,6), (6,8), (8,13), and (13,16). Total energy spent: 3+3+2+7 = 15.
-
-Test Case #2;
-
-There are three planks. The gaps between consecutive planks have 48 meters each. The best solution is to keep the middle plank in place and to push the other two towards it. This requires 48+48 = 96 units of energy.
+61
 Difficulty: 0
-Solutions: for _ in xrange(input()):
-	n=input()
-	pos=map(int,raw_input().split())
-	sz=map(int,raw_input().split())
-	a=[]
-	for i in xrange(n):
-		a.append([pos[i],sz[i]])
-	a.sort()
-	tmp=a[0][0]+a[0][1]
-	ans=0
-	for i in xrange(1,n):
-		ans+=a[i][0]-tmp
-		tmp+=a[i][1]
-	for z in xrange(1,n):
-		t=0
-		tmp=a[z][0]+a[z][1]
-		for i in xrange(z+1,n):
-			t+=a[i][0]-tmp
-			tmp+=a[i][1]
-		tmp=a[z][0]
-		for i in xrange(z-1,-1,-1):
-			t+=tmp-(a[i][0]+a[i][1])
-			tmp-=a[i][1]
-		ans=min(ans,t)
-	print ans
+Solutions: #! /usr/bin/python
+
+s = raw_input()
+lst = s.split(' ')
+n = int(lst[0])
+a = int(lst[1])
+b = int(lst[2])
+
+sum = 0
+for x in xrange(a,n,1):
+        if (((x % a) == 0) or ((x % b) == 0)):
+                sum = sum + x
+
+print sum
 
 
 INSTRUCTIONS:
@@ -376,6 +260,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

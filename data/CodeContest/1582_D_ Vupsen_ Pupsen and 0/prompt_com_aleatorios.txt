@@ -48,270 +48,95 @@ In the second test case, 5 ⋅ (-1) + (-2) ⋅ 5 + 10 ⋅ 1 + (-9) ⋅ (-1) + 4 
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1243_B2. Character Swap (Hard Version)
-Tags: ['strings']
-Description: This problem is different from the easy version. In this version Ujan makes at most 2n swaps. In addition, k ≤ 1000, n ≤ 50 and it is necessary to print swaps themselves. You can hack this problem if you solve it. But you can hack the previous problem only if you solve both problems.
-
-After struggling and failing many times, Ujan decided to try to clean up his house again. He decided to get his strings in order first.
-
-Ujan has two distinct strings s and t of length n consisting of only of lowercase English characters. He wants to make them equal. Since Ujan is lazy, he will perform the following operation at most 2n times: he takes two positions i and j (1 ≤ i,j ≤ n, the values i and j can be equal or different), and swaps the characters s_i and t_j.
-
-Ujan's goal is to make the strings s and t equal. He does not need to minimize the number of performed operations: any sequence of operations of length 2n or shorter is suitable.
-
-Input
-
-The first line contains a single integer k (1 ≤ k ≤ 1000), the number of test cases.
-
-For each of the test cases, the first line contains a single integer n (2 ≤ n ≤ 50), the length of the strings s and t. 
-
-Each of the next two lines contains the strings s and t, each having length exactly n. The strings consist only of lowercase English letters. It is guaranteed that strings are different.
-
-Output
-
-For each test case, output "Yes" if Ujan can make the two strings equal with at most 2n operations and "No" otherwise. You can print each letter in any case (upper or lower).
-
-In the case of "Yes" print m (1 ≤ m ≤ 2n) on the next line, where m is the number of swap operations to make the strings equal. Then print m lines, each line should contain two integers i, j (1 ≤ i, j ≤ n) meaning that Ujan swaps s_i and t_j during the corresponding operation. You do not need to minimize the number of operations. Any sequence of length not more than 2n is suitable.
-
-Example
-
-Input
-
-
-4
-5
-souse
-houhe
-3
-cat
-dog
-2
-aa
-az
-3
-abc
-bca
-
-
-Output
-
-
-Yes
-1
-1 4
-No
-No
-Yes
-3
-1 2
-3 1
-2 3
-Difficulty: 8
-Solutions: import java.io.*;
-import java.text.*;
-import java.util.*;
-import java.math.*;
-public class template {
-	public static void main(String[] args) throws Exception {
-		new template().run();
-	}
-	public void run() throws Exception {
-		FastScanner f = new FastScanner();
-		PrintWriter out = new PrintWriter(System.out);
-		int asdf = f.nextInt();
-		while(asdf-->0) {
-			int n = f.nextInt();
-			char[] a = f.next().toCharArray();
-			char[] b = f.next().toCharArray();
-			boolean[] used = new boolean[n];
-			int curind = 0;
-			boolean works = true;
-			ArrayList<Integer> moves = new ArrayList<>();
-			for(char c = 'a'; c <= 'z'; c++) {
-				int i = 0, j = 0;
-				while(true) {
-					while(i < n && a[i] != c) i++;
-					while(j < n && b[j] != c) j++;
-					if(i == n && j == n) break;
-					else if(j == n) {
-						int p = i++;
-						while(true) {
-							while(i < n && a[i] != c) i++;
-							if(i == n) break;
-							else if(p == -1) p = i;
-							else {
-								moves.add(i);
-								moves.add(p);
-								a[i] = b[p];
-								b[p] = c;
-								used[p] = true;
-								p = -1;
-							}
-							i++;
-						}
-						if(p != -1) works = false;
-						break;
-					} else if(i == n) {
-						int p = j++;
-						while(true) {
-							while(j < n && b[j] != c) j++;
-							if(j == n) break;
-							else if(p == -1) p = j;
-							else{
-								moves.add(p);
-								moves.add(j);
-								b[j] = a[p];
-								a[p] = c;
-								used[p] = true;
-								p = -1;
-							}
-							j++;
-						}
-						if(p != -1) works = false;
-						break;
-					} else {
-						while(used[curind]) curind++;	
-						if(i == curind) {
-							moves.add(i);
-							moves.add(curind);
-							a[i] = b[curind];
-							b[curind] = c;
-							moves.add(curind);
-							moves.add(j);
-							b[j] = a[curind];
-							a[curind] = c;
-						} else {
-							moves.add(curind);
-							moves.add(j);
-							b[j] = a[curind];
-							a[curind] = c;
-							moves.add(i);
-							moves.add(curind);
-							a[i] = b[curind];
-							b[curind] = c;
-						}
-						used[curind] = true;
-						curind++;
-						i++; j++;
-					}
-				}
-			}
-			if(works) {
-				out.println("Yes");
-				out.println(moves.size()/2);
-				for(int i = 0; i < moves.size(); i+= 2) out.println(moves.get(i)+1 + " " + (moves.get(i+1)+1));
-			} else out.println("No");
-		}
-///
-		out.flush(); 
-	}
-///
-    static class FastScanner {
-        public BufferedReader reader;
-        public StringTokenizer tokenizer;
-        public FastScanner() {
-            reader = new BufferedReader(new InputStreamReader(System.in), 32768);
-            tokenizer = null;
-        }
-        public String next() {
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return tokenizer.nextToken();
-        }
-        public int nextInt() {
-            return Integer.parseInt(next());
-        }
-        public long nextLong() {
-        	return Long.parseLong(next());
-        }
-        public double nextDouble() {
-        	return Double.parseDouble(next());
-        }
-        public String nextLine() {
-        	try {
-        		return reader.readLine();
-        	} catch(IOException e) {
-        		throw new RuntimeException(e);
-        	}
-        }
-    }
-}
-
-
-
-Example question 2:
-Name: p02239 Breadth First Search
+Name: p00811 Calling Extraterrestrial Intelligence Again
 Tags: ['']
-Description: Write a program which reads an directed graph $G = (V, E)$, and finds the shortest distance from vertex $1$ to each vertex (the number of edges in the shortest path). Vertices are identified by IDs $1, 2, ... n$.
+Description: A message from humans to extraterrestrial intelligence was sent through the Arecibo radio telescope in Puerto Rico on the afternoon of Saturday November l6, l974. The message consisted of l679 bits and was meant to be translated to a rectangular picture with 23 × 73 pixels. Since both 23 and 73 are prime numbers, 23 × 73 is the unique possible size of the translated rectangular picture each edge of which is longer than l pixel. Of course, there was no guarantee that the receivers would try to translate the message to a rectangular picture. Even if they would, they might put the pixels into the rectangle incorrectly. The senders of the Arecibo message were optimistic.
 
-Constraints
+We are planning a similar project. Your task in the project is to find the most suitable width and height of the translated rectangular picture. The term ``most suitable'' is defined as follows. An integer m greater than 4 is given. A positive fraction a/b less than or equal to 1 is also given. The area of the picture should not be greater than m. Both of the width and the height of the translated picture should be prime numbers. The ratio of the width to the height should not be less than a/b nor greater than 1. You should maximize the area of the picture under these constraints.
 
-* $1 \leq n \leq 100$
+In other words, you will receive an integer m and a fraction a/b . It holds that m > 4 and 0 < a/b ≤ 1 . You should find the pair of prime numbers p, q such that pq ≤ m and a/b ≤ p/q ≤ 1 , and furthermore, the product pq takes the maximum value among such pairs of two prime numbers. You should report p and q as the "most suitable" width and height of the translated picture.
+
+
 
 Input
 
-In the first line, an integer $n$ denoting the number of vertices, is given. In the next $n$ lines, adjacent lists of vertex $u$ are given in the following format:
+The input is a sequence of at most 2000 triplets of positive integers, delimited by a space character in between. Each line contains a single triplet. The sequence is followed by a triplet of zeros, 0 0 0, which indicates the end of the input and should not be treated as data to be processed.
 
-$u$ $k$ $v_1$ $v_2$ ... $v_k$
-
-$u$ is ID of the vertex and $k$ denotes its degree.$v_i$ are IDs of vertices adjacent to $u$.
+The integers of each input triplet are the integer m, the numerator a, and the denominator b described above, in this order. You may assume 4 < m < 100000 and 1 ≤ a ≤ b ≤ 1000.
 
 Output
 
-For each vertex $u$, print $id$ and $d$ in a line. $id$ is ID of vertex $u$ and $d$ is the distance from vertex $1$ to vertex $u$. If there are no path from vertex $1$ to vertex $u$, print -1 as the shortest distance. Print in order of IDs.
+The output is a sequence of pairs of positive integers. The i-th output pair corresponds to the i-th input triplet. The integers of each output pair are the width p and the height q described above, in this order.
+
+Each output line contains a single pair. A space character is put between the integers as a delimiter. No other characters should appear in the output.
 
 Example
 
 Input
 
-4
-1 2 2 4
-2 1 4
-3 0
-4 1 3
+5 1 2
+99999 999 999
+1680 5 16
+1970 1 1
+2002 4 11
+0 0 0
 
 
 Output
 
-1 0
-2 1
-3 2
-4 1
+2 2
+313 313
+23 73
+43 43
+37 53
 Difficulty: 0
 Solutions: #include <iostream>
-#include <queue>
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <vector>
 using namespace std;
-int c[101][102],ch[101];
-queue<int> q;
 
-int main(){
-  int a,b,e,d,n,k;
-  cin>>a;
-  for(int i=1;i<=a;i++)ch[i]=-1;
-  for(int i=0;i<a;i++){
-    cin>>b>>e;
-    c[b][0]=e;
-    for(int j=1;j<=e;j++){
-      cin>>d;
-      c[b][j]=d;
-    }
-  }
-  q.push(1);
-  ch[1]=0;
-  while(q.size()){
-    n=q.front();q.pop();
-    for(int i=1;i<=c[n][0];i++){
-      if(ch[c[n][i]]==-1){
-	q.push(c[n][i]);
-	ch[c[n][i]]=ch[n]+1;
+vector<int> make_prime(int N){
+  bool p[N+1];
+  memset(p, true, sizeof(p));
+  p[0] = p[1] = false;
+  for(int i = 0 ; i*i < N ; i++){
+    if(p[i]){
+      for(int j = 2*i ; j < N ; j += i){
+	p[j] = false;
       }
     }
   }
-  for(int i=1;i<=a;i++)cout<<i<<" "<<ch[i]<<endl;
+  vector<int> ret;
+  for(int i = 0 ; i <= N ; i++){
+    if(p[i]) ret.push_back(i);
+  }
+  return ret;
+}
+ 
+int main(){
+  vector<int> prime = make_prime(100000);
+  int m, a, b;
+  while(cin >> m >> a >> b, m|a|b){
+    double a_b = (double)a / (double)b;
+    int max_p = 0;
+    int ans1, ans2;
+    for(int i = 0 ; i < prime.size() ; i++){
+      if(prime[i]*prime[i] > m) break;
+      for(int j = i ; j < prime.size() ; j++){
+	int M = prime[i]*prime[j];
+	if(M > m) break;
+	if( (M <= m) && (a_b <= (double)prime[i] / (double)prime[j]) ){
+	  if(max_p <= M){
+	    max_p = M;
+	    ans1 = prime[i], ans2 = prime[j];
+	  }
+	}
+      }
+    }
+    cout << ans1 << ' ' << ans2 << endl;
+  }
 
   return 0;
 }
@@ -325,6 +150,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

@@ -69,302 +69,255 @@ In the third test case, bcdis is the smallest permutation of dbsic and does not 
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 1422_D. Returning Home
-Tags: ['graphs', 'shortest paths', 'sortings']
-Description: Yura has been walking for some time already and is planning to return home. He needs to get home as fast as possible. To do this, Yura can use the instant-movement locations around the city.
+Name: 57_B. Martian Architecture
+Tags: ['implementation']
+Description: Chris the Rabbit found the traces of an ancient Martian civilization. The brave astronomer managed to see through a small telescope an architecture masterpiece — "A Road to the Sun". The building stands on cubical stones of the same size. The foundation divides the entire "road" into cells, into which the cubical stones are fit tightly. Thus, to any cell of the foundation a coordinate can be assigned. To become the leader of the tribe, a Martian should build a Road to the Sun, that is to build from those cubical stones on a given foundation a stairway. The stairway should be described by the number of stones in the initial coordinate and the coordinates of the stairway's beginning and end. Each following cell in the coordinate's increasing order should contain one cubical stone more than the previous one. At that if the cell has already got stones, they do not count in this building process, the stairways were simply built on them. In other words, let us assume that a stairway is built with the initial coordinate of l, the final coordinate of r and the number of stones in the initial coordinate x. That means that x stones will be added in the cell l, x + 1 stones will be added in the cell l + 1, ..., x + r - l stones will be added in the cell r.
 
-Let's represent the city as an area of n × n square blocks. Yura needs to move from the block with coordinates (s_x,s_y) to the block with coordinates (f_x,f_y). In one minute Yura can move to any neighboring by side block; in other words, he can move in four directions. Also, there are m instant-movement locations in the city. Their coordinates are known to you and Yura. Yura can move to an instant-movement location in no time if he is located in a block with the same coordinate x or with the same coordinate y as the location.
-
-Help Yura to find the smallest time needed to get home.
+Chris managed to find an ancient manuscript, containing the descriptions of all the stairways. Now he wants to compare the data to be sure that he has really found "A Road to the Sun". For that he chose some road cells and counted the total number of cubical stones that has been accumulated throughout the Martian history and then asked you to count using the manuscript to what the sum should ideally total.
 
 Input
 
-The first line contains two integers n and m — the size of the city and the number of instant-movement locations (1 ≤ n ≤ 10^9, 0 ≤ m ≤ 10^5).
-
-The next line contains four integers s_x s_y f_x f_y — the coordinates of Yura's initial position and the coordinates of his home ( 1 ≤ s_x, s_y, f_x, f_y ≤ n).
-
-Each of the next m lines contains two integers x_i y_i — coordinates of the i-th instant-movement location (1 ≤ x_i, y_i ≤ n).
+The first line contains three space-separated integers: n, m, k (1 ≤ n, m ≤ 105, 1 ≤ k ≤ min(n, 100)) which is the number of cells, the number of "Roads to the Sun" and the number of cells in the query correspondingly. Each of the following m roads contain three space-separated integers: ai, bi, ci (1 ≤ ai ≤ bi ≤ n, 1 ≤ ci ≤ 1000) which are the stairway's description, its beginning, end and the initial cell's height. Then follow a line, containing k different space-separated integers bi. All these numbers ranging from 1 to n are cells, the number of stones in which interests Chris.
 
 Output
 
-In the only line print the minimum time required to get home.
+You have to print a single number on a single line which is the sum of stones in all the cells Chris is interested in.
+
+Please, do not use %lld specificator to read or write 64-bit integers in C++. It is preffered to use cin (also you may use %I64d).
 
 Examples
 
 Input
 
-
-5 3
-1 1 5 5
-1 2
-4 1
-3 3
+5 2 1
+1 5 1
+2 4 1
+3
 
 
 Output
-
 
 5
 
 
 Input
 
-
-84 5
-67 59 41 2
-39 56
-7 2
-15 3
-74 18
-22 7
+3 2 1
+1 3 1
+1 3 1
+2
 
 
 Output
 
-
-42
-
-Note
-
-In the first example Yura needs to reach (5, 5) from (1, 1). He can do that in 5 minutes by first using the second instant-movement location (because its y coordinate is equal to Yura's y coordinate), and then walking (4, 1) → (4, 2) → (4, 3) → (5, 3) → (5, 4) → (5, 5).
-Difficulty: 10
-Solutions: from bisect import *
-from collections import *
-from math import *
-from heapq import *
-from typing import List
-from itertools import *
-from operator import *
-from functools import *
-import sys
-'''
-@lru_cache(None)
-def fact(x):
-    if x<2:
-        return 1
-    return fact(x-1)*x
-
-@lru_cache(None)
-def per(i,j):
-    return fact(i)//fact(i-j)
-
-@lru_cache(None)
-def com(i,j):
-    return per(i,j)//fact(j)
-
-def linc(f,t,l,r):
-    while l<r:
-        mid=(l+r)//2
-        if t>f(mid):
-            l=mid+1
-        else:
-            r=mid
-    return l
-
-def rinc(f,t,l,r):
-    while l<r:
-        mid=(l+r+1)//2
-        if t<f(mid):
-            r=mid-1
-        else:
-            l=mid
-    return l
-
-def ldec(f,t,l,r):
-    while l<r:
-        mid=(l+r)//2
-        if t<f(mid):
-            l=mid+1
-        else:
-            r=mid
-    return l
-
-def rdec(f,t,l,r):
-    while l<r:
-        mid=(l+r+1)//2
-        if t>f(mid):
-            r=mid-1
-        else:
-            l=mid
-    return l
-
-def isprime(n):
-    for i in range(2,int(n**0.5)+1):
-        if n%i==0:
-            return False
-    return True
-
-def power2(n):
-    while not n&1:
-        n>>=1
-    return n==1
-'''
-'''
-import time
-s=time.time()
-e=time.time()
-print(e-s)
-'''
-'''
-t=int(input())
-for i in range(t):
-    n,m=map(int,input().split())
-    arr=[]
-    for i in range(n):
-        arr.append(list(map(int,input().split())))
-    used=set()
-    ans=0
-    for i in range(n//2+1):
-        for j in range(m//2+1):
-            if (i,j) not in used:
-                tmp=set([(i,j),(n-1-i,j),(n-1-i,m-1-j),(i,m-1-j)])
-                used|=tmp
-                if len(tmp)==1:
-                    continue
-                elif len(tmp)==2:
-                    (x,y),(a,b)=tmp
-                    ans+=abs(arr[x][y]-arr[a][b])
-                else:
-                    res=[]
-                    for x,y in tmp:
-                        res.append(arr[x][y])
-                    res.sort()
-                    ans+=min(sum(abs(res[i]-res[j]) for j in range(4)) for i in range(1,3))
-
-    print(ans)
-'''
-def dij(s,graph):
-    d={}
-    d[s]=0
-    heap=[(0,s)]
-    seen=set()
-    while heap:
-        dis,u=heappop(heap)
-        if u in seen:
-            continue
-        for v in graph[u]:
-            if v not in d or d[v]>d[u]+graph[u][v]:
-                d[v]=d[u]+graph[u][v]
-                heappush(heap,(d[v],v))
-    return d
-n,m=map(int,input().split())
-sx,sy,fx,fy=map(int,input().split())
-s=set()
-for i in range(m):
-    x,y=map(int,input().split())
-    s.add((x,y))
-graph=defaultdict(dict)
-s.add((sx,sy))
-arr=list(s)
-#print(arr)
-for i,(x,y) in enumerate(arr):
-    if x==sx and y==sy:
-        start=i
-l=len(arr)
-ax=sorted(range(l),key=lambda i: arr[i][0])
-ay=sorted(range(l),key=lambda i: arr[i][1])
-#print(ax,ay)
-for i in range(l-1):
-    tmp=arr[ax[i+1]][0]-arr[ax[i]][0]
-    if ax[i+1] not in graph[ax[i]]:
-        graph[ax[i]][ax[i+1]]=graph[ax[i+1]][ax[i]]=tmp
-    else:
-        graph[ax[i]][ax[i+1]]=graph[ax[i+1]][ax[i]]=min(tmp,graph[ax[i]][ax[i+1]])
-    #print(i,ax[i],ax[i+1],graph[ax[i]][ax[i+1]])
-for i in range(l-1):
-    tmp=arr[ay[i+1]][1]-arr[ay[i]][1]
-    if ay[i+1] not in graph[ay[i]]:
-        graph[ay[i]][ay[i+1]]=graph[ay[i+1]][ay[i]]=tmp
-    else:
-        graph[ay[i]][ay[i+1]]=graph[ay[i+1]][ay[i]]=min(tmp,graph[ay[i]][ay[i+1]])
-    #print(i,ay[i],ay[i+1],graph[ay[i]][ay[i+1]])
-        
-#print(graph)
-d=dij(start,graph)
-ans=inf
-for k in d:
-    x,y=arr[k]
-    ans=min(ans,abs(x-fx)+abs(y-fy)+d[k])
-print(ans)
+4
 
 
+Input
+
+3 2 1
+1 3 1
+1 3 1
+3
 
 
+Output
 
+6
+Difficulty: 8
+Solutions: #include <bits/stdc++.h>
+long long k, n, m, i, ans, j, d, a[100009], b[100009], c[100009];
+int main() {
+  scanf("%I64d%I64d%I64d", &n, &m, &k);
+  for (i = 0; i < m; i++) scanf("%I64d%I64d%I64d", &a[i], &b[i], &c[i]);
+  for (i = 0; i < k; i++) {
+    scanf("%I64d", &d);
+    for (j = 0; j < m; j++)
+      if (a[j] <= d && d <= b[j]) ans += d - a[j] + c[j];
+  }
+  printf("%I64d", ans);
+}
 
 
 Example question 2:
-Name: 585_C. Alice, Bob, Oranges and Apples
-Tags: ['number theory']
-Description: Alice and Bob decided to eat some fruit. In the kitchen they found a large bag of oranges and apples. Alice immediately took an orange for herself, Bob took an apple. To make the process of sharing the remaining fruit more fun, the friends decided to play a game. They put multiple cards and on each one they wrote a letter, either 'A', or the letter 'B'. Then they began to remove the cards one by one from left to right, every time they removed a card with the letter 'A', Alice gave Bob all the fruits she had at that moment and took out of the bag as many apples and as many oranges as she had before. Thus the number of oranges and apples Alice had, did not change. If the card had written letter 'B', then Bob did the same, that is, he gave Alice all the fruit that he had, and took from the bag the same set of fruit. After the last card way removed, all the fruit in the bag were over.
+Name: 1070_M. Algoland and Berland
+Tags: ['constructive algorithms', 'divide and conquer', 'geometry']
+Description: Once upon a time Algoland and Berland were a single country, but those times are long gone. Now they are two different countries, but their cities are scattered on a common territory.
 
-You know how many oranges and apples was in the bag at first. Your task is to find any sequence of cards that Alice and Bob could have played with.
+All cities are represented as points on the Cartesian plane. Algoland consists of a cities numbered from 1 to a. The coordinates of the i-th Algoland city are a pair of integer numbers (xa_i, ya_i). Similarly, Berland consists of b cities numbered from 1 to b. The coordinates of the j-th Berland city are a pair of integer numbers (xb_j, yb_j). No three of the a+b mentioned cities lie on a single straight line.
+
+As the first step to unite the countries, Berland decided to build several bidirectional freeways. Each freeway is going to be a line segment that starts in a Berland city and ends in an Algoland city. Freeways can't intersect with each other at any point except freeway's start or end. Moreover, the freeways have to connect all a+b cities. Here, connectivity means that one can get from any of the specified a+b cities to any other of the a+b cities using freeways. Note that all freeways are bidirectional, which means that one can drive on each of them in both directions.
+
+Mayor of each of the b Berland cities allocated a budget to build the freeways that start from this city. Thus, you are given the numbers r_1, r_2, ..., r_b, where r_j is the number of freeways that are going to start in the j-th Berland city. The total allocated budget is very tight and only covers building the minimal necessary set of freeways. In other words, r_1+r_2+...+r_b=a+b-1.
+
+Help Berland to build the freeways so that:
+
+  * each freeway is a line segment connecting a Berland city and an Algoland city, 
+  * no freeways intersect with each other except for the freeway's start or end, 
+  * freeways connect all a+b cities (all freeways are bidirectional), 
+  * there are r_j freeways that start from the j-th Berland city. 
 
 Input
 
-The first line of the input contains two integers, x, y (1 ≤ x, y ≤ 1018, xy > 1) — the number of oranges and apples that were initially in the bag.
+Input contains one or several test cases. The first input line contains a single integer number t (1 ≤ t ≤ 3000) — number of test cases. Then, t test cases follow. Solve test cases separately, test cases are completely independent and do not affect each other.
+
+Each test case starts with a line containing space-separated integers a and b (1 ≤ a, b ≤ 3000) — numbers of Algoland cities and number of Berland cities correspondingly.
+
+The next line contains b space-separated integers r_1, r_2, ..., r_b (1 ≤ r_b ≤ a) where r_j is the number of freeways, that should start in the j-th Berland city. It is guaranteed that r_1+r_2+...+r_b=a+b-1.
+
+The next a lines contain coordinates of the Algoland cities — pairs of space-separated integers xa_i, ya_i (-10000 ≤ xa_i, ya_i ≤ 10000). The next b lines contain coordinates of the Berland cities — pairs of space-separated integers xb_i, yb_i (-10000 ≤ xb_i, yb_i ≤ 10000). All cities are located at distinct points, no three of the a+b cities lie on a single straight line.
+
+Sum of values a across all test cases doesn't exceed 3000. Sum of values b across all test cases doesn't exceed 3000.
 
 Output
 
-Print any sequence of cards that would meet the problem conditions as a compressed string of characters 'A' and 'B. That means that you need to replace the segments of identical consecutive characters by the number of repetitions of the characters and the actual character. For example, string AAABAABBB should be replaced by string 3A1B2A3B, but cannot be replaced by 2A1A1B2A3B or by 3AB2A3B. See the samples for clarifications of the output format. The string that you print should consist of at most 106 characters. It is guaranteed that if the answer exists, its compressed representation exists, consisting of at most 106 characters. If there are several possible answers, you are allowed to print any of them.
+For each of the t test cases, first print "YES" if there is an answer or "NO" otherwise.
 
-If the sequence of cards that meet the problem statement does not not exist, print a single word Impossible.
+If there is an answer, print the freeway building plan in the next a+b-1 lines. Each line of the plan should contain two space-separated integers j and i which means that a freeway from the j-th Berland city to the i-th Algoland city should be built. If there are multiple solutions, print any.
 
-Examples
-
-Input
-
-1 4
-
-
-Output
-
-3B
-
+Example
 
 Input
 
-2 2
-
-
-Output
-
-Impossible
-
-
-Input
-
+2
+2 3
+1 1 2
+0 0
+1 1
+1 2
 3 2
+4 0
+1 1
+1
+0 0
+0 1
 
 
 Output
 
-1A1B
+YES
+2 2
+1 2
+3 2
+3 1
+YES
+1 1
+Difficulty: 20
+Solutions: #include <bits/stdc++.h>
+using namespace std;
+inline int read() {
+  int n = 0, f = 1;
+  char c;
+  for (c = getchar(); c != '-' && (c < '0' || c > '9'); c = getchar())
+    ;
+  if (c == '-') c = getchar(), f = -1;
+  for (; c >= '0' && c <= '9'; c = getchar()) n = n * 10 + c - 48;
+  return n * f;
+}
+struct ar {
+  int x, y, id, d;
+} now;
+bool operator<(ar a, ar b) { return a.x == b.x ? a.y < b.y : a.x < b.x; }
+int i, a, b, d[3005];
+vector<ar> p, an;
+bool cmp(ar a, ar b) { return a.x * b.y > a.y * b.x; }
+void solve(vector<ar> p) {
+  int i, j, k, D, n = p.size() - 1;
+  if (!n) return;
+  for (i = 1; i <= n; i++)
+    if (p[i] < p[0]) swap(p[i], p[0]);
+  for (i = 1; i <= n; i++) p[i].x -= p[0].x, p[i].y -= p[0].y;
+  sort(p.begin() + 1, p.end(), cmp);
+  for (i = 1; i <= n; i++) p[i].x += p[0].x, p[i].y += p[0].y;
+  if (p[0].d < 0) {
+    for (i = 1; i <= n; i++) {
+      j = i, D = 0;
+      for (;; i++) {
+        D += p[i].d;
+        if (D >= 0) break;
+      }
+      p[i].d--, an.push_back((ar){p[i].id, p[0].id});
+      p[i].d -= D;
+      solve(vector<ar>(p.begin() + j, p.begin() + i + 1));
+      p[j = i].d = D - 1;
+      for (; D;) D += p[++i].d;
+      solve(vector<ar>(p.begin() + j, p.begin() + i + 1));
+    }
+    return;
+  }
+  for (i = 1; p[0].d >= 0;) {
+    for (j = i, D = 1; D; i++) D += p[i].d;
+    p[0].d--, an.push_back((ar){p[0].id, p[i - 1].id});
+    solve(vector<ar>(p.begin() + j, p.begin() + i));
+  }
+  solve(vector<ar>(p.begin() + i - 1, p.end()));
+}
+void work() {
+  a = read(), b = read();
+  for (i = 1; i <= b; i++) d[i] = read();
+  p.clear(), an.clear();
+  for (i = 1; i <= a + b; i++) {
+    now.x = read(), now.y = read();
+    if (i <= a)
+      now.id = i, now.d = -1;
+    else
+      now.d = d[now.id = i - a] - 1;
+    p.push_back(now);
+  }
+  solve(p);
+  puts("YES");
+  for (i = 0; i <= a + b - 2; i++) printf("%d %d\n", an[i].x, an[i].y);
+}
+int main() {
+  for (int t = read(); t--;) work();
+}
 
-Note
 
-In the first sample, if the row contained three cards with letter 'B', then Bob should give one apple to Alice three times. So, in the end of the game Alice has one orange and three apples, and Bob has one apple, in total it is one orange and four apples.
+Example question 3:
+Name: sort-the-array-5
+Tags: []
+Description: You have been given an array A of size N and an integer K. This array consists of N integers ranging from 1 to 10^7. Each element in this array is said to have a Special Weight. The special weight of an element a[i] is a[i]\%K.
 
-In second sample, there is no answer since one card is not enough for game to finish, and two cards will produce at least three apples or three oranges.
+You now need to sort this array in Non-Increasing order of the weight of each element, i.e the element with the highest weight should appear first, then the element with the second highest weight and so on. In case two elements have the same weight, the one with the lower value should appear in the output first. 
 
-In the third sample, cards contain letters 'AB', so after removing the first card Bob has one orange and one apple, and after removal of second card Alice has two oranges and one apple. So, in total it is three oranges and two apples.
-Difficulty: 9
-Solutions: import fractions
-def solve(x, y):
-    if fractions.gcd(x, y) > 1: return 'Impossible'
-    turn = x > y
-    if not turn: x, y = y, x
-    ans = []
-    while x != 0 and y != 0:
-        ans.append((x//y, 'A' if turn else 'B'))
-        x, y = y, x%y
-        turn = not turn
-    ans[-1] = (ans[-1][0]-1, ans[-1][1])
-    return ''.join(str(n) + l for n, l in ans)
+Input Format:
 
-x, y = [int(x) for x in input().split()]
-print(solve(x, y))
+The first line consists of two space separated integers N and K. The next line consists of N space separated integers denoting the elements of array A. 
 
+Output Format:
+
+Print N space separated integers denoting the elements of the array in the order in which they are required.
+
+Constraints:
+
+ 1 ≤ N ≤ 10^5 
+
+ 1 ≤ A[i] ≤ 10^7 
+
+ 1 ≤ K ≤ 10^7 
+
+Note:
+
+You need to print the value of each element and not their weight. 
+
+SAMPLE INPUT
+5 2
+1 2 3 4 5
+
+SAMPLE OUTPUT
+1 3 5 2 4
+Difficulty: 0
+Solutions: import sys
+s=raw_input().split(" ")
+s1=raw_input().split(" ")
+s1=[int(x) for x in s1]
+s1=sorted(s1)
+dict={}
+for i in range(0,len(s1)):
+	dict.update({s1[i]:s1[i]%int(s[1])})
+list=sorted(dict,key=dict.__getitem__,reverse=True)
+list=[str(x) for x  in list]
+print ' '.join(list)
 
 
 INSTRUCTIONS:
@@ -375,6 +328,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.

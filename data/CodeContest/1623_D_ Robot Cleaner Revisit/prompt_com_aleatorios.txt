@@ -61,129 +61,272 @@ The third and the fourth case are almost the same. The only difference is that t
 
 EXAMPLE QUESTIONS:
 Example question 1:
-Name: 56_E. Domino Principle
-Tags: ['binary search', 'data structures', 'sortings']
-Description: Vasya is interested in arranging dominoes. He is fed up with common dominoes and he uses the dominoes of different heights. He put n dominoes on the table along one axis, going from left to right. Every domino stands perpendicular to that axis so that the axis passes through the center of its base. The i-th domino has the coordinate xi and the height hi. Now Vasya wants to learn for every domino, how many dominoes will fall if he pushes it to the right. Help him do that. 
+Name: 1090_D. Similar Arrays
+Tags: ['constructive algorithms']
+Description: Vasya had an array of n integers, each element of the array was from 1 to n. He chose m pairs of different positions and wrote them down to a sheet of paper. Then Vasya compared the elements at these positions, and wrote down the results of the comparisons to another sheet of paper. For each pair he wrote either "greater", "less", or "equal".
 
-Consider that a domino falls if it is touched strictly above the base. In other words, the fall of the domino with the initial coordinate x and height h leads to the fall of all dominoes on the segment [x + 1, x + h - 1].
+After several years, he has found the first sheet of paper, but he couldn't find the second one. Also he doesn't remember the array he had. In particular, he doesn't remember if the array had equal elements. He has told this sad story to his informatics teacher Dr Helen.
 
-<image>
+She told him that it could be the case that even if Vasya finds his second sheet, he would still not be able to find out whether the array had two equal elements. 
+
+Now Vasya wants to find two arrays of integers, each of length n. All elements of the first array must be distinct, and there must be two equal elements in the second array. For each pair of positions Vasya wrote at the first sheet of paper, the result of the comparison must be the same for the corresponding elements of the first array, and the corresponding elements of the second array. 
+
+Help Vasya find two such arrays of length n, or find out that there are no such arrays for his sets of pairs.
 
 Input
 
-The first line contains integer n (1 ≤ n ≤ 105) which is the number of dominoes. Then follow n lines containing two integers xi and hi ( - 108 ≤ xi ≤ 108, 2 ≤ hi ≤ 108) each, which are the coordinate and height of every domino. No two dominoes stand on one point.
+The first line of input contains two integers n, m — the number of elements in the array and number of comparisons made by Vasya (1 ≤ n ≤ 100 000, 0 ≤ m ≤ 100 000).
+
+Each of the following m lines contains two integers a_i, b_i — the positions of the i-th comparison (1 ≤ a_i, b_i ≤ n; a_i ≠ b_i). It's guaranteed that any unordered pair is given in the input at most once.
 
 Output
 
-Print n space-separated numbers zi — the number of dominoes that will fall if Vasya pushes the i-th domino to the right (including the domino itself).
+The first line of output must contain "YES" if there exist two arrays, such that the results of comparisons would be the same, and all numbers in the first one are distinct, and the second one contains two equal numbers. Otherwise it must contain "NO".
+
+If the arrays exist, the second line must contain the array of distinct integers, the third line must contain the array, that contains at least one pair of equal elements. Elements of the arrays must be integers from 1 to n.
 
 Examples
 
 Input
 
-4
-16 5
-20 5
-10 10
-18 2
+
+1 0
 
 
 Output
 
-3 1 4 1 
+
+NO
+
 
 Input
 
-4
-0 10
-1 5
-9 10
-15 10
+
+3 1
+1 2
 
 
 Output
 
-4 1 2 1 
-Difficulty: 11
-Solutions: #include <bits/stdc++.h>
-using namespace std;
-int tree[4 * 200005], cs[200005], ar[200005];
-struct dt {
-  int b, e, h, id, res;
-} st[100005];
-bool cmp1(dt x, dt y) { return x.b < y.b; }
-bool cmp2(dt x, dt y) { return x.id < y.id; }
-void update(int nd, int b, int e, int x, int v) {
-  if (b > x || e < x) return;
-  if (b == x && e == x) {
-    tree[nd] = v;
-    return;
-  }
-  int left = 2 * nd;
-  int right = 2 * nd + 1;
-  int md = (b + e) / 2;
-  update(left, b, md, x, v);
-  update(right, md + 1, e, x, v);
-  tree[nd] = max(tree[left], tree[right]);
-}
-int query(int nd, int b, int e, int x, int y) {
-  if (e < x || b > y) return 0;
-  if (b >= x && e <= y) return tree[nd];
-  int left = 2 * nd;
-  int right = 2 * nd + 1;
-  int md = (b + e) / 2;
-  int p1 = query(left, b, md, x, y);
-  int p2 = query(right, md + 1, e, x, y);
-  return max(p1, p2);
-}
-int main() {
-  int n;
-  scanf("%d", &n);
-  set<int> ss;
-  for (int i = 1; i <= n; i++) {
-    int b, h, e;
-    scanf("%d%d", &b, &h);
-    e = b + h - 1;
-    st[i].b = b;
-    st[i].e = e;
-    st[i].h = h;
-    st[i].id = i;
-    st[i].res = -1;
-    ss.insert(b);
-    ss.insert(e);
-  }
-  map<int, int> mp;
-  set<int>::iterator it;
-  int m = 0;
-  for (it = ss.begin(); it != ss.end(); it++) mp[*it] = ++m;
-  sort(st + 1, st + n + 1, cmp1);
-  int sz = ss.size();
-  for (int i = 1; i <= n; i++) {
-    int v = mp[st[i].b];
-    ar[v] = 1;
-    int u = mp[st[i].e];
-    update(1, 1, sz, v, u);
-  }
-  cs[0] = 0;
-  for (int i = 1; i <= sz; i++) cs[i] = cs[i - 1] + ar[i];
-  for (int i = n; i >= 1; i--) {
-    int b = mp[st[i].b];
-    int e = mp[st[i].e];
-    int p = query(1, 1, sz, b, e);
-    int res = cs[p] - cs[b - 1];
-    st[i].res = res;
-    update(1, 1, sz, b, p);
-  }
-  sort(st + 1, st + n + 1, cmp2);
-  for (int i = 1; i <= n; i++) {
-    if (i == n)
-      printf("%d\n", st[i].res);
-    else
-      printf("%d ", st[i].res);
-  }
-  return 0;
-}
 
+YES
+1 3 2 
+1 3 1 
+
+
+Input
+
+
+4 3
+1 2
+1 3
+2 4
+
+
+Output
+
+
+YES
+1 3 4 2 
+1 3 4 1 
+Difficulty: 10
+Solutions: import java.io.*;
+import java.math.*;
+import java.util.*;
+
+import static java.lang.Math.*;
+import static java.util.Arrays.*;
+import static java.util.Collections.*;
+import static java.util.Comparator.*;
+
+public class Main {
+    FastScanner in;
+    PrintWriter out;
+
+    private void solve() throws IOException {
+        // MA
+        // solveB(); 2
+        // solveC(); 3
+        solveD();
+        // solveE(); 3
+        // solveF(); 4
+        // solveG(); 4
+        // solveH(); 4
+        // solveI(); 2
+        // solveJ(); 4
+        // solveK(); 2
+        // solveL(); 2
+    }
+
+    private void solveA() throws IOException {
+        int n = in.nextInt();
+        long[] m = new long[n], max = new long[n];
+        long MAX = 0;
+
+        for (int i = 0; i < n; i++) {
+            m[i] = in.nextLong();
+            for (int j = 0; j < m[i]; j++)
+                max[i] = max(max[i], in.nextLong());
+            MAX = max(MAX, max[i]);
+        }
+
+        long ans = 0;
+        for (int i = 0; i < n; i++)
+            ans += m[i] * (MAX - max[i]);
+
+        out.println(ans);
+    }
+
+    private void solveB() throws IOException {
+
+    }
+
+    private void solveC() throws IOException {
+
+    }
+
+    private void solveD() throws IOException {
+        int n = in.nextInt(), m = in.nextInt();
+
+        if (n == 1 || m == n * (n - 1) / 2) {
+            out.println("NO");
+            return;
+        }
+        out.println("YES");
+
+        int[][] q = new int[m][2];
+        for (int i = 0; i < m; i++) {
+            q[i][0] = in.nextInt() - 1;
+            q[i][1] = in.nextInt() - 1;
+            sort(q[i]);
+        }
+        sort(q, (o1, o2) -> o1[0] != o2[0] ? Integer.compare(o1[0], o2[0]) : Integer.compare(o1[1], o2[1]));
+
+        int p1 = 0, p2 = 1;
+        for (int i = 0; i < m; i++) {
+            if (q[i][0] == p1 && q[i][1] == p2) {
+                p2++;
+                p1 += p2 / n;
+                p2 %= n;
+                if (p2 < p1)
+                    p2 = p1 + 1;
+            } else
+                break;
+        }
+
+        int[] a = new int[n];
+        for (int i = 0, j = 3; i < n; i++)
+            a[i] = i == p1 || i == p2 ? 1 : j++;
+
+        for (int i = 0; i < n; i++)
+            out.print((i == p2 ? 2 : a[i]) + " ");
+        out.println();
+
+        for (int i = 0; i < n; i++)
+            out.print(a[i] + " ");
+        out.println();
+    }
+
+    private void solveE() throws IOException {
+
+    }
+
+    private void solveF() throws IOException {
+
+    }
+
+    private void solveG() throws IOException {
+
+    }
+
+    private void solveH() throws IOException {
+
+    }
+
+    private void solveI() throws IOException {
+
+    }
+
+    private void solveJ() throws IOException {
+
+    }
+
+    private void solveK() throws IOException {
+
+    }
+
+    private void solveL() throws IOException {
+
+    }
+
+    private void solveM() throws IOException {
+        int n = in.nextInt(), k = in.nextInt();
+        int prev = -1, ans = 0, cur = 0;
+
+        while (n-- > 0) {
+            int a = in.nextInt();
+            cur = (a == prev ? 0 : cur) + 1;
+            ans = max(ans, cur);
+            prev = a;
+        }
+
+        out.println(ans);
+    }
+
+    class FastScanner {
+        StringTokenizer st;
+        BufferedReader br;
+
+        FastScanner(InputStream s) {
+            br = new BufferedReader(new InputStreamReader(s));
+        }
+
+        String next() throws IOException {
+            while (st == null || !st.hasMoreTokens())
+                st = new StringTokenizer(br.readLine());
+            return st.nextToken();
+        }
+
+        boolean hasNext() throws IOException {
+            return br.ready() || (st != null && st.hasMoreTokens());
+        }
+
+        int nextInt() throws IOException {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() throws IOException {
+            return Long.parseLong(next());
+        }
+
+        double nextDouble() throws IOException {
+            return Double.parseDouble(next());
+        }
+
+        String nextLine() throws IOException {
+            return br.readLine();
+        }
+
+        boolean hasNextLine() throws IOException {
+            return br.ready();
+        }
+
+    }
+
+    private void run() throws IOException {
+        in = new FastScanner(System.in); // new FastScanner(new FileInputStream(".in"));
+        out = new PrintWriter(System.out); // new PrintWriter(new FileOutputStream(".out"));
+
+        solve();
+
+        out.flush();
+        out.close();
+    }
+
+    public static void main(String[] args) throws IOException {
+        new Main().run();
+    }
+}
 
 
 INSTRUCTIONS:
@@ -194,6 +337,5 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
-5. Don't use any external libraries. Don't need to import any libraries.
+3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.
+4. Don't use any external libraries. Any language is accepted.
