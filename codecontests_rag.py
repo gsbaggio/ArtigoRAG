@@ -14,31 +14,20 @@ load_dotenv()
 
 class CodeContestsRAG:
     def __init__(self, train_path: str, test_path: str):
-        """
-        Initialize the CodeContests RAG system.
-        
-        Args:
-            train_path: Path to codecontests_train.json
-            test_path: Path to codecontests_test.json
-        """
         self.train_path = train_path
         self.test_path = test_path
         
-        # Load datasets
         self.train_data = self._load_jsonl(train_path)
         self.test_data = self._load_jsonl(test_path)
         
         print(f"Loaded {len(self.train_data)} training problems")
         print(f"Loaded {len(self.test_data)} test problems")
         
-        # Initialize embedding model
         self.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
         
-        # Build FAISS index for training data
         self._build_indices()
         
     def _load_jsonl(self, file_path: str) -> List[Dict[str, Any]]:
-        """Load data from JSONL file."""
         data = []
         with open(file_path, 'r', encoding='utf-8') as f:
             for line in f:
@@ -46,13 +35,11 @@ class CodeContestsRAG:
         return data
     
     def _build_indices(self):
-        """Build FAISS index using descriptions from training data."""
         descriptions = [problem['description'] for problem in self.train_data]
         
         print("Encoding training descriptions...")
         self.train_embeddings = self.embedding_model.encode(descriptions, show_progress_bar=True)
         
-        # Build FAISS index
         dimension = self.train_embeddings.shape[1]
         self.index = faiss.IndexFlatL2(dimension)
         self.index.add(np.array(self.train_embeddings).astype('float32'))
@@ -62,24 +49,16 @@ class CodeContestsRAG:
     def retrieve_similar_questions(self, test_description: str, top_k: int = 3, 
                                   min_threshold: float = 0.7,
                                   use_adaptive_threshold: bool = True) -> List[Dict[str, Any]]:
-        """
-        Retrieve similar questions from training set based on description similarity.
-        """
-        # Encode test question description
         query_embedding = self.embedding_model.encode([test_description])
         
-        # Search for similar problems
         candidate_k = min(top_k * 3, len(self.train_data))
         distances, indices = self.index.search(
             np.array(query_embedding).astype('float32'), candidate_k
         )
         
-        # Convert L2 distances to cosine similarities
-        # For normalized embeddings: cosine_sim = 1 - (L2_dist^2 / 2)
         similarities = [1 - (dist/2) for dist in distances[0]]
         similarities = [max(0, min(s, 1)) for s in similarities]
         
-        # Adaptive threshold
         threshold = min_threshold  
         if use_adaptive_threshold and similarities:
             max_similarity = similarities[0]
@@ -90,14 +69,12 @@ class CodeContestsRAG:
             else:
                 threshold = max(min_threshold, 0.85 * max_similarity)
         
-        # Filter by threshold and prepare results
         similar_questions = []
         for i, idx in enumerate(indices[0]):
             similarity_score = similarities[i]
             
             if similarity_score >= threshold:
                 train_problem = self.train_data[idx]
-                # Get only the first solution
                 first_solution = ""
                 if 'solutions' in train_problem and train_problem['solutions']:
                     if isinstance(train_problem['solutions'], dict) and 'solution' in train_problem['solutions']:
@@ -113,13 +90,12 @@ class CodeContestsRAG:
                     'description': train_problem['description'],
                     'difficulty': train_problem['difficulty'],
                     'solutions': first_solution,
-                    'similarity_score': float(similarity_score)  # Convert to Python float
+                    'similarity_score': float(similarity_score)  
                 })
         
         return similar_questions[:top_k]
     
     def retrieve_random_questions(self) -> List[Dict[str, Any]]:
-        """Retrieve 1-3 random questions from training set."""
         num_examples = random.choice([1, 2, 3])
         max_examples = min(num_examples, len(self.train_data))
         
@@ -128,7 +104,6 @@ class CodeContestsRAG:
         random_questions = []
         for idx in random_indices:
             train_problem = self.train_data[idx]
-            # Get only the first solution
             first_solution = ""
             if 'solutions' in train_problem and train_problem['solutions']:
                 if isinstance(train_problem['solutions'], dict) and 'solution' in train_problem['solutions']:
@@ -150,7 +125,6 @@ class CodeContestsRAG:
     
     def _build_context_with_rag(self, test_problem: Dict[str, Any], 
                                similar_questions: List[Dict[str, Any]]) -> str:
-        """Build context with RAG for a test problem."""
         context = f"CURRENT QUESTION:\n{test_problem['description']}\n\n"
         
         if similar_questions:
@@ -174,20 +148,18 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
 """
         
         if similar_questions:
-            context += "4. Use the similar questions as references to improve the solution, but only if they are relevant.\n"
+            context += "3. Use the similar questions as references to improve the solution, but only if they are relevant.\n"
         else:
-            context += "4. Solve the problem from first principles as no similar questions were found.\n"
+            context += "3. Solve the problem from first principles as no similar questions were found.\n"
         
-        context += "5. Don't use any external libraries. Don't need to import any libraries.\n"
+        context += "4. Don't use any external libraries.\n"
         
         return context
     
     def _build_context_without_rag(self, test_problem: Dict[str, Any]) -> str:
-        """Build context without RAG for a test problem."""
         context = f"CURRENT QUESTION:\n{test_problem['description']}\n\n"
         
         context += """
@@ -199,15 +171,13 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
-4. Don't use any external libraries. Don't need to import any libraries.
+3. Don't use any external libraries.
 """
         
         return context
     
     def _build_context_with_random(self, test_problem: Dict[str, Any], 
                                   random_questions: List[Dict[str, Any]]) -> str:
-        """Build context with random examples for a test problem."""
         context = f"CURRENT QUESTION:\n{test_problem['description']}\n\n"
         
         if random_questions:
@@ -231,21 +201,18 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. If the language has classes, implement in 'Solution' class. Any language is accepted.
 """
         
         if random_questions:
-            context += "4. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.\n"
+            context += "3. You can use the example questions as general references for coding patterns and structure, but solve the current problem independently.\n"
         else:
-            context += "4. Solve the problem from first principles.\n"
+            context += "3. Solve the problem from first principles.\n"
         
-        context += "5. Don't use any external libraries. Don't need to import any libraries.\n"
+        context += "4. Don't use any external libraries.\n"
         
         return context
     
     def _safe_filename(self, name: str) -> str:
-        """Convert problem name to safe filename."""
-        # Remove or replace characters that are problematic for filenames
         safe_chars = []
         for char in name:
             if char.isalnum() or char in ' -_()[]{}':
@@ -255,9 +222,6 @@ Provide:
         return ''.join(safe_chars).strip()
     
     def process_test_problems(self, output_base_dir: str = "data/CodeContest") -> Dict[str, Any]:
-        """
-        Process all test problems and create directories with RAG outputs.
-        """
         if not os.path.exists(output_base_dir):
             os.makedirs(output_base_dir)
         
@@ -316,7 +280,6 @@ Provide:
             
             processed_count += 1
             
-            # Store results
             results.append({
                 'test_problem_name': test_problem['name'],
                 'safe_directory_name': safe_name,
@@ -339,7 +302,6 @@ Provide:
             'results': results
         }
         
-        # Save summary
         summary_path = os.path.join(output_base_dir, "processing_summary.json")
         with open(summary_path, 'w', encoding='utf-8') as f:
             json.dump(summary, f, indent=2, ensure_ascii=False)
@@ -354,15 +316,12 @@ Provide:
 
 
 if __name__ == "__main__":
-    # Paths to the datasets
     train_path = "data/codecontests_train.json"
     test_path = "data/codecontests_test.json"
     
-    # Initialize RAG system
     print("Initializing CodeContests RAG system...")
     rag_system = CodeContestsRAG(train_path, test_path)
     
-    # Process all test problems
     print("\nProcessing test problems...")
     summary = rag_system.process_test_problems()
     
