@@ -155,7 +155,7 @@ Provide:
         else:
             context += "3. Solve the problem from first principles as no similar questions were found.\n"
         
-        context += "4. Don't use any external libraries.\n"
+        context += "4. Don't use any external libraries. Any language is accepted."
         
         return context
     
@@ -171,7 +171,7 @@ Provide:
    - The intuition behind the approach;
    - Time and space complexity;
    - Important considerations about the algorithm.
-3. Don't use any external libraries.
+3. Don't use any external libraries. Any language is accepted.
 """
         
         return context
@@ -208,7 +208,7 @@ Provide:
         else:
             context += "3. Solve the problem from first principles.\n"
         
-        context += "4. Don't use any external libraries.\n"
+        context += "4. Don't use any external libraries. Any language is accepted."
         
         return context
     
