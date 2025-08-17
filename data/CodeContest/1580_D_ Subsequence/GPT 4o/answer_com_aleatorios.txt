@@ -1,0 +1,36 @@
+def maximize_subsequence_value(n, m, a):
+    # Precompute minimum values for all ranges using a monotonic stack
+    min_range = [[float('inf')] * n for _ in range(n)]
+    for i in range(n):
+        min_range[i][i] = a[i]
+        for j in range(i + 1, n):
+            min_range[i][j] = min(min_range[i][j - 1], a[j])
+
+    # Initialize DP table
+    dp = [[-float('inf')] * (m + 1) for _ in range(n)]
+    
+    # Base case: subsequences of length 1
+    for i in range(n):
+        dp[i][1] = m * a[i]
+
+    # Fill DP table
+    for j in range(2, m + 1):  # Length of subsequence
+        for i in range(n):  # End index of subsequence
+            for k in range(i):  # Previous index in subsequence
+                dp[i][j] = max(dp[i][j], dp[k][j - 1] + m * a[i] - min_range[k + 1][i])
+
+    # Find the maximum value for subsequences of length m
+    return max(dp[i][m] for i in range(n))
+
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n, m = int(data[0]), int(data[1])
+    a = list(map(int, data[2:]))
+    
+    # Output the result
+    print(maximize_subsequence_value(n, m, a))

@@ -1,0 +1,39 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        # Strategy: First, create a simple solution where
+        # b[0] and b[1] balance each other out
+        
+        # If a[0] * (-1) + a[1] * 1 = 0, then we're done
+        # Otherwise, we need to adjust
+        
+        if n == 2:
+            # For n=2, we just need a[0]*b[0] + a[1]*b[1] = 0
+            # b[0] = 1, b[1] = -a[0]/a[1] (ensuring b[1] is non-zero)
+            if a[0] == a[1]:
+                print(1, -1)
+            else:
+                # We can use any values that satisfy the equation
+                print(-1, a[0] // a[1] if a[0] % a[1] == 0 else 1)
+        else:
+            # For n > 2, we have more flexibility
+            # Assign most elements 1 or -1, then make the last element balance
+            
+            b = [1] * (n-1)
+            # Calculate the dot product of first n-1 elements
+            dot_product = sum(a[i] * b[i] for i in range(n-1))
+            
+            # Last element should balance this out
+            b[-1] = -dot_product // a[-1]
+            if b[-1] == 0:  # If it would be zero, use a different approach
+                b[0] = -1   # Change first element
+                dot_product = sum(a[i] * b[i] for i in range(n-1))
+                b[-1] = -dot_product // a[-1]
+            
+            print(*b)
+
+solve()

@@ -1,0 +1,41 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    # Read grid dimensions and number of balls
+    n, m, k = map(int, data[:3])
+    index = 3
+    
+    # Read the grid
+    grid = []
+    for i in range(n):
+        grid.append(list(map(int, data[index:index + m])))
+        index += m
+    
+    # Read the starting columns for the balls
+    start_columns = list(map(int, data[index:index + k]))
+    
+    # Result array to store the exit column for each ball
+    results = []
+    
+    # Simulate each ball
+    for start_col in start_columns:
+        col = start_col - 1  # Convert to 0-based index
+        row = 0
+        
+        while row < n and 0 <= col < m:
+            if grid[row][col] == 1:  # Move right
+                grid[row][col] = 2  # Change direction to down
+                col += 1
+            elif grid[row][col] == 2:  # Move down
+                row += 1
+            elif grid[row][col] == 3:  # Move left
+                grid[row][col] = 2  # Change direction to down
+                col -= 1
+        
+        # Record the column where the ball exits (1-based index)
+        results.append(col + 1)
+    
+    # Print the results
+    sys.stdout.write(" ".join(map(str, results)) + "\n")

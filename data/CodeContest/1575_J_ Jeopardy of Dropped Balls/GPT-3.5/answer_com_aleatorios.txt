@@ -1,0 +1,34 @@
+def find_final_columns(n, m, k, grid, columns):
+    final_positions = []
+    
+    for c in columns:
+        curr_row = 0
+        curr_col = c - 1
+        
+        while curr_row < n:
+            direction = grid[curr_row][curr_col]
+            
+            if direction == 1:
+                curr_col += 1
+            elif direction == 2:
+                curr_row += 1
+            else:
+                curr_col -= 1
+                
+            if curr_col == 0 or curr_col == m - 1:
+                break
+        
+        final_positions.append(curr_col + 1)
+    
+    return final_positions
+
+# Input reading
+n, m, k = map(int, input().split())
+grid = [list(map(int, input().split())) for _ in range(n)]
+columns = list(map(int, input().split()))
+
+# Finding final column positions
+final_columns = find_final_columns(n, m, k, grid, columns)
+
+# Output
+print(' '.join(map(str, final_columns)))

@@ -1,0 +1,10 @@
+def largest_f(n, a):
+    matching_count = sum(1 for i in range(n) if a[i] == i + 1)
+    return min(matching_count, n // 2)
+
+# Read input
+n = int(input())
+a = list(map(int, input().split()))
+
+# Calculate and print the largest f(a)
+print(largest_f(n, a))

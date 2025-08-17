@@ -1,0 +1,48 @@
+def count_good_permutations(n, m, k, p):
+    MOD = p
+    
+    # dp[i][j][l] means the number of ways to arrange the first i numbers
+    # such that there are j good numbers and the last number is l
+    dp = [[[0] * (n + 1) for _ in range(k + 1)] for _ in range(n + 1)]
+    
+    # Base case: one way to arrange zero numbers with zero good numbers
+    dp[0][0][0] = 1
+    
+    for i in range(1, n + 1):
+        for j in range(k + 1):
+            for l in range(1, n + 1):
+                if dp[i - 1][j][l] == 0:
+                    continue
+                
+                # Place number i at the end of the permutation
+                # Check how many good numbers will be formed
+                
+                # If we place i, it will be the new maximum for all subsegments ending at i
+                # We need to check how many of the previous good numbers remain good
+                new_good_count = j
+                for x in range(1, n + 1):
+                    if x == l:
+                        continue
+                    
+                    # Count the number of unique maxima in subsegments containing x
+                    # If x is less than i, then i will be the new maximum for subsegments containing x and ending at i
+                    # If x is greater than i, then the maximum remains the same
+                    if x < i:
+                        new_good_count += 1 if dp[i - 1][j][l] > 0 and (dp[i - 1][j][x] == 0 or dp[i - 1][j][x] < m) else 0
+                    else:
+                        new_good_count -= 1 if dp[i - 1][j][l] > 0 and dp[i - 1][j][x] == m else 0
+                
+                # Ensure the new good count is within bounds
+                if new_good_count <= k:
+                    dp[i][new_good_count][i] += dp[i - 1][j][l]
+                    dp[i][new_good_count][i] %= MOD
+    
+    # Sum up all valid permutations of length n with exactly k good numbers
+    result = sum(dp[n][k][l] for l in range(1, n + 1)) % MOD
+    return result
+
+# Read input
+n, m, k, p = map(int, input().split())
+
+# Output the result
+print(count_good_permutations(n, m, k, p))

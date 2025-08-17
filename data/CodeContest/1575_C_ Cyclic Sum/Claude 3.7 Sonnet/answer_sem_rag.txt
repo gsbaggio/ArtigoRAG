@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+int main() {
+    int n, m, k;
+    cin >> n >> m >> k;
+    
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    
+    // Calculate the sum of one cycle mod k
+    long long cycleSum = 0;
+    for (int i = 0; i < n; i++) {
+        cycleSum = (cycleSum + a[i]) % k;
+    }
+    
+    // For segments within a single cycle, create an extended array
+    vector<int> extended(2 * n);
+    for (int i = 0; i < n; i++) {
+        extended[i] = extended[i + n] = a[i];
+    }
+    
+    // Compute prefix sums for extended array
+    vector<int> prefix(2 * n + 1, 0);
+    for (int i = 0; i < 2 * n; i++) {
+        prefix[i + 1] = (prefix[i] + extended[i]) % k;
+    }
+    
+    // Count segments with sum divisible by k
+    long long result = 0;
+    
+    // For each possible segment length from 1 to n
+    for (int len = 1; len <= n; len++) {
+        // For each possible starting position
+        for (int start = 0; start < n; start++) {
+            // Calculate segment sum
+            int segSum = (prefix[start + len] - prefix[start] + k) % k;
+            
+            if (segSum == 0) {
+                // This segment has sum divisible by k
+                // It appears once in each copy, so add m to result
+                result = (result + m) % MOD;
+            }
+        }
+    }
+    
+    cout << result % MOD << endl;
+    return 0;
+}

@@ -1,0 +1,24 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        total_sum = sum(a)
+        target_sum = total_sum - 1
+        
+        if target_sum < 0:
+            print(0)
+            continue
+        
+        # Use dynamic programming to count subsequences with sum = target_sum
+        dp = [0] * (target_sum + 1)
+        dp[0] = 1  # Empty subsequence has sum 0
+        
+        for num in a:
+            for j in range(target_sum, num - 1, -1):
+                dp[j] += dp[j - num]
+        
+        print(dp[target_sum])
+
+solve()

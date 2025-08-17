@@ -1,0 +1,36 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<int> a(n + 1);
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+    }
+    
+    int answer = 0;
+    
+    // Try all possible final lengths k
+    for (int k = 1; k <= n; k++) {
+        vector<bool> is_fixed_point(k + 1, false);
+        int count = 0;
+        
+        // Check which positions would result in fixed points
+        for (int i = 1; i <= n; i++) {
+            if (a[i] <= k && !is_fixed_point[a[i]]) {
+                is_fixed_point[a[i]] = true;
+                count++;
+            }
+        }
+        
+        answer = max(answer, count);
+    }
+    
+    cout << answer << endl;
+    return 0;
+}

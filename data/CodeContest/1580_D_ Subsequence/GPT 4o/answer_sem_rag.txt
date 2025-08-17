@@ -1,0 +1,54 @@
+def maximize_subsequence_value(n, m, a):
+    import sys
+    sys.setrecursionlimit(5000)
+    
+    # Precompute f(i, j) using a sparse table for RMQ
+    # Sparse table initialization
+    log = [0] * (n + 1)
+    for i in range(2, n + 1):
+        log[i] = log[i // 2] + 1
+
+    k = log[n] + 1
+    st = [[0] * k for _ in range(n)]
+    for i in range(n):
+        st[i][0] = a[i]
+
+    j = 1
+    while (1 << j) <= n:
+        for i in range(n - (1 << j) + 1):
+            st[i][j] = min(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
+        j += 1
+
+    def range_min(i, j):
+        length = j - i + 1
+        p = log[length]
+        return min(st[i][p], st[j - (1 << p) + 1][p])
+
+    # DP table
+    dp = [[-float('inf')] * (m + 1) for _ in range(n + 1)]
+    dp[0][0] = 0  # Base case: no elements selected, value is 0
+
+    # Fill DP table
+    for i in range(1, n + 1):
+        for k in range(1, m + 1):
+            # Option 1: Do not include a[i-1]
+            dp[i][k] = dp[i - 1][k]
+
+            # Option 2: Include a[i-1]
+            current_sum = 0
+            for j in range(i, 0, -1):  # Consider all previous elements
+                current_sum += a[j - 1]
+                penalty = 0
+                for x in range(j, i + 1):
+                    for y in range(j, i + 1):
+                        penalty += range_min(min(x, y) - 1, max(x, y) - 1)
+                dp[i][k] = max(dp[i][k], dp[j - 1][k - 1] + k * current_sum - penalty)
+
+    # The answer is the maximum value for selecting m elements
+    return dp[n][m]
+
+# Input reading
+if __name__ == "__main__":
+    n, m = map(int, input().split())
+    a = list(map(int, input().split()))
+    print(maximize_subsequence_value(n, m, a))

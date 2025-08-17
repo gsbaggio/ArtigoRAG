@@ -1,0 +1,33 @@
+def count_divisible_segments(n, m, k, a):
+    MOD = 10**9 + 7
+
+    # Step 1: Compute prefix sums for one cycle of `a`
+    prefix = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix[i] = prefix[i - 1] + a[i - 1]
+
+    # Step 2: Simulate the cyclic behavior for `m` repetitions
+    total_sum = prefix[n]
+    count = 0
+    mod_count = {0: 1}  # To handle cases where prefix_sum % k == 0
+
+    # Step 3: Iterate through the extended prefix sums
+    for i in range(1, n * m + 1):
+        # Compute the current prefix sum modulo k
+        current_prefix_mod = (prefix[(i - 1) % n + 1] + (i - 1) // n * total_sum) % k
+
+        # Count the number of valid segments ending at this position
+        if current_prefix_mod in mod_count:
+            count = (count + mod_count[current_prefix_mod]) % MOD
+
+        # Update the hash map with the current prefix modulo
+        mod_count[current_prefix_mod] = mod_count.get(current_prefix_mod, 0) + 1
+
+    return count
+
+# Input reading
+n, m, k = map(int, input().split())
+a = list(map(int, input().split()))
+
+# Output the result
+print(count_divisible_segments(n, m, k, a))

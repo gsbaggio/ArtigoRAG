@@ -1,0 +1,70 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+typedef long long lint;
+
+const lint inf = 1e18;
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+
+    vector<vector<lint>> dp(n, vector<lint>(m + 1, -inf));
+
+    for (int i = 0; i < n; i++) {
+        int min_val = a[i];
+        lint as = 0;
+        int k = i;
+
+        for (int j = i; j >= 0; j--) {
+            if (j < i) {
+                if (a[j] < min_val) {
+                    as += static_cast<lint>(k - j) * (min_val - a[j]);
+                    min_val = a[j];
+                }
+            }
+            as += min_val;
+
+            while (k > j && a[k] >= min_val) {
+                as -= min_val;
+                k--;
+            }
+
+            int current_length = i - j + 1;
+            for (int l = 1; l <= m && l <= current_length; l++) {
+                if (l == 1) {
+                    if (j == i) {
+                        dp[i][l] = max(dp[i][l], (m - 1) * static_cast<lint>(a[i]) - 2 * as);
+                    }
+                } else {
+                    if (j > 0) {
+                        if (dp[j - 1][l - 1] != -inf) {
+                            lint candidate = dp[j - 1][l - 1] + (m - 1) * static_cast<lint>(a[i]) - 2 * as;
+                            dp[i][l] = max(dp[i][l], candidate);
+                        }
+                    } else {
+                        if (l == current_length) {
+                            dp[i][l] = max(dp[i][l], (m - 1) * static_cast<lint>(a[i]) - 2 * as);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    lint ans = -inf;
+    for (int i = 0; i < n; i++) {
+        if (dp[i][m] > ans) {
+            ans = dp[i][m];
+        }
+    }
+    cout << ans << endl;
+    return 0;
+}

@@ -1,0 +1,78 @@
+def main():
+    import sys
+    input = sys.stdin.buffer.readline
+    
+    # Read input
+    n, m = map(int, input().split())
+    a = list(map(int, input().split()))
+    
+    # Sort the array in descending order
+    a_sorted = sorted((val, idx) for idx, val in enumerate(a))[::-1]
+    
+    # Choose the largest m elements
+    chosen_elements = a_sorted[:m]
+    
+    # Sort the chosen elements by their original indices to ensure lexicographical order
+    chosen_elements.sort(key=lambda x: x[1])
+    
+    # Extract the values and indices of the chosen elements
+    chosen_values = [val for val, idx in chosen_elements]
+    chosen_indices = [idx for val, idx in chosen_elements]
+    
+    # Build a segment tree for the chosen values
+    seg_tree = SegmentTree(chosen_values, lambda x, y: min(x, y), initialRes=float('inf'))
+    
+    # Calculate the sum of the chosen elements
+    total_sum = sum(chosen_values)
+    
+    # Calculate the pairwise minimum sum
+    pairwise_min_sum = 0
+    for i in range(m):
+        for j in range(i + 1, m):
+            # Query the minimum value in the range [chosen_indices[i], chosen_indices[j]]
+            min_val = seg_tree.query(chosen_indices[i], chosen_indices[j])
+            pairwise_min_sum += min_val
+    
+    # Calculate the final value
+    final_value = m * total_sum - pairwise_min_sum
+    
+    # Print the final value
+    print(final_value)
+
+class SegmentTree:
+    def __init__(self, arr, func, initialRes=0):
+        self.f = func
+        self.N = len(arr)
+        self.tree = [initialRes for _ in range(2 * self.N)]
+        self.initialRes = initialRes
+        for i in range(self.N):
+            self.tree[self.N + i] = arr[i]
+        for i in range(self.N - 1, 0, -1):
+            self.tree[i] = self.f(self.tree[i << 1], self.tree[(i << 1) | 1])
+    
+    def updateTreeNode(self, idx, value):
+        self.tree[idx + self.N] = value
+        idx += self.N
+        i = idx
+        while i > 1:
+            self.tree[i >> 1] = self.f(self.tree[i], self.tree[i ^ 1])
+            i >>= 1
+    
+    def query(self, l, r):
+        r += 1
+        res = self.initialRes
+        l += self.N
+        r += self.N
+        while l < r:
+            if l & 1:
+                res = self.f(res, self.tree[l])
+                l += 1
+            if r & 1:
+                r -= 1
+                res = self.f(res, self.tree[r])
+            l >>= 1
+            r >>= 1
+        return res
+
+if __name__ == "__main__":
+    main()

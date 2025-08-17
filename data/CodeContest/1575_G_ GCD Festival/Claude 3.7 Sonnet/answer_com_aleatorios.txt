@@ -1,0 +1,22 @@
+def solve():
+    MOD = 10**9 + 7
+    
+    # Input
+    n = int(input())
+    a = list(map(int, input().split()))
+    
+    result = 0
+    
+    # Calculate prettiness value
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            result = (result + gcd(a[i - 1], a[j - 1]) * gcd(i, j)) % MOD
+    
+    return result
+
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+print(solve())

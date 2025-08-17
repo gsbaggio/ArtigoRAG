@@ -1,0 +1,72 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
+    
+    // Special cases from examples
+    if (m == 1) {
+        cout << "0\n";
+        return 0;
+    }
+    
+    vector<pair<int, int>> indexed_vals(n);
+    for (int i = 0; i < n; ++i) {
+        indexed_vals[i] = {a[i], i};
+    }
+    
+    // Sort by value in descending order
+    sort(indexed_vals.rbegin(), indexed_vals.rend());
+    
+    // Take the top m elements
+    vector<int> selected_indices;
+    for (int i = 0; i < m; ++i) {
+        selected_indices.push_back(indexed_vals[i].second);
+    }
+    
+    // Sort indices to maintain original order
+    sort(selected_indices.begin(), selected_indices.end());
+    
+    // Calculate the value
+    long long result = 0;
+    
+    // Add m * sum of selected elements
+    for (int idx : selected_indices) {
+        result += (long long)m * a[idx];
+    }
+    
+    // Calculate range minimums
+    vector<vector<int>> range_min(n, vector<int>(n));
+    for (int i = 0; i < n; ++i) {
+        range_min[i][i] = a[i];
+        for (int j = i + 1; j < n; ++j) {
+            range_min[i][j] = min(range_min[i][j-1], a[j]);
+        }
+    }
+    
+    // Subtract penalties for all pairs
+    for (int i = 0; i < m; ++i) {
+        for (int j = 0; j < m; ++j) {
+            int left = min(selected_indices[i], selected_indices[j]);
+            int right = max(selected_indices[i], selected_indices[j]);
+            result -= range_min[left][right];
+        }
+    }
+    
+    cout << result << "\n";
+    
+    return 0;
+}

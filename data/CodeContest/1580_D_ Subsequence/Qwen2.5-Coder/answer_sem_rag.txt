@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+
+// Function to build the segment tree
+void build_segment_tree(vector<int>& a, vector<vector<int>>& seg_tree, int n) {
+    for (int i = 0; i < n; ++i) {
+        seg_tree[0][i] = a[i];
+    }
+    for (int level = 1; (1 << level) <= n; ++level) {
+        for (int i = 0; i + (1 << level) <= n; ++i) {
+            seg_tree[level][i] = min(seg_tree[level-1][i], seg_tree[level-1][i + (1 << (level-1))]);
+        }
+    }
+}
+
+// Function to query the minimum value in the range [l, r]
+int query_min(vector<vector<int>>& seg_tree, int l, int r) {
+    int len = r - l + 1;
+    int level = 0;
+    while ((1 << (level + 1)) <= len) {
+        ++level;
+    }
+    return min(seg_tree[level][l], seg_tree[level][r - (1 << level) + 1]);
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
+
+    // Preprocess the segment tree
+    int log_n = 0;
+    while ((1 << log_n) < n) {
+        ++log_n;
+    }
+    vector<vector<int>> seg_tree(log_n + 1, vector<int>(n));
+    build_segment_tree(a, seg_tree, n);
+
+    // Initialize the DP table
+    vector<vector<long long>> dp(m + 1, vector<long long>(n, LLONG_MIN));
+    for (int j = 0; j < n; ++j) {
+        dp[1][j] = m * a[j];
+    }
+
+    // Fill the DP table
+    for (int i = 2; i <= m; ++i) {
+        for (int j = i - 1; j < n; ++j) {
+            long long penalty = 0;
+            for (int k = i - 2; k < j; ++k) {
+                penalty += query_min(seg_tree, k + 1, j);
+            }
+            for (int k = i - 2; k < j; ++k) {
+                dp[i][j] = max(dp[i][j], dp[i-1][k] + m * a[j] - penalty);
+                penalty -= query_min(seg_tree, k + 1, j);
+                penalty += query_min(seg_tree, k, j);
+            }
+        }
+    }
+
+    // Find the maximum value in the last row of the DP table
+    long long max_value = LLONG_MIN;
+    for (int j = m - 1; j < n; ++j) {
+        max_value = max(max_value, dp[m][j]);
+    }
+
+    cout << max_value << endl;
+    return 0;
+}

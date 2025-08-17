@@ -1,0 +1,73 @@
+import sys
+from collections import defaultdict
+MOD = 10**9 + 7
+
+def main():
+    data = sys.stdin.read().split()
+    n = int(data[0])
+    m = int(data[1])
+    k = int(data[2])
+    a = list(map(int, data[3:3 + n]))
+    
+    if k == 1:
+        N = n * m
+        print((N * N) % MOD)
+        return
+
+    S = [0] * (n + 1)
+    for i in range(1, n + 1):
+        S[i] = S[i - 1] + a[i - 1]
+    T = S[n]
+    base = (m + 1) // k
+    rem = (m + 1) % k
+
+    F_count1 = [0] * k
+    base_total = n * base
+
+    if T % k == 0:
+        for r in range(n):
+            c = S[r] % k
+            F_count1[c] += m + 1
+    else:
+        for r in range(n):
+            c = S[r] % k
+            for i in range(rem):
+                residue = (c + T * i) % k
+                F_count1[residue] += 1
+        for a_val in range(k):
+            F_count1[a_val] += base_total
+
+    count1 = 0
+    for freq in F_count1:
+        count1 = (count1 + freq * (freq - 1) // 2) % MOD
+
+    F_count2 = [0] * k
+    base_total2 = n * base
+    shift = (T * m) % k
+
+    if T % k == 0:
+        for r in range(n):
+            c = S[r] % k
+            F_count2[c] += m + 1
+    else:
+        for r in range(n):
+            c = (S[r] + shift) % k
+            for i in range(rem):
+                residue = (c + T * i) % k
+                F_count2[residue] += 1
+        for a_val in range(k):
+            F_count2[a_val] += base_total2
+
+    count2 = 0
+    for a_val in range(k):
+        target = (a_val - shift) % k
+        count2 = (count2 + F_count1[a_val] * F_count2[target]) % MOD
+
+    if (T * m) % k == 0:
+        count2 = (count2 - n * m) % MOD
+
+    ans = (count1 + count2) % MOD
+    print(ans)
+
+if __name__ == "__main__":
+    main()

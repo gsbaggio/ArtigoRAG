@@ -1,0 +1,61 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int M = 100000;
+const int mod = 1000000007;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    int n;
+    cin >> n;
+    vector<int> a(n + 1);
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+    }
+
+    vector<int> phi(M + 1);
+    for (int i = 1; i <= M; i++) {
+        phi[i] = i;
+    }
+    for (int i = 1; i <= M; i++) {
+        for (int j = 2 * i; j <= M; j += i) {
+            phi[j] -= phi[i];
+        }
+    }
+
+    vector<vector<int>> divisorsForValue(M + 1);
+    for (int i = 1; i <= M; i++) {
+        for (int j = i; j <= M; j += i) {
+            divisorsForValue[j].push_back(i);
+        }
+    }
+
+    vector<int> cnt(M + 1, 0);
+    long long ans = 0;
+
+    for (int d = 1; d <= n; d++) {
+        vector<int> touched;
+        for (int i = d; i <= n; i += d) {
+            for (int g : divisorsForValue[a[i]]) {
+                if (cnt[g] == 0) {
+                    touched.push_back(g);
+                }
+                cnt[g]++;
+            }
+        }
+        long long sum = 0;
+        for (int g : touched) {
+            long long c = cnt[g];
+            sum = (sum + 1LL * phi[g] * (c * c % mod)) % mod;
+            cnt[g] = 0;
+        }
+        ans = (ans + 1LL * phi[d] * sum) % mod;
+    }
+    ans %= mod;
+    if (ans < 0) ans += mod;
+    cout << ans << endl;
+    return 0;
+}

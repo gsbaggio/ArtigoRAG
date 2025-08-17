@@ -1,0 +1,66 @@
+def main():
+    s = input().strip()
+    n = len(s)
+    
+    if n == 1:
+        if 'X' in s:
+            dX_list = list(range(10))
+        else:
+            dX_list = [0]
+        total = 0
+        for dX in dX_list:
+            if s[0] in '0123456789':
+                c = s[0]
+            elif s[0] == 'X':
+                c = str(dX)
+            else:
+                c = '0'
+            if c == '0':
+                total += 1
+        print(total)
+    else:
+        candidate_ends = ["00", "25", "50", "75"]
+        if 'X' in s:
+            dX_list = list(range(10))
+        else:
+            dX_list = [0]
+        total = 0
+        for end in candidate_ends:
+            for dX in dX_list:
+                t = [None] * n
+                t[-2] = end[0]
+                t[-1] = end[1]
+                free_underscores = []
+                valid = True
+                for i in range(n):
+                    if i == n-2 or i == n-1:
+                        if s[i] in '0123456789':
+                            if s[i] != t[i]:
+                                valid = False
+                                break
+                        elif s[i] == 'X':
+                            if t[i] != str(dX):
+                                valid = False
+                                break
+                    else:
+                        if s[i] in '0123456789':
+                            t[i] = s[i]
+                        elif s[i] == 'X':
+                            t[i] = str(dX)
+                        else:
+                            free_underscores.append(i)
+                if not valid:
+                    continue
+                if t[0] is not None and t[0] == '0':
+                    continue
+                count_free = 1
+                for idx in free_underscores:
+                    if idx == 0:
+                        count_free *= 9
+                    else:
+                        count_free *= 10
+                total += count_free
+        print(total)
+
+if __name__ == '__main__':
+    main()

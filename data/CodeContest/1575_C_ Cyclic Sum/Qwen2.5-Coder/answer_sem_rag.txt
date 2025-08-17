@@ -1,0 +1,32 @@
+MOD = 10**9 + 7
+
+def count_segments(n, m, k, a):
+    # Calculate the prefix sums of the array a
+    prefix_sum = [0] * (n * m * 2 + 1)
+    for i in range(1, n * m * 2 + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + a[(i - 1) % n]
+    
+    # Calculate the modulo k of each prefix sum
+    mod_count = [0] * k
+    mod_count[0] = 1  # There's one segment with sum 0 (empty segment)
+    result = 0
+    
+    for i in range(1, n * m * 2 + 1):
+        current_mod = prefix_sum[i] % k
+        result += mod_count[current_mod]
+        result %= MOD
+        mod_count[current_mod] += 1
+        
+        # Avoid double counting segments longer than n * m
+        if i > n * m:
+            start_mod = prefix_sum[i - n * m] % k
+            mod_count[start_mod] -= 1
+    
+    return result
+
+# Read input
+n, m, k = map(int, input().split())
+a = list(map(int, input().split()))
+
+# Output the result
+print(count_segments(n, m, k, a))

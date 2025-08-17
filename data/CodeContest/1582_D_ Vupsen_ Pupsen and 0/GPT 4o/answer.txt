@@ -1,0 +1,25 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])  # Length of the array
+        index += 1
+        a = list(map(int, data[index:index + n]))
+        index += n
+        
+        # Construct array b
+        b = [0] * n
+        for i in range(n // 2):
+            b[i] = a[i + n // 2]
+            b[i + n // 2] = -a[i]
+        
+        results.append(" ".join(map(str, b)))
+    
+    # Print all results
+    sys.stdout.write("\n".join(results) + "\n")

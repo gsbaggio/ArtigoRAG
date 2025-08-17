@@ -1,0 +1,65 @@
+import sys
+from itertools import product
+
+def main():
+    s = sys.stdin.readline().strip()
+    n = len(s)
+    
+    if n >= 2:
+        needed_indices = {0, n-2, n-1}
+    else:
+        needed_indices = {0}
+    
+    x_list = []
+    u_list = []
+    for i, char in enumerate(s):
+        if char == 'X':
+            x_list.append(i)
+        elif char == '_':
+            u_list.append(i)
+            
+    other_underscores = [pos for pos in u_list if pos not in needed_indices]
+    base_factor = 10 ** len(other_underscores)
+    
+    F_underscores = [pos for pos in u_list if pos in needed_indices]
+    
+    def get_char(i, s, x_val, f_dict):
+        if s[i] in '0123456789':
+            return s[i]
+        elif s[i] == 'X':
+            return str(x_val)
+        else:
+            return str(f_dict[i])
+    
+    total = 0
+    x_iter = range(10) if x_list else [None]
+    
+    for x_val in x_iter:
+        if F_underscores:
+            f_vals_iter = product(range(10), repeat=len(F_underscores))
+        else:
+            f_vals_iter = [()]
+            
+        for f_vals in f_vals_iter:
+            f_dict = {}
+            for idx, pos in enumerate(F_underscores):
+                f_dict[pos] = f_vals[idx]
+                
+            c0 = get_char(0, s, x_val, f_dict)
+            if n > 1 and c0 == '0':
+                continue
+                
+            if n == 1:
+                if c0 == '0':
+                    total += base_factor
+            else:
+                c1 = get_char(n-2, s, x_val, f_dict)
+                c2 = get_char(n-1, s, x_val, f_dict)
+                last_two = c1 + c2
+                if last_two in ['00', '25', '50', '75']:
+                    total += base_factor
+                    
+    print(total)
+
+if __name__ == '__main__':
+    main()

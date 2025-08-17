@@ -1,0 +1,25 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    a = list(map(int, data[1:1+n]))
+    
+    dp = [0] * (n + 2)
+    ans = 0
+    for i in range(n):
+        v = a[i]
+        if v < 1 or v > n:
+            continue
+        if v <= i + 1:
+            if dp[v] < dp[v - 1] + 1:
+                dp[v] = dp[v - 1] + 1
+                if dp[v] > ans:
+                    ans = dp[v]
+    
+    print(ans)
+
+if __name__ == "__main__":
+    main()

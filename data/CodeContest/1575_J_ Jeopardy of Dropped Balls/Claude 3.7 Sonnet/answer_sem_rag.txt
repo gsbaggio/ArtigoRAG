@@ -1,0 +1,48 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n, m, k;
+    cin >> n >> m >> k;
+    
+    // Read the grid
+    vector<vector<int>> grid(n, vector<int>(m));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> grid[i][j];
+        }
+    }
+    
+    // Read starting columns for each ball
+    vector<int> startCols(k);
+    for (int i = 0; i < k; i++) {
+        cin >> startCols[i];
+        startCols[i]--; // Convert to 0-indexed
+    }
+    
+    // Process each ball
+    for (int i = 0; i < k; i++) {
+        int row = 0;
+        int col = startCols[i];
+        
+        // Simulate the ball's path
+        while (row < n) {
+            int direction = grid[row][col];
+            grid[row][col] = 2; // Change direction to down
+            
+            if (direction == 1) { // Right
+                col++;
+            } else if (direction == 2) { // Down
+                row++;
+            } else if (direction == 3) { // Left
+                col--;
+            }
+        }
+        
+        // Print the column where the ball exited (1-indexed)
+        cout << col + 1 << " ";
+    }
+    
+    return 0;
+}

@@ -1,0 +1,27 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    n = int(data[0])
+    a = list(map(int, data[1:1+n]))
+    a0 = [x - 1 for x in a]
+    
+    max_val = 200010
+    last = [0] * max_val
+    ans = 0
+    
+    for i in range(n):
+        if a0[i] <= i:
+            v = a0[i]
+            if v == 0:
+                f_val = 1
+            else:
+                f_val = last[v-1] + 1
+            if f_val > last[v]:
+                last[v] = f_val
+            if f_val > ans:
+                ans = f_val
+    print(ans)
+
+if __name__ == "__main__":
+    main()

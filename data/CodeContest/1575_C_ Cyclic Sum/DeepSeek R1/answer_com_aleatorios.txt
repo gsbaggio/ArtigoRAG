@@ -1,0 +1,150 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <complex>
+#include <algorithm>
+#include <cstring>
+using namespace std;
+
+typedef long long ll;
+typedef complex<double> cd;
+const double PI = acos(-1);
+const ll MOD = 1000000007;
+
+void fft(vector<cd> &a, bool invert) {
+    int n = a.size();
+    for (int i = 1, j = 0; i < n; i++) {
+        int bit = n >> 1;
+        for (; j & bit; bit >>= 1)
+            j ^= bit;
+        j ^= bit;
+        if (i < j)
+            swap(a[i], a[j]);
+    }
+    for (int len = 2; len <= n; len <<= 1) {
+        double ang = 2 * PI / len * (invert ? -1 : 1);
+        cd wlen(cos(ang), sin(ang));
+        for (int i = 0; i < n; i += len) {
+            cd w(1);
+            for (int j = 0; j < len / 2; j++) {
+                cd u = a[i + j], v = a[i + j + len / 2] * w;
+                a[i + j] = u + v;
+                a[i + j + len / 2] = u - v;
+                w *= wlen;
+            }
+        }
+    }
+    if (invert) {
+        for (cd &x : a)
+            x /= n;
+    }
+}
+
+vector<ll> multiply(vector<ll> const &a, vector<ll> const &b) {
+    vector<cd> fa(a.begin(), a.end()), fb(b.begin(), b.end());
+    int n = 1;
+    while (n < a.size() + b.size())
+        n <<= 1;
+    fa.resize(n);
+    fb.resize(n);
+    fft(fa, false);
+    fft(fb, false);
+    for (int i = 0; i < n; i++)
+        fa[i] *= fb[i];
+    fft(fa, true);
+    vector<ll> result(n);
+    for (int i = 0; i < n; i++)
+        result[i] = round(fa[i].real());
+    return result;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    ll n, m, k;
+    cin >> n >> m >> k;
+    vector<ll> a(n);
+    ll total = 0;
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        total += a[i];
+    }
+    ll T = total % k;
+    vector<ll> freq0(k, 0);
+    ll cur = 0;
+    for (int i = 0; i < n; i++) {
+        cur = (cur + a[i]) % k;
+        if (cur < 0) cur += k;
+        freq0[cur]++;
+    }
+    vector<ll> F(k, 0);
+    F[0] = 1;
+    if (T % k == 0) {
+        for (int r = 0; r < k; r++) {
+            F[r] = (F[r] + m % MOD * freq0[r]) % MOD;
+        }
+    } else {
+        ll base = m / k;
+        ll rem = m % k;
+        vector<ll> H_distrib(k, 0);
+        for (int j = 0; j < rem; j++) {
+            ll residue = (j * T) % k;
+            if (residue < 0) residue += k;
+            H_distrib[residue] = 1;
+        }
+        vector<ll> conv_result = multiply(freq0, H_distrib);
+        int N = conv_result.size();
+        for (int r = 0; r < k; r++) {
+            ll term = 0;
+            if (r < N) term = (term + conv_result[r]) % MOD;
+            if (r + k < N) term = (term + conv_result[r + k]) % MOD;
+            F[r] = (F[r] + base % MOD * n + term) % MOD;
+        }
+    }
+    ll ans = 0;
+    for (int r = 0; r < k; r++) {
+        ll cnt = F[r];
+        ans = (ans + cnt * (cnt - 1) / 2) % MOD;
+    }
+    ll R = (m % k) * (T % k) % k;
+    R = (k - R) % k;
+    vector<ll> G(k, 0);
+    G[0] = 1;
+    cur = 0;
+    for (int i = 0; i < n; i++) {
+        cur = (cur + a[i]) % k;
+        if (cur < 0) cur += k;
+        ll s = (cur - R) % k;
+        if (s < 0) s += k;
+        ans = (ans + G[s]) % MOD;
+        G[cur] = (G[cur] + 1) % MOD;
+    }
+    G.assign(k, 0);
+    if (m > 1) {
+        ll base = (m - 1) / k;
+        ll rem = (m - 1) % k;
+        for (int j = 0; j < rem; j++) {
+            ll shift_val = (T + j * T) % k;
+            shift_val = (shift_val - R) % k;
+            if (shift_val < 0) shift_val += k;
+            ans = (ans + base % MOD * freq0[shift_val]) % MOD;
+            for (int i = 0; i < k; i++) {
+                ll residue = (i + T) % k;
+                ll new_shift_val = (residue - R) % k;
+                if (new_shift_val < 0) new_shift_val += k;
+                if (new_shift_val == shift_val) {
+                    ans = (ans + freq0[i]) % MOD;
+                }
+            }
+        }
+        for (int j = rem; j < k; j++) {
+            if (j >= m) break;
+            ll shift_val = (T + j * T) % k;
+            shift_val = (shift_val - R) % k;
+            if (shift_val < 0) shift_val += k;
+            ans = (ans + base % MOD * freq0[shift_val]) % MOD;
+        }
+    }
+    cout << ans % MOD << endl;
+    return 0;
+}

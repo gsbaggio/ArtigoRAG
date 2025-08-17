@@ -1,0 +1,14 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+    
+    s = sum(a)
+    
+    count_ones = a.count(1)
+    count_zeros = a.count(0)
+    
+    print(count_ones * (1 << count_zeros))
+
+t = int(input())
+for _ in range(t):
+    solve()

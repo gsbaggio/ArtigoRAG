@@ -1,0 +1,28 @@
+def max_fixed_points():
+    n = int(input())
+    a = list(map(int, input().split()))
+    
+    # Keep track of the best answer
+    best = 0
+    
+    # Try every possible final length of the array
+    for final_len in range(1, n+1):
+        # Count potential fixed points for each position
+        count = [0] * (final_len + 1)
+        
+        for val in a:
+            if 1 <= val <= final_len:
+                count[val] += 1
+        
+        # Calculate fixed points with this final length
+        fixed_points = 0
+        for i in range(1, final_len + 1):
+            if count[i] > 0:
+                fixed_points += 1
+                count[i] -= 1
+        
+        best = max(best, fixed_points)
+    
+    return best
+
+print(max_fixed_points())

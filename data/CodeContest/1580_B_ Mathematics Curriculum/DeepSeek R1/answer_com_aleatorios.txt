@@ -1,0 +1,58 @@
+import sys
+
+def main():
+    data = sys.stdin.readline().split()
+    n = int(data[0])
+    m_val = int(data[1])
+    k_val = int(data[2])
+    p = int(data[3])
+    
+    fact = [1] * (n+1)
+    for i in range(1, n+1):
+        fact[i] = fact[i-1] * i % p
+        
+    C = [[0] * (n+1) for _ in range(n+1)]
+    for i in range(0, n+1):
+        C[i][0] = 1
+        if i>=1:
+            for j in range(1, i+1):
+                C[i][j] = (C[i-1][j] + C[i-1][j-1]) % p
+
+    F = [[[0] * (n+1) for _ in range(n+1)] for __ in range(n+1)]
+    
+    for d0 in range(0, n+1):
+        F[0][d0][0] = 1
+        
+    for i in range(1, n+1):
+        F[i][0][0] = fact[i]
+        for d0 in range(1, n+1):
+            for root_pos in range(1, i+1):
+                L_size = root_pos - 1
+                R_size = i - root_pos
+                root_contrib = 1 if d0 == 1 else 0
+                
+                T = [0] * (i+1)
+                for a in range(0, L_size+1):
+                    val_left = F[L_size][d0-1][a]
+                    if val_left == 0:
+                        continue
+                    for b in range(0, R_size+1):
+                        rem = a + b
+                        if rem > i:
+                            continue
+                        val_right = F[R_size][d0-1][b]
+                        T[rem] = (T[rem] + val_left * val_right) % p
+                
+                for j in range(0, i+1):
+                    rem = j - root_contrib
+                    if rem < 0 or rem > i:
+                        add_val = 0
+                    else:
+                        add_val = T[rem]
+                    ways = C[i-1][L_size] * add_val % p
+                    F[i][d0][j] = (F[i][d0][j] + ways) % p
+
+    print(F[n][m_val][k_val] % p)
+
+if __name__ == "__main__":
+    main()

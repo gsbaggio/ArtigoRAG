@@ -1,0 +1,44 @@
+#include <iostream>
+#include <vector>
+#include <map>
+using namespace std;
+
+const int MOD = 1000000007;
+
+// Function to calculate GCD
+int gcd(int a, int b) {
+    while (b) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<int> a(n+1);
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+    }
+    
+    // Calculate prettiness
+    long long result = 0;
+    
+    // Consider each pair of positions (i,j)
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            // Calculate GCD of array values and indices
+            int value_gcd = gcd(a[i], a[j]);
+            int index_gcd = gcd(i, j);
+            
+            // Add to result
+            result = (result + (long long)value_gcd * index_gcd) % MOD;
+        }
+    }
+    
+    cout << result << endl;
+    return 0;
+}

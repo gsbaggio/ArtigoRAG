@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+// Calculate (a * b) % m
+long long mul_mod(long long a, long long b, long long m) {
+    return ((a % m) * (b % m)) % m;
+}
+
+int main() {
+    long long n, m, k;
+    cin >> n >> m >> k;
+    
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    
+    // If k=1, every segment has sum divisible by 1
+    if (k == 1) {
+        long long nm = n * m;
+        long long answer = (nm * (nm + 1)) / 2;
+        cout << answer % MOD << endl;
+        return 0;
+    }
+    
+    // Compute prefix sums for a single cycle
+    vector<long long> prefix_sum(n * m + 1, 0);
+    for (int i = 0; i < n * m; i++) {
+        prefix_sum[i + 1] = (prefix_sum[i] + a[i % n]) % k;
+    }
+    
+    // Count frequencies of remainders
+    vector<long long> count(k, 0);
+    for (int i = 0; i <= n * m; i++) {
+        count[prefix_sum[i]]++;
+    }
+    
+    // Calculate answer using formula: sum(count[i] * (count[i] - 1) / 2) for all i
+    long long answer = 0;
+    for (int i = 0; i < k; i++) {
+        answer = (answer + (count[i] * (count[i] - 1) / 2) % MOD) % MOD;
+    }
+    
+    cout << answer << endl;
+    return 0;
+}

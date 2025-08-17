@@ -1,0 +1,37 @@
+def count_nearly_full_subsequences(t, test_cases):
+    results = []
+    for n, a in test_cases:
+        total_sum = sum(a)
+        nearly_full_count = 0
+        
+        # Iterate over all possible subsequences using bitmask
+        for mask in range(1 << n):
+            subsequence_sum = 0
+            for i in range(n):
+                if mask & (1 << i):
+                    subsequence_sum += a[i]
+            if subsequence_sum == total_sum - 1:
+                nearly_full_count += 1
+        
+        results.append(nearly_full_count)
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+t = int(input[0])
+index = 1
+test_cases = []
+for _ in range(t):
+    n = int(input[index])
+    a = list(map(int, input[index + 1:index + 1 + n]))
+    test_cases.append((n, a))
+    index += 1 + n
+
+# Get results
+results = count_nearly_full_subsequences(t, test_cases)
+
+# Print results
+for result in results:
+    print(result)

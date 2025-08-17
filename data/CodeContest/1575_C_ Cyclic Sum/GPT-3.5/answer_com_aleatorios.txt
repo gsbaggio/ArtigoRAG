@@ -1,0 +1,33 @@
+MOD = 10**9 + 7
+
+def power(a, n):
+    if n == 0:
+        return 1
+    if n % 2 == 0:
+        return power((a * a) % MOD, n // 2)
+    else:
+        return (a * power(a, n - 1)) % MOD
+
+def solve():
+    n, m, k = map(int, input().split())
+    a = list(map(int, input().split()))
+
+    prefix_sum = [0]
+    for i in range(n):
+        prefix_sum.append((prefix_sum[-1] + a[i]) % k)
+
+    total_sum = prefix_sum[-1] * m
+    count = 0
+    freq = [0] * k
+
+    for ps in prefix_sum:
+        count += freq[ps]
+        freq[ps] += 1
+
+    result = (power(m, 2) * count) % MOD
+    result += (power(m, 2) * (m - 1) // 2 * sum(freq[i] * (freq[i] - 1) // 2 for i in range(k))) % MOD
+    result %= MOD
+    result = (total_sum == 0) + result
+    print(result)
+
+solve()

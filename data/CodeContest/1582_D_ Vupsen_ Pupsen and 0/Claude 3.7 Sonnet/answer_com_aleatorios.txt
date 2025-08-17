@@ -1,0 +1,64 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        # Calculate sum of positives and negatives in array a
+        pos_sum = 0
+        neg_sum = 0
+        pos_indices = []
+        neg_indices = []
+        
+        for i, val in enumerate(a):
+            if val > 0:
+                pos_sum += val
+                pos_indices.append(i)
+            else:
+                neg_sum += abs(val)
+                neg_indices.append(i)
+        
+        # Create array b
+        b = [0] * n
+        
+        # If positive sum is greater, make b[pos_indices] = -1 and b[neg_indices] = 1
+        # If negative sum is greater, make b[pos_indices] = 1 and b[neg_indices] = -1
+        if pos_sum >= neg_sum:
+            for idx in pos_indices:
+                b[idx] = -1
+            for idx in neg_indices:
+                b[idx] = 1
+            
+            # Calculate the current dot product
+            dot_product = sum(a[i] * b[i] for i in range(n))
+            
+            # If dot product is not 0, adjust one element to balance it
+            if dot_product != 0:
+                # Find an element in pos_indices that can be adjusted
+                for idx in pos_indices:
+                    adjustment = dot_product // a[idx]
+                    if adjustment != 0:  # Avoid division by zero
+                        b[idx] = -1 - adjustment
+                        break
+        else:
+            for idx in pos_indices:
+                b[idx] = 1
+            for idx in neg_indices:
+                b[idx] = -1
+            
+            # Calculate the current dot product
+            dot_product = sum(a[i] * b[i] for i in range(n))
+            
+            # If dot product is not 0, adjust one element to balance it
+            if dot_product != 0:
+                # Find an element in neg_indices that can be adjusted
+                for idx in neg_indices:
+                    adjustment = dot_product // a[idx]
+                    if adjustment != 0:  # Avoid division by zero
+                        b[idx] = -1 - adjustment
+                        break
+        
+        print(*b)
+
+solve()

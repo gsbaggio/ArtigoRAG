@@ -1,0 +1,44 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+const int MOD = 1000000007;
+
+int main() {
+    int n, m, k;
+    cin >> n >> m >> k;
+
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
+
+    long long result = 0;
+
+    // If k is 1, all segments are valid since any sum is divisible by 1
+    if (k == 1) {
+        result = (1LL * n * (n + 1) / 2) % MOD;
+    } else {
+        vector<int> prefixSum(n * m + 1);
+        vector<int> count(k);
+
+        int curSum = 0;
+        count[0] = 1;
+
+        for (int i = 0; i < n * m; ++i) {
+            curSum = (curSum + a[i % n]) % k;
+            result = (result + count[curSum]) % MOD;
+            count[curSum]++;
+            prefixSum[i + 1] = curSum;
+            if (i >= n - 1) {
+                count[prefixSum[i - n + 1]]--;
+            }
+        }
+    }
+
+    cout << result << endl;
+
+    return 0;
+}

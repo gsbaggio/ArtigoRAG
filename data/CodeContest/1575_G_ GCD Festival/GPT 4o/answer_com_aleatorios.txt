@@ -1,0 +1,40 @@
+from math import gcd
+from collections import defaultdict
+
+MOD = 10**9 + 7
+
+def prettiness_value(n, a):
+    # Step 1: Frequency array for values in a
+    max_val = 10**5
+    freq = [0] * (max_val + 1)
+    for num in a:
+        freq[num] += 1
+
+    # Step 2: Precompute gcd(a_i, a_j) contributions
+    gcd_contribution = [0] * (max_val + 1)
+    for g in range(1, max_val + 1):
+        count = 0
+        for multiple in range(g, max_val + 1, g):
+            count += freq[multiple]
+        gcd_contribution[g] = (count * (count - 1)) // 2  # Pairs of elements with gcd = g
+
+    # Step 3: Precompute gcd(i, j) contributions
+    gcd_index_contribution = [0] * (n + 1)
+    for g in range(1, n + 1):
+        count = n // g
+        gcd_index_contribution[g] = (count * (count - 1)) // 2  # Pairs of indices with gcd = g
+
+    # Step 4: Combine contributions
+    result = 0
+    for g in range(1, max_val + 1):
+        if gcd_contribution[g] > 0:
+            result += gcd_contribution[g] * gcd_index_contribution[g]
+            result %= MOD
+
+    return result
+
+# Input and Output
+if __name__ == "__main__":
+    n = int(input())
+    a = list(map(int, input().split()))
+    print(prettiness_value(n, a))

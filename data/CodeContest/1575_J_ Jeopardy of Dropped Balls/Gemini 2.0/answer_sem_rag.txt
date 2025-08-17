@@ -1,0 +1,29 @@
+def solve():
+    n, m, k = map(int, input().split())
+    grid = []
+    for _ in range(n):
+        grid.append(list(map(int, input().split())))
+    
+    balls = list(map(int, input().split()))
+    
+    results = []
+    for start_col in balls:
+        row = 0
+        col = start_col - 1
+        
+        while 0 <= row < n and 0 <= col < m:
+            direction = grid[row][col]
+            grid[row][col] = 2
+            
+            if direction == 1:
+                col += 1
+            elif direction == 2:
+                row += 1
+            else:
+                col -= 1
+        
+        results.append(col + 1)
+    
+    print(*results)
+
+solve()

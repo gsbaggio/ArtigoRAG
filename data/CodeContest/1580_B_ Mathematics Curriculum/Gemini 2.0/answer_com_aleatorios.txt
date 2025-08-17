@@ -1,0 +1,91 @@
+def solve():
+    n, m, k, p = map(int, input().split())
+    
+    def count_good_permutations(n, m, k, p):
+        """
+        Counts the number of permutations of length n with exactly k good numbers, modulo p.
+
+        Args:
+            n: The length of the permutation.
+            m: The required number of distinct maximum values for a good number.
+            k: The required number of good numbers in the permutation.
+            p: The modulus.
+
+        Returns:
+            The number of permutations modulo p.
+        """
+
+        dp = {}  # Memoization for the dynamic programming approach
+
+        def calculate_permutations(remaining_numbers, good_count):
+            """
+            Recursively calculates the number of permutations with the given number of good numbers.
+
+            Args:
+                remaining_numbers: The number of remaining numbers to place in the permutation.
+                good_count: The current count of good numbers in the permutation.
+
+            Returns:
+                The number of permutations modulo p.
+            """
+
+            if remaining_numbers == 0:
+                if good_count == k:
+                    return 1
+                else:
+                    return 0
+
+            if (remaining_numbers, good_count) in dp:
+                return dp[(remaining_numbers, good_count)]
+
+            total_permutations = 0
+            for i in range(1, remaining_numbers + 1):
+                is_good = is_number_good(list(range(1, n + 1)), n - remaining_numbers + i, m, n)
+                
+                new_good_count = good_count + (1 if is_good else 0)
+                
+                total_permutations = (total_permutations + calculate_permutations(remaining_numbers - 1, new_good_count)) % p
+
+            dp[(remaining_numbers, good_count)] = total_permutations
+            return total_permutations
+
+        def is_number_good(permutation, x, m, n):
+            """
+            Checks if a number x is good in a given permutation.
+
+            Args:
+                permutation: The permutation to check.
+                x: The number to check.
+                m: The required number of distinct maximum values.
+                n: The length of the permutation.
+
+            Returns:
+                True if the number is good, False otherwise.
+            """
+            
+            maxima = set()
+            
+            for i in range(n):
+                for j in range(i, n):
+                    subsegment = permutation[i:j+1]
+                    if x in subsegment:
+                        maxima.add(max(subsegment))
+            
+            return len(maxima) == m
+
+        import itertools
+        
+        count = 0
+        for perm in itertools.permutations(range(1, n + 1)):
+            good_numbers = 0
+            for x in range(1, n + 1):
+                if is_number_good(list(perm), x, m, n):
+                    good_numbers += 1
+            if good_numbers == k:
+                count = (count + 1) % p
+        
+        return count
+    
+    print(count_good_permutations(n, m, k, p))
+
+solve()

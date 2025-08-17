@@ -1,0 +1,29 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    results = []
+    idx = 1
+    
+    for _ in range(t):
+        n = int(data[idx])  # Length of the array
+        idx += 1
+        a = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Calculate the total sum and count of 1s
+        total_sum = sum(a)
+        count_ones = a.count(1)
+        count_non_ones = n - count_ones
+        
+        # If there are no 1s, no nearly full subsequences are possible
+        if count_ones == 0:
+            results.append(0)
+        else:
+            # Number of nearly full subsequences
+            results.append(count_ones * (1 << count_non_ones))  # 2^(count_non_ones)
+    
+    # Print all results
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

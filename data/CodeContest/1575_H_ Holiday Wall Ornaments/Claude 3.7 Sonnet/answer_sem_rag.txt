@@ -1,0 +1,69 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    
+    string a, b;
+    cin >> a >> b;
+    
+    // For each potential position, calculate cost to make it match or not match
+    vector<pair<int, bool>> positions(n - m + 1);  // {cost, currently matches?}
+    
+    for (int i = 0; i <= n - m; i++) {
+        int diff_count = 0;
+        for (int j = 0; j < m; j++) {
+            if (a[i + j] != b[j]) {
+                diff_count++;
+            }
+        }
+        positions[i] = {diff_count, diff_count == 0};
+    }
+    
+    // Count current occurrences
+    int current_occurrences = 0;
+    for (const auto& p : positions) {
+        if (p.second) {
+            current_occurrences++;
+        }
+    }
+    
+    // For each k, calculate result
+    for (int k = 0; k <= n - m + 1; k++) {
+        if (k == current_occurrences) {
+            cout << 0 << " ";
+        } else if (k < current_occurrences) {
+            // Need to remove occurrences - always takes 1 change per occurrence
+            cout << (current_occurrences - k) << " ";
+        } else {
+            // Need to add occurrences
+            vector<int> costs_to_add;
+            for (const auto& p : positions) {
+                if (!p.second) {  // If not currently matching
+                    costs_to_add.push_back(p.first);
+                }
+            }
+            
+            sort(costs_to_add.begin(), costs_to_add.end());
+            
+            // Check if possible
+            if (costs_to_add.size() < k - current_occurrences) {
+                cout << -1 << " ";
+            } else {
+                // Sum up the k-current_occurrences smallest costs
+                int total = 0;
+                for (int i = 0; i < k - current_occurrences; i++) {
+                    total += costs_to_add[i];
+                }
+                cout << total << " ";
+            }
+        }
+    }
+    
+    return 0;
+}

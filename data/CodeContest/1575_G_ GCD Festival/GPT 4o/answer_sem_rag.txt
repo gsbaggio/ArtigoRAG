@@ -1,0 +1,46 @@
+MOD = 10**9 + 7
+MAX_VAL = 10**5
+
+def compute_prettiness(n, a):
+    # Step 1: Frequency array for array values
+    freq = [0] * (MAX_VAL + 1)
+    for num in a:
+        freq[num] += 1
+
+    # Step 2: Compute gcd(a_i, a_j) contributions
+    gcd_contribution = [0] * (MAX_VAL + 1)
+    for g in range(1, MAX_VAL + 1):
+        # Count multiples of g
+        count = 0
+        for multiple in range(g, MAX_VAL + 1, g):
+            count += freq[multiple]
+        # Contribution of gcd = g
+        gcd_contribution[g] = (count * (count - 1)) // 2 + count
+
+    # Step 3: Frequency array for indices
+    index_freq = [0] * (n + 1)
+    for i in range(1, n + 1):
+        for j in range(i, n + 1, i):
+            index_freq[i] += 1
+
+    # Step 4: Compute gcd(i, j) contributions
+    index_contribution = [0] * (n + 1)
+    for g in range(1, n + 1):
+        count = index_freq[g]
+        index_contribution[g] = (count * (count - 1)) // 2 + count
+
+    # Step 5: Combine contributions
+    result = 0
+    for g in range(1, MAX_VAL + 1):
+        if gcd_contribution[g] > 0:
+            result += gcd_contribution[g] * index_contribution[g % (n + 1)]
+            result %= MOD
+
+    return result
+
+# Input reading
+n = int(input())
+a = list(map(int, input().split()))
+
+# Output the result
+print(compute_prettiness(n, a))

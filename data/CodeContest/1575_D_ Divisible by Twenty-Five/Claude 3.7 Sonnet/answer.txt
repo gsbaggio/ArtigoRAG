@@ -1,0 +1,81 @@
+def solve(s):
+    n = len(s)
+    
+    # Special case: if s is just "0"
+    if s == "0":
+        return 1
+        
+    # Try all possible values for X (if any)
+    x_values = range(10) if 'X' in s else [0]
+    
+    result = 0
+    for x in x_values:
+        # Replace all X with the current value
+        pattern = s.replace('X', str(x))
+        
+        # For a number to be divisible by 25, it must end with 00, 25, 50, or 75
+        valid_endings = ["00", "25", "50", "75"]
+        
+        # For single digit numbers
+        if n == 1:
+            if pattern == "_":
+                result += 1  # Only 0 is divisible by 25
+            elif pattern == "0":
+                result += 1
+            continue
+            
+        # For numbers with at least 2 digits
+        for ending in valid_endings:
+            # Check if the last two digits can match this ending
+            can_match = True
+            for i in range(min(2, n)):
+                pos = n - min(2, n) + i
+                if pattern[pos] != '_' and pattern[pos] != ending[min(2, n) - min(2, n) + i]:
+                    can_match = False
+                    break
+                    
+            if not can_match:
+                continue
+                
+            # Calculate the number of ways to fill in wildcards
+            ways = 1
+            
+            # Fill wildcards in the last two positions (if n >= 2)
+            if n >= 2:
+                for i in range(2):
+                    if pattern[n-2+i] == '_':
+                        # Only one choice for each position based on the ending
+                        ways *= 1
+            
+            # Handle the prefix (all positions before the last two)
+            prefix = pattern[:n-min(2, n)]
+            prefix_wildcards = prefix.count('_')
+            
+            # Check for leading zeros
+            all_fixed_are_zeros = all(c == '0' or c == '_' for c in prefix)
+            
+            if all_fixed_are_zeros and prefix_wildcards > 0:
+                # If all fixed digits in prefix are 0
+                if pattern[0] == '_':
+                    # First position must be 1-9 to avoid leading zeros
+                    ways *= 9
+                    prefix_wildcards -= 1
+                    
+                    # The rest can be any digit
+                    ways *= 10 ** prefix_wildcards
+                else:
+                    # First position is fixed as 0, so it's a leading zero
+                    # Valid only if the number is exactly 0
+                    if prefix == "0" * len(prefix) and ending == "00":
+                        result += 1
+                    continue
+            else:
+                # No leading zero issues or no wildcards in prefix
+                ways *= 10 ** prefix_wildcards
+                
+            result += ways
+            
+    return result
+
+s = input().strip()
+print(solve(s))

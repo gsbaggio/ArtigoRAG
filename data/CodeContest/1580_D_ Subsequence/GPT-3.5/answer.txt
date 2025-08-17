@@ -1,0 +1,30 @@
+def max_subsequence_value(n, m, arr):
+    arr_sorted = sorted(arr, reverse=True)
+    all_ans = []
+    
+    for _ in range(m):
+        k, pos = map(int, input().split())
+        cnt = {x: arr_sorted[:k].count(x) for x in arr_sorted[:k]}
+        total_cnts = 0
+        
+        for x in arr:
+            if cnt[x] > 0:
+                cnt[x] -= 1
+                total_cnts += 1
+                
+                if total_cnts == pos:
+                    all_ans.append(x)
+                    break
+                    
+    return all_ans
+
+# Input reading
+n, m = map(int, input().split())
+arr = list(map(int, input().split()))
+
+# Getting the maximal value
+result = max_subsequence_value(n, m, arr)
+
+# Output the result
+for ans in result:
+    print(ans)

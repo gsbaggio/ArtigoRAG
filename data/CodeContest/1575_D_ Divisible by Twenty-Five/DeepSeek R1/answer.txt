@@ -1,0 +1,61 @@
+import itertools
+
+def main():
+    s = input().strip()
+    n = len(s)
+    total_underscores = s.count('_')
+    has_X = 'X' in s
+
+    special_positions = set()
+    if n >= 1:
+        special_positions.add(0)
+    if n >= 2:
+        special_positions.add(n-1)
+        special_positions.add(n-2)
+    
+    special_underscores = [pos for pos in special_positions if s[pos] == '_']
+    free_underscores = total_underscores - len(special_underscores)
+    factor = 10 ** free_underscores
+
+    special_underscore_map = {}
+    for idx, pos in enumerate(special_underscores):
+        special_underscore_map[pos] = idx
+
+    x_range = range(10) if has_X else [0]
+    total_count = 0
+
+    for x_digit in x_range:
+        for assignment_tuple in itertools.product(range(10), repeat=len(special_underscores)):
+            if n >= 1:
+                if s[0] == '_':
+                    d0 = assignment_tuple[special_underscore_map[0]]
+                elif s[0] == 'X':
+                    d0 = x_digit
+                else:
+                    d0 = int(s[0])
+                if n > 1 and d0 == 0:
+                    continue
+            if n >= 2:
+                if s[n-2] == '_':
+                    d_second_last = assignment_tuple[special_underscore_map[n-2]]
+                elif s[n-2] == 'X':
+                    d_second_last = x_digit
+                else:
+                    d_second_last = int(s[n-2])
+                if s[n-1] == '_':
+                    d_last = assignment_tuple[special_underscore_map[n-1]]
+                elif s[n-1] == 'X':
+                    d_last = x_digit
+                else:
+                    d_last = int(s[n-1])
+                last_two = d_second_last * 10 + d_last
+                if last_two not in [0, 25, 50, 75]:
+                    continue
+            if n == 1:
+                if d0 != 0:
+                    continue
+            total_count += factor
+    print(total_count)
+
+if __name__ == '__main__':
+    main()

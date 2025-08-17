@@ -1,0 +1,47 @@
+def solve(n, m, a, b):
+    # For each position, calculate cost difference between making b appear or not appear
+    positions = []
+    
+    for i in range(n - m + 1):
+        # Calculate how many characters need to change to make b appear at position i
+        cost_to_appear = sum(1 for j in range(m) if a[i+j] != b[j])
+        
+        # Cost to ensure b doesn't appear (1 if it currently appears, 0 otherwise)
+        cost_to_not_appear = 1 if cost_to_appear == 0 else 0
+        
+        # Cost difference: negative means it's cheaper to make b appear here
+        cost_diff = cost_to_appear - cost_to_not_appear
+        positions.append((cost_diff, i, cost_to_appear, cost_to_not_appear))
+    
+    # Sort positions by cost difference (ascending)
+    positions.sort()
+    
+    results = []
+    
+    # For each desired count k
+    for k in range(n - m + 2):
+        if k > n - m + 1:
+            results.append(-1)
+            continue
+        
+        # Initially, assume b doesn't appear anywhere
+        total_cost = sum(pos[3] for pos in positions)
+        
+        # Then, for the k positions with lowest cost difference, make b appear
+        for i in range(k):
+            _, _, cost_appear, cost_not_appear = positions[i]
+            # Remove the cost of not having b and add the cost of having b
+            total_cost = total_cost - cost_not_appear + cost_appear
+        
+        results.append(total_cost)
+    
+    return results
+
+# Input handling
+n, m = map(int, input().split())
+a = input()
+b = input()
+
+# Solve and output
+results = solve(n, m, a, b)
+print(*results)

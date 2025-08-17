@@ -1,0 +1,23 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    b = [0] * n
+    
+    if n % 2 == 0:
+        for i in range(0, n, 2):
+            b[i] = -a[i+1]
+            b[i+1] = a[i]
+    else:
+        b[0] = -(a[1] + a[2])
+        b[1] = a[0]
+        b[2] = a[0]
+        for i in range(3, n, 2):
+            b[i] = -a[i+1]
+            b[i+1] = a[i]
+
+    print(*b)
+
+t = int(input())
+for _ in range(t):
+    solve()

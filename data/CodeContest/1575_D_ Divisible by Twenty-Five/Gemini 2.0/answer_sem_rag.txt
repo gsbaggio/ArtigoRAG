@@ -1,0 +1,39 @@
+def solve():
+    s = input()
+    n = len(s)
+    count = 0
+
+    def is_divisible_by_25(num_str):
+        if len(num_str) > 0 and num_str[0] == '0' and len(num_str) > 1:
+            return False
+        
+        if len(num_str) == 0:
+            return False
+
+        num = int(num_str)
+        return num % 25 == 0
+
+    def generate_numbers(index, current_string, x_value):
+        nonlocal count
+        
+        if index == n:
+            if is_divisible_by_25(current_string):
+                count += 1
+            return
+
+        if s[index] == '_':
+            for i in range(10):
+                generate_numbers(index + 1, current_string + str(i), x_value)
+        elif s[index] == 'X':
+            if x_value is None:
+                for i in range(10):
+                    generate_numbers(index + 1, current_string + str(i), i)
+            else:
+                generate_numbers(index + 1, current_string + str(x_value), x_value)
+        else:
+            generate_numbers(index + 1, current_string + s[index], x_value)
+
+    generate_numbers(0, "", None)
+    print(count)
+
+solve()

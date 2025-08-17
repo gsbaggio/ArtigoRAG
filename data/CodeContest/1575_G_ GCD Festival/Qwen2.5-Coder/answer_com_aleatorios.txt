@@ -1,0 +1,51 @@
+MOD = 10**9 + 7
+
+def gcd(x, y):
+    while y:
+        x, y = y, x % y
+    return x
+
+def compute_gcd_counts(arr, max_val):
+    n = len(arr)
+    gcd_counts = [0] * (max_val + 1)
+    
+    for i in range(n):
+        for j in range(i, n):
+            g = gcd(arr[i], arr[j])
+            gcd_counts[g] += 1
+    
+    return gcd_counts
+
+def compute_index_gcd_counts(n):
+    gcd_counts = [0] * (n + 1)
+    
+    for i in range(1, n + 1):
+        for j in range(i, n + 1):
+            g = gcd(i, j)
+            gcd_counts[g] += 1
+    
+    return gcd_counts
+
+def compute_prettiness_value(arr):
+    n = len(arr)
+    max_val = max(arr)
+    
+    # Compute GCD counts for elements
+    element_gcd_counts = compute_gcd_counts(arr, max_val)
+    
+    # Compute GCD counts for indices
+    index_gcd_counts = compute_index_gcd_counts(n)
+    
+    # Compute prettiness value
+    prettiness_value = 0
+    for g in range(1, max_val + 1):
+        prettiness_value = (prettiness_value + element_gcd_counts[g] * index_gcd_counts[g]) % MOD
+    
+    return prettiness_value
+
+# Read input
+n = int(input())
+arr = list(map(int, input().split()))
+
+# Compute and print the prettiness value
+print(compute_prettiness_value(arr))

@@ -1,0 +1,100 @@
+import java.util.*;
+
+public class Solution {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        int n = scanner.nextInt();
+        int m = scanner.nextInt();
+        scanner.nextLine();
+        
+        String a = scanner.nextLine();
+        String b = scanner.nextLine();
+        
+        int[] result = solve(a, b, n, m);
+        
+        for (int val : result) {
+            System.out.print(val + " ");
+        }
+    }
+    
+    public static int[] solve(String a, String b, int n, int m) {
+        int maxPossibleOccurrences = n - m + 1;
+        
+        // For each position, calculate cost to make and cost to break
+        int[] costToMake = new int[maxPossibleOccurrences]; // Cost to make b appear at this position
+        int[] costToBreak = new int[maxPossibleOccurrences]; // Cost to break b at this position
+        boolean[] isMatch = new boolean[maxPossibleOccurrences]; // Is b already at this position?
+        int naturalOccurrences = 0; // Count of positions where b already appears
+        
+        for (int i = 0; i <= n - m; i++) {
+            int differences = 0;
+            for (int j = 0; j < m; j++) {
+                if (a.charAt(i + j) != b.charAt(j)) {
+                    differences++;
+                }
+            }
+            costToMake[i] = differences;
+            
+            if (differences == 0) {
+                // It's already a match, so it costs 1 to break it (change at least 1 character)
+                costToBreak[i] = 1;
+                isMatch[i] = true;
+                naturalOccurrences++;
+            } else {
+                // It's not a match, so it costs 0 to break it
+                costToBreak[i] = 0;
+            }
+        }
+        
+        int[] result = new int[maxPossibleOccurrences + 1];
+        
+        for (int k = 0; k <= maxPossibleOccurrences; k++) {
+            // If we want k occurrences:
+            // 1. If k <= naturalOccurrences, we need to break (naturalOccurrences - k)
+            // 2. If k > naturalOccurrences, we need to make (k - naturalOccurrences)
+            
+            if (k <= naturalOccurrences) {
+                // Need to break (naturalOccurrences - k) occurrences
+                // Sort break costs and take the smallest (naturalOccurrences - k)
+                int[] breakCosts = new int[naturalOccurrences];
+                int idx = 0;
+                for (int i = 0; i < maxPossibleOccurrences; i++) {
+                    if (isMatch[i]) {
+                        breakCosts[idx++] = costToBreak[i];
+                    }
+                }
+                Arrays.sort(breakCosts);
+                
+                int totalCost = 0;
+                for (int i = 0; i < naturalOccurrences - k; i++) {
+                    totalCost += breakCosts[i];
+                }
+                result[k] = totalCost;
+            } else {
+                // Need to make (k - naturalOccurrences) occurrences
+                // Sort make costs for non-matches and take the smallest (k - naturalOccurrences)
+                ArrayList<Integer> makeCosts = new ArrayList<>();
+                for (int i = 0; i < maxPossibleOccurrences; i++) {
+                    if (!isMatch[i]) {
+                        makeCosts.add(costToMake[i]);
+                    }
+                }
+                Collections.sort(makeCosts);
+                
+                if (makeCosts.size() < k - naturalOccurrences) {
+                    // Not enough positions to make k occurrences
+                    result[k] = -1;
+                } else {
+                    int totalCost = 0;
+                    for (int i = 0; i < k - naturalOccurrences; i++) {
+                        totalCost += makeCosts.get(i);
+                    }
+                    result[k] = totalCost;
+                }
+            }
+        }
+        
+        return result;
+    }
+}

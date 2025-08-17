@@ -1,0 +1,61 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n, m, k;
+    cin >> n >> m >> k;
+    
+    vector<vector<int>> grid(n, vector<int>(m));
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            cin >> grid[i][j];
+        }
+    }
+    
+    vector<vector<int>> changes(n, vector<int>(m, 0));
+    
+    vector<int> results(k);
+    for(int i=0; i<k; i++){
+        int col;
+        cin >> col;
+        col--; // Convert to 0-based index
+        
+        int row = 0;
+        while(row < n){
+            int dir = grid[row][col] + changes[row][col];
+            if(dir > 3){
+                dir = 2; // Reset to 2 if direction exceeds 3
+            }
+            
+            if(dir == 1){
+                if(col + 1 < m){
+                    col++;
+                } else {
+                    break; // Ball leaves the grid
+                }
+            } else if(dir == 2){
+                row++;
+            } else if(dir == 3){
+                if(col - 1 >= 0){
+                    col--;
+                } else {
+                    break; // Ball leaves the grid
+                }
+            }
+            
+            changes[row][col]++; // Mark the cell as changed
+        }
+        
+        results[i] = col + 1; // Convert back to 1-based index
+    }
+    
+    for(int i=0; i<k; i++){
+        cout << results[i] << " ";
+    }
+    cout << "\n";
+    
+    return 0;
+}

@@ -1,0 +1,21 @@
+def count_divisible_by_25(s):
+    count = 0
+    for i in range(100):
+        mod = i % 25
+        s_copy = s.replace('_', str(i // 10)).replace('X', str(i // 10))
+        
+        if len(s_copy) != len(str(i)):
+            continue
+        
+        if len(set(s_copy)) == 1:
+            if int(s_copy) % 25 == 0:
+                count += 1
+
+    return count
+
+# Input parsing
+s = input().strip()
+
+# Count the number of possible integers
+result = count_divisible_by_25(s)
+print(result)

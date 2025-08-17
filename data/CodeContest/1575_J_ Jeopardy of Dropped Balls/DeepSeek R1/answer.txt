@@ -1,0 +1,48 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    
+    n = int(data[0])
+    m = int(data[1])
+    k = int(data[2])
+    grid = []
+    index = 3
+    for i in range(n):
+        row = list(map(int, data[index:index+m]))
+        grid.append(row)
+        index += m
+        
+    balls = list(map(int, data[index:index+k]))
+    index += k
+    results = []
+    
+    for start_col in balls:
+        x = 0
+        y = start_col - 1
+        while 0 <= x < n and 0 <= y < m:
+            if grid[x][y] == 1:
+                new_x = x
+                new_y = y + 1
+                grid[x][y] = 2
+            elif grid[x][y] == 3:
+                new_x = x
+                new_y = y - 1
+                grid[x][y] = 2
+            else:
+                new_x = x + 1
+                new_y = y
+                
+            if not (0 <= new_x < n and 0 <= new_y < m):
+                results.append(str(new_y + 1))
+                break
+            else:
+                x = new_x
+                y = new_y
+                
+    print(" ".join(results))
+
+if __name__ == "__main__":
+    main()

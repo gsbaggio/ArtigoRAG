@@ -1,0 +1,86 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int n = scanner.nextInt();
+        int m = scanner.nextInt();
+        int k = scanner.nextInt();
+        
+        int[] a = new int[n];
+        for (int i = 0; i < n; i++) {
+            a[i] = scanner.nextInt();
+        }
+        
+        System.out.println(solve(n, m, k, a));
+    }
+    
+    public static int solve(int n, int m, int k, int[] a) {
+        final int MOD = 1_000_000_007;
+        
+        // If k is 1, all segments have sum divisible by 1
+        if (k == 1) {
+            long nm = (long)n * m;
+            return (int)(nm * (nm + 1) / 2 % MOD);
+        }
+        
+        // Calculate prefix sums for 2n elements (to handle wrapping)
+        long[] prefixSum = new long[2 * n + 1];
+        for (int i = 0; i < 2 * n; i++) {
+            prefixSum[i + 1] = (prefixSum[i] + a[i % n]) % k;
+        }
+        
+        // Count segments within one copy of array a
+        long result = 0;
+        
+        // For each starting position
+        for (int start = 0; start < n; start++) {
+            // For each length from 1 to n
+            for (int len = 1; len <= n; len++) {
+                int end = (start + len - 1) % n;
+                long sum;
+                
+                if (end >= start) {
+                    sum = (prefixSum[start + len] - prefixSum[start] + k) % k;
+                } else {
+                    sum = (prefixSum[start + n] - prefixSum[start] + prefixSum[end + 1] + k) % k;
+                }
+                
+                if (sum == 0) {
+                    result = (result + m) % MOD;
+                }
+            }
+        }
+        
+        // Calculate sum of entire array
+        long totalSum = prefixSum[n];
+        
+        // For segments spanning multiple copies
+        if (m > 1) {
+            // For each starting position in first copy
+            for (int startPos = 0; startPos < n; startPos++) {
+                // For each ending position in last copy
+                for (int endPos = 0; endPos < n; endPos++) {
+                    // For each number of copies between (0 to m-2)
+                    for (int copies = 0; copies < m - 1; copies++) {
+                        // Calculate the sum of the segment from startPos to the end of first copy
+                        long startSum = (prefixSum[n] - prefixSum[startPos] + k) % k;
+                        
+                        // Calculate the sum of the middle copies
+                        long midSum = (copies * totalSum) % k;
+                        
+                        // Calculate the sum of the segment from start of last copy to endPos
+                        long endSum = prefixSum[endPos + 1];
+                        
+                        // Check if the total sum is divisible by k
+                        if ((startSum + midSum + endSum) % k == 0) {
+                            result = (result + 1) % MOD;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return (int)result;
+    }
+}

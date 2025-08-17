@@ -1,0 +1,23 @@
+def maximize_fixed_points(n, a):
+    fixed_points = 0
+    swappable = False
+
+    for i in range(n):
+        if a[i] == i + 1:  # Check if a[i] = i (1-based index)
+            fixed_points += 1
+        elif a[a[i] - 1] == i + 1:  # Check if a[i] and a[a[i]] can be swapped
+            swappable = True
+
+    # If a swap is possible, we can gain 2 fixed points; otherwise, we can gain 1
+    if swappable:
+        return fixed_points + 2
+    elif fixed_points < n:
+        return fixed_points + 1
+    else:
+        return fixed_points
+
+# Input reading and output
+if __name__ == "__main__":
+    n = int(input())
+    a = list(map(int, input().split()))
+    print(maximize_fixed_points(n, a))

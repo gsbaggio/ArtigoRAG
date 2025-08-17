@@ -1,0 +1,56 @@
+import math
+
+def gcd(a, b):
+    a = abs(a)
+    b = abs(b)
+    while b:
+        a, b = b, a % b
+    return a
+
+t = int(input().strip())
+results = []
+
+for _ in range(t):
+    n = int(input().strip())
+    a = list(map(int, input().split()))
+    
+    b = [0] * n
+    
+    if n % 2 == 0:
+        for i in range(0, n, 2):
+            x = a[i]
+            y = a[i+1]
+            g = gcd(x, y)
+            b[i] = y // g
+            b[i+1] = -x // g
+    else:
+        x0 = a[0]
+        x1 = a[1]
+        x2 = a[2]
+        if x0 + x1 != 0:
+            g_val = gcd(x2, x0 + x1)
+            b[0] = x2 // g_val
+            b[1] = x2 // g_val
+            b[2] = -(x0 + x1) // g_val
+        elif x0 + x2 != 0:
+            g_val = gcd(x1, x0 + x2)
+            b[0] = x1 // g_val
+            b[1] = -(x0 + x2) // g_val
+            b[2] = x1 // g_val
+        else:
+            g_val = gcd(x0, x1 + x2)
+            b[0] = -(x1 + x2) // g_val
+            b[1] = x0 // g_val
+            b[2] = x0 // g_val
+        
+        for i in range(3, n, 2):
+            x = a[i]
+            y = a[i+1]
+            g_val = gcd(x, y)
+            b[i] = y // g_val
+            b[i+1] = -x // g_val
+    
+    results.append(b)
+
+for res in results:
+    print(' '.join(map(str, res)))

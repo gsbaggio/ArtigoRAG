@@ -1,0 +1,58 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+    
+    int n = s.size();
+    if (n == 1) {
+        // Special case for single character
+        if (s[0] == '0' || s[0] == '_') cout << 1;
+        else if (s[0] == 'X') cout << 1;
+        else cout << 0;
+        return 0;
+    }
+    
+    // Determine the last two characters
+    char last1 = s[n-2], last2 = s[n-1];
+    
+    // Count the number of X's in the string
+    int x_count = 0;
+    for (char c : s) if (c == 'X') x_count++;
+    
+    // Determine the possible values for the last two digits
+    vector<pair<int, int>> valid_pairs = {{0, 0}, {2, 5}, {5, 0}, {7, 5}};
+    int count = 0;
+    
+    for (auto [a, b] : valid_pairs) {
+        bool valid = true;
+        if (last1 != '_' && last1 != 'X' && (last1 - '0') != a) valid = false;
+        if (last2 != '_' && last2 != 'X' && (last2 - '0') != b) valid = false;
+        
+        if (!valid) continue;
+        
+        // Check if the first character is valid
+        if (s[0] == '0') {
+            // Leading zero is only allowed if the entire string is 0
+            if (x_count == n - 1 && last1 == '0' && last2 == '0') count++;
+        } else if (s[0] == '_' || s[0] == 'X') {
+            // First character cannot be 0 unless the entire string is 0
+            if (x_count == n - 1 && last1 == '0' && last2 == '0') count++;
+            else if (x_count == 0) count += 9; // Any digit except 0
+            else if (x_count == 1) count += 9; // Any digit except 0
+            else count += 9; // Any digit except 0
+        } else {
+            // First character is a fixed digit, no leading zero issue
+            count++;
+        }
+    }
+    
+    // Handle the case where the entire string is X
+    if (x_count == n) count = 1; // Only 0 is valid
+    
+    cout << count;
+    return 0;
+}

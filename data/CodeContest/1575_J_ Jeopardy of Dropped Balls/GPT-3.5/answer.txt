@@ -1,0 +1,30 @@
+def find_ball_positions(n, m, k, grid, columns):
+    result = []
+    
+    for col in columns:
+        row = 1
+        while row <= n:
+            direction = grid[row - 1][col - 1]
+            
+            if direction == 1:
+                col += 1
+            elif direction == 2:
+                row += 1
+            
+            if col == 1 or col == m + 1:
+                break
+        
+        result.append(col - 1)
+    
+    return result
+
+# Read input
+n, m, k = map(int, input().split())
+grid = [list(map(int, input().split())) for _ in range(n)]
+columns = list(map(int, input().split()))
+
+# Find the final column positions of the balls
+output = find_ball_positions(n, m, k, grid, columns)
+
+# Print the output
+print(" ".join(map(str, output)))

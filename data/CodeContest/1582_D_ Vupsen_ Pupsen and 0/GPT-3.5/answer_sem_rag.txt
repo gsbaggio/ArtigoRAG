@@ -1,0 +1,21 @@
+from sys import stdin, stdout
+
+def solve_test_case():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    # Find the sum of all elements in the array
+    total_sum = sum(a)
+
+    # We need to construct an array b such that the dot product of a and b is 0
+    # We can set all elements of b to 1 except the last one, which is -(sum of all elements except the last one)
+    b = [1] * (n - 1)
+    b.append(-total_sum + a[-1])
+
+    print(*b)
+
+# Number of test cases
+t = int(input())
+
+for _ in range(t):
+    solve_test_case()

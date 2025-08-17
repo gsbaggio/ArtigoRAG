@@ -1,0 +1,36 @@
+def dropping_balls(n, m, k, grid, drops):
+    results = []
+    for start_col in drops:
+        x, y = 0, start_col - 1  # Start at the first row and the given column
+        while 0 <= x < n and 0 <= y < m:
+            if grid[x][y] == 1:  # Move right
+                grid[x][y] = 2
+                y += 1
+            elif grid[x][y] == 2:  # Move down
+                grid[x][y] = 2
+                x += 1
+            elif grid[x][y] == 3:  # Move left
+                grid[x][y] = 2
+                y -= 1
+        results.append(y + 1)  # Record the column where the ball exits
+    return results
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n, m, k = map(int, data[:3])
+    grid = []
+    idx = 3
+    for _ in range(n):
+        grid.append(list(map(int, data[idx:idx + m])))
+        idx += m
+    drops = list(map(int, data[idx:idx + k]))
+    
+    # Solve the problem
+    results = dropping_balls(n, m, k, grid, drops)
+    
+    # Output the results
+    print(" ".join(map(str, results)))

@@ -1,0 +1,65 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 105;
+const int MAXM = 105;
+const int MAXK = 105;
+
+int dp[MAXN][MAXK][MAXM];
+int n, m, k, p;
+
+int main() {
+    cin >> n >> m >> k >> p;
+    
+    // Initialize dp array
+    for (int i = 0; i <= n; i++) {
+        for (int j = 0; j <= k; j++) {
+            for (int l = 0; l <= m; l++) {
+                dp[i][j][l] = 0;
+            }
+        }
+    }
+    
+    // Base case
+    dp[0][0][0] = 1;
+    
+    // Fill dp table
+    for (int i = 1; i <= n; i++) {
+        for (int j = 0; j <= k; j++) {
+            for (int l = 0; l <= m; l++) {
+                if (dp[i-1][j][l] == 0) continue;
+                
+                // Place the i-th number in the permutation
+                for (int pos = 0; pos < i; pos++) {
+                    int new_l = 0;
+                    if (pos == 0) {
+                        new_l = 1;
+                    } else {
+                        new_l = l + 1;
+                    }
+                    
+                    if (new_l > m) continue;
+                    
+                    int new_j = j;
+                    if (new_l == m) {
+                        new_j = j + 1;
+                    }
+                    
+                    if (new_j > k) continue;
+                    
+                    dp[i][new_j][new_l] = (dp[i][new_j][new_l] + dp[i-1][j][l]) % p;
+                }
+            }
+        }
+    }
+    
+    // Sum up all valid states
+    int result = 0;
+    for (int l = 0; l <= m; l++) {
+        result = (result + dp[n][k][l]) % p;
+    }
+    
+    cout << result << endl;
+    
+    return 0;
+}

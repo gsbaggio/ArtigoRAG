@@ -1,0 +1,50 @@
+MOD = 10**9 + 7
+
+def count_segments(n, m, k, a):
+    # Step 1: Compute prefix sums modulo k for one copy of a
+    prefix_mod = [0] * n
+    prefix_mod[0] = a[0] % k
+    for i in range(1, n):
+        prefix_mod[i] = (prefix_mod[i - 1] + a[i]) % k
+
+    # Step 2: Count valid subarrays in one copy of a
+    count = 0
+    freq = {0: 1}  # To handle subarrays starting from index 0
+    for p in prefix_mod:
+        count += freq.get(p, 0)
+        freq[p] = freq.get(p, 0) + 1
+
+    # Step 3: Extend to m copies of a
+    total_count = count * m % MOD
+
+    # Step 4: Handle cyclic segments across boundaries
+    # Compute the total sum of one copy of a modulo k
+    total_sum = sum(a) % k
+    current_freq = freq.copy()
+
+    for i in range(1, m):
+        # Shift prefix sums by i * total_sum % k
+        shifted_freq = {}
+        for mod_val, freq_count in current_freq.items():
+            shifted_mod = (mod_val + i * total_sum) % k
+            shifted_freq[shifted_mod] = shifted_freq.get(shifted_mod, 0) + freq_count
+
+        # Add new valid subarrays
+        total_count += sum(shifted_freq.values()) % MOD
+        total_count %= MOD
+
+        # Update current_freq
+        current_freq = shifted_freq
+
+    return total_count
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n, m, k = map(int, data[:3])
+    a = list(map(int, data[3:]))
+    
+    print(count_segments(n, m, k, a))

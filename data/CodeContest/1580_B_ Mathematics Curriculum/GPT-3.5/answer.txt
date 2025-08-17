@@ -1,0 +1,29 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int n = scanner.nextInt();
+        int m = scanner.nextInt();
+        int k = scanner.nextInt();
+        int p = scanner.nextInt();
+
+        // Initialize a 3D DP array to store the number of permutations
+        long[][][] dp = new long[n + 1][m + 1][k + 1];
+        dp[0][0][0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                for (int x = 0; x <= k; x++) {
+                    for (int l = 1; l <= Math.min(j, x); l++) {
+                        dp[i][j][x] += dp[i - 1][j - l][x] * l;
+                        dp[i][j][x] %= p;
+                    }
+                }
+            }
+        }
+
+        long result = dp[n][m][k];
+        System.out.println(result);
+    }
+}

@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <map>
+using namespace std;
+
+typedef long long ll;
+
+void solve() {
+    int n;
+    cin >> n;
+    
+    vector<ll> a(n);
+    ll sum = 0;
+    
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        sum += a[i];
+    }
+    
+    // We need to find subsequences with sum = 1
+    // Then the complement will have sum = sum - 1
+    
+    // Split array in half for meet-in-the-middle
+    int mid = n / 2;
+    
+    // Generate all possible sums in the first half
+    map<ll, ll> left_sums;
+    for (int mask = 0; mask < (1 << mid); mask++) {
+        ll curr_sum = 0;
+        for (int i = 0; i < mid; i++) {
+            if (mask & (1 << i)) {
+                curr_sum += a[i];
+            }
+        }
+        left_sums[curr_sum]++;
+    }
+    
+    // Count combinations using the second half
+    ll answer = 0;
+    for (int mask = 0; mask < (1 << (n - mid)); mask++) {
+        ll curr_sum = 0;
+        for (int i = 0; i < n - mid; i++) {
+            if (mask & (1 << i)) {
+                curr_sum += a[mid + i];
+            }
+        }
+        
+        // We need left_sum + right_sum = 1
+        answer += left_sums[1 - curr_sum];
+    }
+    
+    cout << answer << endl;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    
+    return 0;
+}

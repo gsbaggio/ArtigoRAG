@@ -1,0 +1,26 @@
+def count_nearly_full_subsequences(n, arr):
+    # Calculate the total sum of the array
+    total_sum = sum(arr)
+    
+    # Initialize a dictionary to store the count of subsequences with a given sum
+    dp = {0: 1}  # base case
+    
+    for num in arr:
+        new_dp = dp.copy()
+        for prev_sum in dp:
+            new_sum = prev_sum + num
+            if new_sum == total_sum - 1:
+                new_dp[new_sum] = new_dp.get(new_sum, 0) + dp[prev_sum]
+            new_dp[new_sum] = new_dp.get(new_sum, 0) + dp[prev_sum]
+            
+        dp = new_dp
+    
+    return dp.get(total_sum - 1, 0)
+
+# Input reading and processing
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    result = count_nearly_full_subsequences(n, arr)
+    print(result)

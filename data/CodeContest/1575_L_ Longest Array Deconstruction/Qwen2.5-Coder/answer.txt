@@ -1,0 +1,42 @@
+def main():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n = int(data[0])
+    a = list(map(int, data[1:n+1]))
+    
+    matches = []
+    non_matches = []
+    
+    for i in range(n):
+        if a[i] == i + 1:
+            matches.append(i)
+        else:
+            non_matches.append(i)
+    
+    dp = [0] * (n + 1)
+    
+    # First pass: count matches without any removals
+    for i in range(n):
+        if a[i] == i + 1:
+            dp[i + 1] = dp[i] + 1
+        else:
+            dp[i + 1] = dp[i]
+    
+    # Second pass: consider removing each non-match
+    for idx in non_matches:
+        # Calculate the shift caused by removing the element at idx
+        shift = 1
+        for i in range(idx + 1, n):
+            if a[i] - shift == i + 1:
+                dp[i + 1] = max(dp[i + 1], dp[idx] + 1)
+            else:
+                dp[i + 1] = max(dp[i + 1], dp[i])
+            shift += 1
+    
+    # The result is the maximum value in the dp array
+    print(max(dp))
+
+if __name__ == "__main__":
+    main()

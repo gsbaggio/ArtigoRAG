@@ -1,0 +1,33 @@
+MOD = 10**9 + 7
+
+def count_divisible_segments(n, m, k, a):
+    # Step 1: Compute prefix sums for one cycle of `a`
+    prefix_sums = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sums[i] = prefix_sums[i - 1] + a[i - 1]
+
+    # Step 2: Extend prefix sums to simulate `m` cycles
+    total_sum = prefix_sums[n]
+    extended_prefix_sums = []
+    for i in range(m):
+        for j in range(1, n + 1):
+            extended_prefix_sums.append(prefix_sums[j] + i * total_sum)
+
+    # Step 3: Use modulo arithmetic to count valid segments
+    count = 0
+    freq = {0: 1}  # Initialize with 0 to handle segments starting at the beginning
+    for ps in extended_prefix_sums:
+        mod = ps % k
+        count = (count + freq.get(mod, 0)) % MOD
+        freq[mod] = freq.get(mod, 0) + 1
+
+    return count
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    n, m, k = map(int, data[:3])
+    a = list(map(int, data[3:]))
+    print(count_divisible_segments(n, m, k, a))

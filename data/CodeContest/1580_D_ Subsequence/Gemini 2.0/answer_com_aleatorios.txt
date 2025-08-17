@@ -1,0 +1,35 @@
+def solve():
+    n, m = map(int, input().split())
+    a = list(map(int, input().split()))
+
+    max_value = -float('inf')
+
+    for i in range(1 << n):
+        subsequence = []
+        indices = []
+        for j in range(n):
+            if (i >> j) & 1:
+                subsequence.append(a[j])
+                indices.append(j)
+
+        if len(subsequence) != m:
+            continue
+
+        value = 0
+        for k in range(m):
+            value += m * subsequence[k]
+
+        for k in range(m):
+            for l in range(m):
+                start = min(indices[k], indices[l])
+                end = max(indices[k], indices[l])
+                min_val = float('inf')
+                for p in range(start, end + 1):
+                    min_val = min(min_val, a[p])
+                value -= min_val
+
+        max_value = max(max_value, value)
+
+    print(max_value)
+
+solve()

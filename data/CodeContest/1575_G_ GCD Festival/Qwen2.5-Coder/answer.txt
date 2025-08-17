@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+// Function to add two numbers under modulo
+inline void addmod(int &x, int y) {
+    x = (x + y) % MOD;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    cin >> n;
+    
+    vector<int> a(n);
+    for(auto &x: a) cin >> x;
+    
+    // Step 1: Count multiples of each possible GCD value for elements
+    vector<int> count_gcd(100001, 0);
+    for(int g = 1; g <= 100000; ++g){
+        for(int i = 0; i < n; ++i){
+            if(a[i] % g == 0){
+                count_gcd[g]++;
+            }
+        }
+    }
+    
+    // Step 2: Count pairs of indices with each possible GCD value
+    vector<int> count_index_gcd(n+1, 0);
+    for(int d = 1; d <= n; ++d){
+        for(int i = d; i <= n; i += d){
+            for(int j = i; j <= n; j += d){
+                if(__gcd(i, j) == d){
+                    count_index_gcd[d]++;
+                }
+            }
+        }
+    }
+    
+    // Step 3: Calculate the prettiness value
+    long long prettiness = 0;
+    for(int g = 1; g <= 100000; ++g){
+        for(int d = 1; d <= n; ++d){
+            long long contribution = (long long)count_gcd[g] * count_gcd[g] % MOD;
+            contribution = contribution * count_index_gcd[d] % MOD;
+            contribution = contribution * g % MOD;
+            contribution = contribution * d % MOD;
+            prettiness = (prettiness + contribution) % MOD;
+        }
+    }
+    
+    cout << prettiness;
+    return 0;
+}

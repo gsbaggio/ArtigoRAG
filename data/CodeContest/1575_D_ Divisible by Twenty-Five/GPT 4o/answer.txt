@@ -1,0 +1,38 @@
+def count_divisible_by_25(s):
+    from itertools import product
+
+    # Helper function to replace `_` and `X` with digits
+    def generate_candidates(s, x_digit):
+        candidates = []
+        for replacement in product(range(10), repeat=s.count('_')):
+            temp = list(s)
+            replacement_idx = 0
+            for i, char in enumerate(temp):
+                if char == '_':
+                    temp[i] = str(replacement[replacement_idx])
+                    replacement_idx += 1
+                elif char == 'X':
+                    temp[i] = str(x_digit)
+            candidates.append("".join(temp))
+        return candidates
+
+    # Check if a number is valid
+    def is_valid(num_str):
+        if num_str[0] == '0' and len(num_str) > 1:  # Leading zero check
+            return False
+        return int(num_str) % 25 == 0
+
+    # Main logic
+    total_count = 0
+    for x_digit in range(10):  # Try all possible values for X
+        candidates = generate_candidates(s, x_digit)
+        for candidate in candidates:
+            if is_valid(candidate):
+                total_count += 1
+
+    return total_count
+
+# Example usage
+if __name__ == "__main__":
+    s = input().strip()
+    print(count_divisible_by_25(s))

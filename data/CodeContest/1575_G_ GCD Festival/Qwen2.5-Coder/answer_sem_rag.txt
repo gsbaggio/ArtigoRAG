@@ -1,0 +1,65 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1000000007;
+const int MAXN = 100005;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for(int &x: a) cin >> x;
+    
+    // Precompute gcd(i, j) for all pairs (i, j) up to n
+    vector<vector<int>> gcd_ij(n+1, vector<int>(n+1, 0));
+    for(int i = 1; i <= n; i++){
+        for(int j = i; j <= n; j += i){
+            for(int k = i; k <= n; k += j){
+                gcd_ij[i][k] = gcd(i, k);
+            }
+        }
+    }
+    
+    // Count occurrences of each gcd value in the array
+    vector<int> gcd_count(MAXN, 0);
+    for(int x: a){
+        for(int d = 1; d * d <= x; d++){
+            if(x % d == 0){
+                gcd_count[d]++;
+                if(d * d != x){
+                    gcd_count[x / d]++;
+                }
+            }
+        }
+    }
+    
+    // Compute the prettiness value
+    long long prettiness = 0;
+    for(int g = 1; g < MAXN; g++){
+        long long count_g = gcd_count[g];
+        if(count_g == 0) continue;
+        
+        // Contribution of pairs (i, j) where gcd(a_i, a_j) = g
+        for(int i = 1; i <= n; i++){
+            for(int j = i; j <= n; j += i){
+                prettiness = (prettiness + 1LL * count_g * count_g * gcd_ij[i][j]) % MOD;
+            }
+        }
+    }
+    
+    // Since we counted each pair (i, j) twice, we need to divide by 2
+    // But we need to be careful with the diagonal terms (i, i)
+    long long diagonal = 0;
+    for(int i = 1; i <= n; i++){
+        diagonal = (diagonal + 1LL * gcd_count[a[i-1]] * gcd_count[a[i-1]] * gcd_ij[i][i]) % MOD;
+    }
+    
+    prettiness = (prettiness - diagonal + MOD) % MOD;
+    prettiness = (prettiness * 2) % MOD;
+    prettiness = (prettiness + diagonal) % MOD;
+    
+    cout << prettiness;
+}

@@ -1,0 +1,93 @@
+import sys
+sys.setrecursionlimit(10000)
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    m_val = int(data[1])
+    a = list(map(int, data[2:2+n]))
+    
+    if n == 0:
+        print(0)
+        return
+        
+    left_child = [-1] * n
+    right_child = [-1] * n
+    stack = []
+    for i in range(n):
+        last_popped = -1
+        while stack and a[stack[-1]] > a[i]:
+            last_popped = stack.pop()
+        if stack:
+            right_child[stack[-1]] = i
+        if last_popped != -1:
+            left_child[i] = last_popped
+        stack.append(i)
+    
+    root = stack[0] if stack else -1
+
+    NEG_INF = -10**30
+    
+    def dfs(u):
+        if u == -1:
+            return (0, [0])
+        left_u = left_child[u]
+        right_u = right_child[u]
+        size1, dp_left = dfs(left_u)
+        size2, dp_right = dfs(right_u)
+        total_size = 1 + size1 + size2
+        
+        max_cnt_combine = min(m_val, size1 + size2)
+        dp_skip = [NEG_INF] * (max_cnt_combine + 1)
+        dp_choose = [NEG_INF] * (max_cnt_combine + 1)
+        
+        for x in range(len(dp_left)):
+            if dp_left[x] == NEG_INF:
+                continue
+            for y in range(len(dp_right)):
+                if dp_right[y] == NEG_INF:
+                    continue
+                cnt = x + y
+                if cnt > max_cnt_combine:
+                    continue
+                skip_val = dp_left[x] + dp_right[y] - 2 * a[u] * (x * y)
+                if skip_val > dp_skip[cnt]:
+                    dp_skip[cnt] = skip_val
+                    
+                choose_val = dp_left[x] + dp_right[y] + (m_val - 1) * a[u] - 2 * a[u] * (x * y + x + y)
+                if choose_val > dp_choose[cnt]:
+                    dp_choose[cnt] = choose_val
+                    
+        max_total = min(m_val, total_size)
+        dp_u = [NEG_INF] * (max_total + 1)
+        
+        for cnt in range(len(dp_skip)):
+            if cnt <= max_total:
+                if dp_skip[cnt] > dp_u[cnt]:
+                    dp_u[cnt] = dp_skip[cnt]
+                    
+        for cnt in range(len(dp_choose)):
+            new_cnt = cnt + 1
+            if new_cnt <= max_total:
+                if dp_choose[cnt] > dp_u[new_cnt]:
+                    dp_u[new_cnt] = dp_choose[cnt]
+                    
+        return (total_size, dp_u)
+    
+    if root == -1:
+        if m_val == 0:
+            print(0)
+        else:
+            print(0)
+    else:
+        total_size, dp_root = dfs(root)
+        if m_val < len(dp_root):
+            ans = dp_root[m_val]
+        else:
+            ans = dp_root[-1] if dp_root else 0
+        print(ans)
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,89 @@
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+using namespace std;
+
+int countWays(string s) {
+    int n = s.size();
+    if (n == 1 && s[0] == '0') return 1; // Special case: "0"
+    
+    // Map to store the count of each digit marked by 'X'
+    unordered_map<char, int> xCount;
+    for (char c : s) {
+        if (c == 'X') xCount['X']++;
+    }
+
+    // Possible last two digits for divisibility by 25
+    vector<string> lastTwoDigits = {"00", "25", "50", "75"};
+    int result = 0;
+
+    for (const string& pair : lastTwoDigits) {
+        char first = pair[0], second = pair[1];
+        bool valid = true;
+        int xFirst = 0, xSecond = 0;
+
+        // Check the second last character
+        if (n >= 2) {
+            if (s[n-2] != '_' && s[n-2] != 'X' && s[n-2] != first) {
+                valid = false;
+            } else if (s[n-2] == 'X') {
+                xFirst++;
+            }
+        }
+
+        // Check the last character
+        if (s[n-1] != '_' && s[n-1] != 'X' && s[n-1] != second) {
+            valid = false;
+        } else if (s[n-1] == 'X') {
+            xSecond++;
+        }
+
+        // If the pair is valid, calculate the number of ways to fill the placeholders
+        if (valid) {
+            int totalX = xFirst + xSecond;
+            int xDigit = -1;
+
+            // Check if 'X' can be determined uniquely
+            if (xFirst > 0 && xSecond > 0) {
+                if (first != second) continue; // Inconsistent 'X' values
+                xDigit = first - '0';
+            } else if (xFirst > 0) {
+                xDigit = first - '0';
+            } else if (xSecond > 0) {
+                xDigit = second - '0';
+            }
+
+            // Calculate the number of ways to fill the placeholders
+            int ways = 1;
+            for (int i = 0; i < n - 2; ++i) {
+                if (s[i] == '_') {
+                    ways *= 10;
+                } else if (s[i] == 'X') {
+                    if (xDigit == -1) {
+                        ways *= 9; // First 'X' can be any digit except 0 if it's the leading digit
+                    } else {
+                        ways *= (xDigit == 0 ? 1 : 1); // Subsequent 'X' must match the first 'X'
+                    }
+                }
+            }
+
+            // Handle leading zero constraint
+            if (n > 1 && s[0] == 'X' && xDigit == 0) {
+                ways = 0; // Leading 'X' cannot be 0
+            }
+
+            result += ways;
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    string s;
+    cin >> s;
+    cout << countWays(s) << endl;
+    return 0;
+}

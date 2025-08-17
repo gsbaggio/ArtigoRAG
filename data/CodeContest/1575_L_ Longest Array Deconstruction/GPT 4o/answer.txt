@@ -1,0 +1,18 @@
+def maximize_f():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n = int(data[0])  # Length of the sequence
+    a = list(map(int, data[1:]))  # The sequence
+    
+    # Counter for indices where a[i] = i
+    count = 0
+    
+    # Iterate through the sequence
+    for i in range(n):
+        if a[i] == i + 1:  # Convert 0-based index to 1-based
+            count += 1
+    
+    # Output the result
+    print(count)

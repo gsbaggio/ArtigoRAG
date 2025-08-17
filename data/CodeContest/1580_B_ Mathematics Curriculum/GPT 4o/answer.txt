@@ -1,0 +1,38 @@
+def solve(n, m, k, p):
+    # Precompute factorials and modular inverses
+    fact = [1] * (n + 1)
+    inv_fact = [1] * (n + 1)
+    
+    for i in range(2, n + 1):
+        fact[i] = fact[i - 1] * i % p
+    
+    inv_fact[n] = pow(fact[n], p - 2, p)  # Fermat's Little Theorem
+    for i in range(n - 1, 0, -1):
+        inv_fact[i] = inv_fact[i + 1] * (i + 1) % p
+    
+    # Function to compute nCr % p
+    def comb(n, r):
+        if r > n or r < 0:
+            return 0
+        return fact[n] * inv_fact[r] % p * inv_fact[n - r] % p
+    
+    # DP array
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1  # Base case
+    
+    for i in range(1, n + 1):
+        for j in range(0, min(i, k) + 1):
+            # Transition
+            dp[i][j] = dp[i - 1][j] * (i - j) % p  # i is not "good"
+            if j > 0:
+                dp[i][j] += dp[i - 1][j - 1] * j % p  # i is "good"
+            dp[i][j] %= p
+    
+    # Result is dp[n][k]
+    print(dp[n][k])
+
+# Example usage
+if __name__ == "__main__":
+    # Input format: n, m, k, p
+    n, m, k, p = map(int, input().split())
+    solve(n, m, k, p)

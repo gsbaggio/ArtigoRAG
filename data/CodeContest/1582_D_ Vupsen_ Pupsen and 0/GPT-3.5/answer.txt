@@ -1,0 +1,22 @@
+def find_b(t, test_cases):
+    for _ in range(t):
+        n = test_cases[_][0]
+        a = test_cases[_][1]
+
+        if n == 2:
+            print(-a[1], a[0])
+        else:
+            print(-a[0], -a[1], end=" ")
+            for i in range(2, n):
+                print(1, end=" ")
+            print()
+
+# Example Input
+t = 3
+test_cases = [
+    (2, [5, 5]),
+    (5, [5, -2, 10, -9, 4]),
+    (7, [1, 2, 3, 4, 5, 6, 7])
+]
+
+find_b(t, test_cases)

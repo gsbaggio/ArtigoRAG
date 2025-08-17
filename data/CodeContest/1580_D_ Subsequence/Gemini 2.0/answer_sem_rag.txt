@@ -1,0 +1,42 @@
+def solve():
+    n, m = map(int, input().split())
+    a = list(map(int, input().split()))
+
+    def calculate_value(subsequence_indices):
+        subsequence = [a[i] for i in subsequence_indices]
+        value = 0
+        for i in range(m):
+            value += m * subsequence[i]
+        
+        for i in range(m):
+            for j in range(m):
+                start_index = min(subsequence_indices[i], subsequence_indices[j])
+                end_index = max(subsequence_indices[i], subsequence_indices[j])
+                
+                min_val = float('inf')
+                for k in range(start_index, end_index + 1):
+                    min_val = min(min_val, a[k])
+                value -= min_val
+        return value
+
+    max_value = float('-inf')
+    
+    def find_subsequences(index, current_subsequence):
+        nonlocal max_value
+        if len(current_subsequence) == m:
+            max_value = max(max_value, calculate_value(current_subsequence))
+            return
+        
+        if index == n:
+            return
+        
+        find_subsequences(index + 1, current_subsequence + [index])
+        find_subsequences(index + 1, current_subsequence)
+
+    if m > 0:
+        find_subsequences(0, [])
+        print(max_value)
+    else:
+        print(0)
+
+solve()

@@ -1,0 +1,27 @@
+def count_divisible_by_25(s):
+    count = 0
+    for i in range(100):
+        num_str = str(i).zfill(2)
+        k = 0
+        valid = True
+        for c in s:
+            if c == 'X':
+                if num_str[k] != num_str[k+1]:
+                    valid = False
+                    break
+            elif c == '_':
+                continue
+            else:
+                if c != num_str[k]:
+                    valid = False
+                    break
+            k += 1
+        if valid and int(num_str) % 25 == 0:
+            count += 1
+    return count
+
+# Input
+s = input().strip()
+
+# Output
+print(count_divisible_by_25(s))

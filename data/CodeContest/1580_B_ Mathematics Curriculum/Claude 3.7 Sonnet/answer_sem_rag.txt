@@ -1,0 +1,127 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+typedef long long ll;
+
+// Fast modular arithmetic operations
+ll addmod(ll a, ll b, ll mod) { return (a + b) % mod; }
+ll submod(ll a, ll b, ll mod) { return ((a - b) % mod + mod) % mod; }
+ll mulmod(ll a, ll b, ll mod) { return (a * b) % mod; }
+
+// Fast exponentiation for modular inverse
+ll powmod(ll base, ll exp, ll mod) {
+    ll result = 1;
+    base %= mod;
+    while (exp > 0) {
+        if (exp & 1) result = mulmod(result, base, mod);
+        base = mulmod(base, base, mod);
+        exp >>= 1;
+    }
+    return result;
+}
+
+// Precompute factorials and inverse factorials
+void precompute(int n, ll mod, vector<ll>& fact, vector<ll>& invfact) {
+    fact.resize(n + 1);
+    invfact.resize(n + 1);
+    
+    fact[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        fact[i] = mulmod(fact[i-1], i, mod);
+    }
+    
+    invfact[n] = powmod(fact[n], mod - 2, mod);
+    for (int i = n - 1; i >= 0; i--) {
+        invfact[i] = mulmod(invfact[i+1], i+1, mod);
+    }
+}
+
+// Compute binomial coefficient C(n,k) % mod
+ll C(int n, int k, ll mod, const vector<ll>& fact, const vector<ll>& invfact) {
+    if (k < 0 || k > n) return 0;
+    return mulmod(fact[n], mulmod(invfact[k], invfact[n-k], mod), mod);
+}
+
+// Calculate Stirling numbers of the second kind: S(n,k)
+// S(n,k) = number of ways to partition n objects into k non-empty subsets
+vector<vector<ll>> compute_stirling(int n, ll mod) {
+    vector<vector<ll>> S(n+1, vector<ll>(n+1, 0));
+    S[0][0] = 1;
+    
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= i; j++) {
+            S[i][j] = addmod(mulmod(S[i-1][j], j, mod), S[i-1][j-1], mod);
+        }
+    }
+    
+    return S;
+}
+
+// Main solver function
+ll solve(int n, int m, int k, ll mod) {
+    vector<ll> fact, invfact;
+    precompute(n, mod, fact, invfact);
+    
+    // dp[i][j] = number of permutations of length i with exactly j good numbers
+    vector<vector<ll>> dp(n+1, vector<vector<ll>>(n+1, vector<ll>(n+1, 0)));
+    
+    // Base case: one permutation with 0 good numbers for length 0
+    dp[0][0][0] = 1;
+    
+    for (int i = 1; i <= n; i++) {  // length of permutation
+        for (int j = 0; j <= i-1; j++) {  // number of good elements so far
+            for (int p = 0; p < i; p++) {  // position to insert next element (0-indexed)
+                
+                // Is the newly inserted element good?
+                // A number is good if there are exactly m different maxima in all subsegments containing it
+                
+                // For a number at position p, calculate if it's good
+                // This depends on the distribution of larger elements around it
+                
+                // Number of subsegments containing position p with distinct maxima
+                int distinct_maxima = 0;
+                
+                // Count configurations where position p has exactly m distinct maxima
+                for (int left = 0; left <= min(p, n-i); left++) {
+                    int right = m - left;
+                    if (right >= 0 && right <= i-p-1) {
+                        // Ways to choose left positions from p
+                        ll ways_left = C(p, left, mod, fact, invfact);
+                        // Ways to choose right positions from i-p-1
+                        ll ways_right = C(i-p-1, right, mod, fact, invfact);
+                        
+                        distinct_maxima += mulmod(ways_left, ways_right, mod);
+                        distinct_maxima %= mod;
+                    }
+                }
+                
+                // Update dp based on whether new element is good
+                if (distinct_maxima == m) {
+                    // New element is good
+                    dp[i][j+1][p] = addmod(dp[i][j+1][p], dp[i-1][j][p], mod);
+                } else {
+                    // New element is not good
+                    dp[i][j][p] = addmod(dp[i][j][p], dp[i-1][j][p], mod);
+                }
+            }
+        }
+    }
+    
+    // Sum all permutations with exactly k good numbers
+    ll result = 0;
+    for (int p = 0; p < n; p++) {
+        result = addmod(result, dp[n][k][p], mod);
+    }
+    
+    return result;
+}
+
+int main() {
+    int n, m, k, p;
+    cin >> n >> m >> k >> p;
+    
+    cout << solve(n, m, k, p) << endl;
+    
+    return 0;
+}

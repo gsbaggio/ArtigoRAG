@@ -1,0 +1,88 @@
+INF = 10**9
+
+def main():
+    import sys
+    data = sys.stdin.read().splitlines()
+    n, m = map(int, data[0].split())
+    a_str = data[1].strip()
+    b = data[2].strip()
+    
+    max_occ = n - m + 1
+    if max_occ < 0:
+        max_occ = 0
+        
+    fail = [0] * m
+    if m > 0:
+        for i in range(1, m):
+            j = fail[i-1]
+            while j > 0 and b[i] != b[j]:
+                j = fail[j-1]
+            if b[i] == b[j]:
+                fail[i] = j + 1
+            else:
+                fail[i] = 0
+                
+    trans = [[0] * 2 for _ in range(m+1)]
+    
+    for c_val in [0, 1]:
+        c_char = '0' if c_val == 0 else '1'
+        if m > 0 and b[0] == c_char:
+            trans[0][c_val] = 1
+        else:
+            trans[0][c_val] = 0
+            
+    for state in range(1, m):
+        for c_val in [0, 1]:
+            c_char = '0' if c_val == 0 else '1'
+            if state < m and b[state] == c_char:
+                trans[state][c_val] = state + 1
+            else:
+                trans[state][c_val] = trans[fail[state-1]][c_val]
+                
+    base = fail[m-1] if m > 0 else 0
+    for c_val in [0, 1]:
+        trans[m][c_val] = trans[base][c_val]
+        
+    dp = [[INF] * (max_occ + 1) for _ in range(m+1)]
+    dp[0][0] = 0
+    
+    for i in range(n):
+        new_dp = [[INF] * (max_occ + 1) for _ in range(m+1)]
+        for state in range(m+1):
+            for k in range(max_occ + 1):
+                if dp[state][k] == INF:
+                    continue
+                for c_val in [0, 1]:
+                    if (c_val == 0 and a_str[i] == '0') or (c_val == 1 and a_str[i] == '1'):
+                        cost = 0
+                    else:
+                        cost = 1
+                    next_state = trans[state][c_val]
+                    if next_state == m:
+                        if k < max_occ:
+                            next_k = k + 1
+                        else:
+                            continue
+                    else:
+                        next_k = k
+                    if dp[state][k] + cost < new_dp[next_state][next_k]:
+                        new_dp[next_state][next_k] = dp[state][k] + cost
+        dp = new_dp
+        
+    ans = [INF] * (max_occ + 1)
+    for state in range(m+1):
+        for k in range(max_occ + 1):
+            if dp[state][k] < ans[k]:
+                ans[k] = dp[state][k]
+                
+    res = []
+    for k in range(max_occ + 1):
+        if ans[k] == INF:
+            res.append(-1)
+        else:
+            res.append(ans[k])
+            
+    print(" ".join(map(str, res)))
+    
+if __name__ == '__main__':
+    main()

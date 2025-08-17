@@ -1,0 +1,34 @@
+def count_divisible_by_25(s):
+    # Possible last two digits for divisibility by 25
+    valid_last_two = ["00", "25", "50", "75"]
+    n = len(s)
+    count = 0
+
+    # Iterate over all possible replacements for 'X'
+    for x_digit in range(10):
+        # Replace all 'X' with the current digit
+        replaced_s = s.replace('X', str(x_digit))
+
+        # Iterate over all possible replacements for '_'
+        def dfs(index, current):
+            nonlocal count
+            if index == n:
+                # Check if the number is valid
+                if current[0] == '0' and len(current) > 1:  # Leading zero
+                    return
+                if current[-2:] in valid_last_two:  # Divisible by 25
+                    count += 1
+                return
+
+            if replaced_s[index] == '_':
+                for digit in range(10):
+                    dfs(index + 1, current + str(digit))
+            else:
+                dfs(index + 1, current + replaced_s[index])
+
+        dfs(0, "")
+
+    return count
+
+s = input().strip()
+print(count_divisible_by_25(s))

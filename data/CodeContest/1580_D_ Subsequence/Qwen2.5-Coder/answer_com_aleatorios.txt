@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    
+    // Create a vector of pairs (value, index)
+    vector<pair<int, int>> sorted_a(n);
+    for (int i = 0; i < n; i++) {
+        sorted_a[i] = {a[i], i};
+    }
+    
+    // Sort the pairs by value in descending order
+    sort(sorted_a.begin(), sorted_a.end(), greater<pair<int, int>>());
+    
+    // Function to calculate the value of a subsequence
+    auto calculate_value = [&](const vector<int>& indices) {
+        long long sum = 0;
+        for (int index : indices) {
+            sum += a[index];
+        }
+        long long value = m * sum;
+        
+        // Calculate the second term
+        for (int i = 0; i < m; i++) {
+            for (int j = i; j < m; j++) {
+                int min_val = a[indices[i]];
+                for (int k = i + 1; k <= j; k++) {
+                    min_val = min(min_val, a[indices[k]]);
+                }
+                value -= min_val;
+            }
+        }
+        return value;
+    };
+    
+    // Try all possible subsequences of size m
+    long long max_value = 0;
+    for (int start = 0; start <= n - m; start++) {
+        vector<int> indices(m);
+        for (int i = 0; i < m; i++) {
+            indices[i] = sorted_a[start + i].second;
+        }
+        // Sort the indices to ensure they are in increasing order
+        sort(indices.begin(), indices.end());
+        long long value = calculate_value(indices);
+        max_value = max(max_value, value);
+    }
+    
+    cout << max_value << endl;
+    return 0;
+}

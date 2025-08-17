@@ -1,0 +1,65 @@
+import java.io.*;
+import java.util.*;
+
+public class PermutationsWithGoodNumbers {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m_val = sc.nextInt();
+        int k_val = sc.nextInt();
+        long p = sc.nextLong();
+        
+        long[][][] dp = new long[n+1][n+4][];
+        for (int i = 0; i <= n; i++) {
+            for (int d = 0; d <= n+3; d++) {
+                dp[i][d] = new long[i+1];
+            }
+        }
+        
+        for (int d = 0; d <= n+3; d++) {
+            dp[0][d][0] = 1;
+        }
+        
+        for (int d = n; d >= 1; d--) {
+            for (int i = 1; i <= n; i++) {
+                for (int L = 0; L < i; L++) {
+                    int R = i - 1 - L;
+                    long[] leftArr = dp[L][d+1];
+                    long[] rightArr = dp[R][d+1];
+                    int convLen = L + R;
+                    long[] conv = new long[convLen+1];
+                    
+                    for (int j1 = 0; j1 <= L; j1++) {
+                        long val1 = leftArr[j1];
+                        if (val1 == 0) continue;
+                        for (int j2 = 0; j2 <= R; j2++) {
+                            long val2 = rightArr[j2];
+                            if (val2 == 0) continue;
+                            int idx = j1 + j2;
+                            conv[idx] = (conv[idx] + val1 * val2) % p;
+                        }
+                    }
+                    
+                    if (d == m_val) {
+                        for (int idx = 0; idx <= convLen; idx++) {
+                            if (conv[idx] == 0) continue;
+                            int j_index = idx + 1;
+                            if (j_index <= i) {
+                                dp[i][d][j_index] = (dp[i][d][j_index] + conv[idx]) % p;
+                            }
+                        }
+                    } else {
+                        for (int idx = 0; idx <= convLen; idx++) {
+                            if (conv[idx] == 0) continue;
+                            if (idx <= i) {
+                                dp[i][d][idx] = (dp[i][d][idx] + conv[idx]) % p;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        System.out.println(dp[n][1][k_val] % p);
+    }
+}

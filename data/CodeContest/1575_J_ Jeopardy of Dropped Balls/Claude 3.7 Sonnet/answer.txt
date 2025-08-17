@@ -1,0 +1,45 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n, m, k;
+    cin >> n >> m >> k;
+    
+    // Read the initial grid
+    vector<vector<int>> grid(n, vector<int>(m));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> grid[i][j];
+        }
+    }
+    
+    // Process each ball
+    for (int i = 0; i < k; i++) {
+        int col;
+        cin >> col;
+        col--; // Convert to 0-indexed
+        
+        int row = 0; // Start from the first row
+        
+        // Follow the ball until it exits the grid
+        while (row >= 0 && row < n && col >= 0 && col < m) {
+            int direction = grid[row][col];
+            grid[row][col] = 2; // Change direction to down after ball passes
+            
+            // Move according to the direction
+            if (direction == 1) {
+                col++; // Move right
+            } else if (direction == 2) {
+                row++; // Move down
+            } else if (direction == 3) {
+                col--; // Move left
+            }
+        }
+        
+        // Print the exit column (convert back to 1-indexed)
+        cout << col + 1 << " ";
+    }
+    
+    return 0;
+}

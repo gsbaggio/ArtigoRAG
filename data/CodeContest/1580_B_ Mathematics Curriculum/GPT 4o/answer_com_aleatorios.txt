@@ -1,0 +1,55 @@
+def mod_exp(base, exp, mod):
+    """Efficient modular exponentiation."""
+    result = 1
+    while exp > 0:
+        if exp % 2 == 1:
+            result = (result * base) % mod
+        base = (base * base) % mod
+        exp //= 2
+    return result
+
+def mod_inverse(x, mod):
+    """Modular inverse using Fermat's Little Theorem."""
+    return mod_exp(x, mod - 2, mod)
+
+def precompute_factorials(n, mod):
+    """Precompute factorials and modular inverses."""
+    fact = [1] * (n + 1)
+    inv_fact = [1] * (n + 1)
+    for i in range(2, n + 1):
+        fact[i] = (fact[i - 1] * i) % mod
+    inv_fact[n] = mod_inverse(fact[n], mod)
+    for i in range(n - 1, 0, -1):
+        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % mod
+    return fact, inv_fact
+
+def nCr(n, r, fact, inv_fact, mod):
+    """Compute nCr % mod."""
+    if r > n or r < 0:
+        return 0
+    return (fact[n] * inv_fact[r] % mod) * inv_fact[n - r] % mod
+
+def solve(n, m, k, p):
+    # Precompute factorials and modular inverses
+    fact, inv_fact = precompute_factorials(n, p)
+    
+    # DP table: dp[i][j] = number of ways to arrange first i numbers with j good numbers
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1  # Base case: 0 numbers, 0 good numbers
+    
+    for i in range(1, n + 1):  # Iterate over numbers
+        for j in range(k + 1):  # Iterate over good numbers
+            # Case 1: Current number is not good
+            dp[i][j] = dp[i - 1][j]
+            
+            # Case 2: Current number is good
+            if j > 0:
+                dp[i][j] += dp[i - 1][j - 1] * nCr(i - 1, m - 1, fact, inv_fact, p)
+                dp[i][j] %= p
+    
+    # The result is the number of ways to have exactly k good numbers
+    return dp[n][k]
+
+# Input reading
+n, m, k, p = map(int, input().split())
+print(solve(n, m, k, p))

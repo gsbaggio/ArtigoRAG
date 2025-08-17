@@ -1,0 +1,36 @@
+def solve():
+    import sys
+    input = sys.stdin.read().splitlines()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        a = list(map(int, input[index].split()))
+        index += 1
+        
+        # Initialize b with alternating signs
+        b = [1 if i % 2 == 0 else -1 for i in range(n)]
+        
+        # Calculate the dot product
+        dot_product = sum(a[i] * b[i] for i in range(n))
+        
+        # Adjust the last element of b to make the dot product zero
+        if dot_product != 0:
+            b[-1] = -dot_product // a[-1]
+            # Ensure b[-1] is not zero
+            if b[-1] == 0:
+                b[-1] = 1 if dot_product < 0 else -1
+        
+        results.append(' '.join(map(str, b)))
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    solve()

@@ -1,0 +1,19 @@
+def count_numbers_divisible_by_25(s):
+    count = 0
+
+    # Generate all possible numbers for the unknown positions
+    for i in range(10):
+        for j in range(10):
+            number = s.replace('_', str(i)).replace('X', str(j))
+
+            # Check if the number is divisible by 25 and has no leading zeros
+            if len(number) > 1 and number[-2:] in ['25', '50', '75', '00'] and not number.startswith('0'):
+                count += 1
+
+    return count
+
+# Input string containing the digits and placeholders
+s = input().strip()
+
+# Output the count of possible integers divisible by 25
+print(count_numbers_divisible_by_25(s))

@@ -1,0 +1,45 @@
+import math
+
+t = int(input().strip())
+for _ in range(t):
+    n = int(input().strip())
+    a = list(map(int, input().split()))
+    
+    if n % 2 == 0:
+        b = []
+        for i in range(0, n, 2):
+            x = a[i]
+            y = a[i+1]
+            g = math.gcd(abs(x), abs(y))
+            b.append(y // g)
+            b.append(-x // g)
+        print(" ".join(map(str, b)))
+    else:
+        b = [0] * n
+        for i in range(0, n-3, 2):
+            x = a[i]
+            y = a[i+1]
+            g = math.gcd(abs(x), abs(y))
+            b[i] = y // g
+            b[i+1] = -x // g
+        
+        x = a[-3]
+        y = a[-2]
+        z = a[-1]
+        if x + y != 0:
+            g = math.gcd(abs(z), abs(x + y))
+            b[-3] = z // g
+            b[-2] = z // g
+            b[-1] = -(x + y) // g
+        elif x + z != 0:
+            g = math.gcd(abs(y), abs(x + z))
+            b[-3] = y // g
+            b[-2] = -(x + z) // g
+            b[-1] = y // g
+        else:
+            g = math.gcd(abs(x), abs(y + z))
+            b[-3] = -(y + z) // g
+            b[-2] = x // g
+            b[-1] = x // g
+        
+        print(" ".join(map(str, b)))

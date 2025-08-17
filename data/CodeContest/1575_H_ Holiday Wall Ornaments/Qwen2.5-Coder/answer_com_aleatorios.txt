@@ -1,0 +1,44 @@
+def min_changes_to_k_occurrences(a, b):
+    n = len(a)
+    m = len(b)
+    
+    # Initialize the DP table with infinity
+    dp = [[float('inf')] * (n - m + 2) for _ in range(n + 1)]
+    dp[0][0] = 0
+    
+    # Function to calculate the cost to convert substring a[start:start+m] to b
+    def calculate_cost(start):
+        cost = 0
+        for j in range(m):
+            if a[start + j] != b[j]:
+                cost += 1
+        return cost
+    
+    # Fill the DP table
+    for i in range(n - m + 1):
+        cost = calculate_cost(i)
+        for j in range(i + 2):
+            if j > 0:
+                dp[i + m][j] = min(dp[i + m][j], dp[i][j - 1] + cost)
+            dp[i + m][j] = min(dp[i + m][j], dp[i][j])
+    
+    # Extract the results
+    result = []
+    for k in range(n - m + 2):
+        if dp[n][k] == float('inf'):
+            result.append(-1)
+        else:
+            result.append(dp[n][k])
+    
+    return result
+
+# Read input
+n, m = map(int, input().split())
+a = input().strip()
+b = input().strip()
+
+# Get the result
+result = min_changes_to_k_occurrences(a, b)
+
+# Print the result
+print(" ".join(map(str, result)))

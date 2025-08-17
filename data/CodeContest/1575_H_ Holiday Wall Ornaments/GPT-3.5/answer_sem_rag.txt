@@ -1,0 +1,26 @@
+def min_changes_for_substrings(n, m, a, b):
+    dp = [[0] * (n - m + 2) for _ in range(n + 1)]
+
+    for i in range(n - m + 1, -1, -1):
+        for j in range(n + 1):
+            if i == n - m + 1:
+                dp[j][i] = abs(j - n)
+            else:
+                dp[j][i] = dp[j][i + 1]
+                if j < n and a[j] != b[0]:
+                    dp[j][i] += 1
+                    
+            if i < n - m + 1 and j < n - m and a[j] == b[0]:
+                dp[j][i] = min(dp[j][i], dp[j + 1][i + 1])
+
+    result = [dp[0][k] if dp[0][k] <= n else -1 for k in range(n - m + 2)]
+    return result
+
+# Input
+n, m = map(int, input().split())
+a = input()
+b = input()
+
+# Output
+result = min_changes_for_substrings(n, m, a, b)
+print(*result)

@@ -1,0 +1,45 @@
+def count_nearly_full_subsequences(t, test_cases):
+    results = []
+    
+    for n, a in test_cases:
+        # Calculate the total sum of the array
+        s = sum(a)
+        
+        # Initialize dp array with zeros
+        dp = [0] * (1 << n)
+        
+        # Iterate over all possible masks
+        for mask in range(1 << n):
+            # Calculate the sum of the subsequence represented by the mask
+            for i in range(n):
+                if mask & (1 << i):
+                    dp[mask] = dp[mask ^ (1 << i)] + a[i]
+                    break
+        
+        # Count the number of masks for which the sum is s - 1
+        count = sum(1 for mask in range(1 << n) if dp[mask] == s - 1)
+        
+        results.append(count)
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+
+t = int(input[0])
+index = 1
+test_cases = []
+
+for _ in range(t):
+    n = int(input[index])
+    a = list(map(int, input[index + 1:index + 1 + n]))
+    test_cases.append((n, a))
+    index += 1 + n
+
+# Get results
+results = count_nearly_full_subsequences(t, test_cases)
+
+# Print results
+for result in results:
+    print(result)

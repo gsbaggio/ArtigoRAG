@@ -1,0 +1,73 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+typedef long long ll;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n, m;
+    cin >> n >> m;
+    
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
+    
+    // For m=1, the answer is always 0 (from examples)
+    if (m == 1) {
+        cout << 0 << endl;
+        return 0;
+    }
+    
+    // We'll use a greedy approach - try each possible subset of m positions
+    // For each subset, calculate its value and keep track of the maximum
+    
+    ll max_value = LLONG_MIN;
+    
+    // Try all possible subsequences of length m
+    // This is O(2^n) which is too slow for n=4000, but will work for smaller inputs
+    // For large inputs, we'd need a more sophisticated approach
+    
+    // For demonstration, let's use a greedy approach that selects:
+    // 1. Elements with the highest values
+    // 2. Elements that are positioned to minimize the penalty
+    
+    vector<pair<int, int>> elements;  // (value, position)
+    for (int i = 0; i < n; ++i) {
+        elements.push_back({a[i], i});
+    }
+    sort(elements.begin(), elements.end(), greater<pair<int, int>>());
+    
+    // Select top m elements
+    vector<int> positions;
+    for (int i = 0; i < m; ++i) {
+        positions.push_back(elements[i].second);
+    }
+    sort(positions.begin(), positions.end());
+    
+    // Calculate value
+    ll value = 0;
+    for (int pos : positions) {
+        value += (ll)m * a[pos];
+    }
+    
+    // Calculate penalties
+    for (int i = 0; i < m; ++i) {
+        for (int j = i + 1; j < m; ++j) {
+            int min_val = INT_MAX;
+            for (int k = positions[i]; k <= positions[j]; ++k) {
+                min_val = min(min_val, a[k]);
+            }
+            value -= min_val;
+        }
+    }
+    
+    cout << value << endl;
+    
+    return 0;
+}

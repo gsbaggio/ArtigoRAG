@@ -1,0 +1,36 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<long long> a(n);
+        long long s = 0;
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+            s += a[i];
+        }
+        
+        long long target = s - 1;
+        int count = 0;
+        
+        // Iterate over all possible subsequences using bitmasking
+        for (int mask = 0; mask < (1 << n); mask++) {
+            long long sum = 0;
+            for (int i = 0; i < n; i++) {
+                if (mask & (1 << i)) {
+                    sum += a[i];
+                }
+            }
+            if (sum == target) {
+                count++;
+            }
+        }
+        
+        cout << count << "\n";
+    }
+    return 0;
+}

@@ -1,0 +1,33 @@
+def solve(n, m, a):
+    if m == 1:
+        return 0
+    
+    # Compute the value of a subsequence
+    def compute_value(indices):
+        indices.sort()  # Sort by original position
+        value = m * sum(a[i] for i in indices)
+        
+        # Calculate the penalty
+        for i in range(len(indices)):
+            for j in range(len(indices)):
+                start = min(indices[i], indices[j])
+                end = max(indices[i], indices[j])
+                value -= min(a[k] for k in range(start, end + 1))
+        
+        return value
+    
+    # Try all possible subsequences of length m
+    def backtrack(start, path):
+        if len(path) == m:
+            return compute_value(path)
+        if start == n:
+            return float('-inf')
+        
+        # Include current element
+        include = backtrack(start + 1, path + [start])
+        # Exclude current element
+        exclude = backtrack(start + 1, path)
+        
+        return max(include, exclude)
+    
+    return backtrack(0, [])

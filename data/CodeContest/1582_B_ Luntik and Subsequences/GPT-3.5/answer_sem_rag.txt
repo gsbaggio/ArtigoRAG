@@ -1,0 +1,29 @@
+def count_nearly_full_subsequences(n, arr):
+    s = sum(arr)
+    dp = [0] * (1 << n)  # Initialize a DP array to store counts of subsets
+
+    # Base case: an empty subset has a sum of 0
+    dp[0] = 1
+
+    for i in range(1, 1 << n):
+        subset_sum = 0
+        subset_size = 0
+
+        for j in range(n):
+            if i & (1 << j):  # If j-th element is in the subset
+                subset_sum += arr[j]
+                subset_size += 1
+
+        # Check if the subset is nearly full
+        if subset_sum == s - 1:
+            dp[i] = subset_size * dp[i ^ (1 << j)]
+
+    return sum(dp) - 1  # Subtract 1 to exclude the empty subset
+
+# Read input
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    result = count_nearly_full_subsequences(n, arr)
+    print(result)

@@ -1,0 +1,45 @@
+def count_divisible_by_25(s):
+    from itertools import product
+
+    # Helper function to replace placeholders in the string
+    def replace_placeholders(template, replacements):
+        result = []
+        x_digit = None
+        for char in template:
+            if char == '_':
+                result.append(replacements.pop(0))
+            elif char == 'X':
+                if x_digit is None:
+                    x_digit = replacements.pop(0)
+                result.append(x_digit)
+            else:
+                result.append(char)
+        return ''.join(result)
+
+    # Possible endings for divisibility by 25
+    valid_endings = ['00', '25', '50', '75']
+    n = len(s)
+    count = 0
+
+    # Generate all possible replacements for `_` and `X`
+    num_wildcards = s.count('_')
+    num_x = s.count('X')
+
+    for replacements in product('0123456789', repeat=num_wildcards + (1 if num_x > 0 else 0)):
+        # Replace `_` and `X` with the current combination of digits
+        candidate = replace_placeholders(list(s), list(replacements))
+
+        # Check for leading zeros (except for the number "0")
+        if candidate[0] == '0' and len(candidate) > 1:
+            continue
+
+        # Check divisibility by 25
+        if candidate[-2:] in valid_endings:
+            count += 1
+
+    return count
+
+# Example usage
+if __name__ == "__main__":
+    s = input().strip()
+    print(count_divisible_by_25(s))

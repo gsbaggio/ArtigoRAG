@@ -1,0 +1,48 @@
+def solve():
+    n, m, k = map(int, input().split())
+    
+    # Read the grid
+    grid = []
+    for _ in range(n):
+        row = list(map(int, input().split()))
+        grid.append(row)
+    
+    # Read the starting columns for each ball
+    starting_columns = list(map(int, input().split()))
+    
+    results = []
+    
+    for start_col in starting_columns:
+        # Adjust to 0-indexed
+        x, y = 0, start_col - 1
+        
+        # Follow the ball until it exits the grid
+        while True:
+            # Check if the ball is still inside the grid
+            if x == n:  # Exited from the bottom
+                results.append(y + 1)  # Convert back to 1-indexed
+                break
+            if y < 0:  # Exited from the left
+                results.append(1)
+                break
+            if y >= m:  # Exited from the right
+                results.append(m)
+                break
+            
+            direction = grid[x][y]
+            
+            # Update the cell's direction to 2 (down)
+            grid[x][y] = 2
+            
+            # Move according to the original direction
+            if direction == 1:  # right
+                y += 1
+            elif direction == 2:  # down
+                x += 1
+            else:  # direction == 3, left
+                y -= 1
+    
+    # Print the results
+    print(" ".join(map(str, results)))
+
+solve()

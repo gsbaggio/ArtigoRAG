@@ -1,0 +1,35 @@
+def solve():
+    s = input()
+    n = len(s)
+    
+    def count_possible_integers(s):
+        count = 0
+        
+        def generate_strings(index, current_string, x_digit):
+            nonlocal count
+            
+            if index == n:
+                if len(current_string) > 1 and current_string[0] == '0':
+                    return
+                if len(current_string) > 0 and int(current_string) % 25 == 0:
+                    count += 1
+                return
+            
+            if s[index] == '_':
+                for digit in range(10):
+                    generate_strings(index + 1, current_string + str(digit), x_digit)
+            elif s[index] == 'X':
+                if x_digit is None:
+                    for digit in range(10):
+                        generate_strings(index + 1, current_string + str(digit), str(digit))
+                else:
+                    generate_strings(index + 1, current_string + str(x_digit), x_digit)
+            else:
+                generate_strings(index + 1, current_string + s[index], x_digit)
+
+        generate_strings(0, "", None)
+        return count
+
+    print(count_possible_integers(s))
+
+solve()

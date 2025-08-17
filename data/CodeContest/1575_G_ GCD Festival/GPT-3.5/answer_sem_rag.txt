@@ -1,0 +1,21 @@
+from math import gcd
+
+MOD = 10**9 + 7
+
+def prettiness_value(n, a):
+    result = 0
+    
+    # Calculate the contribution of each pair (i, j)
+    for i in range(n):
+        for j in range(n):
+            result += gcd(a[i], a[j]) * gcd(i + 1, j + 1)
+            result %= MOD  # Take modulo to avoid overflow
+    
+    return result
+
+# Input
+n = int(input())
+a = list(map(int, input().split()))
+
+# Output
+print(prettiness_value(n, a))

@@ -1,0 +1,60 @@
+def solve_dropping_balls(n, m, k, grid, start_columns):
+    # Initialize dp table with -1 (indicating uncomputed)
+    dp = [[-1] * m for _ in range(n)]
+    
+    # Base case: balls in the last row fall out of the grid in their current column
+    for j in range(m):
+        dp[n-1][j] = j
+    
+    # Fill dp table from bottom to top
+    for i in range(n-2, -1, -1):
+        for j in range(m):
+            direction = grid[i][j]
+            if direction == 1:
+                # Move right
+                if j + 1 < m:
+                    dp[i][j] = dp[i][j+1]
+                else:
+                    dp[i][j] = j  # Ball falls out of the grid
+            elif direction == 2:
+                # Move down
+                dp[i][j] = dp[i+1][j]
+            elif direction == 3:
+                # Move left
+                if j - 1 >= 0:
+                    dp[i][j] = dp[i][j-1]
+                else:
+                    dp[i][j] = j  # Ball falls out of the grid
+            
+            # Update the direction of the cell to 2 (down)
+            grid[i][j] = 2
+    
+    # Determine the final column for each ball
+    result = []
+    for c in start_columns:
+        result.append(dp[0][c-1] + 1)  # Convert 0-based index to 1-based
+    
+    return result
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+
+n = int(input[0])
+m = int(input[1])
+k = int(input[2])
+
+grid = []
+index = 3
+for i in range(n):
+    row = list(map(int, input[index:index+m]))
+    grid.append(row)
+    index += m
+
+start_columns = list(map(int, input[index:index+k]))
+
+# Solve the problem
+result = solve_dropping_balls(n, m, k, grid, start_columns)
+
+# Print the result
+print(" ".join(map(str, result)))

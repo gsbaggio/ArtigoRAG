@@ -1,0 +1,45 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    
+    it = iter(data)
+    n = int(next(it))
+    m = int(next(it))
+    k = int(next(it))
+    grid = []
+    for _ in range(n):
+        row = list(map(int, [next(it) for _ in range(m)]))
+        grid.append(row)
+    
+    balls = [int(next(it)) - 1 for _ in range(k)]
+    
+    res = []
+    for col in balls:
+        r, c = 0, col
+        while True:
+            if grid[r][c] == 2:
+                next_r = r + 1
+                next_c = c
+            else:
+                d = grid[r][c]
+                grid[r][c] = 2
+                if d == 1:
+                    next_r, next_c = r, c + 1
+                elif d == 2:
+                    next_r, next_c = r + 1, c
+                elif d == 3:
+                    next_r, next_c = r, c - 1
+            
+            if next_r < 0 or next_r >= n or next_c < 0 or next_c >= m:
+                res.append(str(next_c + 1))
+                break
+            else:
+                r, c = next_r, next_c
+    
+    print(" ".join(res))
+
+if __name__ == "__main__":
+    main()

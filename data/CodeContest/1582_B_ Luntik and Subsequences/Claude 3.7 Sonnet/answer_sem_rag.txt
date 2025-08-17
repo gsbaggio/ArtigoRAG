@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        
+        // Count occurrences of 0s and 1s
+        long long zeros = 0;
+        long long ones = 0;
+        long long sum = 0;
+        
+        for (int i = 0; i < n; i++) {
+            if (a[i] == 0) {
+                zeros++;
+            } else if (a[i] == 1) {
+                ones++;
+            }
+            sum += a[i];
+        }
+        
+        long long result = 0;
+        
+        // If the array has a sum of 0, an empty subsequence has sum = 0 = sum-1 = -1
+        // This is impossible since subsequence sums are non-negative
+        if (sum == 0) {
+            cout << 0 << endl;
+            continue;
+        }
+        
+        // If the array has a sum of 1, an empty subsequence would be nearly full
+        // Plus any subsequence containing only zeros would be nearly full
+        if (sum == 1) {
+            result = (1LL << zeros); // 2^zeros combinations of zeros
+            cout << result << endl;
+            continue;
+        }
+        
+        // For general case:
+        // To get a sum of (sum-1), we need to exclude exactly one 1
+        // And we can include or exclude any number of zeros
+        if (ones > 0) {
+            // Number of ways to choose one 1 to exclude * number of ways to include/exclude zeros
+            result = ones * (1LL << zeros);
+        } else {
+            // Check if the array contains exactly one element with value = sum
+            // If yes, excluding it gives an empty subsequence with sum 0 = sum-sum
+            bool has_sum_element = false;
+            for (int i = 0; i < n; i++) {
+                if (a[i] == sum) {
+                    has_sum_element = true;
+                    break;
+                }
+            }
+            
+            if (has_sum_element) {
+                // If the array has exactly one element equal to sum, 
+                // excluding it and including all zeros gives a nearly full subsequence
+                result = 1LL << zeros;
+            }
+        }
+        
+        cout << result << endl;
+    }
+    
+    return 0;
+}

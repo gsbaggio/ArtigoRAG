@@ -1,0 +1,28 @@
+def count_permutations(n, m, k, p):
+    MOD = p
+    dp = [[[[0 for _ in range(k + 1)] for _ in range(m + 1)] for _ in range(n + 1)] for _ in range(n + 1)]
+
+    for i in range(1, n + 1):
+        dp[i][1][1][i] = 1
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            for max_val in range(1, n + 1):
+                for last_max in range(1, max_val + 1):
+                    for cnt in range(1, k + 1):
+                        dp[i][j][cnt][max_val] += dp[i - 1][j][cnt][last_max]
+                        dp[i][j][cnt][max_val] %= MOD
+
+                        if last_max == max_val:
+                            if cnt > 1:
+                                dp[i][j][cnt][max_val] += dp[i - 1][j - 1][cnt - 1][last_max]
+                                dp[i][j][cnt][max_val] %= MOD
+
+    result = sum(dp[n][m][k]) % MOD
+    return result
+
+# Input
+n, m, k, p = map(int, input().split())
+
+# Output
+print(count_permutations(n, m, k, p))

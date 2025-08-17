@@ -1,0 +1,70 @@
+def solve(s):
+    n = len(s)
+    
+    # For a number to be divisible by 25, it must end with 00, 25, 50, or 75
+    valid_endings = ["00", "25", "50", "75"]
+    has_x = 'X' in s
+    
+    # Special case for single digit
+    if n == 1:
+        if s == '0':
+            return 1
+        elif s == '_' or s == 'X':
+            return 1  # Only 0 is divisible by 25
+        else:
+            return 1 if int(s) % 25 == 0 else 0
+    
+    total = 0
+    x_values = range(10) if has_x else [0]
+    
+    for x_val in x_values:
+        # Replace all X with the current digit
+        current = s.replace('X', str(x_val))
+        
+        # Try each valid ending
+        for ending in valid_endings:
+            if n < 2:
+                continue
+            
+            # Check if last two digits can match the ending
+            matches_ending = True
+            for i in range(2):
+                if n - 1 - i >= 0:
+                    if current[n - 1 - i] != '_' and current[n - 1 - i] != ending[1 - i]:
+                        matches_ending = False
+                        break
+            
+            if not matches_ending:
+                continue
+            
+            # Create a new string with the ending fixed
+            temp = list(current)
+            for i in range(2):
+                if n - 1 - i >= 0 and temp[n - 1 - i] == '_':
+                    temp[n - 1 - i] = ending[1 - i]
+            
+            # Count ways to fill remaining positions
+            ways = 1
+            for i in range(n - 2):
+                if temp[i] == '_':
+                    # First position can't be 0 (no leading zeros)
+                    if i == 0 and n > 1:
+                        ways *= 9
+                    else:
+                        ways *= 10
+            
+            # Check for leading zeros
+            if n > 1 and temp[0] == '0':
+                ways = 0
+            
+            total += ways
+    
+    # If no X in the string, we counted each possibility 10 times
+    if not has_x:
+        total //= 10
+    
+    return total
+
+# Read input and print output
+s = input().strip()
+print(solve(s))

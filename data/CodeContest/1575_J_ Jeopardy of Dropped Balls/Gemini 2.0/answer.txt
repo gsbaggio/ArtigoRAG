@@ -1,0 +1,42 @@
+def dropping_balls():
+    """
+    Simulates the dropping balls game and determines the final column for each ball.
+
+    Reads the grid dimensions, grid values, and ball drop positions from standard input.
+    Prints the final column position for each ball to standard output.
+    """
+
+    n, m, k = map(int, input().split())
+    grid = []
+    for _ in range(n):
+        grid.append(list(map(int, input().split())))
+    
+    ball_positions = list(map(int, input().split()))
+
+    def simulate_ball_drop(grid, start_col):
+        """Simulates the path of a single ball and returns its final column."""
+        row = 0
+        col = start_col - 1  # Adjust to 0-based indexing
+
+        while 0 <= row < n and 0 <= col < m:
+            direction = grid[row][col]
+            grid[row][col] = 2  # Change direction to down
+
+            if direction == 1:  # Right
+                col += 1
+            elif direction == 2:  # Down
+                row += 1
+            else:  # Left
+                col -= 1
+
+        return col + 1  # Adjust back to 1-based indexing
+
+    results = []
+    for start_col in ball_positions:
+        # Create a copy of the grid for each ball
+        grid_copy = [row[:] for row in grid]
+        results.append(simulate_ball_drop(grid_copy, start_col))
+
+    print(*results)
+
+dropping_balls()

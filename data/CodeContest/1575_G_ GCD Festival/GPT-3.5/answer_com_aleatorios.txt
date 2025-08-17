@@ -1,0 +1,22 @@
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+def prettiness_value(n, arr):
+    mod = 10**9 + 7
+    result = 0
+
+    for i in range(n):
+        for j in range(n):
+            result += gcd(arr[i], arr[j]) * gcd(i + 1, j + 1)
+            result %= mod
+
+    return result
+
+# Input parsing
+n = int(input())
+arr = list(map(int, input().split()))
+
+# Output the prettiness value modulo 10^9 + 7
+print(prettiness_value(n, arr))

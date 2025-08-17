@@ -1,0 +1,30 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    results = []
+    idx = 1
+    
+    for _ in range(t):
+        n = int(data[idx])  # Length of the array
+        idx += 1
+        arr = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Calculate the sum of the array
+        s = sum(arr)
+        
+        # Count the number of 1's in the array
+        count_ones = arr.count(1)
+        
+        if count_ones == 0:
+            # No "nearly full" subsequences possible
+            results.append(0)
+        else:
+            # Number of nearly full subsequences
+            results.append(count_ones * (1 << (n - 1)))  # 2^(n-1) using bit-shifting
+    
+    # Print all results
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

@@ -1,0 +1,92 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+using namespace std;
+
+const int INF = 0x3f3f3f3f;
+
+int main() {
+    int n, m;
+    string a, b;
+    cin >> n >> m;
+    cin >> a;
+    cin >> b;
+
+    vector<int> pi(m, 0);
+    for (int i = 1; i < m; i++) {
+        int j = pi[i-1];
+        while (j > 0 && b[j] != b[i]) {
+            j = pi[j-1];
+        }
+        if (b[j] == b[i]) {
+            j++;
+        }
+        pi[i] = j;
+    }
+
+    vector<vector<int>> aut(m+1, vector<int>(2, 0));
+    for (int s = 0; s <= m; s++) {
+        for (int c_idx = 0; c_idx < 2; c_idx++) {
+            char c = '0' + c_idx;
+            if (s < m && b[s] == c) {
+                aut[s][c_idx] = s+1;
+            } else if (s == 0) {
+                aut[s][c_idx] = 0;
+            } else {
+                int prev = (s == m) ? pi[m-1] : pi[s-1];
+                aut[s][c_idx] = aut[prev][c_idx];
+            }
+        }
+    }
+
+    int max_cnt = n - m + 2;
+    vector<vector<int>> dp(m+1, vector<int>(max_cnt, INF));
+    dp[0][0] = 0;
+
+    for (int i = 0; i < n; i++) {
+        vector<vector<int>> next_dp(m+1, vector<int>(max_cnt, INF));
+        for (int s = 0; s <= m; s++) {
+            for (int cnt = 0; cnt < max_cnt; cnt++) {
+                if (dp[s][cnt] == INF) continue;
+                for (char c_char : {'0','1'}) {
+                    int cost_add = (c_char == a[i]) ? 0 : 1;
+                    int c_idx = (c_char == '1') ? 1 : 0;
+                    int ns = aut[s][c_idx];
+                    int ncnt = cnt;
+                    if (ns == m) {
+                        if (cnt < max_cnt - 1) {
+                            ncnt = cnt + 1;
+                        } else {
+                            ncnt = max_cnt - 1;
+                        }
+                    }
+                    if (next_dp[ns][ncnt] > dp[s][cnt] + cost_add) {
+                        next_dp[ns][ncnt] = dp[s][cnt] + cost_add;
+                    }
+                }
+            }
+        }
+        swap(dp, next_dp);
+    }
+
+    vector<int> ans(max_cnt, INF);
+    for (int s = 0; s <= m; s++) {
+        for (int cnt = 0; cnt < max_cnt; cnt++) {
+            if (dp[s][cnt] < ans[cnt]) {
+                ans[cnt] = dp[s][cnt];
+            }
+        }
+    }
+
+    for (int k = 0; k < max_cnt; k++) {
+        if (ans[k] == INF) {
+            cout << -1 << " ";
+        } else {
+            cout << ans[k] << " ";
+        }
+    }
+    cout << endl;
+
+    return 0;
+}

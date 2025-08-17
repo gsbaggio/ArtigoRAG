@@ -1,0 +1,46 @@
+MOD = 10**9 + 7
+MAX_VAL = 10**5
+
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n = int(data[0])
+    a = list(map(int, data[1:]))
+    
+    # Step 1: Frequency array for a_i
+    freq = [0] * (MAX_VAL + 1)
+    for num in a:
+        freq[num] += 1
+    
+    # Step 2: Compute gcd(a_i, a_j) contributions
+    gcd_a_contrib = [0] * (MAX_VAL + 1)
+    for g in range(1, MAX_VAL + 1):
+        # Count multiples of g
+        count = 0
+        for multiple in range(g, MAX_VAL + 1, g):
+            count += freq[multiple]
+        # Contribution of gcd = g
+        gcd_a_contrib[g] = (count * (count - 1)) // 2 + count  # Pairs + single elements
+    
+    # Step 3: Compute gcd(i, j) contributions
+    gcd_i_contrib = [0] * (n + 1)
+    for g in range(1, n + 1):
+        count = n // g
+        gcd_i_contrib[g] = (count * (count - 1)) // 2 + count  # Pairs + single elements
+    
+    # Step 4: Combine contributions
+    result = 0
+    for g in range(1, MAX_VAL + 1):
+        if gcd_a_contrib[g] > 0:
+            # Sum up contributions for all multiples of g
+            sum_gcd_i = 0
+            for multiple in range(g, n + 1, g):
+                sum_gcd_i += gcd_i_contrib[multiple]
+                sum_gcd_i %= MOD
+            result += gcd_a_contrib[g] * sum_gcd_i
+            result %= MOD
+    
+    # Output the result
+    print(result)

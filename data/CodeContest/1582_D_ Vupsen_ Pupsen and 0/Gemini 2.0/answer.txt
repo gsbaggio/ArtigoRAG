@@ -1,0 +1,40 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    b = [0] * n
+    if n % 2 == 0:
+        for i in range(0, n, 2):
+            b[i] = a[i+1]
+            b[i+1] = -a[i]
+    else:
+        b[0] = -(a[1] + a[2])
+        b[1] = a[0]
+        b[2] = a[0]
+        for i in range(3, n):
+            b[i] = -a[i-1] if (i-1)%2 == 0 else a[i-1]
+            
+
+    if n % 2 != 0:
+        sum_ab = a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+        if sum_ab % (a[0] + a[1]) == 0 and (a[0] + a[1]) != 0:
+            k = -sum_ab // (a[0] + a[1])
+            b[0] = k
+            b[1] = k
+        else:
+            b[0] = a[1] + a[2]
+            b[1] = -a[0]
+            b[2] = -a[0]
+            
+    sum_abs_b = sum(abs(x) for x in b)
+    
+    if sum_abs_b > 10**9:
+        factor = (10**9) / sum_abs_b
+        b = [int(x * factor) for x in b]
+        
+        
+    print(*b)
+
+t = int(input())
+for _ in range(t):
+    solve()

@@ -1,0 +1,27 @@
+def solve():
+    n, m, k = map(int, input().split())
+    a = list(map(int, input().split()))
+    
+    a_sum = sum(a)
+    
+    count = 0
+    
+    for i in range(n * m):
+        for j in range(1, n * m + 1):
+            segment_sum = 0
+            
+            indices = set()
+            
+            start = i % n
+            
+            for l in range(j):
+                index = (i + l) % n
+                segment_sum += a[index]
+                indices.add((i + l) % (n * m) + 1)
+                
+            if segment_sum % k == 0:
+                count = (count + 1) % (10**9 + 7)
+                
+    print(count // 2)
+
+solve()

@@ -1,0 +1,41 @@
+def solve():
+    s = input().strip()
+    n = len(s)
+    count = 0
+
+    def is_divisible_by_25(num_str):
+        if len(num_str) == 0:
+            return False
+        if num_str[0] == '0' and len(num_str) > 1:
+            return False
+        
+        try:
+            num = int(num_str)
+            return num % 25 == 0
+        except ValueError:
+            return False
+
+    def generate_numbers(index, current_number, x_digit):
+        nonlocal count
+        
+        if index == n:
+            if is_divisible_by_25(current_number):
+                count += 1
+            return
+
+        if s[index] == '_':
+            for digit in range(10):
+                generate_numbers(index + 1, current_number + str(digit), x_digit)
+        elif s[index] == 'X':
+            if x_digit is None:
+                for digit in range(10):
+                    generate_numbers(index + 1, current_number + str(digit), digit)
+            else:
+                generate_numbers(index + 1, current_number + str(x_digit), x_digit)
+        else:
+            generate_numbers(index + 1, current_number + s[index], x_digit)
+
+    generate_numbers(0, "", None)
+    print(count)
+
+solve()

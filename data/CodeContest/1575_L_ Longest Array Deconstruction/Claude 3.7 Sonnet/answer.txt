@@ -1,0 +1,24 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+    
+    # Initialize answer
+    ans = 0
+    
+    # Try all possible subsequences (by removing elements)
+    for mask in range(1 << n):
+        # Extract the subsequence
+        subsequence = []
+        for i in range(n):
+            if mask & (1 << i):
+                subsequence.append(a[i])
+        
+        # Count fixed points in this subsequence
+        fixed_points = 0
+        for i, val in enumerate(subsequence, 1):
+            if val == i:
+                fixed_points += 1
+        
+        ans = max(ans, fixed_points)
+    
+    print(ans)

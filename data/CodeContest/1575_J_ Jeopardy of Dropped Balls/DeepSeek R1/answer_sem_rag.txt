@@ -1,0 +1,79 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    m = int(data[1])
+    k = int(data[2])
+    grid = []
+    index = 3
+    for i in range(n):
+        row = list(map(int, data[index:index+m]))
+        grid.append(row)
+        index += m
+    starts = list(map(int, data[index:index+k]))
+    index += k
+    
+    nxt_col = [list(range(n)) for _ in range(m)]
+    
+    def find_next(arr, r, n_val):
+        if r >= n_val:
+            return n_val
+        stack = []
+        current = r
+        while current < n_val and arr[current] != current:
+            stack.append(current)
+            current = arr[current]
+        if current >= n_val:
+            res = n_val
+        else:
+            res = current
+        for i in stack:
+            arr[i] = res
+        return res
+
+    res_balls = []
+    for col_index in starts:
+        c = col_index - 1
+        r = 0
+        output_col = None
+        while r < n:
+            if grid[r][c] != 2:
+                d = grid[r][c]
+                grid[r][c] = 2
+                next_unbroken = find_next(nxt_col[c], r+1, n)
+                nxt_col[c][r] = next_unbroken
+                if d == 2:
+                    if next_unbroken >= n:
+                        output_col = c
+                        break
+                    else:
+                        r = next_unbroken
+                else:
+                    if d == 1:
+                        next_c = c + 1
+                    else:
+                        next_c = c - 1
+                    if next_c < 0 or next_c >= m:
+                        output_col = next_c
+                        break
+                    else:
+                        c = next_c
+            else:
+                d = 2
+                next_unbroken = find_next(nxt_col[c], r, n)
+                if next_unbroken >= n:
+                    output_col = c
+                    break
+                else:
+                    r = next_unbroken
+        if output_col is None:
+            output_col = c
+        res_balls.append(str(output_col + 1))
+    
+    print(" ".join(res_balls))
+
+if __name__ == "__main__":
+    main()

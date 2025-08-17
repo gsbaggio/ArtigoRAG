@@ -1,0 +1,44 @@
+def count_valid_numbers(s):
+    def backtrack(index, x_value):
+        if index == len(s):
+            # Check if the number has leading zeros
+            if len(number) > 1 and number[0] == '0':
+                return 0
+            # Check if the number is divisible by 25
+            if len(number) >= 2 and (number[-2:] == '00' or number[-2:] == '25' or number[-2:] == '50' or number[-2:] == '75'):
+                return 1
+            return 0
+        
+        if s[index] == '_':
+            count = 0
+            for digit in '0123456789':
+                number.append(digit)
+                count += backtrack(index + 1, x_value)
+                number.pop()
+            return count
+        
+        elif s[index] == 'X':
+            if x_value is None:
+                count = 0
+                for digit in '0123456789':
+                    number.append(digit)
+                    count += backtrack(index + 1, digit)
+                    number.pop()
+                return count
+            else:
+                number.append(x_value)
+                count = backtrack(index + 1, x_value)
+                number.pop()
+                return count
+        
+        else:
+            number.append(s[index])
+            count = backtrack(index + 1, x_value)
+            number.pop()
+            return count
+    
+    number = []
+    return backtrack(0, None)
+
+s = input.strip()
+print(count_valid_numbers(s))

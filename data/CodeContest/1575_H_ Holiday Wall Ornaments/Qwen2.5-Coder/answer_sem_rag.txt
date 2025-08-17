@@ -1,0 +1,42 @@
+def min_changes_to_k_occurrences(n, m, a, b):
+    # Calculate the cost of changing each substring of length m in a to b
+    cost = [0] * (n - m + 1)
+    for i in range(n - m + 1):
+        for j in range(m):
+            if a[i + j] != b[j]:
+                cost[i] += 1
+    
+    # Initialize the DP table
+    dp = [[float('inf')] * (n - m + 2) for _ in range(n + 1)]
+    dp[0][0] = 0
+    
+    # Fill the DP table
+    for i in range(1, n + 1):
+        for j in range(n - m + 2):
+            # Case 1: Do not include the current window as an occurrence of b
+            dp[i][j] = dp[i-1][j]
+            
+            # Case 2: Include the current window as an occurrence of b
+            if i >= m and j > 0:
+                dp[i][j] = min(dp[i][j], dp[i-m][j-1] + cost[i-m])
+    
+    # Extract the results
+    results = []
+    for k in range(n - m + 2):
+        if dp[n][k] == float('inf'):
+            results.append(-1)
+        else:
+            results.append(dp[n][k])
+    
+    return results
+
+# Read input
+n, m = map(int, input().split())
+a = input().strip()
+b = input().strip()
+
+# Get the results
+results = min_changes_to_k_occurrences(n, m, a, b)
+
+# Print the results
+print(" ".join(map(str, results)))

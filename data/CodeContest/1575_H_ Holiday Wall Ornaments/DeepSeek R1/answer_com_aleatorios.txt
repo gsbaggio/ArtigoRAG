@@ -1,0 +1,100 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+using namespace std;
+
+const int INF = 1000000;
+
+int main() {
+    int n, m;
+    string a, b;
+    cin >> n >> m;
+    cin >> a;
+    cin >> b;
+
+    vector<int> pi(m);
+    if (m > 0) {
+        pi[0] = 0;
+        for (int i = 1; i < m; i++) {
+            int j = pi[i-1];
+            while (j > 0 && b[i] != b[j])
+                j = pi[j-1];
+            if (b[i] == b[j])
+                j++;
+            pi[i] = j;
+        }
+    }
+
+    vector<vector<int>> aut(m+1, vector<int>(2));
+    for (int j = 0; j <= m; j++) {
+        for (int c = 0; c < 2; c++) {
+            if (j < m && b[j] == '0' + c) {
+                aut[j][c] = j+1;
+            } else {
+                if (j == 0) {
+                    aut[j][c] = 0;
+                } else {
+                    int prev = (j == m) ? pi[m-1] : pi[j-1];
+                    aut[j][c] = aut[prev][c];
+                }
+            }
+        }
+    }
+
+    int k_max = n - m + 2;
+    vector<vector<int>> dp(m+1, vector<int>(k_max, INF));
+    dp[0][0] = 0;
+
+    for (int i = 0; i < n; i++) {
+        vector<vector<int>> new_dp(m+1, vector<int>(k_max, INF));
+        for (int j = 0; j <= m; j++) {
+            for (int k_val = 0; k_val < k_max; k_val++) {
+                if (dp[j][k_val] == INF) 
+                    continue;
+                int c1 = a[i] - '0';
+                int ns1 = aut[j][c1];
+                int nk1 = k_val;
+                if (ns1 == m) {
+                    if (nk1 + 1 < k_max)
+                        nk1 = k_val + 1;
+                }
+                if (new_dp[ns1][nk1] > dp[j][k_val]) {
+                    new_dp[ns1][nk1] = dp[j][k_val];
+                }
+
+                int c2 = 1 - (a[i] - '0');
+                int ns2 = aut[j][c2];
+                int nk2 = k_val;
+                if (ns2 == m) {
+                    if (nk2 + 1 < k_max)
+                        nk2 = k_val + 1;
+                }
+                if (new_dp[ns2][nk2] > dp[j][k_val] + 1) {
+                    new_dp[ns2][nk2] = dp[j][k_val] + 1;
+                }
+            }
+        }
+        dp = new_dp;
+    }
+
+    vector<int> ans(k_max, INF);
+    for (int j = 0; j <= m; j++) {
+        for (int k_val = 0; k_val < k_max; k_val++) {
+            if (dp[j][k_val] < ans[k_val]) {
+                ans[k_val] = dp[j][k_val];
+            }
+        }
+    }
+
+    for (int k_val = 0; k_val < k_max; k_val++) {
+        if (ans[k_val] >= INF) {
+            cout << -1 << " ";
+        } else {
+            cout << ans[k_val] << " ";
+        }
+    }
+    cout << endl;
+
+    return 0;
+}

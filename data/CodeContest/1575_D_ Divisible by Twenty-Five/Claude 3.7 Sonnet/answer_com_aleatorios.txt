@@ -1,0 +1,76 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+long long solve(string s) {
+    int n = s.length();
+    long long result = 0;
+    
+    // A number is divisible by 25 if it ends with 00, 25, 50, or 75
+    vector<string> valid_endings = {"00", "25", "50", "75"};
+    
+    // Try each possible value for X (0-9)
+    for (int x_val = 0; x_val <= 9; x_val++) {
+        string current = s;
+        
+        // Replace all X with the current value
+        for (int i = 0; i < n; i++) {
+            if (current[i] == 'X') {
+                current[i] = '0' + x_val;
+            }
+        }
+        
+        // For each valid ending, check if it can match
+        for (const string& ending : valid_endings) {
+            // Special case for length 1
+            if (n == 1) {
+                // Only 0 is divisible by 25 for a single digit
+                if (ending == "00" && (current[0] == '0' || current[0] == '_')) {
+                    result += 1;
+                }
+                continue;
+            }
+            
+            // Check if the last two positions can match this ending
+            if ((current[n-2] != '_' && current[n-2] != ending[0]) || 
+                (current[n-1] != '_' && current[n-1] != ending[1])) {
+                continue;
+            }
+            
+            // Make a working copy to fill in the ending
+            string filled = current;
+            if (filled[n-2] == '_') filled[n-2] = ending[0];
+            if (filled[n-1] == '_') filled[n-1] = ending[1];
+            
+            // Check for leading zeros
+            if (filled[0] == '0' && n > 1) {
+                // Leading zero in multi-digit number
+                continue;
+            }
+            
+            // Count ways to fill the remaining _ characters
+            long long ways = 1;
+            for (int i = 0; i < n-2; i++) {
+                if (current[i] == '_') {
+                    if (i == 0 && n > 1) {
+                        ways *= 9; // First digit can't be 0
+                    } else {
+                        ways *= 10; // Any digit is fine
+                    }
+                }
+            }
+            
+            result += ways;
+        }
+    }
+    
+    return result;
+}
+
+int main() {
+    string s;
+    cin >> s;
+    cout << solve(s) << endl;
+    return 0;
+}

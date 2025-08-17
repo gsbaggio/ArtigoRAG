@@ -1,0 +1,31 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    def calculate_f(arr):
+        count = 0
+        for i in range(len(arr)):
+            if arr[i] == i + 1:
+                count += 1
+        return count
+
+    def find_max_f(arr):
+        max_f = 0
+        q = [arr]
+        visited = {tuple(arr)}
+
+        while q:
+            curr_arr = q.pop(0)
+            max_f = max(max_f, calculate_f(curr_arr))
+
+            for i in range(len(curr_arr)):
+                next_arr = curr_arr[:i] + curr_arr[i+1:]
+                if tuple(next_arr) not in visited:
+                    q.append(next_arr)
+                    visited.add(tuple(next_arr))
+        
+        return max_f
+
+    print(find_max_f(a))
+
+solve()

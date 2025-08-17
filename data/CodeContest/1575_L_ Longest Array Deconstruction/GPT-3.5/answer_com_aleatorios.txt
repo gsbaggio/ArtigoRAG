@@ -1,0 +1,21 @@
+def maximize_f(n, a):
+    # Initialize a counter to keep track of the number of indices where a[i] == i
+    count = 0
+    
+    # Iterate through the sequence and remove elements that don't satisfy a[i] == i
+    for i in range(n):
+        if a[i] != i + 1:
+            a[i] = 0  # Remove the element by replacing it with 0
+        else:
+            count += 1  # Increment the count if a[i] == i
+    
+    # Return the maximum count of indices where a[i] = i
+    return count
+
+# Read input
+n = int(input())
+a = list(map(int, input().split()))
+
+# Call the function to maximize f(a)
+result = maximize_f(n, a)
+print(result)
