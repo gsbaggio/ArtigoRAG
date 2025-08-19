@@ -1,0 +1,25 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        cur = a[-1]
+        count = 0
+        for i in range(n-2, -1, -1):
+            if a[i] > cur:
+                count += 1
+                cur = a[i]
+                
+        results.append(str(count))
+        
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

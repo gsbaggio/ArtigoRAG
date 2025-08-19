@@ -1,0 +1,42 @@
+def flower_growth(t, test_cases):
+    results = []
+    for case in test_cases:
+        n, a = case
+        height = 1  # Initial height of the flower
+        prev_watered = False  # Tracks if the previous day was watered
+        flower_died = False  # Tracks if the flower dies
+
+        for i in range(n):
+            if a[i] == 1:  # Flower is watered
+                if prev_watered:  # Consecutive watering
+                    height += 5
+                else:  # Single day watering
+                    height += 1
+                prev_watered = True
+            else:  # Flower is not watered
+                if not prev_watered:  # Two consecutive unwatered days
+                    flower_died = True
+                    break
+                prev_watered = False
+
+        if flower_died:
+            results.append(-1)
+        else:
+            results.append(height)
+
+    return results
+
+
+# Input reading and processing
+if __name__ == "__main__":
+    t = int(input())  # Number of test cases
+    test_cases = []
+    for _ in range(t):
+        n = int(input())  # Number of days
+        a = list(map(int, input().split()))  # Watering pattern
+        test_cases.append((n, a))
+
+    # Solve and output results
+    results = flower_growth(t, test_cases)
+    for res in results:
+        print(res)

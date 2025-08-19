@@ -1,0 +1,45 @@
+def can_sort_with_3cycles(t, test_cases):
+    results = []
+    
+    for _ in range(t):
+        n = test_cases[_][0]
+        a = test_cases[_][1]
+
+        # Check if the array is already sorted or can be sorted using 3-cycles
+        sorted_a = sorted(a)
+        is_sorted = a == sorted_a
+
+        # If the array is not already sorted, check if it can be sorted using 3-cycles
+        if not is_sorted:
+            for i in range(n):
+                if a[i] != i + 1:
+                    # Find the positions of the current element and the two elements it needs to be swapped with
+                    pos_i = a.index(i + 1)
+                    pos_j = a.index(pos_i + 1)
+                    pos_k = a.index(pos_j + 1)
+                    a[i], a[pos_i], a[pos_j], a[pos_k] = a[pos_j], a[pos_k], a[i], a[pos_i]
+        
+        # Check if the array is sorted after the operations
+        is_sorted_after = a == sorted_a
+
+        if is_sorted or is_sorted_after:
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    return results
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    test_cases.append((n, a))
+
+# Get the results
+results = can_sort_with_3cycles(t, test_cases)
+
+# Output the results
+for result in results:
+    print(result)

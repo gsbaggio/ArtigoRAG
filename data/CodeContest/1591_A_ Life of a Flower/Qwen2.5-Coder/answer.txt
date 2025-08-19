@@ -1,0 +1,37 @@
+def flower_growth():
+    import sys
+    input = sys.stdin.read().split()
+    index = 0
+    t = int(input[index])
+    index += 1
+    results = []
+    
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        a = list(map(int, input[index:index + n]))
+        index += n
+        
+        height = 1  # Initial height of the flower
+        consecutive_dry_days = 0
+        
+        for i in range(n):
+            if a[i] == 1:
+                consecutive_dry_days = 0
+                if i > 0 and a[i - 1] == 1:
+                    height += 5
+                else:
+                    height += 1
+            else:
+                consecutive_dry_days += 1
+                if consecutive_dry_days == 2:
+                    height = -1
+                    break
+        
+        results.append(height)
+    
+    for result in results:
+        print(result)
+
+# Uncomment the following line to run the function with input from stdin
+# flower_growth()

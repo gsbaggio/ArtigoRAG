@@ -1,0 +1,28 @@
+def calculate_flower_height(n, days):
+    height = 1
+    prev_watered = False
+    consecutive_days_without_water = 0
+
+    for day in days:
+        if day == 1:  # If the flower is watered on the current day
+            if prev_watered:  # If the flower was watered on the previous day
+                height += 5
+            else:
+                height += 1
+            prev_watered = True
+            consecutive_days_without_water = 0
+        else:  # If the flower is not watered on the current day
+            consecutive_days_without_water += 1
+            if consecutive_days_without_water == 2:  # The flower dies if not watered for two consecutive days
+                return -1
+            prev_watered = False
+
+    return height
+
+# Input
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    days = list(map(int, input().split()))
+    result = calculate_flower_height(n, days)
+    print(result)

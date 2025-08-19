@@ -1,0 +1,24 @@
+def minimum_eversions(test_cases):
+    results = []
+    for n, a in test_cases:
+        current_max = a[-1]
+        eversions = 0
+        for i in range(n - 2, -1, -1):
+            if a[i] > current_max:
+                eversions += 1
+                current_max = a[i]
+        results.append(eversions)
+    return results
+
+# Input reading and output
+if __name__ == "__main__":
+    t = int(input())
+    test_cases = []
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        test_cases.append((n, a))
+    
+    results = minimum_eversions(test_cases)
+    for res in results:
+        print(res)

@@ -1,0 +1,15 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    n = int(input().strip())
+    arr = list(map(int, input().split()))
+    current = arr[-1]
+    count = 0
+    for i in range(n-2, -1, -1):
+        if arr[i] > current:
+            current = arr[i]
+            count += 1
+    results.append(count)
+
+for res in results:
+    print(res)

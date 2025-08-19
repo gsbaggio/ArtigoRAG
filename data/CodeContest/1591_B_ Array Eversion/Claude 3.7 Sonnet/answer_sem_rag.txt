@@ -1,0 +1,44 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        eversions = 0
+        
+        # Continue until array is sorted
+        while True:
+            # Check if array is sorted
+            sorted_flag = True
+            for i in range(n-1):
+                if a[i] > a[i+1]:
+                    sorted_flag = False
+                    break
+            
+            if sorted_flag:
+                print(eversions)
+                break
+            
+            # Perform eversion
+            pivot = a[-1]
+            left = []
+            right = []
+            
+            for i in range(n-1):
+                if a[i] <= pivot:
+                    left.append(a[i])
+                else:
+                    right.append(a[i])
+            
+            new_a = left + [pivot] + right
+            eversions += 1
+            
+            # Check if array doesn't change
+            if new_a == a:
+                print(eversions)
+                break
+            
+            a = new_a
+
+solve()

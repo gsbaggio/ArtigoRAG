@@ -1,0 +1,34 @@
+def can_sort_with_3cycles(t, test_cases):
+    results = []
+    for _ in range(t):
+        n = test_cases[_][0]
+        arr = test_cases[_][1]
+
+        # Check if the array can be sorted using 3-cycles
+        # If the array is already sorted, or can be sorted, answer is YES
+        # Otherwise, answer is NO
+        sorted_arr = sorted(arr)
+        is_sorted = all(sorted_arr[i] == arr[i] for i in range(n))
+        cycle_sort_possible = any(arr[i] == sorted_arr[i] for i in range(n))
+
+        if is_sorted or cycle_sort_possible:
+            results.append("YES")
+        else:
+            results.append("NO")
+
+    return results
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    test_cases.append((n, a))
+
+# Get results
+results = can_sort_with_3cycles(t, test_cases)
+
+# Output
+for result in results:
+    print(result)

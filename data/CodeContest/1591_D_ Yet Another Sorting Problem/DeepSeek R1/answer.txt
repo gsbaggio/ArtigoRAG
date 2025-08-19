@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        
+        // Check if the array is sorted
+        bool sorted = true;
+        for (int i = 1; i < n; i++) {
+            if (a[i] < a[i-1]) {
+                sorted = false;
+                break;
+            }
+        }
+        
+        if (sorted) {
+            cout << "YES\n";
+            continue;
+        }
+        
+        // Check for duplicates
+        set<int> s(a.begin(), a.end());
+        if (s.size() < n) {
+            cout << "YES\n";
+            continue;
+        }
+        
+        // No duplicates and not sorted: compute cycles of the permutation f(i)=a[i]-1
+        vector<bool> visited(n, false);
+        int cycles = 0;
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                cycles++;
+                int cur = i;
+                while (!visited[cur]) {
+                    visited[cur] = true;
+                    cur = a[cur] - 1;
+                }
+            }
+        }
+        
+        if ((n - cycles) % 2 == 0) {
+            cout << "YES\n";
+        } else {
+            cout << "NO\n";
+        }
+    }
+    
+    return 0;
+}

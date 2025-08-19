@@ -1,0 +1,32 @@
+def find_xor_values(n, a):
+    # Initialize a set to store all possible XOR values
+    xor_values = {0}  # Start with 0 (empty subsequence)
+    
+    # Iterate through the array
+    for i in range(n):
+        # Temporary set to store new XOR values for this iteration
+        new_xor_values = set()
+        
+        # Add current element as a single-element subsequence
+        new_xor_values.add(a[i])
+        
+        # Combine current element with all previous XOR values
+        for x in xor_values:
+            if x ^ a[i] not in new_xor_values:
+                new_xor_values.add(x ^ a[i])
+        
+        # Merge new XOR values into the main set
+        xor_values.update(new_xor_values)
+    
+    # Convert the set to a sorted list
+    result = sorted(xor_values)
+    
+    # Output the results
+    print(len(result))
+    print(" ".join(map(str, result)))
+
+# Input reading
+if __name__ == "__main__":
+    n = int(input())
+    a = list(map(int, input().split()))
+    find_xor_values(n, a)

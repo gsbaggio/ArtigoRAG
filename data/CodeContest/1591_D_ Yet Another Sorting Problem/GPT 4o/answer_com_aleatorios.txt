@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Fenwick Tree (Binary Indexed Tree) for inversion counting
+class FenwickTree {
+    vector<int> tree;
+    int size;
+
+public:
+    FenwickTree(int n) : size(n), tree(n + 1, 0) {}
+
+    void update(int index, int value) {
+        while (index <= size) {
+            tree[index] += value;
+            index += index & -index;
+        }
+    }
+
+    int query(int index) {
+        int sum = 0;
+        while (index > 0) {
+            sum += tree[index];
+            index -= index & -index;
+        }
+        return sum;
+    }
+};
+
+void solve() {
+    int t;
+    cin >> t;
+    vector<string> results;
+
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+
+        // Count inversions using Fenwick Tree
+        FenwickTree fenwick(n);
+        long long inversions = 0;
+
+        for (int i = n - 1; i >= 0; i--) {
+            inversions += fenwick.query(a[i] - 1);
+            fenwick.update(a[i], 1);
+        }
+
+        // Check if the number of inversions is even
+        if (inversions % 2 == 0) {
+            results.push_back("YES");
+        } else {
+            results.push_back("NO");
+        }
+    }
+
+    // Output all results
+    for (const string &result : results) {
+        cout << result << '\n';
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}

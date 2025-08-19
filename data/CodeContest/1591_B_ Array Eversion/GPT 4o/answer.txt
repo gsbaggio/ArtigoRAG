@@ -1,0 +1,23 @@
+def minimum_eversions(test_cases):
+    results = []
+    for n, a in test_cases:
+        max_so_far = float('-inf')
+        eversions = 0
+        for i in range(n - 1, -1, -1):
+            if a[i] > max_so_far:
+                eversions += 1
+                max_so_far = a[i]
+        results.append(eversions - 1)  # Subtract 1 because the last segment doesn't require an eversion
+    return results
+
+# Input reading
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    test_cases.append((n, a))
+
+# Solve and output results
+results = minimum_eversions(test_cases)
+print("\n".join(map(str, results)))

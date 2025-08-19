@@ -1,0 +1,47 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    possible_xors = set()
+    possible_xors.add(0)
+
+    for num in a:
+        new_xors = set()
+        for xor_val in possible_xors:
+            new_xors.add(xor_val ^ num)
+        
+        valid_new_xors = set()
+        for new_xor in new_xors:
+            
+            can_achieve = False
+            
+            # Check if we can achieve new_xor with an increasing subsequence ending with num
+            
+            if num not in a:
+                continue
+            
+            temp_xors = set()
+            temp_xors.add(0)
+            
+            for i in range(n):
+                if a[i] < num:
+                    next_temp_xors = set()
+                    for temp_xor in temp_xors:
+                        next_temp_xors.add(temp_xor)
+                        next_temp_xors.add(temp_xor ^ a[i])
+                    temp_xors = next_temp_xors
+            
+            if (new_xor ^ num) in temp_xors:
+                can_achieve = True
+            
+            if can_achieve:
+                valid_new_xors.add(new_xor)
+        
+        possible_xors.update(valid_new_xors)
+
+    
+    result = sorted(list(possible_xors))
+    print(len(result))
+    print(*result)
+
+solve()

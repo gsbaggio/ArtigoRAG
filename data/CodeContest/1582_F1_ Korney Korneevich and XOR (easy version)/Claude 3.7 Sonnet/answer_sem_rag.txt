@@ -1,0 +1,38 @@
+def find_all_xor_values(arr):
+    n = len(arr)
+    
+    # dp[i] = set of all possible XOR values for subsequences ending with arr[i]
+    dp = [set() for _ in range(n)]
+    
+    # Initialize: Each element can be a subsequence by itself
+    for i in range(n):
+        dp[i].add(arr[i])
+    
+    # For each position i
+    for i in range(n):
+        # Check all previous elements
+        for j in range(i):
+            # If we can extend the subsequence
+            if arr[j] < arr[i]:
+                # For each XOR value achievable with subsequences ending at j
+                for xor_val in dp[j]:
+                    # Add a new XOR value by including arr[i]
+                    dp[i].add(xor_val ^ arr[i])
+    
+    # Combine all XOR values and add 0 for the empty subsequence
+    all_xors = {0}  # Empty subsequence
+    for i in range(n):
+        all_xors.update(dp[i])
+    
+    return sorted(list(all_xors))
+
+def solve():
+    n = int(input())
+    arr = list(map(int, input().split()))
+    
+    xor_values = find_all_xor_values(arr)
+    
+    print(len(xor_values))
+    print(' '.join(map(str, xor_values)))
+
+solve()

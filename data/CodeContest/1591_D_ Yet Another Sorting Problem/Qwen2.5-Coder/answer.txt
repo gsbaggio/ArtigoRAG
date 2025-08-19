@@ -1,0 +1,74 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to merge two halves and count inversions
+long long mergeAndCount(int arr[], int temp[], int left, int mid, int right) {
+    long long inv_count = 0;
+    int i = left;    // Starting index for left subarray
+    int j = mid + 1; // Starting index for right subarray
+    int k = left;    // Starting index to be sorted
+
+    // Conditions are checked to ensure that i doesn't exceed mid and j doesn't exceed right
+    while ((i <= mid) && (j <= right)) {
+        if (arr[i] <= arr[j]) {
+            temp[k++] = arr[i++];
+        } else {
+            // There are mid - i inversions, because all the remaining elements in the left subarray
+            // (arr[i...mid]) are greater than arr[j]
+            temp[k++] = arr[j++];
+            inv_count += (mid - i + 1);
+        }
+    }
+
+    // Copy the remaining elements of left subarray, if any
+    while (i <= mid) {
+        temp[k++] = arr[i++];
+    }
+
+    // Copy the remaining elements of right subarray, if any
+    while (j <= right) {
+        temp[k++] = arr[j++];
+    }
+
+    // Copy the sorted subarray into Original array
+    for (i = left; i <= right; i++) {
+        arr[i] = temp[i];
+    }
+
+    return inv_count;
+}
+
+// Function to use merge sort and count inversions
+long long mergeSortAndCount(int arr[], int temp[], int left, int right) {
+    long long mid, inv_count = 0;
+    if (left < right) {
+        mid = (left + right) / 2;
+
+        inv_count += mergeSortAndCount(arr, temp, left, mid);
+        inv_count += mergeSortAndCount(arr, temp, mid + 1, right);
+
+        inv_count += mergeAndCount(arr, temp, left, mid, right);
+    }
+    return inv_count;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        int arr[n];
+        for (int i = 0; i < n; i++) {
+            cin >> arr[i];
+        }
+        int temp[n];
+        long long inv_count = mergeSortAndCount(arr, temp, 0, n - 1);
+        if (inv_count % 2 == 0) {
+            cout << "YES" << endl;
+        } else {
+            cout << "NO" << endl;
+        }
+    }
+    return 0;
+}

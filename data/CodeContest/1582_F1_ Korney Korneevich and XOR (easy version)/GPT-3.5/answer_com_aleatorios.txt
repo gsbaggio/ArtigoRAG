@@ -1,0 +1,22 @@
+def find_xor_values(n, a):
+    max_val = 501  # Maximum possible XOR value
+    dp = [False] * max_val
+    dp[0] = True
+    
+    for num in a:
+        for i in range(max_val - 1, -1, -1):
+            if dp[i]:
+                dp[i ^ num] = True
+    
+    xor_values = [i for i in range(max_val) if dp[i]]
+    
+    return len(xor_values), xor_values
+
+# Input
+n = 4
+a = [4, 2, 2, 4]
+
+# Output
+k, xor_values = find_xor_values(n, a)
+print(k)
+print(" ".join(map(str, xor_values)))

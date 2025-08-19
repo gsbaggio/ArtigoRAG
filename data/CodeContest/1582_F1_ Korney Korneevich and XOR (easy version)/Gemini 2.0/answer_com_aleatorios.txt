@@ -1,0 +1,66 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    possible_xors = set()
+    possible_xors.add(0)
+
+    for num in a:
+        new_xors = set()
+        for xor_val in possible_xors:
+            new_xors.add(xor_val ^ num)
+        
+        # Optimization: Only add xors that can be achieved with an increasing subsequence
+        valid_new_xors = set()
+        for new_xor in new_xors:
+            can_achieve = False
+            
+            # Check if new_xor can be achieved by adding 'num' to an existing subsequence
+            # that results in 'new_xor ^ num'
+            if new_xor ^ num in possible_xors:
+                
+                # Find the subsequence that results in 'new_xor ^ num'
+                
+                # Check if 'num' can be appended to the subsequence to maintain increasing order
+                
+                # This part is tricky. We need to ensure that the 'num' we are adding
+                # is greater than the last element of the subsequence that resulted in
+                # 'new_xor ^ num'.  Since we don't store the subsequences themselves,
+                # we can approximate this by checking if there was *any* element
+                # in the original array 'a' that was less than 'num' and was used
+                # to form the xor 'new_xor ^ num'.
+                
+                found_smaller = False
+                
+                prefix_xors = {0: -1} # xor_val: index
+                curr_xor = 0
+                for i in range(n):
+                    curr_xor ^= a[i]
+                    if curr_xor not in prefix_xors:
+                        prefix_xors[curr_xor] = i
+                
+                
+                temp_xors = set()
+                temp_xors.add(0)
+                
+                for i in range(n):
+                    if a[i] < num:
+                        temp_new_xors = set()
+                        for xor_val in temp_xors:
+                            temp_new_xors.add(xor_val ^ a[i])
+                        temp_xors.update(temp_new_xors)
+                
+                if new_xor ^ num in temp_xors:
+                    can_achieve = True
+            
+            if can_achieve:
+                valid_new_xors.add(new_xor)
+        
+        possible_xors.update(valid_new_xors)
+
+    
+    result = sorted(list(possible_xors))
+    print(len(result))
+    print(*result)
+
+solve()

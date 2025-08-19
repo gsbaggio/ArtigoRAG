@@ -1,0 +1,31 @@
+def min_eversions(arr):
+    # Create a sorted copy for reference
+    sorted_arr = sorted(arr)
+    
+    if arr == sorted_arr:
+        return 0
+    
+    # Count how many operations are needed
+    operations = 0
+    i = len(arr) - 1
+    current = arr.copy()
+    
+    while current != sorted_arr:
+        pivot = current[-1]
+        left = [x for x in current if x <= pivot]
+        right = [x for x in current if x > pivot]
+        current = left + right
+        operations += 1
+        
+    return operations
+
+def main():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        arr = list(map(int, input().split()))
+        print(min_eversions(arr))
+
+if __name__ == "__main__":
+    main()

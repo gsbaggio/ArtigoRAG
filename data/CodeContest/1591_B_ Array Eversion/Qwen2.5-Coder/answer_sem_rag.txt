@@ -1,0 +1,38 @@
+def is_sorted(arr):
+    return all(arr[i] <= arr[i + 1] for i in range(len(arr) - 1))
+
+def eversion(arr):
+    x = arr[-1]
+    left = [a for a in arr if a <= x]
+    right = [a for a in arr if a > x]
+    return left + right
+
+def min_eversions(arr):
+    if is_sorted(arr):
+        return 0
+    arr1 = eversion(arr)
+    if is_sorted(arr1):
+        return 1
+    arr2 = eversion(arr1)
+    if is_sorted(arr2):
+        return 2
+    return 3  # This line is theoretically unreachable based on the problem constraints
+
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    index = 0
+    t = int(input[index])
+    index += 1
+    results = []
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        arr = list(map(int, input[index:index + n]))
+        index += n
+        results.append(min_eversions(arr))
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

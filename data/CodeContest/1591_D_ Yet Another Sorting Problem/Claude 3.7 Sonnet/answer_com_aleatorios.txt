@@ -1,0 +1,102 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+long long merge_and_count(vector<int>& arr, vector<int>& temp, int left, int mid, int right) {
+    int i = left;
+    int j = mid + 1;
+    int k = left;
+    long long inv_count = 0;
+    
+    while (i <= mid && j <= right) {
+        if (arr[i] <= arr[j]) {
+            temp[k++] = arr[i++];
+        } else {
+            temp[k++] = arr[j++];
+            inv_count += (mid - i + 1);  // Count inversions
+        }
+    }
+    
+    while (i <= mid)
+        temp[k++] = arr[i++];
+        
+    while (j <= right)
+        temp[k++] = arr[j++];
+        
+    for (i = left; i <= right; i++)
+        arr[i] = temp[i];
+        
+    return inv_count;
+}
+
+long long merge_sort_and_count(vector<int>& arr, vector<int>& temp, int left, int right) {
+    long long inv_count = 0;
+    if (left < right) {
+        int mid = (left + right) / 2;
+        inv_count += merge_sort_and_count(arr, temp, left, mid);
+        inv_count += merge_sort_and_count(arr, temp, mid + 1, right);
+        inv_count += merge_and_count(arr, temp, left, mid, right);
+    }
+    return inv_count;
+}
+
+long long count_inversions(vector<int>& arr) {
+    vector<int> temp(arr.size());
+    return merge_sort_and_count(arr, temp, 0, arr.size() - 1);
+}
+
+bool can_sort_with_3_cycles(vector<int>& arr) {
+    int n = arr.size();
+    
+    // For arrays of size 1, it's already sorted
+    if (n == 1) return true;
+    
+    // Create pairs of (value, original_index)
+    vector<pair<int, int>> indexed_arr(n);
+    for (int i = 0; i < n; i++) {
+        indexed_arr[i] = {arr[i], i};
+    }
+    
+    // Sort by value
+    sort(indexed_arr.begin(), indexed_arr.end());
+    
+    // Create permutation
+    vector<int> perm(n);
+    for (int i = 0; i < n; i++) {
+        perm[indexed_arr[i].second] = i;
+    }
+    
+    // Count inversions efficiently
+    long long inversions = count_inversions(perm);
+    
+    // If inversion count is even, we can sort with 3-cycles
+    return inversions % 2 == 0;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<int> arr(n);
+        for (int i = 0; i < n; i++) {
+            cin >> arr[i];
+        }
+        
+        if (can_sort_with_3_cycles(arr)) {
+            cout << "YES\n";
+        } else {
+            cout << "NO\n";
+        }
+    }
+    
+    return 0;
+}

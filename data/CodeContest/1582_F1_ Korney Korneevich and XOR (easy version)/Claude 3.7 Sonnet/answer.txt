@@ -1,0 +1,44 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    
+    // dp[mask] represents the XOR of elements in an increasing subsequence
+    set<int> results = {0}; // Include empty subsequence
+    
+    // Sort the array
+    vector<int> sorted_a = a;
+    sort(sorted_a.begin(), sorted_a.end());
+    sorted_a.erase(unique(sorted_a.begin(), sorted_a.end()), sorted_a.end());
+    
+    // For each unique value in sorted order
+    for (int val : sorted_a) {
+        vector<int> current_results(results.begin(), results.end());
+        
+        // For each existing XOR result, create a new result by XORing with current value
+        for (int xor_val : current_results) {
+            results.insert(xor_val ^ val);
+        }
+    }
+    
+    vector<int> answer(results.begin(), results.end());
+    
+    cout << answer.size() << endl;
+    for (int x : answer) {
+        cout << x << " ";
+    }
+    cout << endl;
+    
+    return 0;
+}

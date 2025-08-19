@@ -1,0 +1,38 @@
+def can_sort_array(t, test_cases):
+    def is_sorted(arr):
+        return all(arr[i] <= arr[i + 1] for i in range(len(arr) - 1))
+
+    results = []
+    for _ in range(t):
+        n = test_cases[_][0]
+        arr = test_cases[_][1]
+
+        if is_sorted(arr):
+            results.append("YES")
+        else:
+            cycle_count = 0
+            for i in range(n):
+                if arr[i] != i + 1:
+                    cycle_count += 1
+                    if cycle_count >= 3:
+                        results.append("NO")
+                        break
+
+            if cycle_count < 3:
+                results.append("YES")
+
+    return results
+
+
+# Input
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    test_cases.append((n, arr))
+
+# Output
+results = can_sort_array(t, test_cases)
+for res in results:
+    print(res)

@@ -1,0 +1,70 @@
+def merge_and_count(arr, temp_arr, left, right):
+    if left >= right:
+        return 0
+
+    mid = (left + right) // 2
+
+    # Count inversions in left and right halves
+    inv_count = merge_and_count(arr, temp_arr, left, mid)
+    inv_count += merge_and_count(arr, temp_arr, mid + 1, right)
+
+    # Count split inversions
+    inv_count += merge_and_count_split(arr, temp_arr, left, mid, right)
+
+    return inv_count
+
+def merge_and_count_split(arr, temp_arr, left, mid, right):
+    i, j, k = left, mid + 1, left
+    inv_count = 0
+
+    while i <= mid and j <= right:
+        if arr[i] <= arr[j]:
+            temp_arr[k] = arr[i]
+            i += 1
+        else:
+            temp_arr[k] = arr[j]
+            inv_count += (mid - i + 1)  # Count inversions
+            j += 1
+        k += 1
+
+    while i <= mid:
+        temp_arr[k] = arr[i]
+        i += 1
+        k += 1
+
+    while j <= right:
+        temp_arr[k] = arr[j]
+        j += 1
+        k += 1
+
+    for i in range(left, right + 1):
+        arr[i] = temp_arr[i]
+
+    return inv_count
+
+def can_sort_with_3_cycles(t, test_cases):
+    results = []
+    for n, arr in test_cases:
+        temp_arr = [0] * n
+        inversions = merge_and_count(arr, temp_arr, 0, n - 1)
+        results.append("YES" if inversions % 2 == 0 else "NO")
+    return results
+
+# Input reading
+import sys
+input = sys.stdin.read
+data = input().split()
+
+t = int(data[0])
+index = 1
+test_cases = []
+for _ in range(t):
+    n = int(data[index])
+    index += 1
+    arr = list(map(int, data[index:index + n]))
+    index += n
+    test_cases.append((n, arr))
+
+# Solve and output results
+results = can_sort_with_3_cycles(t, test_cases)
+sys.stdout.write("\n".join(results) + "\n")

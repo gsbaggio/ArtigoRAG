@@ -1,0 +1,21 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        count = 0
+        
+        while True:
+            x = a[-1]  # Last element
+            new_a = [val for val in a if val <= x] + [val for val in a if val > x]
+            
+            if new_a == a:  # If array doesn't change
+                break
+                
+            a = new_a
+            count += 1
+            
+        print(count)
+
+solve()

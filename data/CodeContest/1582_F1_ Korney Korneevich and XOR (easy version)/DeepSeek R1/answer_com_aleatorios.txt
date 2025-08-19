@@ -1,0 +1,32 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    a = list(map(int, data[1:1+n]))
+    size = 512
+    INF = 10**9
+    dp = [INF] * size
+    dp[0] = 0
+    
+    for num in a:
+        new_dp = dp[:]  # create a copy
+        for x in range(size):
+            if dp[x] < num:
+                y = x ^ num
+                if num < new_dp[y]:
+                    new_dp[y] = num
+        dp = new_dp
+        
+    res = []
+    for x in range(size):
+        if dp[x] != INF:
+            res.append(x)
+            
+    print(len(res))
+    print(" ".join(map(str, res)))
+    
+if __name__ == "__main__":
+    main()

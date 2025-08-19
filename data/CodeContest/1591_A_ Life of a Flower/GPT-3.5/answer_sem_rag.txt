@@ -1,0 +1,35 @@
+# Number of test cases
+t = int(input())
+
+# Iterate through each test case
+for _ in range(t):
+    # Number of days for the current test case
+    n = int(input())
+    
+    # Watering pattern for the current test case
+    watering_pattern = list(map(int, input().split()))
+    
+    # Initialize flower height and days without watering
+    height = 1
+    no_water_days = 0
+    
+    # Iterate through each day
+    for i in range(n):
+        # Check if the flower is watered on the current day
+        if watering_pattern[i] == 1:
+            # If the previous day was also watered, increase height by 5
+            if i > 0 and watering_pattern[i - 1] == 1:
+                height += 5
+            # Otherwise, increase height by 1 and reset days without watering
+            else:
+                height += 1
+                no_water_days = 0
+        else:
+            # Increment days without watering
+            no_water_days += 1
+            # If there are two consecutive days without watering, the flower dies
+            if no_water_days == 2:
+                height = -1
+                break
+    
+    print(height)

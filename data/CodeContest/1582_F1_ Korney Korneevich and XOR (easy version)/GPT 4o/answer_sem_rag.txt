@@ -1,0 +1,23 @@
+def find_xor_values(n, a):
+    # Set to store all possible XOR values
+    possible_xor = {0}
+    
+    # Temporary set to store new XOR values for each element
+    for num in a:
+        new_xor = set()
+        for x in possible_xor:
+            new_xor.add(x ^ num)
+        possible_xor.update(new_xor)
+    
+    # Convert the set to a sorted list
+    result = sorted(possible_xor)
+    
+    # Output the results
+    print(len(result))
+    print(" ".join(map(str, result)))
+
+# Input reading
+if __name__ == "__main__":
+    n = int(input())
+    a = list(map(int, input().split()))
+    find_xor_values(n, a)

@@ -1,0 +1,26 @@
+def find_xor_values(n, arr):
+    possible_xor_values = set()
+    dp = [0] * 1024  # 2^10 possible XOR values
+    
+    for num in arr:
+        new_dp = dp.copy()
+        for val in dp:
+            new_dp[val ^ num] = 1
+        dp = new_dp
+    
+    for i in range(1024):
+        if dp[i] == 1:
+            possible_xor_values.add(i)
+    
+    return possible_xor_values
+
+# Input
+n = int(input())
+arr = list(map(int, input().split()))
+
+# Find possible XOR values
+xor_values = find_xor_values(n, arr)
+
+# Output
+print(len(xor_values))
+print(*sorted(xor_values))

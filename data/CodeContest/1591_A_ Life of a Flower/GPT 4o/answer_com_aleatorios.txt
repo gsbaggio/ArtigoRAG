@@ -1,0 +1,38 @@
+def flower_growth(t, test_cases):
+    results = []
+    for case in test_cases:
+        n, a = case
+        height = 1  # Initial height of the flower
+        died = False
+        
+        for i in range(n):
+            if a[i] == 1:
+                if i > 0 and a[i-1] == 1:
+                    height += 5  # Grows by 5 cm if watered consecutively
+                else:
+                    height += 1  # Grows by 1 cm if watered
+            else:
+                if i > 0 and a[i-1] == 0:
+                    died = True  # Flower dies if not watered for two consecutive days
+                    break
+        
+        if died:
+            results.append(-1)
+        else:
+            results.append(height)
+    
+    return results
+
+
+# Input reading and output
+if __name__ == "__main__":
+    t = int(input())  # Number of test cases
+    test_cases = []
+    for _ in range(t):
+        n = int(input())  # Number of days
+        a = list(map(int, input().split()))  # Watering schedule
+        test_cases.append((n, a))
+    
+    results = flower_growth(t, test_cases)
+    for res in results:
+        print(res)

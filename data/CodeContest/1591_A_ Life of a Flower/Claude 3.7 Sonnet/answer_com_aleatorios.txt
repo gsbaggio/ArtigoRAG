@@ -1,0 +1,53 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<int> watered(n);
+        for (int i = 0; i < n; i++) {
+            cin >> watered[i];
+        }
+        
+        int height = 1;  // Initial height
+        bool prev_watered = false;
+        bool alive = true;
+        bool consecutive_not_watered = false;
+        
+        for (int i = 0; i < n; i++) {
+            if (!watered[i]) {
+                // Not watered today
+                if (i > 0 && !watered[i-1]) {
+                    // Not watered for two consecutive days
+                    alive = false;
+                    break;
+                }
+                prev_watered = false;
+            } else {
+                // Watered today
+                if (prev_watered) {
+                    // Watered for two consecutive days
+                    height += 5;
+                } else {
+                    // Just watered today
+                    height += 1;
+                }
+                prev_watered = true;
+            }
+        }
+        
+        if (alive) {
+            cout << height << endl;
+        } else {
+            cout << -1 << endl;
+        }
+    }
+    
+    return 0;
+}

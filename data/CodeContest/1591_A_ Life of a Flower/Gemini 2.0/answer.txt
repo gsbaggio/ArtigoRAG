@@ -1,0 +1,25 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    height = 1
+    withered = False
+    for i in range(n):
+        if a[i] == 1:
+            if i > 0 and a[i-1] == 1:
+                height += 5
+            else:
+                height += 1
+        else:
+            if i > 0 and a[i-1] == 0:
+                withered = True
+                break
+    
+    if withered:
+        print(-1)
+    else:
+        print(height)
+
+t = int(input())
+for _ in range(t):
+    solve()

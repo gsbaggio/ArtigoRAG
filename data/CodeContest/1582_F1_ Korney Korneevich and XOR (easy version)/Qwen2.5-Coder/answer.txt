@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for(auto &x : a){
+        cin >> x;
+    }
+    
+    // Sort the array to ensure increasing subsequences
+    sort(a.begin(), a.end());
+    
+    // Set to store all possible XOR results
+    set<int> xor_results;
+    xor_results.insert(0); // An empty subsequence has XOR 0
+    
+    for(int i = 0; i < n; ++i){
+        // Temporary set to store new XOR results
+        set<int> new_xor_results;
+        
+        // Iterate through all current XOR results
+        for(auto x : xor_results){
+            // Calculate new XOR result by including the current element
+            int new_xor = x ^ a[i];
+            
+            // Add the new XOR result to the temporary set
+            new_xor_results.insert(new_xor);
+        }
+        
+        // Merge the new XOR results into the main set
+        xor_results.insert(new_xor_results.begin(), new_xor_results.end());
+    }
+    
+    // Collect all unique XOR results in a vector
+    vector<int> result(xor_results.begin(), xor_results.end());
+    
+    // Output the number of unique XOR results
+    cout << result.size() << "\n";
+    
+    // Output the unique XOR results in increasing order
+    for(auto x : result){
+        cout << x << " ";
+    }
+    cout << "\n";
+    
+    return 0;
+}

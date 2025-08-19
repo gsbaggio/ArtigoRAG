@@ -1,0 +1,55 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        # Check if the array is sorted
+        is_sorted = True
+        for i in range(n-1):
+            if a[i] > a[i+1]:
+                is_sorted = False
+                break
+                
+        if is_sorted:
+            results.append("YES")
+            continue
+            
+        # Check for duplicates
+        seen = set()
+        has_duplicate = False
+        for num in a:
+            if num in seen:
+                has_duplicate = True
+                break
+            seen.add(num)
+            
+        if has_duplicate:
+            results.append("YES")
+        else:
+            # Build the permutation t_arr where t_arr[i] = a[i] - 1
+            t_arr = [x - 1 for x in a]
+            visited = [False] * n
+            cycles = 0
+            for i in range(n):
+                if not visited[i]:
+                    cycles += 1
+                    cur = i
+                    while not visited[cur]:
+                        visited[cur] = True
+                        cur = t_arr[cur]
+            if (n - cycles) % 2 == 0:
+                results.append("YES")
+            else:
+                results.append("NO")
+                
+    sys.stdout.write("\n".join(results))
+    
+if __name__ == "__main__":
+    main()

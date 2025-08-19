@@ -1,0 +1,95 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+long long mergeAndCount(vector<int>& arr, vector<int>& temp, int left, int mid, int right) {
+    int i = left;
+    int j = mid + 1;
+    int k = left;
+    long long inversions = 0;
+    
+    while (i <= mid && j <= right) {
+        if (arr[i] <= arr[j]) {
+            temp[k++] = arr[i++];
+        } else {
+            temp[k++] = arr[j++];
+            inversions += (mid - i + 1); // Count inversions
+        }
+    }
+    
+    while (i <= mid) {
+        temp[k++] = arr[i++];
+    }
+    
+    while (j <= right) {
+        temp[k++] = arr[j++];
+    }
+    
+    for (i = left; i <= right; i++) {
+        arr[i] = temp[i];
+    }
+    
+    return inversions;
+}
+
+long long countInversions(vector<int>& arr, vector<int>& temp, int left, int right) {
+    long long inversions = 0;
+    if (left < right) {
+        int mid = (left + right) / 2;
+        inversions += countInversions(arr, temp, left, mid);
+        inversions += countInversions(arr, temp, mid + 1, right);
+        inversions += mergeAndCount(arr, temp, left, mid, right);
+    }
+    return inversions;
+}
+
+bool canSortWith3Cycles(vector<int>& a) {
+    int n = a.size();
+    
+    // Check if the array is a valid permutation of 1 to n
+    vector<bool> seen(n + 1, false);
+    for (int val : a) {
+        if (val < 1 || val > n || seen[val]) {
+            // If we have duplicates, check if the array is already sorted
+            vector<int> sorted = a;
+            sort(sorted.begin(), sorted.end());
+            return a == sorted;
+        }
+        seen[val] = true;
+    }
+    
+    // Count inversions using merge sort algorithm
+    vector<int> temp(n);
+    vector<int> arr = a; // Make a copy as counting inversions modifies the array
+    long long inversions = countInversions(arr, temp, 0, n - 1);
+    
+    // Can be sorted if inversions is even
+    return inversions % 2 == 0;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        
+        if (canSortWith3Cycles(a)) {
+            cout << "YES\n";
+        } else {
+            cout << "NO\n";
+        }
+    }
+    
+    return 0;
+}

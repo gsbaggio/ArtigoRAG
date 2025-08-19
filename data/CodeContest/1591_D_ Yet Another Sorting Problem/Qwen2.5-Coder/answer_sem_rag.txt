@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for(int i=0; i<n; i++){
+            cin >> a[i];
+        }
+        
+        vector<bool> visited(n, false);
+        bool can_sort = true;
+        
+        for(int i=0; i<n; i++){
+            if(!visited[i]){
+                int cycle_length = 0;
+                int current = i;
+                
+                do{
+                    visited[current] = true;
+                    current = a[current] - 1; // Convert to 0-based index
+                    cycle_length++;
+                }while(!visited[current]);
+                
+                if(cycle_length > 3){
+                    can_sort = false;
+                    break;
+                }
+            }
+        }
+        
+        if(can_sort){
+            cout << "YES\n";
+        }
+        else{
+            cout << "NO\n";
+        }
+    }
+    
+    return 0;
+}

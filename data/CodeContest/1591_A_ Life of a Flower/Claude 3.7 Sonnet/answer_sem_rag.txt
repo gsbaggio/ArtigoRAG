@@ -1,0 +1,33 @@
+def solve_flower_growth():
+    t = int(input())  # Number of test cases
+    
+    for _ in range(t):
+        n = int(input())  # Number of days
+        watering = list(map(int, input().split()))  # Watering schedule
+        
+        height = 1  # Initial height
+        prev_watered = False  # Tracking if watered on previous day
+        consecutive_dry_days = 0  # Tracking consecutive days without water
+        
+        for day in range(n):
+            if watering[day] == 1:  # Flower is watered today
+                consecutive_dry_days = 0  # Reset dry days counter
+                
+                if prev_watered:  # If watered on previous day too
+                    height += 5  # Grow by 5 cm
+                else:
+                    height += 1  # Grow by 1 cm
+                
+                prev_watered = True
+            else:  # Flower is not watered today
+                consecutive_dry_days += 1
+                
+                if consecutive_dry_days == 2:  # Died from lack of water
+                    height = -1
+                    break
+                
+                prev_watered = False  # Not watered today
+        
+        print(height)
+
+solve_flower_growth()

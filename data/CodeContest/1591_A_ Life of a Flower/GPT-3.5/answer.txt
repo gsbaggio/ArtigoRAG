@@ -1,0 +1,32 @@
+def flower_height(t, test_cases):
+    for test in range(t):
+        n = test_cases[test][0]
+        days = test_cases[test][1]
+
+        height = 1  # Initial height of the flower
+        consecutive_days = 0
+
+        for i in range(n):
+            if days[i] == 1:
+                if consecutive_days >= 1:
+                    height += 5
+                    consecutive_days = 0
+                else:
+                    height += 1
+            else:
+                consecutive_days += 1
+                if consecutive_days == 2:
+                    print(-1)
+                    break
+        else:
+            print(height)
+
+# Input processing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    days = list(map(int, input().split()))
+    test_cases.append((n, days))
+
+flower_height(t, test_cases)

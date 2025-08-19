@@ -1,0 +1,54 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        # Create the target sorted array
+        sorted_a = sorted(a)
+        
+        # Count the number of inversions to determine if permutation is even or odd
+        inversion_count = count_inversions(a, sorted_a, n)
+        
+        # If the permutation is even, we can sort using 3-cycles
+        if inversion_count % 2 == 0:
+            print("YES")
+        else:
+            print("NO")
+
+def count_inversions(a, sorted_a, n):
+    # Create position mapping for the sorted array
+    position = {}
+    for i in range(n):
+        if sorted_a[i] not in position:
+            position[sorted_a[i]] = []
+        position[sorted_a[i]].append(i)
+    
+    # Create the permutation that maps sorted array to original array
+    perm = []
+    for num in a:
+        perm.append(position[num].pop(0))
+    
+    # Count inversions in the permutation
+    inversions = 0
+    visited = [False] * n
+    
+    for i in range(n):
+        if visited[i] or perm[i] == i:
+            continue
+            
+        # Count elements in this cycle
+        cycle_size = 0
+        j = i
+        while not visited[j]:
+            visited[j] = True
+            j = perm[j]
+            cycle_size += 1
+            
+        # A cycle of length k requires k-1 transpositions
+        inversions += cycle_size - 1
+            
+    return inversions
+
+solve()

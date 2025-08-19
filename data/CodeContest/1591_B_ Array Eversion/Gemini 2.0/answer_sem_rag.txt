@@ -1,0 +1,15 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    k = 0
+    last = a[-1]
+    for i in range(n - 2, -1, -1):
+        if a[i] > last:
+            k += 1
+            last = a[i]
+    print(k)
+
+t = int(input())
+for _ in range(t):
+    solve()

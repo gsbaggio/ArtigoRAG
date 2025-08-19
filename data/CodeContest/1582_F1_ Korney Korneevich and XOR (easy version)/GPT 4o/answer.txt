@@ -1,0 +1,31 @@
+def find_xor_values(n, a):
+    # Initialize a set to store all possible XOR values
+    dp = set()
+    dp.add(0)  # XOR of an empty subsequence is 0
+    
+    # Temporary set to store new XOR values for each element
+    for num in sorted(a):
+        new_dp = set()
+        for x in dp:
+            new_dp.add(x ^ num)
+        dp.update(new_dp)
+    
+    # Convert the set to a sorted list
+    result = sorted(dp)
+    return len(result), result
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n = int(data[0])
+    a = list(map(int, data[1:]))
+    
+    # Solve the problem
+    k, result = find_xor_values(n, a)
+    
+    # Output the results
+    print(k)
+    print(" ".join(map(str, result)))

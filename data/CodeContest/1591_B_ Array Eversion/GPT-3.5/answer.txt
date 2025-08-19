@@ -1,0 +1,33 @@
+def min_eversions(t, tests):
+    results = []
+    for test in tests:
+        n = test[0]
+        a = test[1]
+
+        max_val = a[-1]
+        eversion_count = 0
+
+        for i in range(n - 1, -1, -1):
+            if a[i] < max_val:
+                break
+            max_val = a[i]
+            eversion_count += 1
+
+        results.append(eversion_count)
+
+    return results
+
+# Input
+t = int(input())
+tests = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    tests.append((n, a))
+
+# Get results
+results = min_eversions(t, tests)
+
+# Output
+for res in results:
+    print(res)

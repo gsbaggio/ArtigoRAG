@@ -1,0 +1,30 @@
+def main():
+    import sys
+    data = sys.stdin.read().split()
+    n = int(data[0])
+    a = list(map(int, data[1:1+n]))
+    
+    size = 512
+    INF = 600
+    dp = [INF] * size
+    dp[0] = -1
+    
+    for x in a:
+        new_dp = dp[:]  # Create a copy of the current state
+        for i in range(size):
+            if dp[i] < x:
+                j = i ^ x
+                if x < new_dp[j]:
+                    new_dp[j] = x
+        dp = new_dp
+        
+    result = []
+    for i in range(size):
+        if dp[i] != INF:
+            result.append(i)
+            
+    print(len(result))
+    print(" ".join(map(str, result)))
+    
+if __name__ == "__main__":
+    main()

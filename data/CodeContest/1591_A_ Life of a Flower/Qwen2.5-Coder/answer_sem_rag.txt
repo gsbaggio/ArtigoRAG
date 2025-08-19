@@ -1,0 +1,49 @@
+def flower_growth(test_cases):
+    results = []
+    for n, watering_schedule in test_cases:
+        height = 1  # Initial height of the flower
+        previous_day_watered = False  # Track if the previous day was watered
+        
+        for i in range(n):
+            current_day_watered = watering_schedule[i]
+            
+            if current_day_watered and previous_day_watered:
+                height += 5  # Grow by 5 cm if watered on two consecutive days
+            elif current_day_watered:
+                height += 1  # Grow by 1 cm if watered on the current day
+            else:
+                if previous_day_watered:
+                    # Do nothing, just update the previous_day_watered flag
+                    pass
+                else:
+                    # Flower dies if not watered for two consecutive days
+                    height = -1
+                    break
+            
+            previous_day_watered = current_day_watered
+        
+        results.append(height)
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+index = 0
+t = int(input[index])
+index += 1
+test_cases = []
+
+for _ in range(t):
+    n = int(input[index])
+    index += 1
+    watering_schedule = list(map(int, input[index:index + n]))
+    index += n
+    test_cases.append((n, watering_schedule))
+
+# Get results
+results = flower_growth(test_cases)
+
+# Print results
+for result in results:
+    print(result)

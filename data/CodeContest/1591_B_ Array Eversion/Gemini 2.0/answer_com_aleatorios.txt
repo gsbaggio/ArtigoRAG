@@ -1,0 +1,23 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    arr = a[:]
+    count = 0
+    
+    while True:
+        count += 1
+        x = arr[-1]
+        left = [y for y in arr if y <= x]
+        right = [y for y in arr if y > x]
+        new_arr = left + right
+        
+        if new_arr == arr:
+            print(count - 1)
+            return
+        else:
+            arr = new_arr[:]
+
+t = int(input())
+for _ in range(t):
+    solve()

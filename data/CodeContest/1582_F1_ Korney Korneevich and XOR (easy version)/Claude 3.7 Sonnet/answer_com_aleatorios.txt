@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+#include <set>
+
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    
+    // For each element, keep track of all possible XOR values
+    // that can be achieved with increasing subsequences ending with that element
+    vector<set<int>> dp(n);
+    
+    // Final set of all possible XOR values
+    set<int> result = {0};  // Include empty subsequence
+    
+    for (int i = 0; i < n; i++) {
+        // Add current element as a single-element subsequence
+        dp[i].insert(a[i]);
+        result.insert(a[i]);
+        
+        // Try to extend previous subsequences
+        for (int j = 0; j < i; j++) {
+            if (a[j] < a[i]) {  // Ensure increasing subsequence
+                for (int xor_val : dp[j]) {
+                    int new_xor = xor_val ^ a[i];
+                    dp[i].insert(new_xor);
+                    result.insert(new_xor);
+                }
+            }
+        }
+    }
+    
+    // Output the results
+    cout << result.size() << endl;
+    
+    bool first = true;
+    for (int val : result) {
+        if (!first) cout << " ";
+        cout << val;
+        first = false;
+    }
+    cout << endl;
+    
+    return 0;
+}

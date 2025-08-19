@@ -1,0 +1,24 @@
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    days = list(map(int, input().split()))
+    height = 1
+    prev = None
+    dead = False
+    for i in range(n):
+        if days[i] == 1:
+            if prev is None:
+                height += 1
+            else:
+                if prev == 1:
+                    height += 5
+                else:
+                    height += 1
+            prev = 1
+        else:
+            if prev == 0:
+                height = -1
+                dead = True
+                break
+            prev = 0
+    print(height)

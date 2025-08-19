@@ -1,0 +1,19 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    possible_xors = set()
+    possible_xors.add(0)
+
+    for num in a:
+        new_xors = set()
+        for xor_val in possible_xors:
+            if num > xor_val:
+                new_xors.add(num ^ xor_val)
+        possible_xors.update(new_xors)
+
+    result = sorted(list(possible_xors))
+    print(len(result))
+    print(*result)
+
+solve()

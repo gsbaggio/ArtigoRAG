@@ -1,0 +1,28 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    def eversion(arr):
+        if not arr:
+            return [], 0
+        
+        x = arr[-1]
+        left = [val for val in arr if val <= x]
+        right = [val for val in arr if val > x]
+        return left + right, x
+
+    k = 0
+    original_array = a[:]
+    
+    while True:
+        new_array, last_x = eversion(a)
+        if new_array == a:
+            break
+        a = new_array[:]
+        k += 1
+
+    print(k)
+
+t = int(input())
+for _ in range(t):
+    solve()

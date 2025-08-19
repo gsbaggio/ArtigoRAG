@@ -1,0 +1,31 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    n = int(input().strip())
+    a = list(map(int, input().split()))
+    height = 1
+    prev_watered = None
+    dead = False
+    for i in range(n):
+        if prev_watered is None:
+            if a[i] == 1:
+                height += 1
+            prev_watered = (a[i] == 1)
+        else:
+            if a[i] == 1:
+                if prev_watered:
+                    height += 5
+                else:
+                    height += 1
+                prev_watered = True
+            else:
+                if not prev_watered:
+                    height = -1
+                    dead = True
+                    break
+                else:
+                    prev_watered = False
+    results.append(height)
+
+for res in results:
+    print(res)

@@ -1,0 +1,32 @@
+def solve_flower_growth():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        watering = list(map(int, input().split()))
+        
+        # Start with height 1
+        height = 1
+        consecutive_not_watered = 0
+        last_watered = False
+        
+        for i in range(n):
+            if watering[i] == 1:  # Watered today
+                if last_watered:  # Also watered yesterday
+                    height += 5
+                else:
+                    height += 1
+                last_watered = True
+                consecutive_not_watered = 0
+            else:  # Not watered today
+                consecutive_not_watered += 1
+                last_watered = False
+                
+                # Check if flower dies
+                if consecutive_not_watered == 2:
+                    height = -1
+                    break
+        
+        print(height)
+
+solve_flower_growth()

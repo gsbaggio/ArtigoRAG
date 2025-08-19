@@ -1,0 +1,23 @@
+from itertools import combinations
+
+# Function to calculate the number of concerts Mike can perform for each test case
+def count_concerts(test_cases):
+    for _ in range(test_cases):
+        n = int(input())
+        a = list(map(int, input().split()))
+        sum_set = set()
+
+        for i in range(n + 1):
+            comb = combinations(a, i)
+            for c in comb:
+                sum_set.add(sum(c))
+
+        print(len(sum_set))
+
+# Input processing
+def main():
+    t = int(input())  # Number of test cases
+    count_concerts(t)
+
+if __name__ == "__main__":
+    main()
