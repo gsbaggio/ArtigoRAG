@@ -1,48 +1,35 @@
-def flower_growth(test_cases):
+def flower_growth(t, test_cases):
     results = []
-    for n, watering_schedule in test_cases:
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
         height = 1  # Initial height of the flower
-        previous_day_watered = False  # Track if the previous day was watered
+        dry_days = 0  # Number of consecutive dry days
         
         for i in range(n):
-            current_day_watered = watering_schedule[i]
-            
-            if current_day_watered and previous_day_watered:
-                height += 5  # Grow by 5 cm if watered on two consecutive days
-            elif current_day_watered:
-                height += 1  # Grow by 1 cm if watered on the current day
-            else:
-                if previous_day_watered:
-                    # Do nothing, just update the previous_day_watered flag
-                    pass
+            if a[i] == 1:
+                dry_days = 0  # Reset dry days counter
+                if i > 0 and a[i-1] == 1:
+                    height += 5  # Grow by 5 cm if watered on both i and i-1
                 else:
-                    # Flower dies if not watered for two consecutive days
-                    height = -1
+                    height += 1  # Grow by 1 cm if watered only on i
+            else:
+                dry_days += 1  # Increment dry days counter
+                if dry_days == 2:
+                    results.append(-1)  # Flower dies
                     break
+        else:
+            results.append(height)  # Append final height if flower didn't die
             
-            previous_day_watered = current_day_watered
-        
-        results.append(height)
-    
     return results
 
 # Read input
-import sys
-input = sys.stdin.read().split()
-index = 0
-t = int(input[index])
-index += 1
-test_cases = []
-
-for _ in range(t):
-    n = int(input[index])
-    index += 1
-    watering_schedule = list(map(int, input[index:index + n]))
-    index += n
-    test_cases.append((n, watering_schedule))
+t = int(input())
+test_cases = [input().split() for _ in range(t)]
 
 # Get results
-results = flower_growth(test_cases)
+results = flower_growth(t, test_cases)
 
 # Print results
 for result in results:

@@ -1,0 +1,22 @@
+MOD = 998244353
+
+def count_arrays(n, a):
+    pos = {}
+    for i in range(n):
+        pos[a[i]] = max(pos.get(a[i], -1), i)
+
+    seg = 0
+    last_pos = pos[a[0]]
+    for i in range(1, n):
+        if i > last_pos:
+            seg += 1
+        last_pos = max(last_pos, pos[a[i]])
+
+    return pow(2, seg, MOD)
+
+# Read input
+n = int(input())
+a = list(map(int, input().split()))
+
+# Calculate and print the answer
+print(count_arrays(n, a))

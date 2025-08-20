@@ -1,0 +1,46 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+    
+    MOD = 998244353
+    
+    # For n=1, the answer is a[0]
+    if n == 1:
+        return a[0]
+    
+    # Initialize DP arrays
+    # dp[0] = count of ways for the current position
+    # dp[1] = count of ways ending with each possible value
+    dp = [0, {}]
+    
+    # Base case: position 0
+    for j in range(1, a[0] + 1):
+        dp[1][j] = 1
+    
+    total_ways = a[0]  # Total ways for position 0
+    
+    # Process each position
+    for i in range(1, n):
+        new_total = 0
+        new_dp = {}
+        
+        # For each possible value at position i
+        for j in range(1, a[i] + 1):
+            # We can use any array that doesn't end with j
+            ways = total_ways
+            if j in dp[1]:
+                ways -= dp[1][j]
+                if ways < 0:
+                    ways += MOD
+            
+            if ways > 0:
+                new_dp[j] = ways
+                new_total = (new_total + ways) % MOD
+        
+        # Update for next iteration
+        dp[1] = new_dp
+        total_ways = new_total
+    
+    return total_ways
+
+print(solve())

@@ -1,0 +1,31 @@
+MOD = 998244353
+
+def count_valid_arrays(n, a):
+    # Initialize dp for the first element
+    dp_prev = [1] * (a[0] + 1)  # dp_prev[j] = 1 for all j in [1, a[0]]
+    
+    for i in range(1, n):
+        # Compute prefix sums for dp_prev
+        prefix_sum = [0] * (a[i-1] + 2)
+        for j in range(1, a[i-1] + 1):
+            prefix_sum[j] = (prefix_sum[j-1] + dp_prev[j]) % MOD
+        
+        # Compute dp for the current element
+        dp_curr = [0] * (a[i] + 1)
+        for j in range(1, a[i] + 1):
+            # Total sum of dp_prev minus dp_prev[j]
+            dp_curr[j] = (prefix_sum[a[i-1]] - prefix_sum[j-1] + MOD) % MOD
+        
+        # Update dp_prev for the next iteration
+        dp_prev = dp_curr
+    
+    # Sum up all valid arrays ending at the last element
+    result = sum(dp_prev[1:]) % MOD
+    return result
+
+# Input reading
+n = int(input())
+a = list(map(int, input().split()))
+
+# Output the result
+print(count_valid_arrays(n, a))

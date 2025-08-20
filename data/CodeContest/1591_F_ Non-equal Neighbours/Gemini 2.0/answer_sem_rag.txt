@@ -1,0 +1,17 @@
+def solve_optimized():
+    n = int(input())
+    a = list(map(int, input().split()))
+    MOD = 998244353
+
+    prev_same = 0
+    prev_diff = a[0]
+
+    for i in range(1, n):
+        curr_same = (prev_diff * max(0, min(a[i], a[i-1]))) % MOD
+        curr_diff = (prev_same + prev_diff) * max(0, a[i] - min(a[i], a[i-1])) % MOD
+        curr_diff = (curr_diff + prev_diff * max(0, min(a[i], a[i-1] - 1))) % MOD
+
+        prev_same = curr_same
+        prev_diff = curr_diff
+
+    print((prev_same + prev_diff) % MOD)

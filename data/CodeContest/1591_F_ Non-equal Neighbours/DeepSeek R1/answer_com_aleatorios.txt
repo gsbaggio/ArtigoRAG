@@ -1,0 +1,91 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+const int MOD = 998244353;
+
+struct Segment {
+    long long l, r;
+    long long v;
+    Segment(long long l, long long r, long long v) : l(l), r(r), v(v) {}
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    cin >> n;
+    vector<long long> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    
+    if (n == 0) {
+        cout << 0 << endl;
+        return 0;
+    }
+    
+    vector<Segment> segments;
+    segments.emplace_back(1, a[0], 1);
+    long long F = a[0] % MOD;
+    
+    for (int i = 1; i < n; i++) {
+        vector<Segment> new_segments;
+        for (const auto& seg : segments) {
+            long long new_v = (F - seg.v + MOD) % MOD;
+            new_segments.emplace_back(seg.l, seg.r, new_v);
+        }
+        
+        if (a[i] > a[i-1]) {
+            new_segments.emplace_back(a[i-1] + 1, a[i], F);
+        } else {
+            vector<Segment> temp;
+            for (const auto& seg : new_segments) {
+                if (seg.r < a[i]) {
+                    temp.push_back(seg);
+                } else if (seg.l > a[i]) {
+                    continue;
+                } else {
+                    temp.emplace_back(seg.l, a[i], seg.v);
+                }
+            }
+            new_segments = temp;
+        }
+        
+        if (new_segments.empty()) {
+            F = 0;
+            segments = new_segments;
+            continue;
+        }
+        
+        sort(new_segments.begin(), new_segments.end(), [](const Segment& a, const Segment& b) {
+            return a.l < b.l;
+        });
+        
+        vector<Segment> merged;
+        Segment current = new_segments[0];
+        for (int j = 1; j < new_segments.size(); j++) {
+            if (current.v == new_segments[j].v && current.r + 1 == new_segments[j].l) {
+                current.r = new_segments[j].r;
+            } else {
+                merged.push_back(current);
+                current = new_segments[j];
+            }
+        }
+        merged.push_back(current);
+        new_segments = merged;
+        
+        F = 0;
+        for (const auto& seg : new_segments) {
+            long long len = seg.r - seg.l + 1;
+            F = (F + len % MOD * seg.v) % MOD;
+        }
+        segments = new_segments;
+    }
+    
+    cout << F << endl;
+    
+    return 0;
+}

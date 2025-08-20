@@ -1,0 +1,25 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+    
+    MOD = 998244353
+    
+    dp = [[0] * (max(a) + 1) for _ in range(n)]
+    
+    for j in range(1, a[0] + 1):
+        dp[0][j] = 1
+    
+    for i in range(1, n):
+        total_sum = sum(dp[i-1]) % MOD
+        
+        prefix_sum = [0] * (max(a) + 2)
+        for j in range(1, max(a) + 1):
+            prefix_sum[j] = (prefix_sum[j-1] + dp[i-1][j]) % MOD
+        
+        for j in range(1, a[i] + 1):
+            dp[i][j] = (total_sum - prefix_sum[j] + prefix_sum[j-1]) % MOD
+            dp[i][j] = (dp[i][j] + MOD) % MOD
+            
+    print(sum(dp[n-1]) % MOD)
+
+solve()

@@ -1,0 +1,151 @@
+MOD = 998244353
+INF = 10**9
+
+import sys
+sys.setrecursionlimit(3000000)
+
+class SegmentTree:
+    def __init__(self, n, leaf_value, leaf_len):
+        self.n = n
+        self.size = 4 * n
+        self.tree = [0] * self.size
+        self.len_node = [0] * self.size
+        self.lazy_mul = [1] * self.size
+        self.lazy_add = [0] * self.size
+        self.leaf_value = leaf_value
+        self.leaf_len = leaf_len
+        self.build(1, 0, n-1)
+        
+    def build(self, idx, l, r):
+        if l == r:
+            self.len_node[idx] = self.leaf_len[l]
+            self.tree[idx] = self.leaf_value[l] * self.leaf_len[l] % MOD
+        else:
+            mid = (l + r) // 2
+            self.build(2*idx, l, mid)
+            self.build(2*idx+1, mid+1, r)
+            self.tree[idx] = (self.tree[2*idx] + self.tree[2*idx+1]) % MOD
+            self.len_node[idx] = (self.len_node[2*idx] + self.len_node[2*idx+1]) % MOD
+            
+    def pushdown(self, idx):
+        if self.lazy_mul[idx] != 1 or self.lazy_add[idx] != 0:
+            left = 2 * idx
+            right = 2 * idx + 1
+            if left < self.size:
+                self.tree[left] = (self.lazy_mul[idx] * self.tree[left] + self.lazy_add[idx] * self.len_node[left]) % MOD
+                self.lazy_mul[left] = (self.lazy_mul[idx] * self.lazy_mul[left]) % MOD
+                self.lazy_add[left] = (self.lazy_mul[idx] * self.lazy_add[left] + self.lazy_add[idx]) % MOD
+            if right < self.size:
+                self.tree[right] = (self.lazy_mul[idx] * self.tree[right] + self.lazy_add[idx] * self.len_node[right]) % MOD
+                self.lazy_mul[right] = (self.lazy_mul[idx] * self.lazy_mul[right]) % MOD
+                self.lazy_add[right] = (self.lazy_mul[idx] * self.lazy_add[right] + self.lazy_add[idx]) % MOD
+            self.lazy_mul[idx] = 1
+            self.lazy_add[idx] = 0
+            
+    def update_range(self, idx, segl, segr, l, r, mul, add):
+        if segl > r or segr < l:
+            return
+        if l <= segl and segr <= r:
+            self.tree[idx] = (mul * self.tree[idx] + add * self.len_node[idx]) % MOD
+            self.lazy_mul[idx] = (mul * self.lazy_mul[idx]) % MOD
+            self.lazy_add[idx] = (mul * self.lazy_add[idx] + add) % MOD
+            return
+        self.pushdown(idx)
+        mid = (segl + segr) // 2
+        self.update_range(2*idx, segl, mid, l, r, mul, add)
+        self.update_range(2*idx+1, mid+1, segr, l, r, mul, add)
+        self.tree[idx] = (self.tree[2*idx] + self.tree[2*idx+1]) % MOD
+        
+    def query_range(self, idx, segl, segr, l, r):
+        if segl > r or segr < l:
+            return 0
+        if l <= segl and segr <= r:
+            return self.tree[idx]
+        self.pushdown(idx)
+        mid = (segl + segr) // 2
+        left_res = self.query_range(2*idx, segl, mid, l, r)
+        right_res = self.query_range(2*idx+1, mid+1, segr, l, r)
+        return (left_res + right_res) % MOD
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    a = list(map(int, data[1:1+n]))
+    
+    if n == 0:
+        print(0)
+        return
+        
+    coords = sorted(set(a))
+    leaves = []
+    if coords and coords[0] > 1:
+        leaves.append((1, coords[0]-1))
+    for i in range(len(coords)):
+        leaves.append((coords[i], coords[i]))
+        if i < len(coords)-1 and coords[i+1] > coords[i] + 1:
+            leaves.append((coords[i]+1, coords[i+1]-1))
+    if coords and coords[-1] < INF:
+        leaves.append((coords[-1]+1, INF))
+    
+    L = len(leaves)
+    leaf_len = [0] * L
+    leaf_value = [0] * L
+    for i in range(L):
+        l, r = leaves[i]
+        leaf_len[i] = (r - l + 1) % MOD
+        if r <= a[0]:
+            leaf_value[i] = 1
+        else:
+            leaf_value[i] = 0
+            
+    left_bounds = [leaves[i][0] for i in range(L)]
+    right_bounds = [leaves[i][1] for i in range(L)]
+    
+    st = SegmentTree(L, leaf_value, leaf_len)
+    
+    T = [0] * n
+    T[0] = a[0] % MOD
+    
+    for i in range(1, n):
+        x = a[i]
+        low, high = 0, L-1
+        j = -1
+        while low <= high:
+            mid = (low + high) // 2
+            if right_bounds[mid] <= x:
+                j = mid
+                low = mid + 1
+            else:
+                high = mid - 1
+                
+        if j == -1:
+            Q = 0
+        else:
+            Q = st.query_range(1, 0, L-1, 0, j)
+            
+        T_i = (a[i] * T[i-1] - Q) % MOD
+        if T_i < 0:
+            T_i += MOD
+        T[i] = T_i
+        
+        low, high = 0, L-1
+        k = L
+        while low <= high:
+            mid = (low + high) // 2
+            if left_bounds[mid] >= x+1:
+                k = mid
+                high = mid - 1
+            else:
+                low = mid + 1
+                
+        if j >= 0:
+            st.update_range(1, 0, L-1, 0, j, -1, T[i-1])
+        if k < L:
+            st.update_range(1, 0, L-1, k, L-1, 0, 0)
+            
+    print(T[n-1])
+    
+if __name__ == '__main__':
+    main()

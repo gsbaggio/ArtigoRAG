@@ -1,0 +1,36 @@
+MOD = 998244353
+
+def count_valid_arrays(n, a):
+    if n == 1:
+        return a[0] % MOD
+    
+    # Initialize dp array
+    dp = [0] * (max(a) + 1)
+    prefix_sum = 0
+    
+    # Initialize dp for the first element
+    for j in range(1, a[0] + 1):
+        dp[j] = 1
+        prefix_sum += 1
+    
+    # Process each element from 2 to n
+    for i in range(1, n):
+        new_dp = [0] * (max(a) + 1)
+        new_prefix_sum = 0
+        
+        for j in range(1, a[i] + 1):
+            new_dp[j] = (prefix_sum - dp[j]) % MOD
+            new_prefix_sum = (new_prefix_sum + new_dp[j]) % MOD
+        
+        dp = new_dp
+        prefix_sum = new_prefix_sum
+    
+    # The final answer is the sum of dp[j] for j from 1 to a[n-1]
+    return prefix_sum % MOD
+
+# Read input
+n = int(input())
+a = list(map(int, input().split()))
+
+# Print the result
+print(count_valid_arrays(n, a))

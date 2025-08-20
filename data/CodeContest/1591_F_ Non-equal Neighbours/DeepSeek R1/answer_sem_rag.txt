@@ -1,0 +1,119 @@
+MOD = 998244353
+
+class SegmentTree:
+    def __init__(self, intervals):
+        self.n = len(intervals)
+        self.size = 1
+        while self.size < self.n:
+            self.size *= 2
+        self.sum = [0] * (2 * self.size)
+        self.len_total = [0] * (2 * self.size)
+        self.lazy_a = [1] * (2 * self.size)
+        self.lazy_b = [0] * (2 * self.size)
+        
+        for i in range(self.n):
+            L, R = intervals[i]
+            length = R - L + 1
+            self.len_total[self.size + i] = length % MOD
+        for i in range(self.n, self.size):
+            self.len_total[self.size + i] = 0
+        for i in range(self.size-1, 0, -1):
+            self.len_total[i] = (self.len_total[2*i] + self.len_total[2*i+1]) % MOD
+            
+    def push(self, idx):
+        if self.lazy_a[idx] != 1 or self.lazy_b[idx] != 0:
+            self.apply(2*idx, self.lazy_a[idx], self.lazy_b[idx])
+            self.apply(2*idx+1, self.lazy_a[idx], self.lazy_b[idx])
+            self.lazy_a[idx] = 1
+            self.lazy_b[idx] = 0
+            
+    def apply(self, idx, a, b):
+        self.sum[idx] = (a * self.sum[idx] + b * self.len_total[idx]) % MOD
+        self.lazy_a[idx] = (a * self.lazy_a[idx]) % MOD
+        self.lazy_b[idx] = (a * self.lazy_b[idx] + b) % MOD
+        
+    def update_range(self, l, r, a, b):
+        self._update(l, r, a, b, 1, 0, self.size-1)
+        
+    def _update(self, l, r, a, b, idx, segL, segR):
+        if l > segR or r < segL:
+            return
+        if l <= segL and segR <= r:
+            self.apply(idx, a, b)
+            return
+        self.push(idx)
+        mid = (segL + segR) // 2
+        self._update(l, r, a, b, 2*idx, segL, mid)
+        self._update(l, r, a, b, 2*idx+1, mid+1, segR)
+        self.sum[idx] = (self.sum[2*idx] + self.sum[2*idx+1]) % MOD
+        
+    def query_range(self, l, r):
+        return self._query(l, r, 1, 0, self.size-1)
+        
+    def _query(self, l, r, idx, segL, segR):
+        if l > segR or r < segL:
+            return 0
+        if l <= segL and segR <= r:
+            return self.sum[idx]
+        self.push(idx)
+        mid = (segL + segR) // 2
+        left_res = self._query(l, r, 2*idx, segL, mid)
+        right_res = self._query(l, r, 2*idx+1, mid+1, segR)
+        return (left_res + right_res) % MOD
+
+def main():
+    import sys
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    a_list = list(map(int, data[1:1+n]))
+    
+    if n == 0:
+        print(0)
+        return
+        
+    critical_set = set()
+    critical_set.add(0)
+    for x in a_list:
+        critical_set.add(x)
+    C = sorted(critical_set)
+    intervals = []
+    for i in range(len(C)-1):
+        L = C[i] + 1
+        R = C[i+1]
+        if L <= R:
+            intervals.append((L, R))
+    N = len(intervals)
+    
+    value_to_index = {}
+    for idx, val in enumerate(C):
+        value_to_index[val] = idx
+        
+    seg_tree = SegmentTree(intervals)
+    
+    a0 = a_list[0]
+    idx0 = value_to_index[a0]
+    leaf_end0 = idx0 - 1
+    if leaf_end0 >= 0:
+        seg_tree.update_range(0, leaf_end0, 0, 1)
+        
+    for i in range(1, n):
+        prev_a = a_list[i-1]
+        current_a = a_list[i]
+        idx_prev = value_to_index[prev_a]
+        F_prev = seg_tree.query_range(0, idx_prev-1) if idx_prev-1 >= 0 else 0
+        idx_curr = value_to_index[current_a]
+        leaf_end_curr = idx_curr - 1
+        if leaf_end_curr >= 0:
+            seg_tree.update_range(0, leaf_end_curr, -1, F_prev)
+        if idx_curr < N:
+            seg_tree.update_range(idx_curr, N-1, 0, 0)
+            
+    last_a = a_list[-1]
+    idx_last = value_to_index[last_a]
+    ans = seg_tree.query_range(0, idx_last-1) % MOD
+    print(ans)
+    
+if __name__ == "__main__":
+    main()
