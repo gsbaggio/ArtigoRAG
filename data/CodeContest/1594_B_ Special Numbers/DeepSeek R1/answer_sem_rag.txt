@@ -1,0 +1,19 @@
+MOD = 10**9 + 7
+
+t = int(input().strip())
+results = []
+
+for _ in range(t):
+    data = input().split()
+    n = int(data[0])
+    k = int(data[1])
+    res = 0
+    power = 1
+    while k:
+        if k & 1:
+            res = (res + power) % MOD
+        k //= 2
+        power = (power * n) % MOD
+    results.append(str(res))
+
+print("\n".join(results))

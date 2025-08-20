@@ -1,0 +1,29 @@
+def can_schedule_lessons(n, student_availability):
+    for day1 in range(5):
+        for day2 in range(day1 + 1, 5):
+            group1_mask = 0
+            group2_mask = 0
+            
+            for i in range(n):
+                if student_availability[i][day1]:
+                    group1_mask |= 1 << i
+                if student_availability[i][day2]:
+                    group2_mask |= 1 << i
+            
+            if group1_mask & group2_mask == 0:
+                return "YES"
+    
+    return "NO"
+
+# Read the number of test cases
+t = int(input())
+
+for _ in range(t):
+    n = int(input())
+    student_availability = []
+    for _ in range(n):
+        availability = list(map(int, input().split()))
+        student_availability.append(availability)
+    
+    result = can_schedule_lessons(n, student_availability)
+    print(result)

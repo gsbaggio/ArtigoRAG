@@ -1,0 +1,51 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n, c = input().split()
+        n = int(n)
+        s = input()
+        
+        # Find positions where characters don't match c (1-indexed)
+        bad_positions = [i+1 for i, ch in enumerate(s) if ch != c]
+        
+        if not bad_positions:  # All characters are already c
+            print("0")
+            continue
+        
+        operations = []
+        
+        # Try to find a single x that works
+        for x in range(1, n+1):
+            # Check if this x would change all bad positions
+            if all(pos % x != 0 for pos in bad_positions):
+                operations = [x]
+                break
+        
+        # If no single operation works, we need at most 2 operations
+        if not operations:
+            # We can prove mathematically that x=2 and x=3 are sufficient
+            # x=2 changes all odd positions
+            # x=3 changes all positions not divisible by 3
+            # Together they change all positions except those divisible by both 2 and 3,
+            # which are multiples of 6 - these can be changed with additional operations if needed
+            
+            remaining = [p for p in bad_positions if p % 2 == 0]  # positions not changed by x=2
+            
+            if not remaining:  # If x=2 changes all bad positions
+                operations = [2]
+            else:
+                remaining = [p for p in remaining if p % 3 == 0]  # positions not changed by x=2 or x=3
+                
+                if not remaining:  # If x=2 and x=3 change all bad positions
+                    operations = [2, 3]
+                else:
+                    # We need one more operation
+                    x = remaining[0]  # Pick one of the remaining positions
+                    operations = [2, 3, x]
+        
+        # Print result
+        print(len(operations))
+        print(" ".join(map(str, operations)))
+
+solve()

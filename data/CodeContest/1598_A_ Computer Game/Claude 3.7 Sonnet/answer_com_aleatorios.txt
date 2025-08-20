@@ -1,0 +1,63 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <string>
+
+bool canCompleteLevel(const std::vector<std::string>& grid, int n) {
+    std::vector<std::vector<bool>> visited(2, std::vector<bool>(n, false));
+    std::queue<std::pair<int, int>> q;
+    
+    // Starting position (0,0) in 0-indexed grid
+    q.push({0, 0});
+    visited[0][0] = true;
+    
+    // All 8 possible directions (including diagonals)
+    int dr[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+    int dc[] = {-1, 0, 1, -1, 1, -1, 0, 1};
+    
+    while (!q.empty()) {
+        auto [r, c] = q.front();
+        q.pop();
+        
+        // Check if reached destination (1, n-1) in 0-indexed grid
+        if (r == 1 && c == n - 1) {
+            return true;
+        }
+        
+        // Try all possible moves
+        for (int i = 0; i < 8; i++) {
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            
+            // Check if new position is valid, not a trap, and not visited
+            if (nr >= 0 && nr < 2 && nc >= 0 && nc < n && 
+                grid[nr][nc] == '0' && !visited[nr][nc]) {
+                visited[nr][nc] = true;
+                q.push({nr, nc});
+            }
+        }
+    }
+    
+    return false;
+}
+
+int main() {
+    int t;
+    std::cin >> t;
+    
+    while (t--) {
+        int n;
+        std::cin >> n;
+        
+        std::vector<std::string> grid(2);
+        std::cin >> grid[0] >> grid[1];
+        
+        if (canCompleteLevel(grid, n)) {
+            std::cout << "YES" << std::endl;
+        } else {
+            std::cout << "NO" << std::endl;
+        }
+    }
+    
+    return 0;
+}

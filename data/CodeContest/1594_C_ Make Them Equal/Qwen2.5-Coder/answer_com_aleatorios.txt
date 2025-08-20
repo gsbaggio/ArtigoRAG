@@ -1,0 +1,52 @@
+def min_operations_to_make_string_uniform(n, c, s):
+    # Step 1: Identify positions that need replacement
+    needs_replacement = [s[i] != c for i in range(n)]
+    
+    # Step 2: Initialize covered array
+    covered = [False] * n
+    
+    # Step 3: List to store the chosen divisors
+    chosen_divisors = []
+    
+    # Step 4: Greedily choose divisors
+    for x in range(1, n + 1):
+        if len(chosen_divisors) == n:
+            break
+        
+        # Check if this divisor can cover any uncovered positions
+        can_cover = False
+        for i in range(n):
+            if not covered[i] and (i + 1) % x != 0 and needs_replacement[i]:
+                can_cover = True
+                break
+        
+        if can_cover:
+            chosen_divisors.append(x)
+            # Mark positions not divisible by x as covered
+            for i in range(n):
+                if (i + 1) % x != 0 and needs_replacement[i]:
+                    covered[i] = True
+    
+    # Step 5: Return the number of operations and the chosen divisors
+    return len(chosen_divisors), chosen_divisors
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+t = int(data[0])
+index = 1
+results = []
+
+for _ in range(t):
+    n = int(data[index])
+    c = data[index + 1]
+    s = data[index + 2]
+    index += 3
+    
+    m, divisors = min_operations_to_make_string_uniform(n, c, s)
+    results.append(f"{m}\n{' '.join(map(str, divisors))}")
+
+# Print results
+print("\n".join(results))

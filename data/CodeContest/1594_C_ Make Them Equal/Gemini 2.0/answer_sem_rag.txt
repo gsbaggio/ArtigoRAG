@@ -1,0 +1,48 @@
+def solve():
+    n, c = input().split()
+    n = int(n)
+    s = input()
+
+    if all(ch == c for ch in s):
+        print(0)
+        return
+
+    for i in range(n):
+        if s[i] != c:
+            break
+    else:
+        print(0)
+        return
+
+    
+    def apply_operation(current_s, x, char_to_replace):
+        new_s = list(current_s)
+        for i in range(n):
+            if (i + 1) % x != 0:
+                new_s[i] = char_to_replace
+        return "".join(new_s)
+
+    
+    def check_solution(arr):
+        temp_s = s
+        for x in arr:
+            temp_s = apply_operation(temp_s, x, c)
+        return all(ch == c for ch in temp_s)
+
+    
+    for i in range(1, n + 1):
+        if all((j + 1) % i == 0 or s[j] == c for j in range(n)):
+            print(1)
+            print(i)
+            return
+
+    print(2)
+    print(n, n - 1)
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        solve()
+
+if __name__ == "__main__":
+    main()

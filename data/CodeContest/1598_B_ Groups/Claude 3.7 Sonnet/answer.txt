@@ -1,0 +1,60 @@
+def solve_test_case(n, availability):
+    # Try all possible pairs of distinct days
+    for day1 in range(5):
+        for day2 in range(5):
+            if day1 == day2:
+                continue
+                
+            # Count students in each category
+            only_day1 = 0  # Students who can attend only on day1
+            only_day2 = 0  # Students who can attend only on day2
+            can_attend_both = 0  # Students who can attend on both days
+            cant_attend_either = 0  # Students who can't attend on either day
+            
+            for student in availability:
+                if student[day1] == 1 and student[day2] == 0:
+                    only_day1 += 1
+                elif student[day1] == 0 and student[day2] == 1:
+                    only_day2 += 1
+                elif student[day1] == 1 and student[day2] == 1:
+                    can_attend_both += 1
+                else:
+                    cant_attend_either += 1
+            
+            # If some students can't attend either day, this pair doesn't work
+            if cant_attend_either > 0:
+                continue
+                
+            # Check if we can distribute students evenly
+            # We need to assign half the students to each day
+            half_n = n // 2
+            
+            # If we have too many students who can only attend one specific day,
+            # we can't evenly distribute them
+            if only_day1 > half_n or only_day2 > half_n:
+                continue
+                
+            # Calculate how many flexible students should attend on each day
+            needed_on_day1 = half_n - only_day1
+            needed_on_day2 = half_n - only_day2
+            
+            # Check if we have enough flexible students to distribute
+            if needed_on_day1 + needed_on_day2 == can_attend_both:
+                return "YES"
+    
+    return "NO"
+
+def main():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        availability = []
+        
+        for _ in range(n):
+            availability.append(list(map(int, input().split())))
+            
+        print(solve_test_case(n, availability))
+
+if __name__ == "__main__":
+    main()

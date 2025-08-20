@@ -1,0 +1,24 @@
+MOD = 10**9 + 7
+
+def kth_special_number(n, k):
+    # Initialize the sum and the current power of n
+    special_sum = 0
+    current_power = 1
+    
+    # Process each bit in the binary representation of k
+    while k > 0:
+        # If the least significant bit is 1, add the current power of n to the sum
+        if k & 1:
+            special_sum = (special_sum + current_power) % MOD
+        
+        # Move to the next bit and update the current power of n
+        k >>= 1
+        current_power = (current_power * n) % MOD
+    
+    return special_sum
+
+# Read input
+t = int(input())
+for _ in range(t):
+    n, k = map(int, input().split())
+    print(kth_special_number(n, k))

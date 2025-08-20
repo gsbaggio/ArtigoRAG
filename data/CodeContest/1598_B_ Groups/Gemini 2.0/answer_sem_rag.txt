@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+bool solve() {
+    int n;
+    cin >> n;
+
+    vector<vector<int>> preferences(n, vector<int>(5));
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < 5; ++j) {
+            cin >> preferences[i][j];
+        }
+    }
+
+    for (int day1 = 0; day1 < 5; ++day1) {
+        for (int day2 = day1 + 1; day2 < 5; ++day2) {
+            int count1 = 0;
+            int count2 = 0;
+            int count12 = 0;
+
+            for (int i = 0; i < n; ++i) {
+                if (preferences[i][day1] == 1 && preferences[i][day2] == 1) {
+                    count12++;
+                } else if (preferences[i][day1] == 1) {
+                    count1++;
+                } else if (preferences[i][day2] == 1) {
+                    count2++;
+                }
+            }
+
+            if (count1 + count2 + count12 == n && count1 <= n / 2 && count2 <= n / 2) {
+                int remaining = n / 2 - count1;
+                if (remaining >= 0 && remaining <= count12 && count1 + remaining == n / 2 && count2 + (count12 - remaining) == n / 2)
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        if (solve()) {
+            cout << "YES" << endl;
+        } else {
+            cout << "NO" << endl;
+        }
+    }
+    return 0;
+}

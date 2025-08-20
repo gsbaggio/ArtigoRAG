@@ -1,0 +1,53 @@
+def solve_student_scheduling():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        availabilities = []
+        
+        for _ in range(n):
+            availabilities.append(list(map(int, input().split())))
+        
+        possible = False
+        
+        # Try all pairs of days
+        for day1 in range(5):
+            for day2 in range(day1 + 1, 5):
+                # Count students who can attend on day1 only, day2 only, or both
+                only_day1 = 0
+                only_day2 = 0
+                both_days = 0
+                
+                for student in availabilities:
+                    if student[day1] == 1 and student[day2] == 0:
+                        only_day1 += 1
+                    elif student[day1] == 0 and student[day2] == 1:
+                        only_day2 += 1
+                    elif student[day1] == 1 and student[day2] == 1:
+                        both_days += 1
+                
+                # Check if everyone can attend at least one of these days
+                total_assignable = only_day1 + only_day2 + both_days
+                if total_assignable < n:
+                    continue
+                
+                # Check if we can balance the groups
+                diff = only_day1 - only_day2
+                
+                # If absolute difference exceeds the number of flexible students, we can't balance
+                if abs(diff) > both_days:
+                    continue
+                
+                # Check if we can have equal-sized groups
+                # The difference in group sizes must be even to make them equal
+                if (both_days - abs(diff)) % 2 == 0:
+                    possible = True
+                    break
+            
+            if possible:
+                break
+        
+        print("YES" if possible else "NO")
+
+# Execute the solution
+solve_student_scheduling()

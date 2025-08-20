@@ -1,0 +1,33 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        string row1, row2;
+        cin >> row1 >> row2;
+        
+        bool can_reach = true;
+        for (int i = 1; i < n; ++i) {
+            if (row1[i] == '1' && row2[i] == '1') {
+                can_reach = false;
+                break;
+            }
+        }
+        
+        if (can_reach) {
+            cout << "YES\n";
+        } else {
+            cout << "NO\n";
+        }
+    }
+    
+    return 0;
+}

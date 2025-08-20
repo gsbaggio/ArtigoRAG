@@ -1,0 +1,55 @@
+#include <iostream>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+// Compute (a * b) % MOD efficiently to avoid overflow
+long long mul(long long a, long long b) {
+    return ((a % MOD) * (b % MOD)) % MOD;
+}
+
+// Compute (base^power) % MOD efficiently using binary exponentiation
+long long pow_mod(long long base, long long power) {
+    long long result = 1;
+    base %= MOD;
+    
+    while (power > 0) {
+        if (power & 1) {
+            result = mul(result, base);
+        }
+        base = mul(base, base);
+        power >>= 1;
+    }
+    
+    return result;
+}
+
+long long solve(long long n, long long k) {
+    long long result = 0;
+    long long bit = 1;
+    
+    // Convert k to special number representation
+    while (k > 0) {
+        if (k & 1) {
+            // Add n^(bit-1) to the result
+            result = (result + pow_mod(n, bit - 1)) % MOD;
+        }
+        k >>= 1;
+        bit++;
+    }
+    
+    return result;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        long long n, k;
+        cin >> n >> k;
+        cout << solve(n, k) << endl;
+    }
+    
+    return 0;
+}

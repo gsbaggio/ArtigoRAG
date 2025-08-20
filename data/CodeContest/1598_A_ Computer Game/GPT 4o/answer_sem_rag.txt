@@ -1,0 +1,47 @@
+def can_complete_level(t, test_cases):
+    results = []
+    
+    for case in test_cases:
+        n, row1, row2 = case
+        # Create a visited matrix
+        visited = [[False] * n for _ in range(2)]
+        
+        # BFS queue
+        queue = [(0, 0)]  # Start at (1, 1) -> (0, 0) in 0-indexed
+        visited[0][0] = True
+        
+        # BFS traversal
+        while queue:
+            x, y = queue.pop(0)
+            
+            # If we reach (2, n) -> (1, n-1) in 0-indexed
+            if x == 1 and y == n - 1:
+                results.append("YES")
+                break
+            
+            # Explore all possible moves
+            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < 2 and 0 <= ny < n and not visited[nx][ny]:
+                    if (nx == 0 and row1[ny] == '0') or (nx == 1 and row2[ny] == '0'):
+                        visited[nx][ny] = True
+                        queue.append((nx, ny))
+        else:
+            # If we exit the loop without breaking, it's impossible to reach (2, n)
+            results.append("NO")
+    
+    return results
+
+
+# Input reading and processing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    row1 = input().strip()
+    row2 = input().strip()
+    test_cases.append((n, row1, row2))
+
+# Solve and output results
+results = can_complete_level(t, test_cases)
+print("\n".join(results))

@@ -1,0 +1,33 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n, c = int(data[index]), data[index + 1]
+        s = data[index + 2]
+        index += 3
+        
+        # Check if the string is already all 'c'
+        if all(char == c for char in s):
+            results.append("0")
+            continue
+        
+        # Check for a single operation solution
+        x_candidates = []
+        for x in range(1, n + 1):
+            if all(s[i - 1] == c for i in range(x, n + 1, x)):
+                x_candidates.append(x)
+        
+        if x_candidates:
+            results.append(f"1\n{x_candidates[0]}")
+            continue
+        
+        # If no single operation works, use two operations
+        results.append(f"2\n{n} {n - 1}")
+    
+    sys.stdout.write("\n".join(results) + "\n")

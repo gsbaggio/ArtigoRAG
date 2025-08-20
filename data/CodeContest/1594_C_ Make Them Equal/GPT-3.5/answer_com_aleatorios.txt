@@ -1,0 +1,25 @@
+# Function to solve each test case
+def solve_test_case():
+    n, c = input().split()
+    n = int(n)
+    s = input().strip()
+
+    positions = []
+    for i in range(1, n + 1):
+        if s[i - 1] != c:
+            positions.append(str(i))
+
+    m = len(positions)
+    print(m)
+    if m > 0:
+        print(" ".join(positions))
+
+# Main function to handle multiple test cases
+def main():
+    t = int(input())
+    for _ in range(t):
+        solve_test_case()
+
+# Run the main function
+if __name__ == "__main__":
+    main()

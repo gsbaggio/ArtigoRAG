@@ -1,0 +1,27 @@
+#include <iostream>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        long long n, k;
+        cin >> n >> k;
+        
+        long long result = 0;
+        long long power_of_n = 1; // Start with n^0
+        
+        while (k > 0) {
+            if (k & 1) { // If the least significant bit is 1
+                result = (result + power_of_n) % MOD;
+            }
+            k >>= 1; // Right shift k to process the next bit
+            power_of_n = (power_of_n * n) % MOD; // Compute the next power of n modulo MOD
+        }
+        
+        cout << result << "\n";
+    }
+    return 0;
+}

@@ -1,0 +1,28 @@
+def can_schedule_lessons(n, preferences):
+    # Count the number of students that can attend each day for both groups
+    group1_days = [0] * 5
+    group2_days = [0] * 5
+
+    for i in range(n):
+        for j in range(5):
+            if preferences[i][j] == 1:
+                if i < n // 2:
+                    group1_days[j] += 1
+                else:
+                    group2_days[j] += 1
+
+    # Check if it's possible to divide the students into two groups
+    for day1 in range(5):
+        for day2 in range(day1 + 1, 5):
+            if group1_days[day1] + group2_days[day2] == n // 2 and group1_days[day2] + group2_days[day1] == n // 2:
+                return "YES"
+    return "NO"
+
+# Input reading and processing
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    preferences = [list(map(int, input().split())) for _ in range(n)]
+
+    result = can_schedule_lessons(n, preferences)
+    print(result)

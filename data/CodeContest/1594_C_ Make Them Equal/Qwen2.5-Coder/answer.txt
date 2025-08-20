@@ -1,0 +1,50 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
+        
+        int t = Integer.parseInt(br.readLine());
+        while (t-- > 0) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(st.nextToken());
+            char c = st.nextToken().charAt(0);
+            
+            String s = br.readLine();
+            boolean[] needsChange = new boolean[n];
+            for (int i = 0; i < n; i++) {
+                needsChange[i] = s.charAt(i) != c;
+            }
+            
+            List<Integer> operations = new ArrayList<>();
+            for (int x = n; x >= 1; x--) {
+                boolean canCover = true;
+                for (int i = 0; i < n; i++) {
+                    if (needsChange[i] && (i + 1) % x != 0) {
+                        canCover = false;
+                        break;
+                    }
+                }
+                
+                if (canCover) {
+                    operations.add(x);
+                    for (int i = 0; i < n; i++) {
+                        if ((i + 1) % x != 0) {
+                            needsChange[i] = false;
+                        }
+                    }
+                }
+            }
+            
+            out.println(operations.size());
+            for (int op : operations) {
+                out.print(op + " ");
+            }
+            out.println();
+        }
+        
+        out.close();
+    }
+}

@@ -1,0 +1,66 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class SpecialNumberFinder {
+    public static void main(String[] args) {
+        FS scan = new FS(System.in);
+        int T = scan.nextInt();
+        StringBuilder sb = new StringBuilder();
+        long MOD = 1_000_000_007;
+
+        for (int i = 0; i < T; i++) {
+            long n = scan.nextLong();
+            long k = scan.nextLong();
+
+            long result = 0;
+            long powerOfN = 1;
+
+            while (k > 0) {
+                if ((k & 1) == 1) {
+                    result = (result + powerOfN) % MOD;
+                }
+                powerOfN = (powerOfN * n) % MOD;
+                k >>= 1;
+            }
+
+            sb.append(result).append("\n");
+        }
+
+        System.out.print(sb.toString());
+    }
+
+    private static class FS {
+        BufferedReader br;
+        StringTokenizer st;
+
+        public FS(InputStream in) {
+            br = new BufferedReader(new InputStreamReader(in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        double nextDouble() {
+            return Double.parseDouble(next());
+        }
+    }
+}

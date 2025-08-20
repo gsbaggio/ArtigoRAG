@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+bool solve() {
+    int n;
+    cin >> n;
+    vector<string> grid(2);
+    cin >> grid[0] >> grid[1];
+
+    vector<vector<bool>> visited(2, vector<bool>(n, false));
+    vector<vector<int>> q;
+    q.push_back({0, 0});
+    visited[0][0] = true;
+
+    int head = 0;
+    while (head < q.size()) {
+        int r = q[head][0];
+        int c = q[head][1];
+        head++;
+
+        if (r == 1 && c == n - 1) {
+            return true;
+        }
+
+        for (int dr = -1; dr <= 1; ++dr) {
+            for (int dc = -1; dc <= 1; ++dc) {
+                if (dr == 0 && dc == 0) continue;
+                int nr = r + dr;
+                int nc = c + dc;
+
+                if (nr >= 0 && nr < 2 && nc >= 0 && nc < n && grid[nr][nc] == '0' && !visited[nr][nc]) {
+                    q.push_back({nr, nc});
+                    visited[nr][nc] = true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        if (solve()) {
+            cout << "YES" << endl;
+        } else {
+            cout << "NO" << endl;
+        }
+    }
+    return 0;
+}

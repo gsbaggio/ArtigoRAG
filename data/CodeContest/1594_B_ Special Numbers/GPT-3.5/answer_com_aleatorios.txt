@@ -1,0 +1,27 @@
+MOD = 10**9 + 7
+
+def find_special_numbers(n, limit):
+    special_numbers = set()
+    
+    def generate_special_numbers(number, power_sum, current_power):
+        if number > limit:
+            return
+        special_numbers.add(number)
+        
+        for i in range(current_power, 32):  # Assuming the max power is 32 for 10^9
+            new_number = number + n ** i
+            generate_special_numbers(new_number, power_sum + n ** i, i + 1)
+    
+    generate_special_numbers(0, 0, 0)
+    return sorted(special_numbers)
+
+def find_kth_special_number(n, k):
+    limit = 10**9
+    special_numbers = find_special_numbers(n, limit)
+    return special_numbers[k - 1] % MOD
+
+# Input
+t = int(input())
+for _ in range(t):
+    n, k = map(int, input().split())
+    print(find_kth_special_number(n, k))

@@ -1,0 +1,14 @@
+def solve():
+    n, k = map(int, input().split())
+    ans = 0
+    power = 1
+    while k > 0:
+        if k % 2 == 1:
+            ans = (ans + power) % (10**9 + 7)
+        power = (power * n) % (10**9 + 7)
+        k //= 2
+    print(ans)
+
+t = int(input())
+for _ in range(t):
+    solve()

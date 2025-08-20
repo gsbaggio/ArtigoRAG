@@ -1,0 +1,28 @@
+import math
+
+def min_operations(t, test_cases):
+    for i in range(t):
+        n, c = test_cases[i][0], test_cases[i][1]
+        s = test_cases[i][2]
+
+        divisors = []
+        for j in range(1, int(math.sqrt(n)) + 1):
+            if n % j == 0:
+                divisors.append(j)
+                if j != n // j:
+                    divisors.append(n // j)
+
+        divisors.sort()
+
+        operations = [d - 1 for d in divisors]
+
+        print(min(operations))
+        print(*[d for d in divisors if operations[divisors.index(d)] == min(operations)])
+
+# Example usage
+test_cases = [
+    (4, 'a', 'aaaa'),
+    (4, 'a', 'baaa'),
+    (4, 'b', 'bzyx')
+]
+min_operations(3, test_cases)

@@ -1,0 +1,40 @@
+def find_divisors(n):
+    divisors = []
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            if i != n:
+                divisors.append(i)
+            if i != n // i:
+                divisors.append(n // i)
+    return divisors
+
+def min_operations(t, test_cases):
+    for _ in range(t):
+        n, c = test_cases[_][0], test_cases[_][1]
+        s = test_cases[_][2]
+
+        divisors = find_divisors(n)
+
+        for d in divisors:
+            valid = True
+            for i in range(n):
+                if i % d != 0 and s[i] != c:
+                    valid = False
+                    break
+
+            if valid:
+                print("1")
+                print(d)
+                break
+
+if __name__ == "__main__":
+    t = int(input())
+    test_cases = []
+
+    for _ in range(t):
+        n, c = input().split()
+        n = int(n)
+        s = input().strip()
+        test_cases.append((n, c, s))
+
+    min_operations(t, test_cases)

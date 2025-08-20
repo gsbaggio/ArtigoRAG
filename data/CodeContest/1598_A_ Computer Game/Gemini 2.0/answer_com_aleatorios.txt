@@ -1,0 +1,33 @@
+def solve():
+    n = int(input())
+    grid = [input() for _ in range(2)]
+
+    def is_safe(r, c):
+        return 0 <= r < 2 and 0 <= c < n and grid[r][c] == '0'
+
+    q = [(0, 0)]
+    visited = set()
+    visited.add((0, 0))
+
+    while q:
+        r, c = q.pop(0)
+
+        if r == 1 and c == n - 1:
+            print("YES")
+            return
+
+        for dr in [-1, 0, 1]:
+            for dc in [-1, 0, 1]:
+                if dr == 0 and dc == 0:
+                    continue
+                nr, nc = r + dr, c + dc
+                if is_safe(nr, nc) and (nr, nc) not in visited:
+                    q.append((nr, nc))
+                    visited.add((nr, nc))
+
+    print("NO")
+
+
+t = int(input())
+for _ in range(t):
+    solve()

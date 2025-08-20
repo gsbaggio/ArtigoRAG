@@ -1,0 +1,48 @@
+def can_divide_students(test_cases):
+    results = []
+    
+    for n, students in test_cases:
+        # Count the number of students available on each day
+        day_counts = [0] * 5
+        for student in students:
+            for day in range(5):
+                if student[day] == 1:
+                    day_counts[day] += 1
+        
+        # Check all pairs of days
+        found = False
+        for day1 in range(5):
+            for day2 in range(day1 + 1, 5):
+                if day_counts[day1] + day_counts[day2] >= n:
+                    # Check if we can split the students into two groups of equal size
+                    if day_counts[day1] >= n // 2 and day_counts[day2] >= n // 2:
+                        found = True
+                        break
+            if found:
+                break
+        
+        results.append("YES" if found else "NO")
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read().splitlines()
+
+t = int(input[0])
+test_cases = []
+index = 1
+for _ in range(t):
+    n = int(input[index])
+    students = []
+    for i in range(index + 1, index + 1 + n):
+        students.append(list(map(int, input[i].split())))
+    test_cases.append((n, students))
+    index += 1 + n
+
+# Get results
+results = can_divide_students(test_cases)
+
+# Print results
+for result in results:
+    print(result)

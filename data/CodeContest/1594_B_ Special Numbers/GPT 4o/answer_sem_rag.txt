@@ -1,0 +1,26 @@
+MOD = 10**9 + 7
+
+def kth_special_number(n, k):
+    result = 0
+    power = 1  # Represents n^i
+    while k > 0:
+        if k % 2 == 1:  # Check if the least significant bit is set
+            result = (result + power) % MOD
+        power = (power * n) % MOD  # Move to the next power of n
+        k //= 2  # Shift k to the right (binary shift)
+    return result
+
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    
+    t = int(data[0])  # Number of test cases
+    results = []
+    
+    for i in range(1, t + 1):
+        n, k = map(int, data[i].split())
+        results.append(kth_special_number(n, k))
+    
+    # Print all results
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

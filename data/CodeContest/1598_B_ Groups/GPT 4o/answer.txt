@@ -1,0 +1,47 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        preferences = []
+        
+        for i in range(n):
+            preferences.append(list(map(int, data[index:index+5])))
+            index += 5
+        
+        # Check all pairs of days
+        possible = False
+        for day1 in range(5):
+            for day2 in range(day1 + 1, 5):
+                only_day1 = 0
+                only_day2 = 0
+                both_days = 0
+                
+                for student in preferences:
+                    if student[day1] == 1 and student[day2] == 0:
+                        only_day1 += 1
+                    elif student[day1] == 0 and student[day2] == 1:
+                        only_day2 += 1
+                    elif student[day1] == 1 and student[day2] == 1:
+                        both_days += 1
+                
+                # Check if we can form two groups of size n/2
+                if only_day1 <= n // 2 and only_day2 <= n // 2:
+                    remaining_day1 = n // 2 - only_day1
+                    remaining_day2 = n // 2 - only_day2
+                    if remaining_day1 + remaining_day2 <= both_days:
+                        possible = True
+                        break
+            if possible:
+                break
+        
+        results.append("YES" if possible else "NO")
+    
+    sys.stdout.write("\n".join(results) + "\n")

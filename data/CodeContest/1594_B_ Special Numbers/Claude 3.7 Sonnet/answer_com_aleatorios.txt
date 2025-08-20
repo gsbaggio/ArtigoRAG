@@ -1,0 +1,25 @@
+def solve():
+    MOD = 10**9 + 7
+    t = int(input())
+    
+    for _ in range(t):
+        n, k = map(int, input().split())
+        
+        # The k-th special number (1-indexed) corresponds to k-1 in base-n representation
+        # where we use only digits 0 and 1
+        binary_k = bin(k-1)[2:]  # Convert k-1 to binary, removing '0b' prefix
+        
+        # Calculate the special number by using the binary representation
+        # Each 1 bit at position i means we include n^i in the sum
+        special_number = 0
+        power = 1  # n^0 = 1
+        
+        for bit in reversed(binary_k):
+            if bit == '1':
+                special_number = (special_number + power) % MOD
+            power = (power * n) % MOD
+            
+        print(special_number)
+
+if __name__ == "__main__":
+    solve()

@@ -1,0 +1,35 @@
+def can_complete_level(grid, n):
+    # Iterate through each column from 1 to n-1
+    for i in range(n - 1):
+        # Check if both cells in the same column are traps
+        if grid[0][i] == '1' and grid[1][i] == '1':
+            return "NO"
+        # Check if both cells in consecutive columns are traps in the same row
+        if grid[0][i] == '1' and grid[0][i + 1] == '1':
+            return "NO"
+        if grid[1][i] == '1' and grid[1][i + 1] == '1':
+            return "NO"
+        # Check if the cells in consecutive columns across different rows are traps
+        if grid[0][i] == '1' and grid[1][i + 1] == '1':
+            return "NO"
+        if grid[1][i] == '1' and grid[0][i + 1] == '1':
+            return "NO"
+    return "YES"
+
+# Read input
+import sys
+input = sys.stdin.read().splitlines()
+
+t = int(input[0])
+index = 1
+results = []
+
+for _ in range(t):
+    n = int(input[index])
+    grid = [input[index + 1], input[index + 2]]
+    index += 3
+    results.append(can_complete_level(grid, n))
+
+# Print results
+for result in results:
+    print(result)

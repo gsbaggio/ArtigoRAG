@@ -1,0 +1,47 @@
+def can_complete_level(n, grid):
+    from collections import deque
+    
+    # Define all possible movement directions (8 directions)
+    directions = [(-1, -1), (-1, 0), (-1, 1),
+                  (0, -1),         (0, 1),
+                  (1, -1), (1, 0), (1, 1)]
+    
+    # Initialize the BFS queue with the starting position (1, 1)
+    queue = deque([(0, 0)])  # (row, col) format, starting at (0, 0) which is (1, 1)
+    
+    # Create a visited array to keep track of visited cells
+    visited = [[False] * n for _ in range(2)]
+    visited[0][0] = True  # Mark the starting cell as visited
+    
+    # Perform BFS
+    while queue:
+        row, col = queue.popleft()
+        
+        # Check if we reached the target cell (2, n)
+        if (row, col) == (1, n - 1):
+            return "YES"
+        
+        # Explore all possible directions
+        for dr, dc in directions:
+            new_row, new_col = row + dr, col + dc
+            
+            # Check if the new cell is within bounds, not a trap, and not visited
+            if 0 <= new_row < 2 and 0 <= new_col < n and grid[new_row][new_col] == '0' and not visited[new_row][new_col]:
+                visited[new_row][new_col] = True
+                queue.append((new_row, new_col))
+    
+    # If we exhaust the queue without reaching the target, return "NO"
+    return "NO"
+
+# Read input
+t = int(input())
+results = []
+
+for _ in range(t):
+    n = int(input())
+    grid = [input().strip() for _ in range(2)]
+    results.append(can_complete_level(n, grid))
+
+# Print results
+for result in results:
+    print(result)

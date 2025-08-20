@@ -1,0 +1,46 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int t = sc.nextInt();
+        while (t-- > 0) {
+            int n = sc.nextInt();
+            char c = sc.next().charAt(0);
+            String s = sc.next();
+            boolean allSame = true;
+            for (int i = 0; i < n; i++) {
+                if (s.charAt(i) != c) {
+                    allSame = false;
+                    break;
+                }
+            }
+            if (allSame) {
+                System.out.println(0);
+                continue;
+            }
+            boolean found = false;
+            for (int x = n; x >= 1; x--) {
+                boolean valid = true;
+                for (int k = 1; k * x <= n; k++) {
+                    int index = k * x - 1;
+                    if (s.charAt(index) != c) {
+                        valid = false;
+                        break;
+                    }
+                }
+                if (valid) {
+                    System.out.println(1);
+                    System.out.println(x);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                System.out.println(2);
+                System.out.println(n + " " + (n - 1));
+            }
+        }
+        sc.close();
+    }
+}

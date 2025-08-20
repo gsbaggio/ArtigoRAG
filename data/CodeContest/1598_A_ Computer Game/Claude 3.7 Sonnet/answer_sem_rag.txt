@@ -1,0 +1,69 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+bool canCompleteLevel(vector<string>& grid, int n) {
+    // Define the 8 possible moves (horizontally, vertically, and diagonally)
+    int dx[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+    int dy[] = {-1, 0, 1, -1, 1, -1, 0, 1};
+    
+    // Create a visited array
+    vector<vector<bool>> visited(3, vector<bool>(n + 1, false));
+    
+    // Queue for BFS
+    queue<pair<int, int>> q;
+    q.push({1, 1});  // Starting position
+    visited[1][1] = true;
+    
+    while (!q.empty()) {
+        pair<int, int> current = q.front();
+        q.pop();
+        
+        int x = current.first;
+        int y = current.second;
+        
+        // If we reached the end cell
+        if (x == 2 && y == n) {
+            return true;
+        }
+        
+        // Try all 8 possible moves
+        for (int i = 0; i < 8; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            
+            // Check if the new position is valid
+            if (nx >= 1 && nx <= 2 && ny >= 1 && ny <= n && 
+                grid[nx-1][ny-1] == '0' && !visited[nx][ny]) {
+                visited[nx][ny] = true;
+                q.push({nx, ny});
+            }
+        }
+    }
+    
+    // If we can't reach the end cell
+    return false;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<string> grid(2);
+        cin >> grid[0] >> grid[1];
+        
+        if (canCompleteLevel(grid, n)) {
+            cout << "YES" << endl;
+        } else {
+            cout << "NO" << endl;
+        }
+    }
+    
+    return 0;
+}

@@ -1,0 +1,42 @@
+import sys
+
+def main():
+    data = sys.stdin.read().splitlines()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n_c_line = data[index].split()
+        index += 1
+        n = int(n_c_line[0])
+        c = n_c_line[1]
+        s = data[index].strip()
+        index += 1
+        
+        if all(char == c for char in s):
+            results.append("0")
+            continue
+            
+        found = False
+        # Iterate from n down to 2
+        for x in range(n, 1, -1):
+            valid = True
+            k = 1
+            while k * x <= n:
+                pos = k * x - 1
+                if s[pos] != c:
+                    valid = False
+                    break
+                k += 1
+            if valid:
+                results.append(f"1\n{x}")
+                found = True
+                break
+                
+        if not found:
+            results.append(f"2\n{n} {n-1}")
+            
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

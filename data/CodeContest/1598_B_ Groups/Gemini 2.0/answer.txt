@@ -1,0 +1,30 @@
+def solve():
+    n = int(input())
+    students = []
+    for _ in range(n):
+        students.append(list(map(int, input().split())))
+
+    for day1 in range(5):
+        for day2 in range(day1 + 1, 5):
+            count1 = 0
+            count2 = 0
+            both = 0
+            for student in students:
+                if student[day1] == 1 and student[day2] == 0:
+                    count1 += 1
+                elif student[day1] == 0 and student[day2] == 1:
+                    count2 += 1
+                elif student[day1] == 1 and student[day2] == 1:
+                    both += 1
+
+            if abs(count1 - count2) <= both and (count1 + count2 + both) == n and (count1 + count2 + both) % 2 == 0:
+                remaining = both - abs(count1 - count2)
+                if remaining % 2 == 0:
+                    print("YES")
+                    return
+
+    print("NO")
+
+t = int(input())
+for _ in range(t):
+    solve()
