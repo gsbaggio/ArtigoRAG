@@ -1,0 +1,57 @@
+def solve_test_case():
+    n = int(input())
+    availability = []
+    
+    for _ in range(n):
+        availability.append(list(map(int, input().split())))
+    
+    # Try all possible pairs of days
+    for day1 in range(5):
+        for day2 in range(5):
+            if day1 == day2:
+                continue
+            
+            # Count students who can attend on each day
+            can_attend_day1 = 0
+            can_attend_day2 = 0
+            can_attend_both = 0
+            
+            for student in availability:
+                attends_day1 = student[day1] == 1
+                attends_day2 = student[day2] == 1
+                
+                if attends_day1:
+                    can_attend_day1 += 1
+                if attends_day2:
+                    can_attend_day2 += 1
+                if attends_day1 and attends_day2:
+                    can_attend_both += 1
+            
+            # Check if division is possible
+            # We need at least n/2 students who can attend each day
+            if can_attend_day1 >= n//2 and can_attend_day2 >= n//2:
+                # Calculate if we can get exactly n/2 students in each group
+                # Group 1 must have exactly n/2 students who can attend day1
+                # Group 2 must have exactly n/2 students who can attend day2
+                
+                # Students who can attend both days can be placed in either group
+                # Students who can attend only one day must be placed in that group
+                only_day1 = can_attend_day1 - can_attend_both
+                only_day2 = can_attend_day2 - can_attend_both
+                
+                # If too many students can only attend one specific day, it's impossible
+                if only_day1 > n//2 or only_day2 > n//2:
+                    continue
+                
+                # Otherwise we can assign the flexible students to make both groups size n/2
+                return "YES"
+    
+    return "NO"
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        print(solve_test_case())
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,43 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        arr = []
+        for i in range(n):
+            row = list(map(int, data[index:index+5]))
+            index += 5
+            arr.append(row)
+        
+        found = False
+        for i in range(5):
+            for j in range(i+1, 5):
+                count1 = 0
+                count2 = 0
+                valid = True
+                for k in range(n):
+                    if arr[k][i] == 0 and arr[k][j] == 0:
+                        valid = False
+                        break
+                    else:
+                        if arr[k][i] == 1:
+                            count1 += 1
+                        if arr[k][j] == 1:
+                            count2 += 1
+                if valid and count1 >= n // 2 and count2 >= n // 2:
+                    found = True
+                    break
+            if found:
+                break
+                
+        results.append("YES" if found else "NO")
+    
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

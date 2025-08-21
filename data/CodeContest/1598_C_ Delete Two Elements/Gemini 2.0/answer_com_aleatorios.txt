@@ -1,0 +1,20 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+
+        total_sum = sum(a)
+        k = total_sum / n
+
+        count = 0
+        for i in range(n):
+            for j in range(i + 1, n):
+                remaining_sum = total_sum - a[i] - a[j]
+                remaining_mean = remaining_sum / (n - 2)
+                if abs(remaining_mean - k) < 1e-6:  # Use a small tolerance for floating-point comparison
+                    count += 1
+
+        print(count)
+
+solve()

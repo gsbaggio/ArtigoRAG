@@ -1,0 +1,37 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])  # Number of elements in the array
+        index += 1
+        a = list(map(int, data[index:index + n]))
+        index += n
+        
+        total_sum = sum(a)
+        if (2 * total_sum) % n != 0:
+            # If target is not an integer, no valid pairs exist
+            results.append(0)
+            continue
+        
+        target = (2 * total_sum) // n
+        freq = {}
+        count = 0
+        
+        for num in a:
+            complement = target - num
+            if complement in freq:
+                count += freq[complement]
+            if num in freq:
+                freq[num] += 1
+            else:
+                freq[num] = 1
+        
+        results.append(count)
+    
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

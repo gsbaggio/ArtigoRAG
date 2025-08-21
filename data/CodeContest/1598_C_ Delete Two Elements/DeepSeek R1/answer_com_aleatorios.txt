@@ -1,0 +1,33 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        total = sum(a)
+        if (2 * total) % n != 0:
+            results.append("0")
+        else:
+            T = (2 * total) // n
+            freq = {}
+            for num in a:
+                freq[num] = freq.get(num, 0) + 1
+            count = 0
+            for num in freq:
+                comp = T - num
+                if num < comp:
+                    if comp in freq:
+                        count += freq[num] * freq[comp]
+                elif num == comp:
+                    count += freq[num] * (freq[num] - 1) // 2
+            results.append(str(count))
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

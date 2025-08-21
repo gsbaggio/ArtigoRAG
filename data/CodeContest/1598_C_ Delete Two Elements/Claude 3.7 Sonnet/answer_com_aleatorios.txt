@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void solve() {
+    int n;
+    cin >> n;
+    
+    vector<long long> a(n);
+    long long sum = 0;
+    for(int i = 0; i < n; i++) {
+        cin >> a[i];
+        sum += a[i];
+    }
+    
+    // For the mean to remain the same, if we remove elements at positions i and j,
+    // (sum - a[i] - a[j])/(n-2) = sum/n
+    // This simplifies to: a[i] + a[j] = 2*sum/n
+    
+    // If 2*sum is not divisible by n, no pair can preserve the mean
+    if((sum * 2) % n != 0) {
+        cout << "0\n";
+        return;
+    }
+    
+    long long target = (sum * 2) / n;
+    int count = 0;
+    
+    // Count pairs where a[i] + a[j] = target and i < j
+    for(int i = 0; i < n; i++) {
+        for(int j = i + 1; j < n; j++) {
+            if(a[i] + a[j] == target) {
+                count++;
+            }
+        }
+    }
+    
+    cout << count << "\n";
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    while(t--) {
+        solve();
+    }
+    
+    return 0;
+}

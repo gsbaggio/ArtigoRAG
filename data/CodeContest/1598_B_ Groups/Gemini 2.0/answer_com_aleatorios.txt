@@ -1,0 +1,46 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        students = []
+        for _ in range(n):
+            students.append(list(map(int, input().split())))
+
+        found = False
+        for day1 in range(5):
+            for day2 in range(day1 + 1, 5):
+                group1_count = 0
+                group2_count = 0
+                both_count = 0
+
+                for student in students:
+                    if student[day1] == 1 and student[day2] == 1:
+                        both_count += 1
+                    elif student[day1] == 1:
+                        group1_count += 1
+                    elif student[day2] == 1:
+                        group2_count += 1
+
+                remaining = n - group1_count - group2_count - both_count
+                
+                if remaining == 0 and group1_count <= n // 2 and group2_count <= n // 2:
+                    needed_group1 = n // 2 - group1_count
+                    needed_group2 = n // 2 - group2_count
+                    
+                    if needed_group1 >= 0 and needed_group2 >= 0 and needed_group1 + needed_group2 <= both_count:
+                        found = True
+                        break
+                elif remaining > 0:
+                    continue
+                elif remaining < 0:
+                    continue
+
+            if found:
+                break
+
+        if found:
+            print("YES")
+        else:
+            print("NO")
+
+solve()

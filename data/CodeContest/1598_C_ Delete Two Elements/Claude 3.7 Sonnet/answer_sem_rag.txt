@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+void solve() {
+    int n;
+    cin >> n;
+    
+    vector<long long> a(n);
+    long long sum = 0;
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        sum += a[i];
+    }
+    
+    // For mean to stay same: (sum - (a[i]+a[j]))/(n-2) = sum/n
+    // Simplifies to: a[i] + a[j] = 2*sum/n
+    
+    // Check if 2*sum is divisible by n
+    if ((2 * sum) % n != 0) {
+        cout << 0 << endl;
+        return;
+    }
+    
+    long long target = (2 * sum) / n;
+    long long pairs = 0;
+    unordered_map<long long, int> freq;
+    
+    for (int i = 0; i < n; i++) {
+        // Check if we've seen the complement
+        pairs += freq[target - a[i]];
+        // Add current element to frequency map
+        freq[a[i]]++;
+    }
+    
+    cout << pairs << endl;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    return 0;
+}

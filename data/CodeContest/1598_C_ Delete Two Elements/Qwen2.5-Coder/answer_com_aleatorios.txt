@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<ll> a(n);
+        ll total_sum = 0;
+        for(auto &x: a){
+            cin >> x;
+            total_sum += x;
+        }
+        
+        // Calculate the target sum
+        ll target = 2 * total_sum / n;
+        
+        // Check if the target is valid
+        if(target * n != 2 * total_sum){
+            cout << 0 << "\n";
+            continue;
+        }
+        
+        // Use a hash map to count occurrences
+        unordered_map<ll, int> count;
+        int ans = 0;
+        for(int i = 0; i < n; ++i){
+            ll complement = target - a[i];
+            if(count.find(complement) != count.end()){
+                ans += count[complement];
+                if(a[i] == complement){
+                    --ans; // Subtract 1 if pairing with itself
+                }
+            }
+            count[a[i]]++;
+        }
+        
+        // Each pair is counted twice, so divide by 2
+        ans /= 2;
+        cout << ans << "\n";
+    }
+}

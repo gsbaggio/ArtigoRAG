@@ -1,0 +1,37 @@
+def count_pairs(t, testcases):
+    results = []
+
+    for _ in range(t):
+        n = testcases[_][0]
+        arr = testcases[_][1]
+
+        total_sum = sum(arr)
+        mean = total_sum / n
+
+        frequency = {}
+        count = 0
+
+        for i in range(n):
+            for j in range(i + 1, n):
+                new_sum = total_sum - arr[i] - arr[j]
+                new_mean = new_sum / (n - 2)
+
+                if new_mean == mean:
+                    count += 1
+
+        results.append(count)
+
+    return results
+
+# Input parsing
+t = int(input())
+testcases = []
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    testcases.append((n, arr))
+
+# Calculate and print the result
+results = count_pairs(t, testcases)
+for result in results:
+    print(result)

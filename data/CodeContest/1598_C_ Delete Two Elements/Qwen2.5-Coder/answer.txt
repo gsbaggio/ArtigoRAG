@@ -1,0 +1,52 @@
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<long long> a(n);
+        long long sum = 0;
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+            sum += a[i];
+        }
+
+        // Calculate the mean k
+        double k = static_cast<double>(sum) / n;
+
+        // Calculate the target sum
+        long long target = sum - static_cast<long long>(k) * (n - 2);
+
+        // Use a hash map to count occurrences of each element
+        unordered_map<long long, int> count;
+        for (long long x : a) {
+            count[x]++;
+        }
+
+        long long result = 0;
+        for (long long x : a) {
+            // Decrease the count of the current element to avoid self-pairing
+            count[x]--;
+            if (count.find(target - x) != count.end()) {
+                result += count[target - x];
+            }
+            // Restore the count of the current element
+            count[x]++;
+        }
+
+        // Each pair is counted twice, so divide by 2
+        result /= 2;
+
+        cout << result << "\n";
+    }
+    return 0;
+}

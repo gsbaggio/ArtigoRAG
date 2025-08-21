@@ -1,0 +1,53 @@
+def solve():
+    import sys
+    input = sys.stdin.read().split()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        a = list(map(int, input[index:index+n]))
+        index += n
+        
+        total_sum = sum(a)
+        
+        # Check if the mean is an integer
+        if total_sum % n != 0:
+            results.append(0)
+            continue
+        
+        target_sum = 2 * total_sum // n
+        
+        # Create a dictionary to count occurrences of each element
+        count = {}
+        for num in a:
+            if num in count:
+                count[num] += 1
+            else:
+                count[num] = 1
+        
+        pair_count = 0
+        
+        # Iterate through the array to count valid pairs
+        for num in a:
+            complement = target_sum - num
+            if complement in count:
+                pair_count += count[complement]
+            
+            # Avoid double counting the same element
+            count[num] -= 1
+            if count[num] == 0:
+                del count[num]
+        
+        results.append(pair_count)
+    
+    for result in results:
+        print(result)
+
+# Call the solve function to process input and output results
+solve()

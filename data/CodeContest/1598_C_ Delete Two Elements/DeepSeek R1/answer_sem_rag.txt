@@ -1,0 +1,36 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        total = sum(a)
+        if (2 * total) % n != 0:
+            results.append("0")
+        else:
+            T = (2 * total) // n
+            freq = {}
+            for num in a:
+                freq[num] = freq.get(num, 0) + 1
+            distinct = sorted(freq.keys())
+            count = 0
+            for x in distinct:
+                if 2 * x > T:
+                    break
+                if 2 * x == T:
+                    count += freq[x] * (freq[x] - 1) // 2
+                else:
+                    y = T - x
+                    if y in freq:
+                        count += freq[x] * freq[y]
+            results.append(str(count))
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

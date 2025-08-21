@@ -1,0 +1,37 @@
+def find_pairs(t, testcases):
+    results = []
+    
+    for _ in range(t):
+        n = testcases[_][0]
+        arr = testcases[_][1]
+
+        total_sum = sum(arr)
+        k = total_sum / n
+
+        count = 0
+        sum_left = 0
+        left_elements = 0
+
+        for i in range(n):
+            sum_left += arr[i]
+            left_elements += 1
+
+            if sum_left / left_elements == k:
+                count += left_elements - 1
+
+        results.append(count)
+
+    return results
+
+# Input
+t = int(input())
+testcases = []
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    testcases.append((n, arr))
+
+# Output
+results = find_pairs(t, testcases)
+for res in results:
+    print(res)
