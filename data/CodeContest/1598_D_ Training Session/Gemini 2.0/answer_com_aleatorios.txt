@@ -1,0 +1,33 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        problems = []
+        for _ in range(n):
+            a, b = map(int, input().split())
+            problems.append((a, b))
+        
+        count = 0
+        for i in range(n):
+            for j in range(i + 1, n):
+                for k in range(j + 1, n):
+                    # Check if the topics are different
+                    topics_different = (
+                        problems[i][0] != problems[j][0] and
+                        problems[i][0] != problems[k][0] and
+                        problems[j][0] != problems[k][0]
+                    )
+                    
+                    # Check if the difficulties are different
+                    difficulties_different = (
+                        problems[i][1] != problems[j][1] and
+                        problems[i][1] != problems[k][1] and
+                        problems[j][1] != problems[k][1]
+                    )
+                    
+                    if topics_different or difficulties_different:
+                        count += 1
+        
+        print(count)
+
+solve()

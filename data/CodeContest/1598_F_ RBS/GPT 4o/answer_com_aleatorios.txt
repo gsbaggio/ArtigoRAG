@@ -1,0 +1,36 @@
+def calculate_rbs_prefixes(n, sequences):
+    # Step 1: Characterize each sequence
+    bracket_info = []
+    for seq in sequences:
+        open_surplus = 0
+        close_deficit = 0
+        balance = 0
+        for char in seq:
+            if char == '(':
+                balance += 1
+            else:
+                balance -= 1
+            close_deficit = min(close_deficit, balance)
+        open_surplus = balance
+        bracket_info.append((close_deficit, open_surplus, seq))
+    
+    # Step 2: Sort sequences
+    # Sort by close_deficit descending, then by open_surplus ascending
+    bracket_info.sort(key=lambda x: (x[0], -x[1]))
+    
+    # Step 3: Concatenate sequences and count RBS prefixes
+    max_prefixes = 0
+    current_balance = 0
+    for close_deficit, open_surplus, seq in bracket_info:
+        if current_balance + close_deficit >= 0:
+            current_balance += open_surplus
+            max_prefixes += 1
+    
+    return max_prefixes
+
+# Input reading
+if __name__ == "__main__":
+    n = int(input())
+    sequences = [input().strip() for _ in range(n)]
+    result = calculate_rbs_prefixes(n, sequences)
+    print(result)

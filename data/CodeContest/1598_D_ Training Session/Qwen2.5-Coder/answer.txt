@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to compute the number of ways to choose 3 items from n items
+long long combination(long long n) {
+    if (n < 3) return 0;
+    return n * (n - 1) * (n - 2) / 6;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        // Arrays to count occurrences of each topic and difficulty
+        vector<int> topic_count(n + 1, 0);
+        vector<int> difficulty_count(n + 1, 0);
+        
+        // Read the problems and update the counts
+        for (int i = 0; i < n; ++i) {
+            int a, b;
+            cin >> a >> b;
+            topic_count[a]++;
+            difficulty_count[b]++;
+        }
+        
+        // Calculate the number of ways to choose 3 problems with different topics
+        long long ways_different_topics = 0;
+        for (int i = 1; i <= n; ++i) {
+            if (topic_count[i] >= 3) {
+                ways_different_topics += combination(topic_count[i]);
+            }
+        }
+        
+        // Calculate the number of ways to choose 3 problems with different difficulties
+        long long ways_different_difficulties = 0;
+        for (int i = 1; i <= n; ++i) {
+            if (difficulty_count[i] >= 3) {
+                ways_different_difficulties += combination(difficulty_count[i]);
+            }
+        }
+        
+        // Calculate the number of ways to choose 3 problems with both different topics and different difficulties
+        long long ways_both_different = 0;
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                if (topic_count[i] > 0 && difficulty_count[j] > 0 && i != j) {
+                    ways_both_different += (long long)topic_count[i] * difficulty_count[j] * (n - topic_count[i] - difficulty_count[j] + 1);
+                }
+            }
+        }
+        ways_both_different /= 2; // Each pair (i, j) is counted twice
+        
+        // Total number of ways to choose 3 problems with either different topics or different difficulties
+        long long total_ways = combination(n) - ways_both_different + ways_different_topics + ways_different_difficulties;
+        
+        cout << total_ways << "\n";
+    }
+    return 0;
+}

@@ -1,0 +1,55 @@
+def calculate_balance_and_minimum(s):
+    balance = 0
+    min_balance = 0
+    for char in s:
+        if char == '(':
+            balance += 1
+        else:
+            balance -= 1
+        min_balance = min(min_balance, balance)
+    return balance, min_balance
+
+def max_rbs_prefixes(n, sequences):
+    positive_group = []
+    negative_group = []
+    
+    # Step 1: Categorize sequences into positive and negative balance groups
+    for s in sequences:
+        balance, min_balance = calculate_balance_and_minimum(s)
+        if balance >= 0:
+            positive_group.append((balance, min_balance, s))
+        else:
+            negative_group.append((balance, min_balance, s))
+    
+    # Step 2: Sort groups
+    # Positive group: Sort by descending balance
+    positive_group.sort(key=lambda x: x[0], reverse=True)
+    # Negative group: Sort by ascending minimum balance
+    negative_group.sort(key=lambda x: x[1])
+    
+    # Step 3: Concatenate sequences in the optimal order
+    result_sequence = ""
+    for _, _, s in positive_group:
+        result_sequence += s
+    for _, _, s in negative_group:
+        result_sequence += s
+    
+    # Step 4: Count RBS prefixes
+    balance = 0
+    rbs_count = 0
+    for char in result_sequence:
+        if char == '(':
+            balance += 1
+        else:
+            balance -= 1
+        if balance < 0:
+            break
+        rbs_count += 1
+    
+    return rbs_count
+
+# Input reading
+if __name__ == "__main__":
+    n = int(input())
+    sequences = [input().strip() for _ in range(n)]
+    print(max_rbs_prefixes(n, sequences))

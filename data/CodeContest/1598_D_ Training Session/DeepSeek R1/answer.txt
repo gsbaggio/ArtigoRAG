@@ -1,0 +1,32 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        cnt_a = [0] * (n + 1)
+        cnt_b = [0] * (n + 1)
+        problems = []
+        for _ in range(n):
+            a = int(data[index])
+            b = int(data[index + 1])
+            index += 2
+            problems.append((a, b))
+            cnt_a[a] += 1
+            cnt_b[b] += 1
+        
+        total_triplets = n * (n - 1) * (n - 2) // 6
+        bad = 0
+        for a, b in problems:
+            bad += (cnt_a[a] - 1) * (cnt_b[b] - 1)
+        
+        results.append(str(total_triplets - bad))
+    
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

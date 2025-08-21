@@ -1,0 +1,49 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])  # Number of problems
+        index += 1
+        
+        topics = {}
+        difficulties = {}
+        problems = []
+        
+        for _ in range(n):
+            a, b = map(int, data[index:index+2])
+            index += 2
+            problems.append((a, b))
+            
+            if a not in topics:
+                topics[a] = 0
+            if b not in difficulties:
+                difficulties[b] = 0
+            
+            topics[a] += 1
+            difficulties[b] += 1
+        
+        # Total combinations
+        total_combinations = n * (n - 1) * (n - 2) // 6
+        
+        # Subtract invalid combinations
+        invalid_combinations = 0
+        
+        for count in topics.values():
+            if count >= 3:
+                invalid_combinations += count * (count - 1) * (count - 2) // 6
+        
+        for count in difficulties.values():
+            if count >= 3:
+                invalid_combinations += count * (count - 1) * (count - 2) // 6
+        
+        # Valid combinations
+        valid_combinations = total_combinations - invalid_combinations
+        results.append(valid_combinations)
+    
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

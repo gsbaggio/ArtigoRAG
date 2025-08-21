@@ -1,0 +1,68 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+// Function to calculate combinations C(n, 3)
+long long comb3(long long n) {
+    if (n < 3) return 0;
+    return (n * (n - 1) * (n - 2)) / 6;
+}
+
+void solve() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+
+        vector<pair<int, int>> problems(n);
+        unordered_map<int, long long> topic_count, difficulty_count;
+
+        // Read input and count frequencies
+        for (int i = 0; i < n; ++i) {
+            int a, b;
+            cin >> a >> b;
+            problems[i] = {a, b};
+            topic_count[a]++;
+            difficulty_count[b]++;
+        }
+
+        // Total number of triplets
+        long long total_triplets = comb3(n);
+
+        // Subtract invalid triplets
+        long long invalid_triplets = 0;
+
+        // Subtract triplets with the same topic
+        for (auto &[topic, count] : topic_count) {
+            invalid_triplets += comb3(count);
+        }
+
+        // Subtract triplets with the same difficulty
+        for (auto &[difficulty, count] : difficulty_count) {
+            invalid_triplets += comb3(count);
+        }
+
+        // Add back overcounted triplets (same topic and difficulty)
+        unordered_map<pair<int, int>, long long, hash<pair<int, int>>> pair_count;
+        for (auto &[a, b] : problems) {
+            pair_count[{a, b}]++;
+        }
+        for (auto &[key, count] : pair_count) {
+            invalid_triplets -= comb3(count);
+        }
+
+        // Valid triplets
+        long long valid_triplets = total_triplets - invalid_triplets;
+
+        cout << valid_triplets << "\n";
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}

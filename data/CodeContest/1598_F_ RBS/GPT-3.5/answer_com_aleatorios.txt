@@ -1,0 +1,38 @@
+from typing import List
+
+def count_rbs_prefixes(bracket_sequences: List[str]) -> int:
+    excess = []
+    for seq in bracket_sequences:
+        opens = seq.count('(')
+        closes = seq.count(')')
+
+        if opens > 0 and closes > 0:
+            excess.append((opens - closes, seq))
+        elif opens == 0:
+            excess.append((closes, seq))
+        else:
+            excess.append((opens, seq))
+
+    excess.sort(key=lambda x: (x[0], -len(x[1])) if x[0] != 0 else (x[0], len(x[1])))
+
+    result = ""
+    for _, seq in excess:
+        result += seq
+
+    rbs_count = 0
+    max_rbs = 0
+    for char in result:
+        if char == '(':
+            rbs_count += 1
+        elif char == ')':
+            rbs_count -= 1
+        max_rbs = max(max_rbs, rbs_count)
+
+    return max_rbs
+
+# Input
+n = int(input())
+bracket_sequences = [input().strip() for _ in range(n)]
+
+# Output
+print(count_rbs_prefixes(bracket_sequences))

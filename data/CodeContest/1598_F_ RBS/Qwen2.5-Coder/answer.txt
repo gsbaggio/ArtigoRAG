@@ -1,0 +1,49 @@
+def main():
+    n = int(input())
+    type1_count = 0
+    type2_counts = {}
+    type3_counts = {}
+
+    for _ in range(n):
+        s = input().strip()
+        balance = 0
+        min_balance = 0
+        is_prefix_valid = True
+        is_suffix_valid = True
+        
+        for char in s:
+            if char == '(':
+                balance += 1
+            else:
+                balance -= 1
+            
+            if balance < min_balance:
+                min_balance = balance
+            
+            if balance < 0:
+                is_prefix_valid = False
+        
+        if balance > 0:
+            is_suffix_valid = False
+        
+        if is_prefix_valid and is_suffix_valid:
+            type1_count += 1
+        elif is_prefix_valid:
+            if balance not in type2_counts:
+                type2_counts[balance] = 0
+            type2_counts[balance] += 1
+        elif is_suffix_valid:
+            if -balance not in type3_counts:
+                type3_counts[-balance] = 0
+            type3_counts[-balance] += 1
+    
+    max_prefixes = type1_count
+    
+    for balance in type2_counts:
+        if balance in type3_counts:
+            max_prefixes += min(type2_counts[balance], type3_counts[balance])
+    
+    print(max_prefixes)
+
+if __name__ == "__main__":
+    main()

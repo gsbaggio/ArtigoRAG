@@ -1,0 +1,53 @@
+from collections import defaultdict
+
+def count_problem_sets(testcases):
+    results = []
+    
+    for problems in testcases:
+        n = problems[0]
+        problems_dict = defaultdict(list)
+        
+        for i in range(1, n + 1):
+            topic, difficulty = problems[i]
+            problems_dict[topic].append(difficulty)
+        
+        topic_count = defaultdict(int)
+        difficulty_count = defaultdict(int)
+        
+        for topic in problems_dict:
+            topic_count[topic] = len(problems_dict[topic])
+            for difficulty in problems_dict[topic]:
+                difficulty_count[difficulty] += 1
+        
+        total_ways = 0
+        
+        for topic in topic_count:
+            total_ways += topic_count[topic] * (n - topic_count[topic])
+        
+        for difficulty in difficulty_count:
+            total_ways += difficulty_count[difficulty] * (n - difficulty_count[difficulty])
+        
+        total_ways -= n * (n - 1) // 2
+        
+        results.append(total_ways // 2)
+    
+    return results
+
+# Input processing
+testcases = []
+t = int(input().strip())
+
+for _ in range(t):
+    n = int(input().strip())
+    problems = [(0, 0)]  # to match the 1-indexed problems
+    for _ in range(n):
+        a, b = map(int, input().split())
+        problems.append((a, b))
+    testcases.append([n] + problems)
+
+# Counting the number of problem sets
+results = count_problem_sets(testcases)
+
+# Output
+for result in results:
+    print(result)

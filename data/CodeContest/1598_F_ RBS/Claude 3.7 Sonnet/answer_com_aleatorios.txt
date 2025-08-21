@@ -1,0 +1,40 @@
+def solve():
+    n = int(input())
+    sequences = []
+    
+    for _ in range(n):
+        s = input()
+        balance = 0
+        min_balance = 0
+        
+        for c in s:
+            balance += 1 if c == '(' else -1
+            min_balance = min(min_balance, balance)
+        
+        sequences.append((s, balance, min_balance))
+    
+    # Sort by final balance (decreasing) and then by minimum balance (increasing)
+    sequences.sort(key=lambda x: (-x[1], x[2]))
+    
+    # Concatenate sequences
+    arranged = ''.join(seq[0] for seq in sequences)
+    
+    # Count RBS prefixes
+    balance = 0
+    rbs_count = 0
+    
+    for c in arranged:
+        if c == '(':
+            balance += 1
+        else:
+            balance -= 1
+        
+        if balance < 0:
+            break
+        
+        if balance == 0:
+            rbs_count += 1
+    
+    return rbs_count
+
+print(solve())

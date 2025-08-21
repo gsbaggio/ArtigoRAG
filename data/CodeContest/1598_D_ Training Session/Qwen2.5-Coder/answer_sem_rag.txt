@@ -1,0 +1,54 @@
+def count_ways(n, problems):
+    # Initialize counts for topics and difficulties
+    topic_count = [0] * (n + 1)
+    difficulty_count = [0] * (n + 1)
+    
+    # Count problems by topic and difficulty
+    for topic, difficulty in problems:
+        topic_count[topic] += 1
+        difficulty_count[difficulty] += 1
+    
+    # Calculate total number of ways to choose 3 problems
+    total_ways = n * (n - 1) * (n - 2) // 6
+    
+    # Calculate invalid ways (same topic or same difficulty)
+    invalid_ways = 0
+    
+    # Sum up the ways to choose 3 problems with the same topic
+    for count in topic_count:
+        if count >= 3:
+            invalid_ways += count * (count - 1) * (count - 2) // 6
+    
+    # Sum up the ways to choose 3 problems with the same difficulty
+    for count in difficulty_count:
+        if count >= 3:
+            invalid_ways += count * (count - 1) * (count - 2) // 6
+    
+    # Valid ways are total ways minus invalid ways
+    valid_ways = total_ways - invalid_ways
+    
+    return valid_ways
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+
+t = int(input[0])
+index = 1
+
+results = []
+
+for _ in range(t):
+    n = int(input[index])
+    index += 1
+    problems = []
+    for i in range(n):
+        topic = int(input[index])
+        difficulty = int(input[index + 1])
+        problems.append((topic, difficulty))
+        index += 2
+    results.append(count_ways(n, problems))
+
+# Print results
+for result in results:
+    print(result)

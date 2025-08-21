@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<pair<int, int>> problems(n);
+        for (int i = 0; i < n; i++) {
+            cin >> problems[i].first >> problems[i].second;
+        }
+        
+        int count = 0;
+        
+        // Check all possible triplets
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                for (int k = j + 1; k < n; k++) {
+                    // Check if topics are all different
+                    bool differentTopics = (problems[i].first != problems[j].first) && 
+                                          (problems[i].first != problems[k].first) && 
+                                          (problems[j].first != problems[k].first);
+                    
+                    // Check if difficulties are all different
+                    bool differentDiffs = (problems[i].second != problems[j].second) && 
+                                         (problems[i].second != problems[k].second) && 
+                                         (problems[j].second != problems[k].second);
+                    
+                    // If either condition is met, it's valid
+                    if (differentTopics || differentDiffs) {
+                        count++;
+                    }
+                }
+            }
+        }
+        
+        cout << count << endl;
+    }
+    
+    return 0;
+}

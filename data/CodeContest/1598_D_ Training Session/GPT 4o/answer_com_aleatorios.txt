@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+// Function to calculate nC3
+long long nC3(long long n) {
+    if (n < 3) return 0;
+    return (n * (n - 1) * (n - 2)) / 6;
+}
+
+void solve() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+
+        vector<pair<int, int>> problems(n);
+        unordered_map<int, long long> topic_count, difficulty_count;
+        unordered_map<pair<int, int>, long long, hash<pair<int, int>>> pair_count;
+
+        // Read input and count frequencies
+        for (int i = 0; i < n; ++i) {
+            int a, b;
+            cin >> a >> b;
+            problems[i] = {a, b};
+            topic_count[a]++;
+            difficulty_count[b]++;
+            pair_count[{a, b}]++;
+        }
+
+        // Total combinations
+        long long total_combinations = nC3(n);
+
+        // Subtract invalid cases
+        for (auto &[topic, count] : topic_count) {
+            total_combinations -= nC3(count);
+        }
+        for (auto &[difficulty, count] : difficulty_count) {
+            total_combinations -= nC3(count);
+        }
+        for (auto &[pair, count] : pair_count) {
+            total_combinations += nC3(count);
+        }
+
+        // Output the result
+        cout << total_combinations << endl;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}

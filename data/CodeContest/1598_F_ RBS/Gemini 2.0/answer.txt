@@ -1,0 +1,31 @@
+def solve():
+    n = int(input())
+    sequences = [input() for _ in range(n)]
+
+    def is_regular(s):
+        balance = 0
+        for char in s:
+            if char == '(':
+                balance += 1
+            else:
+                balance -= 1
+            if balance < 0:
+                return False
+        return balance == 0
+
+    def count_rbs_prefixes(s):
+        count = 0
+        for i in range(1, len(s) + 1):
+            if is_regular(s[:i]):
+                count += 1
+        return count
+
+    import itertools
+    max_rbs_prefixes = 0
+    for permutation in itertools.permutations(sequences):
+        concatenated_string = "".join(permutation)
+        max_rbs_prefixes = max(max_rbs_prefixes, count_rbs_prefixes(concatenated_string))
+
+    print(max_rbs_prefixes)
+
+solve()

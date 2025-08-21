@@ -1,0 +1,68 @@
+import sys
+
+def main():
+    data = sys.stdin.read().splitlines()
+    if not data:
+        print(0)
+        return
+        
+    n = int(data[0])
+    sequences = []
+    for i in range(1, 1 + n):
+        sequences.append(data[i].strip())
+    
+    d = []
+    m = []
+    freq_list = []
+    
+    for s in sequences:
+        balance = 0
+        min_balance = 10**9
+        freq = {}
+        for char in s:
+            if char == '(':
+                balance += 1
+            else:
+                balance -= 1
+            if balance < min_balance:
+                min_balance = balance
+            if balance <= 0:
+                freq[balance] = freq.get(balance, 0) + 1
+        d.append(balance)
+        m.append(min_balance)
+        freq_list.append(freq)
+        
+    total_masks = 1 << n
+    mask_balance = [0] * total_masks
+    for i in range(n):
+        bit = 1 << i
+        for mask in range(total_masks):
+            if mask & bit:
+                mask_balance[mask] += d[i]
+                
+    dp = [-1] * total_masks
+    dp[0] = 0
+    ans = 0
+    
+    for mask in range(total_masks):
+        if dp[mask] == -1:
+            continue
+        current_balance = mask_balance[mask]
+        if current_balance < 0:
+            continue
+        if dp[mask] > ans:
+            ans = dp[mask]
+        for i in range(n):
+            if mask & (1 << i):
+                continue
+            if current_balance >= -m[i]:
+                new_mask = mask | (1 << i)
+                add_count = freq_list[i].get(-current_balance, 0)
+                new_value = dp[mask] + add_count
+                if new_value > dp[new_mask]:
+                    dp[new_mask] = new_value
+                    
+    print(ans)
+
+if __name__ == "__main__":
+    main()

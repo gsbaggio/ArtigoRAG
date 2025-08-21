@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+ll nC3(ll n) {
+    if (n < 3) return 0;
+    return n * (n - 1) * (n - 2) / 6;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> freq_d(n + 1, 0);
+        vector<vector<int>> topics(n + 1);
+        
+        for (int i = 0; i < n; i++) {
+            int a, b;
+            cin >> a >> b;
+            topics[a].push_back(b);
+            freq_d[b]++;
+        }
+        
+        ll bad = 0;
+        for (int i = 1; i <= n; i++) {
+            int m = topics[i].size();
+            if (m < 2) continue;
+            ll s = 0;
+            for (int d : topics[i]) {
+                s += freq_d[d];
+            }
+            bad += (ll)(m - 1) * s - (ll)m * (m - 1);
+        }
+        
+        ll total = nC3(n);
+        cout << total - bad << '\n';
+    }
+    
+    return 0;
+}

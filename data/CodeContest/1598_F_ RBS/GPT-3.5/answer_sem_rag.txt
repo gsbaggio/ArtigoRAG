@@ -1,0 +1,35 @@
+def max_RBS_prefixes(n, strings):
+    excess = []
+    for s in strings:
+        open_brackets = close_brackets = 0
+        for c in s:
+            if c == '(':
+                open_brackets += 1
+            else:
+                if open_brackets > 0:
+                    open_brackets -= 1
+                else:
+                    close_brackets += 1
+        excess.append((open_brackets, close_brackets))
+    
+    excess.sort(key=lambda x: (x[1], x[0]), reverse=True)
+    
+    running_open = running_close = 0
+    count = 0
+    for open_brackets, close_brackets in excess:
+        running_open += open_brackets
+        running_close += close_brackets
+        if running_open < 0:
+            running_open = 0
+            running_close = 0
+        if running_open == 0:
+            count += 1
+    
+    return count
+
+# Input processing
+n = int(input())
+strings = [input().strip() for _ in range(n)]
+
+# Compute and output the result
+print(max_RBS_prefixes(n, strings))

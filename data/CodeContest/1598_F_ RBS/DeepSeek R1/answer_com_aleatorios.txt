@@ -1,0 +1,57 @@
+import sys
+
+def main():
+    data = sys.stdin.read().splitlines()
+    if not data:
+        print(0)
+        return
+    n = int(data[0])
+    sequences = []
+    for i in range(1, 1 + n):
+        sequences.append(data[i].strip())
+    
+    t = []
+    events_dicts = []
+    for s in sequences:
+        current = 0
+        min_balance = 0
+        events = {}
+        for c in s:
+            if c == '(':
+                current += 1
+            else:
+                current -= 1
+            if current < min_balance:
+                min_balance = current
+                events[min_balance] = 1
+            elif current == min_balance:
+                events[min_balance] = events.get(min_balance, 0) + 1
+        t.append(current)
+        ev_dict = {}
+        for v, cnt in events.items():
+            ev_dict[-v] = cnt
+        events_dicts.append(ev_dict)
+    
+    total_masks = 1 << n
+    mask_balance = [0] * total_masks
+    for mask in range(total_masks):
+        total_balance = 0
+        for i in range(n):
+            if mask & (1 << i):
+                total_balance += t[i]
+        mask_balance[mask] = total_balance
+        
+    dp = [0] * total_masks
+    for mask in range(1, total_masks):
+        for i in range(n):
+            if mask & (1 << i):
+                prev_mask = mask ^ (1 << i)
+                C = mask_balance[prev_mask]
+                count_i = events_dicts[i].get(C, 0)
+                if dp[prev_mask] + count_i > dp[mask]:
+                    dp[mask] = dp[prev_mask] + count_i
+                    
+    print(max(dp))
+
+if __name__ == "__main__":
+    main()

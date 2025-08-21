@@ -1,0 +1,65 @@
+def max_rbs_prefixes(sequences):
+    # Initialize lists for different types of sequences
+    start_open_end_open = []
+    start_open_end_close = []
+    start_close_end_open = []
+    start_close_end_close = []
+
+    # Calculate open_surplus and close_surplus for each sequence
+    for seq in sequences:
+        open_surplus = 0
+        close_surplus = 0
+        balance = 0
+        for char in seq:
+            if char == '(':
+                balance += 1
+            else:
+                balance -= 1
+            open_surplus = max(open_surplus, balance)
+            close_surplus = min(close_surplus, balance)
+        
+        if seq[0] == '(':
+            if seq[-1] == '(':
+                start_open_end_open.append((seq, open_surplus, close_surplus))
+            else:
+                start_open_end_close.append((seq, open_surplus, close_surplus))
+        else:
+            if seq[-1] == '(':
+                start_close_end_open.append((seq, open_surplus, close_surplus))
+            else:
+                start_close_end_close.append((seq, open_surplus, close_surplus))
+
+    # Sort sequences within each category
+    start_open_end_close.sort(key=lambda x: x[1], reverse=True)
+    start_open_end_open.sort(key=lambda x: x[1], reverse=True)
+    start_close_end_open.sort(key=lambda x: x[2])
+    start_close_end_close.sort(key=lambda x: x[2])
+
+    # Construct the final sequence
+    final_sequence = (
+        [seq for seq, _, _ in start_open_end_close] +
+        [seq for seq, _, _ in start_open_end_open] +
+        [seq for seq, _, _ in start_close_end_open] +
+        [seq for seq, _, _ in start_close_end_close]
+    )
+
+    # Calculate the number of valid prefixes
+    balance = 0
+    valid_prefixes = 0
+    for seq in final_sequence:
+        for char in seq:
+            if char == '(':
+                balance += 1
+            else:
+                balance -= 1
+            if balance >= 0:
+                valid_prefixes += 1
+
+    return valid_prefixes
+
+# Read input
+n = int(input().strip())
+sequences = [input().strip() for _ in range(n)]
+
+# Output the result
+print(max_rbs_prefixes(sequences))

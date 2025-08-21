@@ -1,0 +1,92 @@
+import sys
+
+def main():
+    data = sys.stdin.read().splitlines()
+    if not data:
+        print(0)
+        return
+    n = int(data[0])
+    strings = []
+    for i in range(1, 1 + n):
+        strings.append(data[i].strip())
+    
+    balances = []
+    min_balances = []
+    freqs = []
+    for s in strings:
+        current_balance = 0
+        min_balance = 0
+        for char in s:
+            if char == '(':
+                current_balance += 1
+            else:
+                current_balance -= 1
+            if current_balance < min_balance:
+                min_balance = current_balance
+        balances.append(current_balance)
+        min_balances.append(min_balance)
+        L = len(s)
+        freq_array = [0] * (2 * L + 1)
+        b = 0
+        for char in s:
+            if char == '(':
+                b += 1
+            else:
+                b -= 1
+            index = b + L
+            if 0 <= index < len(freq_array):
+                freq_array[index] += 1
+        freqs.append(freq_array)
+    
+    total_balance = [0] * (1 << n)
+    for mask in range(1, 1 << n):
+        for i in range(n):
+            if mask & (1 << i):
+                total_balance[mask] = total_balance[mask ^ (1 << i)] + balances[i]
+                break
+                
+    count = [-1] * (1 << n)
+    count[0] = 0
+    ans = 0
+    
+    for mask in range(0, 1 << n):
+        if count[mask] == -1:
+            continue
+        cur_balance = total_balance[mask]
+        for i in range(n):
+            if mask & (1 << i):
+                continue
+            if cur_balance + min_balances[i] >= 0:
+                new_mask = mask | (1 << i)
+                L_i = len(strings[i])
+                index_in_freq = -cur_balance + L_i
+                if index_in_freq < 0 or index_in_freq >= 2 * L_i + 1:
+                    add_count = 0
+                else:
+                    add_count = freqs[i][index_in_freq]
+                new_count = count[mask] + add_count
+                if new_count > count[new_mask]:
+                    count[new_mask] = new_count
+            else:
+                b = cur_balance
+                add_count = 0
+                for char in strings[i]:
+                    if char == '(':
+                        b += 1
+                    else:
+                        b -= 1
+                    if b < 0:
+                        break
+                    if b == 0:
+                        add_count += 1
+                if count[mask] + add_count > ans:
+                    ans = count[mask] + add_count
+                    
+    for mask in range(0, 1 << n):
+        if count[mask] > ans:
+            ans = count[mask]
+            
+    print(ans)
+
+if __name__ == "__main__":
+    main()

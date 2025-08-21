@@ -1,0 +1,74 @@
+def max_rbs_prefixes(sequences):
+    # Create segments for maximum flexibility
+    segments = []
+    
+    for seq in sequences:
+        balance = 0
+        start = 0
+        
+        for i, char in enumerate(seq):
+            balance += 1 if char == '(' else -1
+            
+            if balance == 0:
+                segments.append(seq[start:i+1])
+                start = i + 1
+                
+        if start < len(seq):
+            segments.append(seq[start:])
+    
+    # Classify segments
+    pos_balance = []  # More '(' than ')'
+    zero_balance = [] # Equal '(' and ')'
+    neg_balance = []  # More ')' than '('
+    
+    for seg in segments:
+        opening = seg.count('(')
+        closing = seg.count(')')
+        bal = opening - closing
+        
+        if bal > 0:
+            pos_balance.append((seg, bal))
+        elif bal == 0:
+            # Check if it's a valid RBS
+            valid = True
+            curr_bal = 0
+            for char in seg:
+                curr_bal += 1 if char == '(' else -1
+                if curr_bal < 0:
+                    valid = False
+                    break
+            
+            if valid:
+                zero_balance.append(seg)
+        else:
+            neg_balance.append((seg, bal))
+    
+    # Sort positive balance segments by decreasing deficit
+    pos_balance.sort(key=lambda x: -x[1])
+    pos_segments = [seg for seg, _ in pos_balance]
+    
+    # Sort negative balance segments by increasing deficit
+    neg_balance.sort(key=lambda x: x[1])
+    neg_segments = [seg for seg, _ in neg_balance]
+    
+    # Optimal order: zero_balance + pos_segments + neg_segments
+    arranged = zero_balance + pos_segments + neg_segments
+    
+    # Count valid prefixes
+    valid_count = 0
+    balance = 0
+    
+    for seg in arranged:
+        for char in seg:
+            balance += 1 if char == '(' else -1
+            if balance < 0:
+                return valid_count
+            if balance == 0:
+                valid_count += 1
+    
+    return valid_count
+
+# Read input
+n = int(input())
+sequences = [input() for _ in range(n)]
+print(max_rbs_prefixes(sequences))

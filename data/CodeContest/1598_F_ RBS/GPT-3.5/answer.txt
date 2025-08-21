@@ -1,0 +1,22 @@
+def max_regular_prefixes(n, sequences):
+    cnt = 0
+    for seq in sequences:
+        balance = 0
+        min_balance = 0
+        for char in seq:
+            if char == '(':
+                balance += 1
+            else:
+                balance -= 1
+            min_balance = min(min_balance, balance)
+        if balance >= 0 and min_balance >= -balance:
+            cnt += 1
+    return cnt
+
+# Input reading
+n = int(input())
+sequences = [input() for _ in range(n)]
+
+# Calculate and print the maximum number of regular prefixes
+result = max_regular_prefixes(n, sequences)
+print(result)

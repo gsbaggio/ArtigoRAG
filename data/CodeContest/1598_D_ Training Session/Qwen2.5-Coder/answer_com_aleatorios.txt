@@ -1,0 +1,88 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+ll binomial_coefficient(ll n, ll k) {
+    if (k > n) return 0;
+    if (k == 0 || k == n) return 1;
+    ll res = 1;
+    for (ll i = 0; i < k; ++i) {
+        res *= (n - i);
+        res /= (i + 1);
+    }
+    return res;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        
+        vector<int> topic_count(n+1, 0);
+        vector<int> difficulty_count(n+1, 0);
+        
+        for(int i=0; i<n; i++){
+            int a, b;
+            cin >> a >> b;
+            topic_count[a]++;
+            difficulty_count[b]++;
+        }
+        
+        ll ways_distinct_topics = 0;
+        ll ways_distinct_difficulties = 0;
+        ll ways_both_distinct = 0;
+        
+        // Count ways for distinct topics
+        for(int i=1; i<=n; i++){
+            for(int j=i+1; j<=n; j++){
+                for(int k=j+1; k<=n; k++){
+                    if(topic_count[i] >= 1 && topic_count[j] >= 1 && topic_count[k] >= 1){
+                        ways_distinct_topics += binomial_coefficient(topic_count[i], 1) *
+                                                binomial_coefficient(topic_count[j], 1) *
+                                                binomial_coefficient(topic_count[k], 1);
+                    }
+                }
+            }
+        }
+        
+        // Count ways for distinct difficulties
+        for(int i=1; i<=n; i++){
+            for(int j=i+1; j<=n; j++){
+                for(int k=j+1; k<=n; k++){
+                    if(difficulty_count[i] >= 1 && difficulty_count[j] >= 1 && difficulty_count[k] >= 1){
+                        ways_distinct_difficulties += binomial_coefficient(difficulty_count[i], 1) *
+                                                      binomial_coefficient(difficulty_count[j], 1) *
+                                                      binomial_coefficient(difficulty_count[k], 1);
+                    }
+                }
+            }
+        }
+        
+        // Count ways for both distinct topics and difficulties
+        for(int i=1; i<=n; i++){
+            for(int j=i+1; j<=n; j++){
+                for(int k=j+1; k<=n; k++){
+                    if(topic_count[i] >= 1 && topic_count[j] >= 1 && topic_count[k] >= 1 &&
+                       difficulty_count[i] >= 1 && difficulty_count[j] >= 1 && difficulty_count[k] >= 1){
+                        ways_both_distinct += binomial_coefficient(topic_count[i], 1) *
+                                              binomial_coefficient(topic_count[j], 1) *
+                                              binomial_coefficient(difficulty_count[k], 1);
+                    }
+                }
+            }
+        }
+        
+        // Total ways
+        ll total_ways = ways_distinct_topics + ways_distinct_difficulties - ways_both_distinct;
+        
+        cout << total_ways << "\n";
+    }
+    
+    return 0;
+}
