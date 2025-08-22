@@ -1,0 +1,102 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 250000;
+const int MAXM = 500000;
+
+struct UnionFind {
+    vector<int> parent, rank, cycle;
+
+    UnionFind(int n) {
+        parent.resize(n + 1);
+        rank.resize(n + 1, 0);
+        cycle.resize(n + 1, 0);
+        for (int i = 1; i <= n; ++i) parent[i] = i;
+    }
+
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+
+    bool unite(int u, int v) {
+        int rootU = find(u), rootV = find(v);
+        if (rootU == rootV) {
+            cycle[rootU]++;
+            return true; // Cycle detected
+        }
+        if (rank[rootU] > rank[rootV]) {
+            parent[rootV] = rootU;
+            cycle[rootU] += cycle[rootV];
+        } else if (rank[rootU] < rank[rootV]) {
+            parent[rootU] = rootV;
+            cycle[rootV] += cycle[rootU];
+        } else {
+            parent[rootV] = rootU;
+            cycle[rootU] += cycle[rootV];
+            rank[rootU]++;
+        }
+        return false; // No cycle
+    }
+
+    void remove(int u, int v) {
+        int rootU = find(u), rootV = find(v);
+        if (rootU == rootV) {
+            cycle[rootU]--;
+        } else {
+            // Restore the union
+            if (rank[rootU] > rank[rootV]) {
+                parent[rootV] = rootV;
+                cycle[rootU] -= cycle[rootV];
+            } else if (rank[rootU] < rank[rootV]) {
+                parent[rootU] = rootU;
+                cycle[rootV] -= cycle[rootU];
+            } else {
+                parent[rootV] = rootV;
+                cycle[rootU] -= cycle[rootV];
+                rank[rootU]--;
+            }
+        }
+    }
+
+    bool isDesert() {
+        for (int i = 1; i < parent.size(); ++i) {
+            if (find(i) == i && cycle[i] > 0) return false;
+        }
+        return true;
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N, M;
+    cin >> N >> M;
+
+    vector<pair<int, int>> edges(M);
+    for (int i = 0; i < M; ++i) {
+        cin >> edges[i].first >> edges[i].second;
+    }
+
+    UnionFind uf(N);
+    int L = 0, count = 0;
+
+    for (int R = 0; R < M; ++R) {
+        // Add edge E_R
+        uf.unite(edges[R].first, edges[R].second);
+
+        // Check if the graph is still a desert
+        while (!uf.isDesert()) {
+            // Remove edge E_L
+            uf.remove(edges[L].first, edges[L].second);
+            L++;
+        }
+
+        // Count valid pairs
+        count += (R - L + 1);
+    }
+
+    cout << count << "\n";
+    return 0;
+}

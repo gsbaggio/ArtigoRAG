@@ -1,0 +1,141 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <set>
+
+using namespace std;
+
+struct Edge {
+    int u, v;
+};
+
+int n, m;
+vector<Edge> edges;
+vector<vector<int>> graph;
+
+bool isCactus(const vector<int>& compNodes, const vector<int>& compEdges) {
+    vector<bool> inCompEdge(m, false);
+    for (int eIndex : compEdges) {
+        inCompEdge[eIndex] = true;
+    }
+
+    vector<int> depth(n+1, -1);
+    vector<int> parent(n+1, -1);
+    vector<int> treeEdgeIndex(n+1, -1);
+    vector<bool> cycleMember(m, false);
+
+    int root = compNodes[0];
+    depth[root] = 0;
+    parent[root] = -1;
+    queue<int> q;
+    q.push(root);
+    vector<int> nonTreeEdges;
+
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        for (int eIndex : graph[u]) {
+            if (!inCompEdge[eIndex]) continue;
+            Edge e = edges[eIndex];
+            int v = e.u == u ? e.v : e.u;
+            if (v == parent[u]) continue;
+            if (depth[v] == -1) {
+                depth[v] = depth[u] + 1;
+                parent[v] = u;
+                treeEdgeIndex[v] = eIndex;
+                q.push(v);
+            } else {
+                nonTreeEdges.push_back(eIndex);
+            }
+        }
+    }
+
+    for (int eIndex : nonTreeEdges) {
+        int u = edges[eIndex].u;
+        int v = edges[eIndex].v;
+        if (depth[u] < depth[v]) swap(u, v);
+        int u2 = u;
+        int v2 = v;
+        while (depth[u2] > depth[v2]) {
+            int edgeIndex = treeEdgeIndex[u2];
+            if (cycleMember[edgeIndex]) return false;
+            cycleMember[edgeIndex] = true;
+            u2 = parent[u2];
+        }
+        while (u2 != v2) {
+            int edgeIndex1 = treeEdgeIndex[u2];
+            if (cycleMember[edgeIndex1]) return false;
+            cycleMember[edgeIndex1] = true;
+            u2 = parent[u2];
+            
+            int edgeIndex2 = treeEdgeIndex[v2];
+            if (cycleMember[edgeIndex2]) return false;
+            cycleMember[edgeIndex2] = true;
+            v2 = parent[v2];
+        }
+        if (cycleMember[eIndex]) return false;
+        cycleMember[eIndex] = true;
+    }
+    return true;
+}
+
+bool isDesert(const vector<bool>& edgeIncluded) {
+    vector<bool> visitedNode(n+1, false);
+    for (int i = 1; i <= n; i++) {
+        if (!visitedNode[i]) {
+            vector<int> compNodes;
+            vector<int> compEdges;
+            queue<int> q;
+            q.push(i);
+            visitedNode[i] = true;
+            compNodes.push_back(i);
+            while (!q.empty()) {
+                int u = q.front(); q.pop();
+                for (int eIndex : graph[u]) {
+                    if (!edgeIncluded[eIndex]) continue;
+                    compEdges.push_back(eIndex);
+                    Edge e = edges[eIndex];
+                    int v = e.u == u ? e.v : e.u;
+                    if (!visitedNode[v]) {
+                        visitedNode[v] = true;
+                        compNodes.push_back(v);
+                        q.push(v);
+                    }
+                }
+            }
+            if (!isCactus(compNodes, compEdges)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cin >> n >> m;
+    edges.resize(m);
+    graph.resize(n+1);
+    for (int i = 0; i < m; i++) {
+        cin >> edges[i].u >> edges[i].v;
+        graph[edges[i].u].push_back(i);
+        graph[edges[i].v].push_back(i);
+    }
+
+    long long ans = 0;
+    for (int L = 0; L < m; L++) {
+        vector<bool> edgeIncluded(m, false);
+        int R = L;
+        while (R < m) {
+            edgeIncluded[R] = true;
+            if (!isDesert(edgeIncluded)) {
+                break;
+            }
+            R++;
+        }
+        ans += (R - L);
+    }
+    cout << ans << endl;
+    return 0;
+}

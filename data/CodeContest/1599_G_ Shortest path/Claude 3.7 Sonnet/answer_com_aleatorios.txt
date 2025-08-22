@@ -1,0 +1,89 @@
+import math
+
+def distance(p1, p2):
+    return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+def is_collinear(p1, p2, p3):
+    # Check if three points are collinear using cross product
+    return abs((p2[0]-p1[0])*(p3[1]-p1[1]) - (p2[1]-p1[1])*(p3[0]-p1[0])) < 1e-9
+
+def solve():
+    n, k = map(int, input().split())
+    k -= 1  # Convert to 0-indexed
+    
+    points = []
+    for _ in range(n):
+        a, b = map(int, input().split())
+        points.append((a, b))
+    
+    # Identify which point is the outlier
+    outlier = -1
+    line_points = []
+    
+    # Try each point as a potential outlier
+    for i in range(n):
+        # Get the remaining points
+        candidates = [j for j in range(n) if j != i]
+        
+        # Check if all candidates are collinear
+        collinear = True
+        if len(candidates) >= 3:  # Need at least 3 points to check collinearity
+            p1, p2 = points[candidates[0]], points[candidates[1]]
+            for j in candidates[2:]:
+                if not is_collinear(p1, p2, points[j]):
+                    collinear = False
+                    break
+        
+        if collinear:
+            outlier = i
+            line_points = candidates
+            break
+    
+    # Find the endpoints of the line (furthest points)
+    max_dist = 0
+    endpoints = (-1, -1)
+    for i in line_points:
+        for j in line_points:
+            if i != j:
+                d = distance(points[i], points[j])
+                if d > max_dist:
+                    max_dist = d
+                    endpoints = (i, j)
+    
+    # Calculate minimum path length
+    min_path = float('inf')
+    
+    # If starting at outlier
+    if k == outlier:
+        # Find closest point on the line
+        closest = min(line_points, key=lambda i: distance(points[outlier], points[i]))
+        path_length = distance(points[outlier], points[closest]) + max_dist
+        min_path = min(min_path, path_length)
+    
+    # If starting on the line
+    else:
+        # Option 1: Go directly to outlier, then to one endpoint, then to the other
+        path1 = (distance(points[k], points[outlier]) + 
+                 distance(points[outlier], points[endpoints[0]]) + 
+                 distance(points[endpoints[0]], points[endpoints[1]]))
+        
+        # Option 2: Go directly to outlier, then to other endpoint, then to the first
+        path2 = (distance(points[k], points[outlier]) + 
+                 distance(points[outlier], points[endpoints[1]]) + 
+                 distance(points[endpoints[1]], points[endpoints[0]]))
+        
+        # Option 3: Go to one endpoint, then to outlier, then to the other endpoint
+        path3 = (distance(points[k], points[endpoints[0]]) + 
+                 distance(points[endpoints[0]], points[outlier]) + 
+                 distance(points[outlier], points[endpoints[1]]))
+        
+        # Option 4: Go to other endpoint, then to outlier, then to the first endpoint
+        path4 = (distance(points[k], points[endpoints[1]]) + 
+                 distance(points[endpoints[1]], points[outlier]) + 
+                 distance(points[outlier], points[endpoints[0]]))
+        
+        min_path = min(path1, path2, path3, path4)
+    
+    return min_path
+
+print(f"{solve():.6f}")

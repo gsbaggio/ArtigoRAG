@@ -1,0 +1,101 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 2.5e5 + 5;
+const int MAXM = 5e5 + 5;
+
+int n, m;
+vector<pair<int, int>> adj[MAXN];
+int dfn[MAXN], low[MAXN], timer = 0;
+stack<int> stk;
+bool in_stk[MAXN];
+vector<vector<int>> cycles;
+int cycle_id[MAXM];
+
+void tarjan(int u, int p) {
+    dfn[u] = low[u] = ++timer;
+    stk.push(u);
+    in_stk[u] = true;
+    for (auto [v, idx] : adj[u]) {
+        if (idx == p) continue;
+        if (!dfn[v]) {
+            tarjan(v, idx);
+            low[u] = min(low[u], low[v]);
+        } else if (in_stk[v]) {
+            low[u] = min(low[u], dfn[v]);
+        }
+    }
+    if (low[u] == dfn[u]) {
+        vector<int> cycle;
+        int v;
+        do {
+            v = stk.top();
+            stk.pop();
+            in_stk[v] = false;
+            cycle.push_back(v);
+        } while (v != u);
+        if (cycle.size() > 1) {
+            cycles.push_back(cycle);
+            int cid = cycles.size() - 1;
+            for (int i = 0; i < cycle.size(); ++i) {
+                int x = cycle[i];
+                int y = cycle[(i + 1) % cycle.size()];
+                for (auto &[v, idx] : adj[x]) {
+                    if (v == y) {
+                        cycle_id[idx] = cid;
+                    }
+                }
+            }
+        }
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cin >> n >> m;
+    for(int i = 1; i <= m; ++i){
+        int u, v;
+        cin >> u >> v;
+        adj[u].emplace_back(v, i);
+        adj[v].emplace_back(u, i);
+    }
+    for(int i = 1; i <= n; ++i){
+        if(!dfn[i]){
+            tarjan(i, -1);
+        }
+    }
+    long long ans = 0;
+    for(int i = 1; i <= m; ++i){
+        if(cycle_id[i] == 0){
+            ans += m - i + 1;
+        }
+    }
+    for(auto &cycle : cycles){
+        int len = cycle.size();
+        for(int i = 0; i < len; ++i){
+            int u = cycle[i];
+            int v = cycle[(i + 1) % len];
+            for(auto &[w, idx] : adj[u]){
+                if(w == v) continue;
+                int start = idx;
+                int end = idx;
+                for(int j = i + 1; j < i + len; ++j){
+                    int x = cycle[j % len];
+                    int y = cycle[(j + 1) % len];
+                    for(auto &[z, id] : adj[x]){
+                        if(z == y){
+                            end = id;
+                            break;
+                        }
+                    }
+                    if(end != idx){
+                        break;
+                    }
+                }
+                ans += m - end;
+            }
+        }
+    }
+    cout << ans;
+}

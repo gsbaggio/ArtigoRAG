@@ -1,0 +1,45 @@
+def find_desert_pairs(n, m, edges):
+    def is_cactus(graph):
+        visited = set()
+        for edge in graph:
+            u, v = edge
+            if u in visited and v in visited:
+                return False
+            visited.add(u)
+            visited.add(v)
+        return True
+
+    def is_desert(graph):
+        components = []
+        visited = set()
+        for edge in graph:
+            u, v = edge
+            if u not in visited and v not in visited:
+                components.append(set())
+            if u not in visited:
+                components[-1].add(u)
+            if v not in visited:
+                components[-1].add(v)
+            visited.add(u)
+            visited.add(v)
+        
+        for component in components:
+            if not is_cactus([(u, v) for u in component for v in component if u < v]):
+                return False
+        return True
+
+    count = 0
+    for i in range(m):
+        for j in range(i, m):
+            if is_desert(edges[i:j+1]):
+                count += 1
+
+    return count
+
+# Input parsing
+n, m = map(int, input().split())
+edges = [tuple(map(int, input().split())) for _ in range(m)]
+
+# Calling the function and printing the output
+result = find_desert_pairs(n, m, edges)
+print(result)

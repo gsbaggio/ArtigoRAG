@@ -1,0 +1,98 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// Function to check if a graph is a cactus
+bool isCactus(int n, const vector<pair<int, int>>& edges) {
+    if (edges.empty()) return true;
+
+    vector<vector<int>> adj(n + 1);
+    for (const auto& edge : edges) {
+        adj[edge.first].push_back(edge.second);
+        adj[edge.second].push_back(edge.first);
+    }
+
+    vector<int> visited(n + 1, 0);
+    vector<int> parent(n + 1, 0);
+    vector<int> cycle_count(edges.size(), 0); // Count cycles each edge belongs to
+
+    function<void(int, int)> dfs = [&](int u, int p) {
+        visited[u] = 1;
+        parent[u] = p;
+
+        for (int v : adj[u]) {
+            if (v == p) continue;
+
+            if (visited[v] == 1) {
+                // Back edge found, cycle detected
+                int cycle_start = v;
+                int curr = u;
+                vector<pair<int, int>> cycle_edges;
+
+                while (curr != cycle_start) {
+                    cycle_edges.push_back({curr, parent[curr]});
+                    curr = parent[curr];
+                }
+                cycle_edges.push_back({cycle_start, parent[cycle_start]});
+
+                // Increment cycle count for edges in the cycle
+                for (size_t i = 0; i < edges.size(); ++i) {
+                    for (const auto& cycle_edge : cycle_edges) {
+                        if ((edges[i].first == cycle_edge.first && edges[i].second == cycle_edge.second) ||
+                            (edges[i].first == cycle_edge.second && edges[i].second == cycle_edge.first)) {
+                            cycle_count[i]++;
+                        }
+                    }
+                }
+            } else if (visited[v] == 0) {
+                dfs(v, u);
+            }
+        }
+
+        visited[u] = 2;
+    };
+
+    // Iterate through all nodes to handle disconnected components
+    for (int i = 1; i <= n; ++i) {
+        if (visited[i] == 0) {
+            dfs(i, 0);
+        }
+    }
+
+    // Check if each edge belongs to at most one cycle
+    for (int count : cycle_count) {
+        if (count > 1) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    vector<pair<int, int>> edges(m);
+    for (int i = 0; i < m; ++i) {
+        cin >> edges[i].first >> edges[i].second;
+    }
+
+    long long count = 0;
+    for (int l = 1; l <= m; ++l) {
+        for (int r = l; r <= m; ++r) {
+            vector<pair<int, int>> sub_edges;
+            for (int i = l - 1; i < r; ++i) {
+                sub_edges.push_back(edges[i]);
+            }
+            if (isCactus(n, sub_edges)) {
+                count++;
+            }
+        }
+    }
+
+    cout << count << endl;
+
+    return 0;
+}

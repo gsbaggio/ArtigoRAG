@@ -1,0 +1,59 @@
+import math
+
+def solve():
+    n, k = map(int, input().split())
+    points = []
+    for _ in range(n):
+        points.append(list(map(int, input().split())))
+
+    k -= 1  # Adjust index to be 0-based
+
+    # Function to calculate distance between two points
+    def distance(p1, p2):
+        return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+    # Find the point that is not on the line
+    def find_outlier(points):
+        for i in range(1, len(points)):
+            x1, y1 = points[0]
+            x2, y2 = points[i]
+            
+            count = 0
+            for j in range(len(points)):
+                if j == 0 or j == i:
+                    continue
+                x3, y3 = points[j]
+                if (y2 - y1) * (x3 - x2) == (y3 - y2) * (x2 - x1):
+                    count += 1
+            if count == len(points) - 2:
+                return points[i]
+        return None
+
+    outlier = find_outlier(points)
+    
+    # Calculate the total distance
+    total_distance = 0
+    
+    # Calculate distances from the starting point to the outlier and the farthest point on the line
+    distances = []
+    for i in range(n):
+        if points[i] != outlier:
+            distances.append((distance(points[k], points[i]), i))
+    
+    distances.sort(reverse=True)
+    
+    if outlier is not None:
+        total_distance += distance(points[k], outlier)
+        
+        farthest_point_index = distances[0][1]
+        total_distance += distance(outlier, points[farthest_point_index])
+        
+        for i in range(1, len(distances)):
+            total_distance += distance(points[distances[i-1][1]], points[distances[i][1]])
+    else:
+        for i in range(1, len(distances)):
+            total_distance += distance(points[distances[i-1][1]], points[distances[i][1]])
+    
+    print(total_distance)
+
+solve()

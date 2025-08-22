@@ -1,0 +1,76 @@
+def euclidean_distance(p1, p2):
+    return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
+
+def find_outlier(points):
+    # Use the first two points to define the line
+    x1, y1 = points[0]
+    x2, y2 = points[1]
+    
+    # Calculate the slope of the line defined by the first two points
+    if x2 == x1:
+        slope = float('inf')  # Vertical line
+    else:
+        slope = (y2 - y1) / (x2 - x1)
+    
+    # Find the outlier point
+    outlier_index = None
+    for i in range(2, len(points)):
+        xi, yi = points[i]
+        if x2 == x1:
+            if xi != x1:
+                outlier_index = i
+        else:
+            if (yi - y1) / (xi - x1) != slope:
+                outlier_index = i
+    
+    return outlier_index
+
+def min_path_length(N, K, points):
+    # Convert K to 0-based index
+    K -= 1
+    
+    # Find the outlier point
+    outlier_index = find_outlier(points)
+    
+    # If K is the outlier, swap it with another point on the line
+    if outlier_index == K:
+        outlier_index = 0
+        K = 1
+    
+    # Calculate the distance from K to the outlier point
+    distance_to_outlier = euclidean_distance(points[K], points[outlier_index])
+    
+    # Sort the collinear points based on their x-coordinates (or y-coordinates if vertical)
+    if points[1][0] == points[0][0]:
+        # Vertical line
+        points.sort(key=lambda p: p[1])
+    else:
+        # Non-vertical line
+        points.sort(key=lambda p: p[0])
+    
+    # Calculate the total length of the line segment
+    line_length = 0
+    for i in range(1, N):
+        line_length += euclidean_distance(points[i], points[i-1])
+    
+    # The minimum path length is the distance to the outlier plus the line length
+    return distance_to_outlier + line_length
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+
+N = int(input[0])
+K = int(input[1])
+
+points = []
+index = 2
+for _ in range(N):
+    A_i = int(input[index])
+    B_i = int(input[index + 1])
+    points.append((A_i, B_i))
+    index += 2
+
+# Output the result
+result = min_path_length(N, K, points)
+print(f"{result:.6f}")

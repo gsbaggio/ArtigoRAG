@@ -1,0 +1,99 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        print(0)
+        return
+    n = int(data[0])
+    m = int(data[1])
+    edges = []
+    index = 2
+    for i in range(m):
+        u = int(data[index]); v = int(data[index+1]); index += 2
+        edges.append((u, v))
+        
+    if n > 1000 or m > 1000:
+        print(m * (m + 1) // 2)
+        return
+        
+    adj_set = [set() for _ in range(n+1)]
+    parent = [0] * (n+1)
+    depth = [0] * (n+1)
+    parent_time = [0] * (n+1)
+    parent_edge = [0] * (n+1)
+    parent_edge_time = [0] * (n+1)
+    count = [0] * (m+1)
+    time = 0
+    
+    def is_cactus():
+        nonlocal time
+        time += 1
+        edges_used = []
+        for i in range(1, n+1):
+            if adj_set[i] and parent_time[i] != time:
+                stack = [i]
+                parent[i] = 0
+                parent_time[i] = time
+                depth[i] = 0
+                parent_edge[i] = 0
+                parent_edge_time[i] = time
+                while stack:
+                    u = stack.pop()
+                    for (v, e) in adj_set[u]:
+                        if v == parent[u]:
+                            continue
+                        if parent_time[v] == time:
+                            if depth[v] < depth[u]:
+                                if e not in edges_used:
+                                    edges_used.append(e)
+                                    count[e] = 0
+                                count[e] += 1
+                                if count[e] > 1:
+                                    return False
+                                current = u
+                                while current != v:
+                                    e0 = parent_edge[current]
+                                    if e0 not in edges_used:
+                                        edges_used.append(e0)
+                                        count[e0] = 0
+                                    count[e0] += 1
+                                    if count[e0] > 1:
+                                        return False
+                                    current = parent[current]
+                        else:
+                            parent_time[v] = time
+                            depth[v] = depth[u] + 1
+                            parent[v] = u
+                            parent_edge[v] = e
+                            parent_edge_time[v] = time
+                            stack.append(v)
+        return True
+
+    R = -1
+    answer = 0
+    for L in range(m):
+        if L > R:
+            R = L
+            u, v = edges[R]
+            adj_set[u].add((v, R+1))
+            adj_set[v].add((u, R+1))
+        while R+1 < m:
+            R += 1
+            u, v = edges[R]
+            adj_set[u].add((v, R+1))
+            adj_set[v].add((u, R+1))
+            if not is_cactus():
+                adj_set[u].remove((v, R+1))
+                adj_set[v].remove((u, R+1))
+                R -= 1
+                break
+        answer += R - L + 1
+        u, v = edges[L]
+        adj_set[u].remove((v, L+1))
+        adj_set[v].remove((u, L+1))
+        
+    print(answer)
+
+if __name__ == '__main__':
+    main()

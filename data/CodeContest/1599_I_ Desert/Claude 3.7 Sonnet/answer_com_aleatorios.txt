@@ -1,0 +1,99 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class DSU {
+private:
+    vector<int> parent, rank;
+    vector<int> vertices, edges;
+
+public:
+    DSU(int n) : parent(n + 1), rank(n + 1, 0), vertices(n + 1, 0), edges(n + 1, 0) {
+        for (int i = 1; i <= n; i++) {
+            parent[i] = i;
+            vertices[i] = 1; // Each component starts with one vertex
+        }
+    }
+    
+    int find(int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent[x]);
+        }
+        return parent[x];
+    }
+    
+    bool unite(int u, int v) {
+        int pu = find(u);
+        int pv = find(v);
+        
+        if (pu == pv) {
+            // Adding edge within same component - creates a cycle
+            edges[pu]++;
+            
+            // Check if this component is still a cactus
+            // In a cactus, #edges - #vertices + 1 <= 1
+            return (edges[pu] - vertices[pu] + 1) <= 1;
+        }
+        
+        // Union by rank
+        if (rank[pu] < rank[pv]) {
+            swap(pu, pv);
+        }
+        
+        parent[pv] = pu;
+        if (rank[pu] == rank[pv]) {
+            rank[pu]++;
+        }
+        
+        // Merge component information
+        vertices[pu] += vertices[pv];
+        edges[pu] += edges[pv] + 1; // +1 for the new edge
+        
+        // Check if merged component is a cactus
+        return (edges[pu] - vertices[pu] + 1) <= 1;
+    }
+    
+    void reset(int n) {
+        for (int i = 1; i <= n; i++) {
+            parent[i] = i;
+            rank[i] = 0;
+            vertices[i] = 1;
+            edges[i] = 0;
+        }
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n, m;
+    cin >> n >> m;
+    
+    vector<pair<int, int>> edges(m + 1);
+    for (int i = 1; i <= m; i++) {
+        cin >> edges[i].first >> edges[i].second;
+    }
+    
+    long long ans = 0;
+    DSU dsu(n);
+    
+    for (int L = 1; L <= m; L++) {
+        dsu.reset(n);
+        
+        for (int R = L; R <= m; R++) {
+            int u = edges[R].first;
+            int v = edges[R].second;
+            
+            if (dsu.unite(u, v)) {
+                ans++;
+            } else {
+                break; // Once it's not a desert, all extensions will also not be deserts
+            }
+        }
+    }
+    
+    cout << ans << endl;
+    
+    return 0;
+}

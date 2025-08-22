@@ -1,0 +1,114 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 2.5e5 + 5;
+const int MAXM = 5e5 + 5;
+
+struct Edge {
+    int u, v, id;
+};
+
+struct UF {
+    int parent[MAXN], rank[MAXN];
+    void init(int n) {
+        for (int i = 0; i < n; ++i) {
+            parent[i] = i;
+            rank[i] = 0;
+        }
+    }
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+    void unite(int x, int y) {
+        x = find(x);
+        y = find(y);
+        if (rank[x] > rank[y]) parent[y] = x;
+        else if (rank[x] < rank[y]) parent[x] = y;
+        else {
+            parent[y] = x;
+            rank[x]++;
+        }
+    }
+};
+
+UF uf;
+vector<Edge> edges;
+vector<int> adj[MAXN];
+int disc[MAXN], low[MAXN], time_stamp = 0;
+bool in_cycle[MAXM];
+set<int> cycle_edges;
+
+void dfs(int node, int parent) {
+    disc[node] = low[node] = ++time_stamp;
+    for (auto &edge : adj[node]) {
+        int neighbor = edges[edge].u ^ edges[edge].v ^ node;
+        if (!disc[neighbor]) {
+            dfs(neighbor, edge);
+            low[node] = min(low[node], low[neighbor]);
+            if (low[neighbor] >= disc[node]) {
+                // Edge is a bridge or part of a cycle
+                in_cycle[edge] = true;
+                cycle_edges.insert(edge);
+            }
+        } else if (edge != parent) {
+            low[node] = min(low[node], disc[neighbor]);
+            in_cycle[edge] = true;
+            cycle_edges.insert(edge);
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int N, M;
+    cin >> N >> M;
+    
+    uf.init(N);
+    edges.resize(M);
+    for (int i = 0; i < M; ++i) {
+        cin >> edges[i].u >> edges[i].v;
+        edges[i].u--;
+        edges[i].v--;
+        edges[i].id = i;
+        adj[edges[i].u].push_back(i);
+        adj[edges[i].v].push_back(i);
+    }
+    
+    for (int i = 0; i < N; ++i) {
+        if (!disc[i]) dfs(i, -1);
+    }
+    
+    long long result = 0;
+    for (int L = 0; L < M; ++L) {
+        set<int> seen_cycles;
+        bool valid = true;
+        uf.init(N);
+        for (int R = L; R < M; ++R) {
+            int u = edges[R].u, v = edges[R].v;
+            if (in_cycle[R]) {
+                int pu = uf.find(u), pv = uf.find(v);
+                if (pu == pv) {
+                    valid = false;
+                    break;
+                }
+                if (seen_cycles.count(pu) || seen_cycles.count(pv)) {
+                    valid = false;
+                    break;
+                }
+                seen_cycles.insert(pu);
+                seen_cycles.insert(pv);
+            }
+            uf.unite(u, v);
+            if (valid) {
+                result += R - L + 1;
+            } else {
+                break;
+            }
+        }
+    }
+    
+    cout << result;
+}

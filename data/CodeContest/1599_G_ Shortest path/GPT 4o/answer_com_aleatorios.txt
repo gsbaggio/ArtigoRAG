@@ -1,0 +1,60 @@
+from math import sqrt
+
+# Function to calculate Euclidean distance
+def distance(p1, p2):
+    return sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+# Read input
+n, k = map(int, input().split())
+k -= 1  # Convert to 0-based index
+points = [tuple(map(int, input().split())) for _ in range(n)]
+
+# Identify the line
+line_points = []
+off_line_point = None
+
+# Use the first two points to determine the line equation
+x1, y1 = points[0]
+x2, y2 = points[1]
+for i, (x, y) in enumerate(points):
+    # Check if the point lies on the line
+    if (x2 - x1) * (y - y1) == (y2 - y1) * (x - x1):
+        line_points.append((x, y, i))  # Store point with its index
+    else:
+        off_line_point = (x, y, i)
+
+# Sort the points on the line by their x-coordinate (or y-coordinate if x's are equal)
+line_points.sort(key=lambda p: (p[0], p[1]))
+
+# Extract the off-line point
+off_x, off_y, off_index = off_line_point
+
+# Calculate the shortest path
+min_distance = float('inf')
+
+# Case 1: Visit the off-line point first
+for i, (x, y, idx) in enumerate(line_points):
+    # Distance from K to off-line point, then to the line
+    dist = distance(points[k], (off_x, off_y)) + distance((off_x, off_y), (x, y))
+    # Add the distance to traverse the rest of the line
+    for j in range(i, len(line_points) - 1):
+        dist += distance((line_points[j][0], line_points[j][1]), (line_points[j + 1][0], line_points[j + 1][1]))
+    for j in range(i - 1, -1, -1):
+        dist += distance((line_points[j][0], line_points[j][1]), (line_points[j - 1][0], line_points[j - 1][1]))
+    min_distance = min(min_distance, dist)
+
+# Case 2: Visit the off-line point last
+for i, (x, y, idx) in enumerate(line_points):
+    # Distance from K to the line
+    dist = distance(points[k], (x, y))
+    # Add the distance to traverse the line
+    for j in range(i, len(line_points) - 1):
+        dist += distance((line_points[j][0], line_points[j][1]), (line_points[j + 1][0], line_points[j + 1][1]))
+    for j in range(i - 1, -1, -1):
+        dist += distance((line_points[j][0], line_points[j][1]), (line_points[j - 1][0], line_points[j - 1][1]))
+    # Add the distance to the off-line point
+    dist += distance((line_points[-1][0], line_points[-1][1]), (off_x, off_y))
+    min_distance = min(min_distance, dist)
+
+# Output the result
+print(f"{min_distance:.6f}")

@@ -1,0 +1,76 @@
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.cycle = [False] * n  # Tracks if a component contains a cycle
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])  # Path compression
+        return self.parent[x]
+
+    def union(self, x, y):
+        rootX = self.find(x)
+        rootY = self.find(y)
+
+        if rootX == rootY:
+            # If already in the same component, a cycle is formed
+            self.cycle[rootX] = True
+            return False
+
+        # Union by rank
+        if self.rank[rootX] > self.rank[rootY]:
+            self.parent[rootY] = rootX
+            self.cycle[rootX] |= self.cycle[rootY]
+        elif self.rank[rootX] < self.rank[rootY]:
+            self.parent[rootX] = rootY
+            self.cycle[rootY] |= self.cycle[rootX]
+        else:
+            self.parent[rootY] = rootX
+            self.rank[rootX] += 1
+            self.cycle[rootX] |= self.cycle[rootY]
+
+        return True
+
+    def has_cycle(self, x):
+        return self.cycle[self.find(x)]
+
+
+def count_desert_subgraphs(n, m, edges):
+    uf = UnionFind(n + 1)
+    result = 0
+    L = 0
+
+    # Active edges in the current window
+    active_edges = []
+
+    for R in range(m):
+        u, v = edges[R]
+        active_edges.append((u, v))
+
+        # Add edge to the graph
+        if not uf.union(u, v):
+            # If adding the edge creates multiple cycles, shrink the window
+            while uf.has_cycle(u) or uf.has_cycle(v):
+                old_u, old_v = active_edges[L]
+                L += 1
+                uf = UnionFind(n + 1)  # Reset Union-Find
+                for i in range(L, R + 1):
+                    uf.union(*active_edges[i])
+
+        # Count valid subarrays ending at R
+        result += (R - L + 1)
+
+    return result
+
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+
+    n, m = map(int, data[:2])
+    edges = [tuple(map(int, data[i:i+2])) for i in range(2, len(data), 2)]
+
+    print(count_desert_subgraphs(n, m, edges))

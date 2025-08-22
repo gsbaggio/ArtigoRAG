@@ -1,0 +1,123 @@
+def solve():
+    n, m = map(int, input().split())
+    edges = []
+    for _ in range(m):
+        u, v = map(int, input().split())
+        edges.append((u, v))
+
+    def is_desert(edge_indices):
+        if not edge_indices:
+            return True
+
+        adj = [[] for _ in range(n + 1)]
+        for i in edge_indices:
+            u, v = edges[i]
+            adj[u].append(v)
+            adj[v].append(u)
+
+        visited = [False] * (n + 1)
+        
+        def get_components():
+            components = []
+            for i in range(1, n + 1):
+                if not visited[i] and adj[i]:
+                    component = []
+                    stack = [i]
+                    visited[i] = True
+                    while stack:
+                        u = stack.pop()
+                        component.append(u)
+                        for v in adj[u]:
+                            if not visited[v]:
+                                visited[v] = True
+                                stack.append(v)
+                    components.append(component)
+            return components
+
+        components = get_components()
+
+        def is_cactus(component):
+            if not component:
+                return True
+            
+            component_edges = []
+            component_nodes = set(component)
+            for i in edge_indices:
+                u, v = edges[i]
+                if u in component_nodes and v in component_nodes:
+                    component_edges.append(i)
+
+            if not component_edges:
+                return True
+
+            component_adj = [[] for _ in range(n + 1)]
+            for i in component_edges:
+                u, v = edges[i]
+                component_adj[u].append(v)
+                component_adj[v].append(u)
+            
+            degrees = [len(component_adj[node]) for node in component]
+            
+            num_edges = len(component_edges)
+            num_nodes = len(component)
+            
+            if num_edges > num_nodes:
+                return False
+
+            def find_cycles(start_node):
+                cycles = []
+                stack = [(start_node, [start_node])]
+                
+                while stack:
+                    node, path = stack.pop()
+                    
+                    for neighbor in component_adj[node]:
+                        if neighbor == path[0] and len(path) > 2:
+                            cycles.append(path)
+                        elif neighbor not in path:
+                            stack.append((neighbor, path + [neighbor]))
+                
+                unique_cycles = []
+                for cycle in cycles:
+                    cycle = sorted(cycle)
+                    if cycle not in unique_cycles:
+                        unique_cycles.append(cycle)
+                
+                return unique_cycles
+            
+            all_cycles = []
+            for node in component:
+                cycles = find_cycles(node)
+                for cycle in cycles:
+                    if cycle not in all_cycles:
+                        all_cycles.append(cycle)
+            
+            edge_cycle_count = {}
+            for i in component_edges:
+                edge_cycle_count[i] = 0
+                u, v = edges[i]
+                for cycle in all_cycles:
+                    if u in cycle and v in cycle:
+                        edge_cycle_count[i] += 1
+            
+            for i in component_edges:
+                if edge_cycle_count[i] > 1:
+                    return False
+            
+            return True
+
+        for component in components:
+            if not is_cactus(component):
+                return False
+        return True
+
+    count = 0
+    for l in range(m):
+        for r in range(l, m):
+            edge_indices = list(range(l, r + 1))
+            if is_desert(edge_indices):
+                count += 1
+
+    print(count)
+
+solve()

@@ -1,0 +1,119 @@
+import math
+import sys
+
+def dist(a, b):
+    return math.sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2)
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    k = int(data[1])
+    points = []
+    index = 2
+    for i in range(n):
+        x = int(data[index]); y = int(data[index+1]); index += 2
+        points.append((x, y))
+    
+    start_point = points[k-1]
+    
+    def is_collinear(a, b, c):
+        return (b[0] - a[0]) * (c[1] - a[1]) == (c[0] - a[0]) * (b[1] - a[1])
+    
+    outlier = None
+    line_points = None
+    found = False
+    for i in range(min(5, n)):
+        for j in range(i+1, min(5, n)):
+            count = 0
+            for k in range(n):
+                if is_collinear(points[i], points[j], points[k]):
+                    count += 1
+            if count >= n-1:
+                line_points = []
+                for k in range(n):
+                    if is_collinear(points[i], points[j], points[k]):
+                        line_points.append(points[k])
+                    else:
+                        outlier = points[k]
+                found = True
+                break
+        if found:
+            break
+            
+    if not found:
+        outlier = points[0]
+        line_points = points[1:]
+    
+    if start_point == outlier:
+        A = line_points[0]
+        B = line_points[1]
+        v = (B[0] - A[0], B[1] - A[1])
+        t_list = []
+        for p in line_points:
+            t_val = (p[0] - A[0]) * v[0] + (p[1] - A[1]) * v[1]
+            t_list.append(t_val)
+        min_index = 0
+        max_index = 0
+        for i in range(1, len(t_list)):
+            if t_list[i] < t_list[min_index]:
+                min_index = i
+            if t_list[i] > t_list[max_index]:
+                max_index = i
+        L = line_points[min_index]
+        R = line_points[max_index]
+        d_LR = dist(L, R)
+        d_OL = dist(outlier, L)
+        d_OR = dist(outlier, R)
+        ans = d_LR + min(d_OL, d_OR)
+        print("{:.6f}".format(ans))
+    else:
+        A = line_points[0]
+        B = line_points[1]
+        v = (B[0] - A[0], B[1] - A[1])
+        points_with_t = []
+        for p in line_points:
+            t_val = (p[0] - A[0]) * v[0] + (p[1] - A[1]) * v[1]
+            points_with_t.append((t_val, p))
+        points_with_t.sort(key=lambda x: x[0])
+        index = -1
+        for i, (t, p) in enumerate(points_with_t):
+            if p == start_point:
+                index = i
+                break
+        if index == -1:
+            print(0)
+            return
+            
+        L = points_with_t[0][1]
+        R = points_with_t[-1][1]
+        d_SL = dist(start_point, L)
+        d_SR = dist(start_point, R)
+        d_LO = dist(L, outlier)
+        d_RO = dist(R, outlier)
+        
+        next_point = None
+        if index < len(points_with_t) - 1:
+            next_point = points_with_t[index+1][1]
+        prev_point = None
+        if index > 0:
+            prev_point = points_with_t[index-1][1]
+            
+        cost_left = d_SL + d_LO
+        if next_point is not None:
+            d_ON = dist(outlier, next_point)
+            d_NR = dist(next_point, R)
+            cost_left += d_ON + d_NR
+            
+        cost_right = d_SR + d_RO
+        if prev_point is not None:
+            d_OP = dist(outlier, prev_point)
+            d_PL = dist(prev_point, L)
+            cost_right += d_OP + d_PL
+            
+        ans = min(cost_left, cost_right)
+        print("{:.6f}".format(ans))
+        
+if __name__ == "__main__":
+    main()

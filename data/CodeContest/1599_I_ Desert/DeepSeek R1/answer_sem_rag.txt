@@ -1,0 +1,119 @@
+import sys
+import collections
+
+sys.setrecursionlimit(1000000)
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    it = iter(data)
+    n = int(next(it)); m = int(next(it))
+    edges = [0] * (m+1)
+    for i in range(1, m+1):
+        u = int(next(it)); v = int(next(it))
+        edges[i] = (u, v)
+        
+    ans = 0
+    for L in range(1, m+1):
+        graph = {}
+        for R in range(L, m+1):
+            u, v = edges[R]
+            if u not in graph:
+                graph[u] = []
+            if v not in graph:
+                graph[v] = []
+            graph[u].append((v, R))
+            graph[v].append((u, R))
+            if check_desert(graph, edges):
+                ans += 1
+            else:
+                break
+    print(ans)
+
+def check_desert(graph, edges):
+    visited = set()
+    for node in list(graph.keys()):
+        if node not in visited:
+            comp = set()
+            comp_graph = {}
+            queue = collections.deque([node])
+            comp.add(node)
+            while queue:
+                u = queue.popleft()
+                if u not in graph:
+                    continue
+                for (v, eid) in graph[u]:
+                    if v not in comp:
+                        comp.add(v)
+                        queue.append(v)
+            for u in comp:
+                comp_graph[u] = []
+                if u in graph:
+                    for (v, eid) in graph[u]:
+                        if v in comp:
+                            comp_graph[u].append((v, eid))
+            if not check_cactus(comp_graph, comp, edges):
+                return False
+    return True
+
+def check_cactus(comp_graph, comp, edges):
+    if not comp:
+        return True
+    depth = {}
+    low = {}
+    parent = {}
+    stack = []
+    visited = set()
+    result = [True]
+    time = [0]
+    
+    start = next(iter(comp))
+    
+    def dfs(u):
+        depth[u] = time[0]
+        low[u] = time[0]
+        time[0] += 1
+        visited.add(u)
+        for (v, eid) in comp_graph[u]:
+            if v not in visited:
+                parent[v] = u
+                stack.append(eid)
+                dfs(v)
+                low[u] = min(low[u], low[v])
+                if low[v] >= depth[u]:
+                    comp_vertices = set()
+                    comp_edges = set()
+                    while stack:
+                        e = stack.pop()
+                        comp_edges.add(e)
+                        a, b = edges[e]
+                        comp_vertices.add(a)
+                        comp_vertices.add(b)
+                        if e == eid:
+                            break
+                    if len(comp_edges) > len(comp_vertices):
+                        result[0] = False
+            else:
+                if depth[v] < depth[u]:
+                    stack.append(eid)
+                low[u] = min(low[u], depth[v])
+                
+    dfs(start)
+    
+    if stack and result[0]:
+        comp_vertices = set()
+        comp_edges = set()
+        while stack:
+            e = stack.pop()
+            comp_edges.add(e)
+            a, b = edges[e]
+            comp_vertices.add(a)
+            comp_vertices.add(b)
+        if len(comp_edges) > len(comp_vertices):
+            result[0] = False
+            
+    return result[0]
+
+if __name__ == '__main__':
+    main()

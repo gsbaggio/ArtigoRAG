@@ -1,0 +1,83 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 250000 + 5;
+const int MAXM = 500000 + 5;
+
+int parent[MAXN], rank_[MAXN], cycle[MAXN];
+int n, m;
+pair<int, int> edges[MAXM];
+
+// Find function with path compression
+int find(int u) {
+    if (parent[u] != u) {
+        parent[u] = find(parent[u]);
+    }
+    return parent[u];
+}
+
+// Union function with cycle detection
+bool unite(int u, int v) {
+    int pu = find(u), pv = find(v);
+    if (pu == pv) {
+        // If u and v are already in the same component, a cycle is formed
+        if (cycle[pu]) return false;
+        cycle[pu] = 1;
+        return true;
+    }
+    // Union by rank
+    if (rank_[pu] > rank_[pv]) swap(pu, pv);
+    parent[pu] = pv;
+    cycle[pv] |= cycle[pu];
+    if (rank_[pu] == rank_[pv]) rank_[pv]++;
+    return true;
+}
+
+// Reset DSU for a specific range
+void reset(int u, int v) {
+    parent[u] = u;
+    parent[v] = v;
+    rank_[u] = rank_[v] = 0;
+    cycle[u] = cycle[v] = 0;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    cin >> n >> m;
+    for (int i = 1; i <= m; i++) {
+        cin >> edges[i].first >> edges[i].second;
+    }
+
+    // Initialize DSU
+    for (int i = 1; i <= n; i++) {
+        parent[i] = i;
+        rank_[i] = 0;
+        cycle[i] = 0;
+    }
+
+    long long result = 0;
+    int L = 1;
+
+    for (int R = 1; R <= m; R++) {
+        int u = edges[R].first, v = edges[R].second;
+
+        // Add edge E_R
+        if (!unite(u, v)) {
+            // If adding the edge violates the cactus property, move L
+            while (L <= R) {
+                int lu = edges[L].first, lv = edges[L].second;
+                reset(lu, lv);
+                L++;
+                if (unite(u, v)) break;
+            }
+        }
+
+        // Count valid ranges
+        result += (R - L + 1);
+    }
+
+    cout << result << "\n";
+    return 0;
+}

@@ -1,0 +1,104 @@
+#include <iostream>
+#include <vector>
+#include <map>
+using namespace std;
+
+typedef long long ll;
+
+// Union-Find data structure
+class UnionFind {
+    vector<int> parent, rank, edge_count, cycle_count;
+public:
+    UnionFind(int n) {
+        parent.resize(n+1);
+        rank.resize(n+1, 0);
+        edge_count.resize(n+1, 0);
+        cycle_count.resize(n+1, 0);
+        for (int i = 1; i <= n; i++) {
+            parent[i] = i;
+        }
+    }
+    
+    int find(int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent[x]);
+        }
+        return parent[x];
+    }
+    
+    // Returns true if adding edge creates an invalid state (more than one cycle in a component)
+    bool unionSets(int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+        
+        if (rootX == rootY) {
+            // Adding an edge between nodes in the same component creates a cycle
+            cycle_count[rootX]++;
+            // If this creates a second cycle in the component, it's invalid
+            if (cycle_count[rootX] > 1) {
+                return false;
+            }
+        } else {
+            // Union by rank
+            if (rank[rootX] < rank[rootY]) {
+                parent[rootX] = rootY;
+                edge_count[rootY] += edge_count[rootX] + 1;
+                cycle_count[rootY] += cycle_count[rootX];
+            } else {
+                parent[rootY] = rootX;
+                if (rank[rootX] == rank[rootY]) {
+                    rank[rootX]++;
+                }
+                edge_count[rootX] += edge_count[rootY] + 1;
+                cycle_count[rootX] += cycle_count[rootY];
+            }
+        }
+        return true;
+    }
+    
+    void reset() {
+        int n = parent.size() - 1;
+        for (int i = 1; i <= n; i++) {
+            parent[i] = i;
+            rank[i] = 0;
+            edge_count[i] = 0;
+            cycle_count[i] = 0;
+        }
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    
+    vector<pair<int, int>> edges(m+1);
+    for (int i = 1; i <= m; i++) {
+        cin >> edges[i].first >> edges[i].second;
+    }
+    
+    ll answer = 0;
+    UnionFind uf(n);
+    
+    // For each starting position
+    for (int L = 1; L <= m; L++) {
+        uf.reset();
+        // Try to extend as far as possible
+        for (int R = L; R <= m; R++) {
+            int u = edges[R].first;
+            int v = edges[R].second;
+            
+            // If adding this edge keeps the graph a desert, continue
+            if (uf.unionSets(u, v)) {
+                answer++;
+            } else {
+                break;
+            }
+        }
+    }
+    
+    cout << answer << endl;
+    return 0;
+}
