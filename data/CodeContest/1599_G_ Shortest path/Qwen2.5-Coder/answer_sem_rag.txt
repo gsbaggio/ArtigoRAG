@@ -1,0 +1,54 @@
+def distance(p1, p2):
+    return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
+
+def is_collinear(p1, p2, p3):
+    # Check if the area of the triangle formed by p1, p2, p3 is zero
+    return (p2[0] - p1[0]) * (p3[1] - p1[1]) == (p3[0] - p1[0]) * (p2[1] - p1[1])
+
+def find_shortest_path(N, K, points):
+    # Find the line equation and identify the off-line point
+    line_points = []
+    off_line_point = None
+    
+    # Assume the first two points are on the line
+    for i in range(2, N):
+        if is_collinear(points[0], points[1], points[i]):
+            line_points.append(points[i])
+        else:
+            off_line_point = points[i]
+    
+    # If no off-line point was found, assume the third point is off-line
+    if off_line_point is None:
+        off_line_point = points[2]
+        line_points = points[:2]
+    
+    # Add the first two points to the line_points list
+    line_points.extend(points[:2])
+    
+    # Sort the line points based on their x-coordinates (or y-coordinates if vertical)
+    line_points.sort(key=lambda x: (x[0], x[1]))
+    
+    # Calculate the distance from the starting point K to the off-line point
+    start_point = points[K-1]
+    dist_to_off_line = distance(start_point, off_line_point)
+    
+    # Calculate the total distance if we traverse the line from left to right
+    left_to_right_dist = sum(distance(line_points[i], line_points[i+1]) for i in range(len(line_points)-1))
+    
+    # Calculate the total distance if we traverse the line from right to left
+    right_to_left_dist = sum(distance(line_points[i+1], line_points[i]) for i in range(len(line_points)-1))
+    
+    # The shortest path is the minimum of the two traversal distances plus the distance to the off-line point
+    shortest_path = min(left_to_right_dist, right_to_left_dist) + dist_to_off_line
+    
+    return shortest_path
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+N = int(input[0])
+K = int(input[1])
+points = [(int(input[2 + 2*i]), int(input[3 + 2*i])) for i in range(N)]
+
+# Output the result
+print(f"{find_shortest_path(N, K, points):.6f}")

@@ -1,0 +1,118 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+#include <iomanip>
+
+using namespace std;
+
+struct Point {
+    int x, y;
+};
+
+// Calculate distance between two points
+double dist(const Point& a, const Point& b) {
+    return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+}
+
+// Check if three points are collinear
+bool collinear(const Point& a, const Point& b, const Point& c) {
+    return (b.y - a.y) * (c.x - b.x) == (c.y - b.y) * (b.x - a.x);
+}
+
+// Find the point that's not collinear with most other points
+int findNonCollinearPoint(const vector<Point>& points) {
+    int n = points.size();
+    if (n <= 2) return -1; // All points are collinear with 2 or fewer points
+    
+    for (int i = 0; i < n; i++) {
+        // Take first two points that aren't i
+        int p1 = (i + 1) % n;
+        int p2 = (i + 2) % n;
+        
+        bool is_outlier = true;
+        
+        // Check if all other points are collinear with these two
+        for (int j = 0; j < n; j++) {
+            if (j != i && j != p1 && j != p2) {
+                if (!collinear(points[p1], points[p2], points[j])) {
+                    is_outlier = false;
+                    break;
+                }
+            }
+        }
+        
+        if (is_outlier) {
+            return i;
+        }
+    }
+    
+    return -1; // Should not reach here if problem statement is correct
+}
+
+int main() {
+    int n, k;
+    cin >> n >> k;
+    k--; // Convert to 0-indexed
+    
+    vector<Point> points(n);
+    for (int i = 0; i < n; i++) {
+        cin >> points[i].x >> points[i].y;
+    }
+    
+    int outlier = findNonCollinearPoint(points);
+    vector<int> line_points;
+    
+    for (int i = 0; i < n; i++) {
+        if (i != outlier) {
+            line_points.push_back(i);
+        }
+    }
+    
+    // Find the endpoints of the line
+    double max_dist = 0;
+    int end1 = line_points[0], end2 = line_points[0];
+    
+    for (size_t i = 0; i < line_points.size(); i++) {
+        for (size_t j = i + 1; j < line_points.size(); j++) {
+            double d = dist(points[line_points[i]], points[line_points[j]]);
+            if (d > max_dist) {
+                max_dist = d;
+                end1 = line_points[i];
+                end2 = line_points[j];
+            }
+        }
+    }
+    
+    // Calculate shortest path
+    double result;
+    
+    if (k == outlier) {
+        // Starting from the outlier point
+        // Go to either endpoint, then to the other endpoint
+        result = min(
+            dist(points[outlier], points[end1]) + dist(points[end1], points[end2]),
+            dist(points[outlier], points[end2]) + dist(points[end2], points[end1])
+        );
+    } else {
+        // Starting from a point on the line
+        
+        // Option 1: Go to outlier first, then to an endpoint, then to the other endpoint
+        double option1 = min(
+            dist(points[k], points[outlier]) + dist(points[outlier], points[end1]) + dist(points[end1], points[end2]),
+            dist(points[k], points[outlier]) + dist(points[outlier], points[end2]) + dist(points[end2], points[end1])
+        );
+        
+        // Option 2: Go to an endpoint first, then to the other endpoint, then to the outlier
+        double option2 = min(
+            dist(points[k], points[end1]) + dist(points[end1], points[end2]) + dist(points[end2], points[outlier]),
+            dist(points[k], points[end2]) + dist(points[end2], points[end1]) + dist(points[end1], points[outlier])
+        );
+        
+        result = min(option1, option2);
+    }
+    
+    cout << fixed << setprecision(6) << result << endl;
+    
+    return 0;
+}

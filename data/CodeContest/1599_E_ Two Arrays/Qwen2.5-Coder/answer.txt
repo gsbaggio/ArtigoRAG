@@ -1,0 +1,297 @@
+import java.util.*;
+import java.io.*;
+
+public class Main {
+    static final int MOD = (int) (1e9) + 7;
+    static long[] fib;
+
+    static class Node {
+        long sum;
+        long minAdd;
+        long maxAdd;
+        long add;
+        boolean minChanged;
+        boolean maxChanged;
+        boolean addChanged;
+
+        Node() {
+            sum = 0;
+            minAdd = Long.MAX_VALUE;
+            maxAdd = Long.MIN_VALUE;
+            add = 0;
+            minChanged = false;
+            maxChanged = false;
+            addChanged = false;
+        }
+
+        void applyMin(long val) {
+            if (val < minAdd) {
+                minAdd = val;
+                minChanged = true;
+            }
+        }
+
+        void applyMax(long val) {
+            if (val > maxAdd) {
+                maxAdd = val;
+                maxChanged = true;
+            }
+        }
+
+        void applyAdd(long val) {
+            add += val;
+            addChanged = true;
+        }
+
+        void push(Node left, Node right) {
+            if (minChanged) {
+                left.applyMin(minAdd);
+                right.applyMin(minAdd);
+                minChanged = false;
+            }
+            if (maxChanged) {
+                left.applyMax(maxAdd);
+                right.applyMax(maxAdd);
+                maxChanged = false;
+            }
+            if (addChanged) {
+                left.applyAdd(add);
+                right.applyAdd(add);
+                addChanged = false;
+            }
+        }
+
+        void update(long val, long[] arr, int tl, int tr) {
+            if (minChanged) {
+                val = Math.min(val, minAdd);
+            }
+            if (maxChanged) {
+                val = Math.max(val, maxAdd);
+            }
+            val += add;
+            sum = fib[(int) val];
+            if (tl != tr) {
+                applyMin(val);
+                applyMax(val);
+                applyAdd(0);
+            }
+        }
+    }
+
+    static class SegmentTree {
+        Node[] tree;
+        int size;
+
+        SegmentTree(int n) {
+            size = 1;
+            while (size < n) size *= 2;
+            tree = new Node[2 * size];
+            for (int i = 0; i < 2 * size; i++) tree[i] = new Node();
+        }
+
+        void build(long[] a1, long[] a2, int n) {
+            for (int i = 0; i < n; i++) {
+                tree[size + i].update(a1[i] + a2[i], a1, 0, 0);
+            }
+            for (int i = size - 1; i > 0; i--) {
+                tree[i].sum = sum(tree[2 * i].sum, tree[2 * i + 1].sum);
+            }
+        }
+
+        void updateMin(int k, int l, int r, long x, int v, int tl, int tr) {
+            if (l > r) return;
+            if (tl == l && tr == r) {
+                tree[v].applyMin(x);
+                tree[v].push(tree[2 * v], tree[2 * v + 1]);
+            } else {
+                int tm = (tl + tr) / 2;
+                tree[v].push(tree[2 * v], tree[2 * v + 1]);
+                updateMin(k, l, Math.min(r, tm), x, 2 * v, tl, tm);
+                updateMin(k, Math.max(l, tm + 1), r, x, 2 * v + 1, tm + 1, tr);
+                tree[v].sum = sum(tree[2 * v].sum, tree[2 * v + 1].sum);
+            }
+        }
+
+        void updateMax(int k, int l, int r, long x, int v, int tl, int tr) {
+            if (l > r) return;
+            if (tl == l && tr == r) {
+                tree[v].applyMax(x);
+                tree[v].push(tree[2 * v], tree[2 * v + 1]);
+            } else {
+                int tm = (tl + tr) / 2;
+                tree[v].push(tree[2 * v], tree[2 * v + 1]);
+                updateMax(k, l, Math.min(r, tm), x, 2 * v, tl, tm);
+                updateMax(k, Math.max(l, tm + 1), r, x, 2 * v + 1, tm + 1, tr);
+                tree[v].sum = sum(tree[2 * v].sum, tree[2 * v + 1].sum);
+            }
+        }
+
+        void updateAdd(int k, int l, int r, long x, int v, int tl, int tr) {
+            if (l > r) return;
+            if (tl == l && tr == r) {
+                tree[v].applyAdd(x);
+                tree[v].push(tree[2 * v], tree[2 * v + 1]);
+            } else {
+                int tm = (tl + tr) / 2;
+                tree[v].push(tree[2 * v], tree[2 * v + 1]);
+                updateAdd(k, l, Math.min(r, tm), x, 2 * v, tl, tm);
+                updateAdd(k, Math.max(l, tm + 1), r, x, 2 * v + 1, tm + 1, tr);
+                tree[v].sum = sum(tree[2 * v].sum, tree[2 * v + 1].sum);
+            }
+        }
+
+        long query(int l, int r, int v, int tl, int tr) {
+            if (l > r) return 0;
+            if (tl == l && tr == r) return tree[v].sum;
+            int tm = (tl + tr) / 2;
+            tree[v].push(tree[2 * v], tree[2 * v + 1]);
+            return sum(query(l, Math.min(r, tm), 2 * v, tl, tm),
+                       query(Math.max(l, tm + 1), r, 2 * v + 1, tm + 1, tr));
+        }
+
+        void updateMin(int k, int l, int r, long x) {
+            updateMin(k, l, r, x, 1, 0, size - 1);
+        }
+
+        void updateMax(int k, int l, int r, long x) {
+            updateMax(k, l, r, x, 1, 0, size - 1);
+        }
+
+        void updateAdd(int k, int l, int r, long x) {
+            updateAdd(k, l, r, x, 1, 0, size - 1);
+        }
+
+        long query(int l, int r) {
+            return query(l, r, 1, 0, size - 1);
+        }
+    }
+
+    private static void solve(FastScanner s1, PrintWriter out) {
+        int N = s1.nextInt();
+        int Q = s1.nextInt();
+        long[] A1 = s1.nextLongArray(N);
+        long[] A2 = s1.nextLongArray(N);
+
+        fib = new long[1000001];
+        fib[0] = 0;
+        fib[1] = 1;
+        for (int i = 2; i <= 1000000; i++) {
+            fib[i] = (fib[i - 1] + fib[i - 2]) % MOD;
+        }
+
+        SegmentTree tree = new SegmentTree(N);
+        tree.build(A1, A2, N);
+
+        while (Q-- > 0) {
+            int type = s1.nextInt();
+            if (type == 1) {
+                int k = s1.nextInt() - 1;
+                int l = s1.nextInt() - 1;
+                int r = s1.nextInt() - 1;
+                long x = s1.nextLong();
+                tree.updateMin(k, l, r, x);
+            } else if (type == 2) {
+                int k = s1.nextInt() - 1;
+                int l = s1.nextInt() - 1;
+                int r = s1.nextInt() - 1;
+                long x = s1.nextLong();
+                tree.updateMax(k, l, r, x);
+            } else if (type == 3) {
+                int k = s1.nextInt() - 1;
+                int l = s1.nextInt() - 1;
+                int r = s1.nextInt() - 1;
+                long x = s1.nextLong();
+                tree.updateAdd(k, l, r, x);
+            } else {
+                int l = s1.nextInt() - 1;
+                int r = s1.nextInt() - 1;
+                out.println(tree.query(l, r));
+            }
+        }
+    }
+
+    static long sum(long a, long b) {
+        a += b;
+        if (a >= MOD) a -= MOD;
+        return a;
+    }
+
+    public static void main(String[] args) throws IOException {
+        FastScanner in = new FastScanner(System.in);
+        PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)), false);
+        solve(in, out);
+        in.close();
+        out.close();
+    }
+
+    static class FastScanner {
+        BufferedReader reader;
+        StringTokenizer st;
+
+        FastScanner(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream));
+            st = null;
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreTokens()) {
+                try {
+                    String line = reader.readLine();
+                    if (line == null) return null;
+                    st = new StringTokenizer(line);
+                } catch (Exception e) {
+                    throw new RuntimeException();
+                }
+            }
+            return st.nextToken();
+        }
+
+        String nextLine() {
+            String s = null;
+            try {
+                s = reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return s;
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        double nextDouble() {
+            return Double.parseDouble(next());
+        }
+
+        char nextChar() {
+            return next().charAt(0);
+        }
+
+        int[] nextIntArray(int n) {
+            int[] arr = new int[n];
+            int i = 0;
+            while (i < n) arr[i++] = nextInt();
+            return arr;
+        }
+
+        long[] nextLongArray(int n) {
+            long[] arr = new long[n];
+            int i = 0;
+            while (i < n) arr[i++] = nextLong();
+            return arr;
+        }
+
+        void close() {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

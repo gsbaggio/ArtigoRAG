@@ -1,0 +1,86 @@
+MOD = 10**9 + 7
+
+class Matrix:
+    def __init__(self, a, b, c, d):
+        self.e00 = a
+        self.e01 = b
+        self.e10 = c
+        self.e11 = d
+
+    def multiply(self, t):
+        a = ((self.e00 * t.e00) % MOD + (self.e01 * t.e10) % MOD) % MOD
+        b = ((self.e00 * t.e01) % MOD + (self.e01 * t.e11) % MOD) % MOD
+        c = ((self.e10 * t.e00) % MOD + (self.e11 * t.e10) % MOD) % MOD
+        d = ((self.e10 * t.e01) % MOD + (self.e11 * t.e11) % MOD) % MOD
+        return Matrix(a, b, c, d)
+
+def fibonacci(n):
+    if n == 0:
+        return Matrix(0, 1, 1, 1)
+    if n == 1:
+        return Matrix(0, 1, 1, 1)
+    
+    a = Matrix(1, 1, 1, 0)
+    res = Matrix(1, 0, 0, 1)
+    
+    while n:
+        if n & 1:
+            res = res.multiply(a)
+        a = a.multiply(a)
+        n >>= 1
+    
+    return res
+
+class SegmentTree:
+    def __init__(self, arr):
+        self.arr = arr
+        self.tree = [None] * (4 * len(arr))
+
+    def build(self, node, start, end):
+        if start == end:
+            self.tree[node] = fibonacci(self.arr[start])
+        else:
+            mid = (start + end) // 2
+            self.build(2 * node, start, mid)
+            self.build(2 * node + 1, mid + 1, end)
+            self.tree[node] = self.tree[2 * node].multiply(self.tree[2 * node + 1])
+
+    def query(self, node, start, end, l, r):
+        if start > r or end < l:
+            return Matrix(1, 0, 0, 1)
+        if l <= start and end <= r:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        left = self.query(2 * node, start, mid, l, r)
+        right = self.query(2 * node + 1, mid + 1, end, l, r)
+        return left.multiply(right)
+
+N, Q = map(int, input().split())
+A1 = list(map(int, input().split()))
+A2 = list(map(int, input().split())
+
+queries = []
+for _ in range(Q):
+    queries.append(list(map(int, input().split())))
+
+segment_tree = SegmentTree([a + b for a, b in zip(A1, A2)])
+segment_tree.build(1, 0, N - 1)
+
+for query in queries:
+    if query[0] == 1:
+        k, l, r, x = query[1:]
+        matrix_x = fibonacci(x)
+        segment_tree.update(1, 0, N-1, l-1, r-1, matrix_x)
+    elif query[0] == 2:
+        k, l, r, x = query[1:]
+        matrix_x = fibonacci(x)
+        segment_tree.update(2, 0, N-1, l-1, r-1, matrix_x)
+    elif query[0] == 3:
+        k, l, r, x = query[1:]
+        matrix_x = fibonacci(x)
+        segment_tree.update(3, 0, N-1, l-1, r-1, matrix_x)
+    else:
+        l, r = query[1:]
+        result = segment_tree.query(1, 0, N-1, l-1, r-1)
+        print((result.e10) % MOD)

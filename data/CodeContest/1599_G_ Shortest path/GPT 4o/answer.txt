@@ -1,0 +1,47 @@
+import math
+from sys import stdin, stdout
+
+# Function to calculate Euclidean distance
+def distance(p1, p2):
+    return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+# Main function
+def solve():
+    # Read input
+    n, k = map(int, stdin.readline().split())
+    points = [tuple(map(int, stdin.readline().split())) for _ in range(n)]
+    
+    # Adjust for 0-based indexing
+    k -= 1
+    
+    # Identify the point off the line
+    # Sort points by x-coordinate (or y-coordinate if needed)
+    sorted_points = sorted(points)
+    
+    # Find the point that is off the line
+    # The off-line point will not align with the slope of the line formed by other points
+    off_line_point = None
+    for i in range(n):
+        if i > 1:
+            x1, y1 = sorted_points[0]
+            x2, y2 = sorted_points[1]
+            x3, y3 = sorted_points[i]
+            # Check if the slope between (x1, y1) and (x2, y2) matches the slope with (x3, y3)
+            if (y2 - y1) * (x3 - x1) != (y3 - y1) * (x2 - x1):
+                off_line_point = sorted_points[i]
+                break
+    
+    # Separate the points into line points and the off-line point
+    line_points = [p for p in sorted_points if p != off_line_point]
+    
+    # Calculate the shortest path
+    # Start at point K, visit all line points, and visit the off-line point
+    min_path = float('inf')
+    for i in range(len(line_points)):
+        # Try visiting the off-line point before or after traversing the line
+        path1 = distance(points[k], off_line_point) + distance(off_line_point, line_points[0]) + sum(distance(line_points[j], line_points[j+1]) for j in range(len(line_points) - 1))
+        path2 = distance(points[k], line_points[0]) + sum(distance(line_points[j], line_points[j+1]) for j in range(len(line_points) - 1)) + distance(line_points[-1], off_line_point)
+        min_path = min(min_path, path1, path2)
+    
+    # Output the result
+    stdout.write(f"{min_path:.6f}\n")

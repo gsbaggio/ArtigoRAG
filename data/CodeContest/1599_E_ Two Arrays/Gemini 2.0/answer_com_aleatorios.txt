@@ -1,0 +1,41 @@
+def solve():
+    n, q = map(int, input().split())
+    a1 = list(map(int, input().split()))
+    a2 = list(map(int, input().split()))
+
+    def fibonacci(k):
+        if k <= 1:
+            return k
+        
+        fib = [0] * (k + 1)
+        fib[0] = 0
+        fib[1] = 1
+        
+        for i in range(2, k + 1):
+            fib[i] = (fib[i-1] + fib[i-2]) % (10**9 + 7)
+        
+        return fib[k]
+
+    for _ in range(q):
+        query = list(map(int, input().split()))
+        
+        if query[0] == 1:
+            k, l, r, x = query
+            for i in range(l - 1, r):
+                a1[i] = min(a1[i], x)
+        elif query[0] == 2:
+            k, l, r, x = query
+            for i in range(l - 1, r):
+                a2[i] = max(a2[i], x)
+        elif query[0] == 3:
+            k, l, r, x = query
+            for i in range(l - 1, r):
+                a2[i] = a2[i] + x
+        else:
+            l, r = query
+            sum_fib = 0
+            for i in range(l - 1, r):
+                sum_fib = (sum_fib + fibonacci(a1[i] + a2[i])) % (10**9 + 7)
+            print(sum_fib)
+
+solve()

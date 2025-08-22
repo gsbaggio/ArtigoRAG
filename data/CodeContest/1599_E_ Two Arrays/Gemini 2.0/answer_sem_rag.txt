@@ -1,0 +1,55 @@
+def solve():
+    n, q = map(int, input().split())
+    a1 = list(map(int, input().split()))
+    a2 = list(map(int, input().split()))
+    
+    MOD = 10**9 + 7
+    
+    def fibonacci(k):
+        if k == 0:
+            return 0
+        elif k == 1:
+            return 1
+        else:
+            fib = [0] * (k + 1)
+            fib[0] = 0
+            fib[1] = 1
+            for i in range(2, k + 1):
+                fib[i] = (fib[i-1] + fib[i-2]) % MOD
+            return fib[k]
+
+    for _ in range(q):
+        query = list(map(int, input().split()))
+        
+        if query[0] == 1:
+            k, l, r, x = query[1], query[2], query[3], query[4]
+            if k == 1:
+                for i in range(l - 1, r):
+                    a1[i] = min(a1[i], x)
+            else:
+                for i in range(l - 1, r):
+                    a2[i] = min(a2[i], x)
+        elif query[0] == 2:
+            k, l, r, x = query[1], query[2], query[3], query[4]
+            if k == 1:
+                for i in range(l - 1, r):
+                    a1[i] = max(a1[i], x)
+            else:
+                for i in range(l - 1, r):
+                    a2[i] = max(a2[i], x)
+        elif query[0] == 3:
+            k, l, r, x = query[1], query[2], query[3], query[4]
+            if k == 1:
+                for i in range(l - 1, r):
+                    a1[i] = a1[i] += x
+            else:
+                for i in range(l - 1, r):
+                    a2[i] += x
+        else:
+            l, r = query[1], query[2]
+            sum_fib = 0
+            for i in range(l - 1, r):
+                sum_fib = (sum_fib + fibonacci(a1[i] + a2[i])) % MOD
+            print(sum_fib)
+
+solve()

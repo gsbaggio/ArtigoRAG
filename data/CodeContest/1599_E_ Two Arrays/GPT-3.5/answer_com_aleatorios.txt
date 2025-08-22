@@ -1,0 +1,22 @@
+def calculate_series_term(A, B, N):
+    if N == 0:
+        return A
+    if N == 1:
+        return B
+
+    prev = B
+    curr = B * B + A
+
+    for i in range(2, N):
+        next_term = curr * curr + prev
+        prev = curr
+        curr = next_term
+
+    return curr
+
+# Reading input
+A, B, N = map(int, input().split())
+
+# Calculating the Nth term of the series
+result = calculate_series_term(A, B, N)
+print(result)

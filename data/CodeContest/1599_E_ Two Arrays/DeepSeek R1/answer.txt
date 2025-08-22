@@ -1,0 +1,83 @@
+import java.util.*;
+import java.io.*;
+
+public class Main {
+    static final long mod = 1000000007;
+
+    static class Matrix2 {
+        long a, b, c, d;
+        Matrix2(long a, long b, long c, long d) {
+            this.a = a % mod;
+            this.b = b % mod;
+            this.c = c % mod;
+            this.d = d % mod;
+        }
+        Matrix2 multiply(Matrix2 other) {
+            return new Matrix2(
+                a * other.a + b * other.c,
+                a * other.b + b * other.d,
+                c * other.a + d * other.c,
+                c * other.b + d * other.d
+            );
+        }
+    }
+
+    static long fib(long n) {
+        if (n == 0) return 0;
+        if (n == 1) return 1;
+        Matrix2 base = new Matrix2(1, 1, 1, 0);
+        Matrix2 res = new Matrix2(1, 0, 0, 1);
+        long exponent = n - 1;
+        while (exponent > 0) {
+            if (exponent % 2 == 1) {
+                res = res.multiply(base);
+            }
+            base = base.multiply(base);
+            exponent /= 2;
+        }
+        return res.a;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int N = sc.nextInt();
+        int Q = sc.nextInt();
+        long[] A1 = new long[N];
+        long[] A2 = new long[N];
+        for (int i = 0; i < N; i++) {
+            A1[i] = sc.nextLong();
+        }
+        for (int i = 0; i < N; i++) {
+            A2[i] = sc.nextLong();
+        }
+
+        while (Q-- > 0) {
+            int type = sc.nextInt();
+            if (type == 4) {
+                int l = sc.nextInt() - 1;
+                int r = sc.nextInt() - 1;
+                long ans = 0;
+                for (int i = l; i <= r; i++) {
+                    long s = A1[i] + A2[i];
+                    ans = (ans + fib(s)) % mod;
+                }
+                System.out.println(ans);
+            } else {
+                int k = sc.nextInt();
+                int l = sc.nextInt() - 1;
+                int r = sc.nextInt() - 1;
+                long x = sc.nextLong();
+                long[] array = (k == 1) ? A1 : A2;
+                for (int i = l; i <= r; i++) {
+                    if (type == 1) {
+                        array[i] = Math.min(array[i], x);
+                    } else if (type == 2) {
+                        array[i] = Math.max(array[i], x);
+                    } else if (type == 3) {
+                        array[i] += x;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,220 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+const int MOD = 1e9 + 7;
+const int MAXN = 5e4 + 10;
+const int MAXFIB = 2e6 + 10;
+
+struct Node {
+    long long sum;
+    long long min_val;
+    long long max_val;
+    long long add_lazy;
+    long long min_lazy;
+    long long max_lazy;
+};
+
+vector<Node> segtree1(4 * MAXN);
+vector<Node> segtree2(4 * MAXN);
+
+void push_down(Node &parent, Node &left_child, Node &right_child) {
+    if (parent.add_lazy != 0) {
+        left_child.sum += parent.add_lazy * (left_child.max_val - left_child.min_val + 1);
+        right_child.sum += parent.add_lazy * (right_child.max_val - right_child.min_val + 1);
+        left_child.min_val += parent.add_lazy;
+        left_child.max_val += parent.add_lazy;
+        right_child.min_val += parent.add_lazy;
+        right_child.max_val += parent.add_lazy;
+        left_child.add_lazy += parent.add_lazy;
+        right_child.add_lazy += parent.add_lazy;
+        parent.add_lazy = 0;
+    }
+    
+    if (parent.min_lazy != LLONG_MAX) {
+        left_child.min_val = min(left_child.min_val, parent.min_lazy);
+        left_child.max_val = min(left_child.max_val, parent.min_lazy);
+        right_child.min_val = min(right_child.min_val, parent.min_lazy);
+        right_child.max_val = min(right_child.max_val, parent.min_lazy);
+        left_child.min_lazy = min(left_child.min_lazy, parent.min_lazy);
+        right_child.min_lazy = min(right_child.min_lazy, parent.min_lazy);
+        parent.min_lazy = LLONG_MAX;
+    }
+    
+    if (parent.max_lazy != LLONG_MIN) {
+        left_child.min_val = max(left_child.min_val, parent.max_lazy);
+        left_child.max_val = max(left_child.max_val, parent.max_lazy);
+        right_child.min_val = max(right_child.min_val, parent.max_lazy);
+        right_child.max_val = max(right_child.max_val, parent.max_lazy);
+        left_child.max_lazy = max(left_child.max_lazy, parent.max_lazy);
+        right_child.max_lazy = max(right_child.max_lazy, parent.max_lazy);
+        parent.max_lazy = LLONG_MIN;
+    }
+}
+
+void build(vector<long long> &arr, vector<Node> &segtree, int v, int tl, int tr) {
+    if (tl == tr) {
+        segtree[v].sum = arr[tl];
+        segtree[v].min_val = arr[tl];
+        segtree[v].max_val = arr[tl];
+        segtree[v].add_lazy = 0;
+        segtree[v].min_lazy = LLONG_MAX;
+        segtree[v].max_lazy = LLONG_MIN;
+    } else {
+        int tm = (tl + tr) / 2;
+        build(arr, segtree, v*2, tl, tm);
+        build(arr, segtree, v*2+1, tm+1, tr);
+        segtree[v].sum = segtree[v*2].sum + segtree[v*2+1].sum;
+        segtree[v].min_val = min(segtree[v*2].min_val, segtree[v*2+1].min_val);
+        segtree[v].max_val = max(segtree[v*2].max_val, segtree[v*2+1].max_val);
+        segtree[v].add_lazy = 0;
+        segtree[v].min_lazy = LLONG_MAX;
+        segtree[v].max_lazy = LLONG_MIN;
+    }
+}
+
+void update_add(vector<Node> &segtree, int v, int tl, int tr, int l, int r, long long x) {
+    if (l > r) return;
+    if (l == tl && r == tr) {
+        segtree[v].sum += x * (tr - tl + 1);
+        segtree[v].min_val += x;
+        segtree[v].max_val += x;
+        segtree[v].add_lazy += x;
+    } else {
+        push_down(segtree[v], segtree[v*2], segtree[v*2+1]);
+        int tm = (tl + tr) / 2;
+        update_add(segtree, v*2, tl, tm, l, min(r, tm), x);
+        update_add(segtree, v*2+1, tm+1, tr, max(l, tm+1), r, x);
+        segtree[v].sum = segtree[v*2].sum + segtree[v*2+1].sum;
+        segtree[v].min_val = min(segtree[v*2].min_val, segtree[v*2+1].min_val);
+        segtree[v].max_val = max(segtree[v*2].max_val, segtree[v*2+1].max_val);
+    }
+}
+
+void update_min(vector<Node> &segtree, int v, int tl, int tr, int l, int r, long long x) {
+    if (l > r) return;
+    if (l == tl && r == tr) {
+        segtree[v].min_val = min(segtree[v].min_val, x);
+        segtree[v].max_val = min(segtree[v].max_val, x);
+        segtree[v].min_lazy = min(segtree[v].min_lazy, x);
+    } else {
+        push_down(segtree[v], segtree[v*2], segtree[v*2+1]);
+        int tm = (tl + tr) / 2;
+        update_min(segtree, v*2, tl, tm, l, min(r, tm), x);
+        update_min(segtree, v*2+1, tm+1, tr, max(l, tm+1), r, x);
+        segtree[v].sum = segtree[v*2].sum + segtree[v*2+1].sum;
+        segtree[v].min_val = min(segtree[v*2].min_val, segtree[v*2+1].min_val);
+        segtree[v].max_val = max(segtree[v*2].max_val, segtree[v*2+1].max_val);
+    }
+}
+
+void update_max(vector<Node> &segtree, int v, int tl, int tr, int l, int r, long long x) {
+    if (l > r) return;
+    if (l == tl && r == tr) {
+        segtree[v].min_val = max(segtree[v].min_val, x);
+        segtree[v].max_val = max(segtree[v].max_val, x);
+        segtree[v].max_lazy = max(segtree[v].max_lazy, x);
+    } else {
+        push_down(segtree[v], segtree[v*2], segtree[v*2+1]);
+        int tm = (tl + tr) / 2;
+        update_max(segtree, v*2, tl, tm, l, min(r, tm), x);
+        update_max(segtree, v*2+1, tm+1, tr, max(l, tm+1), r, x);
+        segtree[v].sum = segtree[v*2].sum + segtree[v*2+1].sum;
+        segtree[v].min_val = min(segtree[v*2].min_val, segtree[v*2+1].min_val);
+        segtree[v].max_val = max(segtree[v*2].max_val, segtree[v*2+1].max_val);
+    }
+}
+
+long long query_sum(vector<Node> &segtree, int v, int tl, int tr, int l, int r) {
+    if (l > r) return 0;
+    if (l == tl && r == tr) {
+        return segtree[v].sum;
+    }
+    push_down(segtree[v], segtree[v*2], segtree[v*2+1]);
+    int tm = (tl + tr) / 2;
+    return query_sum(segtree, v*2, tl, tm, l, min(r, tm)) +
+           query_sum(segtree, v*2+1, tm+1, tr, max(l, tm+1), r);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int N, Q;
+    cin >> N >> Q;
+    
+    vector<long long> A1(N);
+    vector<long long> A2(N);
+    
+    for (int i = 0; i < N; ++i) {
+        cin >> A1[i];
+    }
+    
+    for (int i = 0; i < N; ++i) {
+        cin >> A2[i];
+    }
+    
+    build(A1, segtree1, 1, 0, N-1);
+    build(A2, segtree2, 1, 0, N-1);
+    
+    vector<long long> fib(MAXFIB);
+    fib[0] = 0;
+    fib[1] = 1;
+    for (int i = 2; i < MAXFIB; ++i) {
+        fib[i] = (fib[i-1] + fib[i-2]) % MOD;
+    }
+    
+    while (Q--) {
+        int type;
+        cin >> type;
+        
+        if (type == 1) {
+            int k, l, r;
+            long long x;
+            cin >> k >> l >> r >> x;
+            --l; --r;
+            if (k == 1) {
+                update_min(segtree1, 1, 0, N-1, l, r, x);
+            } else {
+                update_min(segtree2, 1, 0, N-1, l, r, x);
+            }
+        } else if (type == 2) {
+            int k, l, r;
+            long long x;
+            cin >> k >> l >> r >> x;
+            --l; --r;
+            if (k == 1) {
+                update_max(segtree1, 1, 0, N-1, l, r, x);
+            } else {
+                update_max(segtree2, 1, 0, N-1, l, r, x);
+            }
+        } else if (type == 3) {
+            int k, l, r;
+            long long x;
+            cin >> k >> l >> r >> x;
+            --l; --r;
+            if (k == 1) {
+                update_add(segtree1, 1, 0, N-1, l, r, x);
+            } else {
+                update_add(segtree2, 1, 0, N-1, l, r, x);
+            }
+        } else if (type == 4) {
+            int l, r;
+            cin >> l >> r;
+            --l; --r;
+            long long sum_A1 = query_sum(segtree1, 1, 0, N-1, l, r);
+            long long sum_A2 = query_sum(segtree2, 1, 0, N-1, l, r);
+            
+            long long result = 0;
+            for (int i = l; i <= r; ++i) {
+                long long val = segtree1[2*N+i].min_val + segtree2[2*N+i].min_val;
+                result = (result + fib[val]) % MOD;
+            }
+            cout << result << "\n";
+        }
+    }
+    
+    return 0;
+}

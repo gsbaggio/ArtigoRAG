@@ -1,0 +1,199 @@
+import sys
+
+MOD = 10**9 + 7
+
+class Fenw:
+    def __init__(self, size):
+        self.n = size
+        self.tree = [0] * (self.n + 1)
+    
+    def update(self, index, delta):
+        i = index
+        while i <= self.n:
+            self.tree[i] += delta
+            i += i & -i
+            
+    def query(self, index):
+        s = 0
+        i = index
+        while i > 0:
+            s += self.tree[i]
+            i -= i & -i
+        return s
+
+class SegmentTree:
+    def __init__(self, n):
+        self.n = n
+        self.s0 = [0] * (4 * n)
+        self.s1 = [0] * (4 * n)
+        self.lazy = [0] * (4 * n)
+        
+    def mat_mult(self, A, B):
+        a1, a2, a3, a4 = A
+        b1, b2, b3, b4 = B
+        c1 = (a1 * b1 + a2 * b3) % MOD
+        c2 = (a1 * b2 + a2 * b4) % MOD
+        c3 = (a3 * b1 + a4 * b3) % MOD
+        c4 = (a3 * b2 + a4 * b4) % MOD
+        return [c1, c2, c3, c4]
+    
+    def mat_pow(self, M, n):
+        result = [1, 0, 0, 1]
+        while n:
+            if n & 1:
+                result = self.mat_mult(result, M)
+            M = self.mat_mult(M, M)
+            n //= 2
+        return result
+        
+    def fib(self, n):
+        if n == 0:
+            return 0
+        M = [1, 1, 1, 0]
+        Mn = self.mat_pow(M, n)
+        return Mn[1]
+    
+    def F(self, n):
+        if n == 0:
+            return 0
+        if n > 0:
+            return self.fib(n) % MOD
+        else:
+            n_abs = -n
+            f = self.fib(n_abs)
+            if n_abs % 2 == 0:
+                return (-f) % MOD
+            else:
+                return f % MOD
+                
+    def apply(self, idx, x):
+        f0 = self.F(x)
+        f1 = self.F(x-1)
+        f2 = self.F(x+1)
+        s0 = self.s0[idx]
+        s1 = self.s1[idx]
+        new_s0 = (f0 * s1 + f1 * s0) % MOD
+        new_s1 = (f2 * s1 + f0 * s0) % MOD
+        self.s0[idx] = new_s0
+        self.s1[idx] = new_s1
+        self.lazy[idx] += x
+        
+    def push(self, idx):
+        if self.lazy[idx] != 0:
+            self.apply(2*idx, self.lazy[idx])
+            self.apply(2*idx+1, self.lazy[idx])
+            self.lazy[idx] = 0
+            
+    def build(self, idx, l, r, a1, a2):
+        if l == r:
+            s_val = a1[l] + a2[l]
+            self.s0[idx] = self.fib(s_val)
+            self.s1[idx] = self.fib(s_val+1)
+        else:
+            mid = (l + r) // 2
+            self.build(2*idx, l, mid, a1, a2)
+            self.build(2*idx+1, mid+1, r, a1, a2)
+            self.s0[idx] = (self.s0[2*idx] + self.s0[2*idx+1]) % MOD
+            self.s1[idx] = (self.s1[2*idx] + self.s1[2*idx+1]) % MOD
+            
+    def update_range(self, idx, l, r, ul, ur, x):
+        if ul > r or ur < l:
+            return
+        if ul <= l and r <= ur:
+            self.apply(idx, x)
+            return
+        self.push(idx)
+        mid = (l + r) // 2
+        self.update_range(2*idx, l, mid, ul, ur, x)
+        self.update_range(2*idx+1, mid+1, r, ul, ur, x)
+        self.s0[idx] = (self.s0[2*idx] + self.s0[2*idx+1]) % MOD
+        self.s1[idx] = (self.s1[2*idx] + self.s1[2*idx+1]) % MOD
+        
+    def update_point(self, idx, l, r, pos, s_val):
+        if l == r:
+            self.s0[idx] = self.fib(s_val)
+            self.s1[idx] = self.fib(s_val+1)
+            return
+        self.push(idx)
+        mid = (l + r) // 2
+        if pos <= mid:
+            self.update_point(2*idx, l, mid, pos, s_val)
+        else:
+            self.update_point(2*idx+1, mid+1, r, pos, s_val)
+        self.s0[idx] = (self.s0[2*idx] + self.s0[2*idx+1]) % MOD
+        self.s1[idx] = (self.s1[2*idx] + self.s1[2*idx+1]) % MOD
+        
+    def query(self, idx, l, r, ul, ur):
+        if ul > r or ur < l:
+            return 0
+        if ul <= l and r <= ur:
+            return self.s0[idx]
+        self.push(idx)
+        mid = (l + r) // 2
+        left_res = self.query(2*idx, l, mid, ul, ur)
+        right_res = self.query(2*idx+1, mid+1, r, ul, ur)
+        return (left_res + right_res) % MOD
+
+def main():
+    data = sys.stdin.read().split()
+    it = iter(data)
+    n = int(next(it)); q = int(next(it))
+    a1 = [0] * (n+1)
+    a2 = [0] * (n+1)
+    for i in range(1, n+1):
+        a1[i] = int(next(it))
+    for i in range(1, n+1):
+        a2[i] = int(next(it))
+        
+    base_A1 = a1[:] 
+    base_A2 = a2[:]
+    
+    fenw1 = Fenw(n)
+    fenw2 = Fenw(n)
+    
+    tree3 = SegmentTree(n)
+    tree3.build(1, 1, n, base_A1, base_A2)
+    
+    output_lines = []
+    
+    for _ in range(q):
+        t = next(it)
+        if t == '1' or t == '2':
+            k = int(next(it))
+            l = int(next(it)); r = int(next(it)); x = int(next(it))
+            for i in range(l, r+1):
+                add1 = fenw1.query(i)
+                add2 = fenw2.query(i)
+                current_val = base_A1[i] + add1
+                if t == '1':
+                    if current_val > x:
+                        base_A1[i] = x - add1
+                        s_val = base_A1[i] + add1 + base_A2[i] + add2
+                        tree3.update_point(1, 1, n, i, s_val)
+                else:
+                    if current_val < x:
+                        base_A1[i] = x - add1
+                        s_val = base_A1[i] + add1 + base_A2[i] + add2
+                        tree3.update_point(1, 1, n, i, s_val)
+        elif t == '3':
+            k = int(next(it))
+            l = int(next(it)); r = int(next(it)); x = int(next(it))
+            if k == 1:
+                fenw1.update(l, x)
+                if r+1 <= n:
+                    fenw1.update(r+1, -x)
+                tree3.update_range(1, 1, n, l, r, x)
+            else:
+                fenw2.update(l, x)
+                if r+1 <= n:
+                    fenw2.update(r+1, -x)
+                tree3.update_range(1, 1, n, l, r, x)
+        else:
+            l = int(next(it)); r = int(next(it))
+            res = tree3.query(1, 1, n, l, r)
+            output_lines.append(str(res))
+            
+    sys.stdout.write("\n".join(output_lines))
+    
+if __name__ == '__main__':
+    main()

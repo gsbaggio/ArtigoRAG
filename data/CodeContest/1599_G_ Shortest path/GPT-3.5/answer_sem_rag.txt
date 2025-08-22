@@ -1,0 +1,49 @@
+import math
+
+def calculate_distance(point1, point2):
+    return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+
+def min_spanning_tree(graph, start):
+    n = len(graph)
+    visited = [False] * n
+    distances = [float('inf')] * n
+    distances[start] = 0
+    total_distance = 0
+
+    for _ in range(n):
+        min_distance = float('inf')
+        min_vertex = -1
+
+        for v in range(n):
+            if not visited[v] and distances[v] < min_distance:
+                min_distance = distances[v]
+                min_vertex = v
+
+        if min_vertex == -1:
+            break
+
+        visited[min_vertex] = True
+        total_distance += min_distance
+
+        for v in range(n):
+            if not visited[v]:
+                distances[v] = min(distances[v], graph[min_vertex][v])
+
+    return total_distance
+
+def shortest_path(n, k, points):
+    graph = [[0] * n for _ in range(n)]
+
+    for i in range(n):
+        for j in range(n):
+            graph[i][j] = calculate_distance(points[i], points[j])
+
+    return min_spanning_tree(graph, k-1)
+
+# Input parsing
+n, k = map(int, input().split())
+points = [tuple(map(int, input().split())) for _ in range(n)]
+
+# Calculate and print the shortest path
+result = shortest_path(n, k, points)
+print(result)

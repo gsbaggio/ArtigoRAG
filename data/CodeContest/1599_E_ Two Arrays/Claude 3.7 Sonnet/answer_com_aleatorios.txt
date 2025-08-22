@@ -1,0 +1,283 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+typedef long long ll;
+
+const ll MOD = 1e9 + 7;
+
+// Matrix exponentiation for Fibonacci calculation
+struct Matrix {
+    ll a[2][2];
+    
+    Matrix() {
+        a[0][0] = a[0][1] = a[1][0] = 1;
+        a[1][1] = 0;
+    }
+    
+    Matrix operator*(const Matrix& other) const {
+        Matrix result;
+        result.a[0][0] = (a[0][0] * other.a[0][0] + a[0][1] * other.a[1][0]) % MOD;
+        result.a[0][1] = (a[0][0] * other.a[0][1] + a[0][1] * other.a[1][1]) % MOD;
+        result.a[1][0] = (a[1][0] * other.a[0][0] + a[1][1] * other.a[1][0]) % MOD;
+        result.a[1][1] = (a[1][0] * other.a[0][1] + a[1][1] * other.a[1][1]) % MOD;
+        return result;
+    }
+};
+
+// Calculate nth Fibonacci number
+ll fib(ll n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    
+    Matrix base;
+    Matrix result;
+    result.a[0][0] = result.a[1][1] = 1;
+    result.a[0][1] = result.a[1][0] = 0;
+    
+    n--;
+    while (n > 0) {
+        if (n & 1) {
+            result = result * base;
+        }
+        base = base * base;
+        n >>= 1;
+    }
+    
+    return result.a[0][0];
+}
+
+// Segment Tree with Lazy Propagation
+class SegmentTree {
+private:
+    struct Node {
+        ll val;
+        ll add;
+        ll min_val;
+        ll max_val;
+        bool has_min;
+        bool has_max;
+        
+        Node() : val(0), add(0), min_val(0), max_val(0), has_min(false), has_max(false) {}
+    };
+    
+    vector<Node> tree;
+    int n;
+    
+    void push(int node, int start, int end) {
+        if (start == end) return;
+        
+        // Apply min operation
+        if (tree[node].has_min) {
+            tree[2*node].has_min = true;
+            tree[2*node+1].has_min = true;
+            tree[2*node].min_val = tree[node].min_val;
+            tree[2*node+1].min_val = tree[node].min_val;
+            
+            // Update children values
+            if (tree[2*node].val > tree[node].min_val) {
+                tree[2*node].val = tree[node].min_val;
+            }
+            if (tree[2*node+1].val > tree[node].min_val) {
+                tree[2*node+1].val = tree[node].min_val;
+            }
+            
+            tree[node].has_min = false;
+        }
+        
+        // Apply max operation
+        if (tree[node].has_max) {
+            tree[2*node].has_max = true;
+            tree[2*node+1].has_max = true;
+            tree[2*node].max_val = tree[node].max_val;
+            tree[2*node+1].max_val = tree[node].max_val;
+            
+            // Update children values
+            if (tree[2*node].val < tree[node].max_val) {
+                tree[2*node].val = tree[node].max_val;
+            }
+            if (tree[2*node+1].val < tree[node].max_val) {
+                tree[2*node+1].val = tree[node].max_val;
+            }
+            
+            tree[node].has_max = false;
+        }
+        
+        // Apply add operation
+        if (tree[node].add != 0) {
+            tree[2*node].add += tree[node].add;
+            tree[2*node+1].add += tree[node].add;
+            tree[2*node].val += tree[node].add;
+            tree[2*node+1].val += tree[node].add;
+            tree[node].add = 0;
+        }
+    }
+    
+    void updateMin(int node, int start, int end, int l, int r, ll val) {
+        if (start > r || end < l) return;
+        
+        if (start >= l && end <= r) {
+            if (tree[node].val > val) {
+                tree[node].val = val;
+                tree[node].has_min = true;
+                tree[node].min_val = val;
+            }
+            return;
+        }
+        
+        push(node, start, end);
+        int mid = (start + end) / 2;
+        updateMin(2*node, start, mid, l, r, val);
+        updateMin(2*node+1, mid+1, end, l, r, val);
+    }
+    
+    void updateMax(int node, int start, int end, int l, int r, ll val) {
+        if (start > r || end < l) return;
+        
+        if (start >= l && end <= r) {
+            if (tree[node].val < val) {
+                tree[node].val = val;
+                tree[node].has_max = true;
+                tree[node].max_val = val;
+            }
+            return;
+        }
+        
+        push(node, start, end);
+        int mid = (start + end) / 2;
+        updateMax(2*node, start, mid, l, r, val);
+        updateMax(2*node+1, mid+1, end, l, r, val);
+    }
+    
+    void updateAdd(int node, int start, int end, int l, int r, ll val) {
+        if (start > r || end < l) return;
+        
+        if (start >= l && end <= r) {
+            tree[node].val += val;
+            tree[node].add += val;
+            return;
+        }
+        
+        push(node, start, end);
+        int mid = (start + end) / 2;
+        updateAdd(2*node, start, mid, l, r, val);
+        updateAdd(2*node+1, mid+1, end, l, r, val);
+    }
+    
+    ll query(int node, int start, int end, int idx) {
+        if (start == end) {
+            return tree[node].val;
+        }
+        
+        push(node, start, end);
+        int mid = (start + end) / 2;
+        if (idx <= mid) {
+            return query(2*node, start, mid, idx);
+        } else {
+            return query(2*node+1, mid+1, end, idx);
+        }
+    }
+    
+    void build(int node, int start, int end, const vector<ll>& arr) {
+        if (start == end) {
+            tree[node].val = arr[start];
+            return;
+        }
+        
+        int mid = (start + end) / 2;
+        build(2*node, start, mid, arr);
+        build(2*node+1, mid+1, end, arr);
+    }
+    
+public:
+    SegmentTree(int size) {
+        n = size;
+        tree.resize(4 * n);
+    }
+    
+    void build(const vector<ll>& arr) {
+        build(1, 0, n-1, arr);
+    }
+    
+    void updateMin(int l, int r, ll val) {
+        updateMin(1, 0, n-1, l, r, val);
+    }
+    
+    void updateMax(int l, int r, ll val) {
+        updateMax(1, 0, n-1, l, r, val);
+    }
+    
+    void updateAdd(int l, int r, ll val) {
+        updateAdd(1, 0, n-1, l, r, val);
+    }
+    
+    ll query(int idx) {
+        return query(1, 0, n-1, idx);
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n, q;
+    cin >> n >> q;
+    
+    vector<ll> a1(n), a2(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a1[i];
+    }
+    for (int i = 0; i < n; i++) {
+        cin >> a2[i];
+    }
+    
+    SegmentTree st1(n), st2(n);
+    st1.build(a1);
+    st2.build(a2);
+    
+    while (q--) {
+        int type;
+        cin >> type;
+        
+        if (type == 1) { // Min operation
+            int k, l, r, x;
+            cin >> k >> l >> r >> x;
+            l--; r--; // Convert to 0-indexed
+            if (k == 1) {
+                st1.updateMin(l, r, x);
+            } else {
+                st2.updateMin(l, r, x);
+            }
+        } else if (type == 2) { // Max operation
+            int k, l, r, x;
+            cin >> k >> l >> r >> x;
+            l--; r--; // Convert to 0-indexed
+            if (k == 1) {
+                st1.updateMax(l, r, x);
+            } else {
+                st2.updateMax(l, r, x);
+            }
+        } else if (type == 3) { // Add operation
+            int k, l, r, x;
+            cin >> k >> l >> r >> x;
+            l--; r--; // Convert to 0-indexed
+            if (k == 1) {
+                st1.updateAdd(l, r, x);
+            } else {
+                st2.updateAdd(l, r, x);
+            }
+        } else if (type == 4) { // Query Fibonacci sum
+            int l, r;
+            cin >> l >> r;
+            l--; r--; // Convert to 0-indexed
+            
+            ll result = 0;
+            for (int i = l; i <= r; i++) {
+                ll sum = st1.query(i) + st2.query(i);
+                result = (result + fib(sum)) % MOD;
+            }
+            cout << result << endl;
+        }
+    }
+    
+    return 0;
+}

@@ -1,0 +1,88 @@
+import math
+
+def solve():
+    n, k = map(int, input().split())
+    points = []
+    for _ in range(n):
+        points.append(list(map(int, input().split())))
+
+    k -= 1  # Adjust index to be 0-based
+
+    if n == 3:
+        # Special case for 3 points
+        remaining_points = [i for i in range(n) if i != k]
+        dist1 = distance(points[k], points[remaining_points[0]]) + distance(points[remaining_points[0]], points[remaining_points[1]])
+        dist2 = distance(points[k], points[remaining_points[1]]) + distance(points[remaining_points[1]], points[remaining_points[0]])
+        print(min(dist1, dist2))
+        return
+
+    # Find the line containing n-1 points
+    line_points = []
+    non_line_point = -1
+    
+    for i in range(n):
+        is_non_line = True
+        
+        potential_line_points = []
+        for j in range(n):
+            if i != j:
+                potential_line_points.append(j)
+        
+        
+        all_on_line = True
+        if len(potential_line_points) >= 2:
+            x1, y1 = points[potential_line_points[0]]
+            x2, y2 = points[potential_line_points[1]]
+            
+            for j in range(2, len(potential_line_points)):
+                x, y = points[potential_line_points[j]]
+                if (y2 - y1) * (x - x1) != (y - y1) * (x2 - x1):
+                    all_on_line = False
+                    break
+        else:
+            all_on_line = False
+            
+        if all_on_line:
+            line_points = potential_line_points
+            non_line_point = i
+            break
+    
+    if not line_points:
+        print("Error: No line found")
+        return
+
+    # Calculate the shortest path
+    total_distance = float('inf')
+
+    # Try all possible insertion points for the non-line point
+    for i in range(len(line_points) + 1):
+        current_distance = 0
+        current_path = []
+
+        # Start from point K
+        current_path.append(k)
+
+        # Add points before the non-line point
+        for j in range(i):
+            current_path.append(line_points[j])
+
+        # Add the non-line point
+        current_path.append(non_line_point)
+
+        # Add the remaining points
+        for j in range(i, len(line_points)):
+            current_path.append(line_points[j])
+
+        # Calculate the total distance
+        for j in range(len(current_path) - 1):
+            current_distance += distance(points[current_path[j]], points[current_path[j+1]])
+
+        total_distance = min(total_distance, current_distance)
+
+    print(total_distance)
+
+
+def distance(p1, p2):
+    return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+solve()

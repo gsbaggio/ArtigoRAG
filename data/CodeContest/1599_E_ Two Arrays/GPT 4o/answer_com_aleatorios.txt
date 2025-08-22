@@ -1,0 +1,91 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+const int MAX_VAL = 2e6 + 1;
+
+vector<int> fib(MAX_VAL + 1);
+
+// Function to precompute Fibonacci numbers modulo MOD
+void precomputeFibonacci() {
+    fib[0] = 0;
+    fib[1] = 1;
+    for (int i = 2; i <= MAX_VAL; i++) {
+        fib[i] = (fib[i - 1] + fib[i - 2]) % MOD;
+    }
+}
+
+struct SegmentTree {
+    int n;
+    vector<long long> tree, lazyAdd, lazyMin, lazyMax;
+    vector<bool> hasLazyMin, hasLazyMax;
+
+    SegmentTree(int size) {
+        n = size;
+        tree.assign(4 * n, 0);
+        lazyAdd.assign(4 * n, 0);
+        lazyMin.assign(4 * n, 0);
+        lazyMax.assign(4 * n, 0);
+        hasLazyMin.assign(4 * n, false);
+        hasLazyMax.assign(4 * n, false);
+    }
+
+    void applyLazy(int node, int start, int end) {
+        if (lazyAdd[node] != 0) {
+            tree[node] = (tree[node] + lazyAdd[node] * (end - start + 1)) % MOD;
+            if (start != end) {
+                lazyAdd[2 * node] = (lazyAdd[2 * node] + lazyAdd[node]) % MOD;
+                lazyAdd[2 * node + 1] = (lazyAdd[2 * node + 1] + lazyAdd[node]) % MOD;
+            }
+            lazyAdd[node] = 0;
+        }
+
+        if (hasLazyMin[node]) {
+            tree[node] = 0;
+            if (start != end) {
+                lazyMin[node] = min(lazy#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+const int MAX_VAL = 2e6 + 1;
+
+vector<int> fib(MAX_VAL + 1);
+
+// Function to precompute Fibonacci numbers modulo MOD
+void precomputeFibonacci() {
+    fib[0] = 0;
+    fib[1] = 1;
+    for (int i = 2; i <= MAX_VAL; i++) {
+        fib[i] = (fib[i - 1] + fib[i - 2]) % MOD;
+    }
+}
+
+struct SegmentTree {
+    int n;
+    vector<long long> tree, lazyAdd, lazyMin, lazyMax;
+    vector<bool> hasLazyMin, hasLazyMax;
+
+    SegmentTree(int size) {
+        n = size;
+        tree.assign(4 * n, 0);
+        lazyAdd.assign(4 * n, 0);
+        lazyMin.assign(4 * n, 0);
+        lazyMax.assign(4 * n, 0);
+        hasLazyMin.assign(4 * n, false);
+        hasLazyMax.assign(4 * n, false);
+    }
+
+    void applyLazy(int node, int start, int end) {
+        if (lazyAdd[node] != 0) {
+            tree[node] = (tree[node] + lazyAdd[node] * (end - start + 1)) % MOD;
+            if (start != end) {
+                lazyAdd[2 * node] = (lazyAdd[2 * node] + lazyAdd[node]) % MOD;
+                lazyAdd[2 * node + 1] = (lazyAdd[2 * node + 1] + lazyAdd[node]) % MOD;
+            }
+            lazyAdd[node] = 0;
+        }
+
+        if (hasLazyMin[node]) {
+            tree[node] = 0;
+            if (start != end) {
+                lazyMin[node] = min(lazy

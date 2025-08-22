@@ -1,0 +1,119 @@
+MOD = 10**9 + 7
+
+def fibonacci_up_to(n):
+    """Precomputes Fibonacci numbers up to n modulo MOD."""
+    fib = [0] * (n + 1)
+    fib[1] = 1
+    for i in range(2, n + 1):
+        fib[i] = (fib[i - 1] + fib[i - 2]) % MOD
+    return fib
+
+def process_queries(N, Q, A1, A2, queries):
+    """Processes the queries and returns the results for type 4 queries."""
+    # Precompute Fibonacci numbers up to the maximum possible sum of A1[i] + A2[i]
+    max_fib = 10**6 + 10
+    fib = fibonacci_up_to(max_fib)
+
+    # Segment tree for range updates and queries
+    from collections import defaultdict
+
+    def build_segment_tree(arr):
+        """Builds a segment tree for range updates and queries."""
+        n = len(arr)
+        tree = [0] * (4 * n)
+        lazy = [0] * (4 * n)
+        return tree, lazy
+
+    def propagate(tree, lazy, node, start, end):
+        """Propagates lazy updates to the current node."""
+        if lazy[node] != 0:
+            tree[node] += lazy[node] * (end - start + 1)
+            if start != end:  # Not a leaf node
+                lazy[node * 2] += lazy[node]
+                lazy[node * 2 + 1] += lazy[node]
+            lazy[node] = 0
+
+    def range_update(tree, lazy, node, start, end, l, r, val):
+        """Performs a range update on the segment tree."""
+        propagate(tree, lazy, node, start, end)
+        if start > r or end < l:  # Out of range
+            return
+        if start >= l and end <= r:  # Fully in range
+            lazy[node] += val
+            propagate(tree, lazy, node, start, end)
+            return
+        mid = (start + end) // 2
+        range_update(tree, lazy, node * 2, start, mid, l, r, val)
+        range_update(tree, lazy, node * 2 + 1, mid + 1, end, l, r, val)
+        tree[node] = tree[node * 2] + tree[node * 2 + 1]
+
+    def range_query(tree, lazy, node, start, end, l, r):
+        """Performs a range query on the segment tree."""
+        propagate(tree, lazy, node, start, end)
+        if start > r or end < l:  # Out of range
+            return 0
+        if start >= l and end <= r:  # Fully in range
+            return tree[node]
+        mid = (start + end) // 2
+        left_query = range_query(tree, lazy, node * 2, start, mid, l, r)
+        right_query = range_query(tree, lazy, node * 2 + 1, mid + 1, end, l, r)
+        return left_query + right_query
+
+    # Initialize segment trees for A1 and A2
+    tree1, lazy1 = build_segment_tree(A1)
+    tree2, lazy2 = build_segment_tree(A2)
+
+    results = []
+
+    for query in queries:
+        if query[0] == 1:  # Type 1: min update
+            _, k, l, r, x = query
+            if k == 1:
+                for i in range(l - 1, r):
+                    A1[i] = min(A1[i], x)
+            else:
+                for i in range(l - 1, r):
+                    A2[i] = min(A2[i], x)
+        elif query[0] == 2:  # Type 2: max update
+            _, k, l, r, x = query
+            if k == 1:
+                for i in range(l - 1, r):
+                    A1[i] = max(A1[i], x)
+            else:
+                for i in range(l - 1, r):
+                    A2[i] = max(A2[i], x)
+        elif query[0] == 3:  # Type 3: add update
+            _, k, l, r, x = query
+            if k == 1:
+                range_update(tree1, lazy1, 1, 0, N - 1, l - 1, r - 1, x)
+            else:
+                range_update(tree2, lazy2, 1, 0, N - 1, l - 1, r - 1, x)
+        elif query[0] == 4:  # Type 4: sum of Fibonacci numbers
+            _, l, r = query
+            sum_fib = 0
+            for i in range(l - 1, r):
+                a1_val = range_query(tree1, lazy1, 1, 0, N - 1, i, i)
+                a2_val = range_query(tree2, lazy2, 1, 0, N - 1, i, i)
+                sum_fib = (sum_fib + fib[a1_val + a2_val]) % MOD
+            results.append(sum_fib)
+
+    return results
+
+# Input reading and output
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    N, Q = map(int, data[:2])
+    A1 = list(map(int, data[2:2 + N]))
+    A2 = list(map(int, data[2 + N:2 + 2 * N]))
+    queries = []
+    idx = 2 + 2 * N
+    for _ in range(Q):
+        query = list(map(int, data[idx:idx + 5 if data[idx] in {'1', '2', '3'} else 3]))
+        queries.append(query)
+        idx += len(query)
+    
+    results = process_queries(N, Q, A1, A2, queries)
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

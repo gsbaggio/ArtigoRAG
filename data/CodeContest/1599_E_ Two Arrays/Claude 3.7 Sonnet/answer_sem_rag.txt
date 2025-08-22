@@ -1,0 +1,305 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+const int MAX_FIB = 2e6 + 10; // Maximum possible sum of A1_i + A2_i
+
+// Precompute Fibonacci numbers
+vector<long long> precompute_fibonacci(int n) {
+    vector<long long> fib(n + 1);
+    fib[0] = 0;
+    fib[1] = 1;
+    for (int i = 2; i <= n; i++) {
+        fib[i] = (fib[i - 1] + fib[i - 2]) % MOD;
+    }
+    return fib;
+}
+
+// Segment Tree Node
+struct Node {
+    long long val = 0; // The value stored at this node
+    long long add_lazy = 0; // Lazy tag for addition
+    long long min_lazy = 0; // Lazy tag for min operation (0 means no pending min operation)
+    bool has_min = false; // Flag to check if there's a pending min operation
+    long long max_lazy = 0; // Lazy tag for max operation (0 means no pending max operation)
+    bool has_max = false; // Flag to check if there's a pending max operation
+};
+
+class SegmentTree {
+private:
+    vector<Node> tree;
+    vector<long long> arr;
+    int n;
+
+    void build(int node, int start, int end) {
+        if (start == end) {
+            tree[node].val = arr[start];
+            return;
+        }
+        int mid = (start + end) / 2;
+        build(2 * node, start, mid);
+        build(2 * node + 1, mid + 1, end);
+        tree[node].val = 0; // Will be updated during query
+    }
+
+    // Push lazy updates to children
+    void push_down(int node, int start, int end) {
+        if (start == end) return;
+
+        // Process min operation first
+        if (tree[node].has_min) {
+            // Apply min to left child
+            if (tree[2 * node].has_min) {
+                tree[2 * node].min_lazy = min(tree[2 * node].min_lazy, tree[node].min_lazy);
+            } else {
+                tree[2 * node].min_lazy = tree[node].min_lazy;
+                tree[2 * node].has_min = true;
+            }
+
+            // Apply min to right child
+            if (tree[2 * node + 1].has_min) {
+                tree[2 * node + 1].min_lazy = min(tree[2 * node + 1].min_lazy, tree[node].min_lazy);
+            } else {
+                tree[2 * node + 1].min_lazy = tree[node].min_lazy;
+                tree[2 * node + 1].has_min = true;
+            }
+        }
+
+        // Process max operation next
+        if (tree[node].has_max) {
+            // Apply max to left child
+            if (tree[2 * node].has_max) {
+                tree[2 * node].max_lazy = max(tree[2 * node].max_lazy, tree[node].max_lazy);
+            } else {
+                tree[2 * node].max_lazy = tree[node].max_lazy;
+                tree[2 * node].has_max = true;
+            }
+
+            // Apply max to right child
+            if (tree[2 * node + 1].has_max) {
+                tree[2 * node + 1].max_lazy = max(tree[2 * node + 1].max_lazy, tree[node].max_lazy);
+            } else {
+                tree[2 * node + 1].max_lazy = tree[node].max_lazy;
+                tree[2 * node + 1].has_max = true;
+            }
+        }
+
+        // Finally, process addition
+        if (tree[node].add_lazy != 0) {
+            tree[2 * node].add_lazy += tree[node].add_lazy;
+            tree[2 * node + 1].add_lazy += tree[node].add_lazy;
+        }
+
+        // Clear lazy tags at current node
+        tree[node].has_min = false;
+        tree[node].has_max = false;
+        tree[node].add_lazy = 0;
+    }
+
+    // Apply pending lazy updates
+    void apply_lazy(int node, int start, int end) {
+        // Apply min operation
+        if (tree[node].has_min) {
+            tree[node].val = min(tree[node].val, tree[node].min_lazy);
+        }
+
+        // Apply max operation
+        if (tree[node].has_max) {
+            tree[node].val = max(tree[node].val, tree[node].max_lazy);
+        }
+
+        // Apply addition
+        tree[node].val += tree[node].add_lazy;
+    }
+
+public:
+    SegmentTree(vector<long long>& arr) : arr(arr) {
+        n = arr.size();
+        tree.resize(4 * n);
+        build(1, 0, n - 1);
+    }
+
+    // Update range [l,r] with minimum value x
+    void update_min(int l, int r, long long x, int node = 1, int start = 0, int end = -1) {
+        if (end == -1) end = n - 1;
+
+        // Apply pending lazy operations
+        apply_lazy(node, start, end);
+
+        // No overlap
+        if (start > r || end < l) return;
+
+        // Complete overlap
+        if (start >= l && end <= r) {
+            if (tree[node].has_min) {
+                tree[node].min_lazy = min(tree[node].min_lazy, x);
+            } else {
+                tree[node].min_lazy = x;
+                tree[node].has_min = true;
+            }
+            apply_lazy(node, start, end);
+            return;
+        }
+
+        // Partial overlap
+        push_down(node, start, end);
+        int mid = (start + end) / 2;
+        update_min(l, r, x, 2 * node, start, mid);
+        update_min(l, r, x, 2 * node + 1, mid + 1, end);
+
+        // Update current node based on children
+        tree[node].val = min(tree[2 * node].val, tree[2 * node + 1].val);
+    }
+
+    // Update range [l,r] with maximum value x
+    void update_max(int l, int r, long long x, int node = 1, int start = 0, int end = -1) {
+        if (end == -1) end = n - 1;
+
+        // Apply pending lazy operations
+        apply_lazy(node, start, end);
+
+        // No overlap
+        if (start > r || end < l) return;
+
+        // Complete overlap
+        if (start >= l && end <= r) {
+            if (tree[node].has_max) {
+                tree[node].max_lazy = max(tree[node].max_lazy, x);
+            } else {
+                tree[node].max_lazy = x;
+                tree[node].has_max = true;
+            }
+            apply_lazy(node, start, end);
+            return;
+        }
+
+        // Partial overlap
+        push_down(node, start, end);
+        int mid = (start + end) / 2;
+        update_max(l, r, x, 2 * node, start, mid);
+        update_max(l, r, x, 2 * node + 1, mid + 1, end);
+
+        // Update current node based on children
+        tree[node].val = min(tree[2 * node].val, tree[2 * node + 1].val);
+    }
+
+    // Add value x to range [l,r]
+    void update_add(int l, int r, long long x, int node = 1, int start = 0, int end = -1) {
+        if (end == -1) end = n - 1;
+
+        // Apply pending lazy operations
+        apply_lazy(node, start, end);
+
+        // No overlap
+        if (start > r || end < l) return;
+
+        // Complete overlap
+        if (start >= l && end <= r) {
+            tree[node].add_lazy += x;
+            apply_lazy(node, start, end);
+            return;
+        }
+
+        // Partial overlap
+        push_down(node, start, end);
+        int mid = (start + end) / 2;
+        update_add(l, r, x, 2 * node, start, mid);
+        update_add(l, r, x, 2 * node + 1, mid + 1, end);
+
+        // Update current node based on children
+        tree[node].val = min(tree[2 * node].val, tree[2 * node + 1].val);
+    }
+
+    // Query the value at a specific position
+    long long query_point(int pos, int node = 1, int start = 0, int end = -1) {
+        if (end == -1) end = n - 1;
+
+        // Apply pending lazy operations
+        apply_lazy(node, start, end);
+
+        if (start == end) {
+            return tree[node].val;
+        }
+
+        push_down(node, start, end);
+        int mid = (start + end) / 2;
+
+        if (pos <= mid) {
+            return query_point(pos, 2 * node, start, mid);
+        } else {
+            return query_point(pos, 2 * node + 1, mid + 1, end);
+        }
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n, q;
+    cin >> n >> q;
+
+    vector<long long> a1(n), a2(n);
+    for (int i = 0; i < n; i++) cin >> a1[i];
+    for (int i = 0; i < n; i++) cin >> a2[i];
+
+    // Create segment trees for both arrays
+    SegmentTree st1(a1);
+    SegmentTree st2(a2);
+
+    // Precompute Fibonacci numbers
+    vector<long long> fib = precompute_fibonacci(MAX_FIB);
+
+    for (int i = 0; i < q; i++) {
+        int type;
+        cin >> type;
+
+        if (type == 1) {
+            int k, l, r, x;
+            cin >> k >> l >> r >> x;
+            l--; r--; // Convert to 0-indexing
+            if (k == 1) {
+                st1.update_min(l, r, x);
+            } else {
+                st2.update_min(l, r, x);
+            }
+        } 
+        else if (type == 2) {
+            int k, l, r, x;
+            cin >> k >> l >> r >> x;
+            l--; r--; // Convert to 0-indexing
+            if (k == 1) {
+                st1.update_max(l, r, x);
+            } else {
+                st2.update_max(l, r, x);
+            }
+        } 
+        else if (type == 3) {
+            int k, l, r, x;
+            cin >> k >> l >> r >> x;
+            l--; r--; // Convert to 0-indexing
+            if (k == 1) {
+                st1.update_add(l, r, x);
+            } else {
+                st2.update_add(l, r, x);
+            }
+        } 
+        else if (type == 4) {
+            int l, r;
+            cin >> l >> r;
+            l--; r--; // Convert to 0-indexing
+
+            long long result = 0;
+            for (int j = l; j <= r; j++) {
+                long long val1 = st1.query_point(j);
+                long long val2 = st2.query_point(j);
+                long long sum = val1 + val2;
+                result = (result + fib[sum]) % MOD;
+            }
+            cout << result << "\n";
+        }
+    }
+
+    return 0;
+}

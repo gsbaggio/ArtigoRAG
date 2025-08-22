@@ -1,0 +1,25 @@
+import math
+
+def euclidean_distance(point1, point2):
+    return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
+
+def shortest_path(N, K, points):
+    points.sort()  # Sorting the points based on x-coordinate
+    dp = [[0.0] * N for _ in range(N)]
+
+    def dfs(l, r, i):
+        if i == N:
+            return max(euclidean_distance(points[l], points[N-1]), euclidean_distance(points[r], points[N-1]))
+        if dp[l][r]:
+            return dp[l][r]
+        return min(dfs(i, r, i+1) + euclidean_distance(points[l], points[i]), dfs(l, i, i+1) + euclidean_distance(points[r], points[i]))
+
+    return dfs(K-1, K-1, K)
+
+# Input
+N, K = map(int, input().split())
+points = [list(map(int, input().split())) for _ in range(N)]
+
+# Output
+result = shortest_path(N, K, points)
+print(result)

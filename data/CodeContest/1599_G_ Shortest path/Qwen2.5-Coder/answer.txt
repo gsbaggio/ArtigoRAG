@@ -1,0 +1,73 @@
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Point {
+    int x, y;
+};
+
+// Function to calculate the squared distance between two points
+double squared_distance(const Point& p1, const Point& p2) {
+    return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
+}
+
+// Function to calculate the distance between two points
+double distance(const Point& p1, const Point& p2) {
+    return sqrt(squared_distance(p1, p2));
+}
+
+int main() {
+    int N, K;
+    cin >> N >> K;
+    --K; // Convert to 0-based index
+
+    vector<Point> points(N);
+    for (int i = 0; i < N; ++i) {
+        cin >> points[i].x >> points[i].y;
+    }
+
+    // Identify the line
+    int off_line_index = -1;
+    double dx = points[1].x - points[0].x;
+    double dy = points[1].y - points[0].y;
+
+    for (int i = 2; i < N; ++i) {
+        double dxi = points[i].x - points[0].x;
+        double dyi = points[i].y - points[0].y;
+        if (dx * dyi != dy * dxi) { // Not collinear
+            off_line_index = i;
+            break;
+        }
+    }
+
+    if (off_line_index == -1) { // All points are collinear
+        off_line_index = 0; // Assume the first point is off-line for simplicity
+    }
+
+    // Calculate the distance from K to the off-line point
+    double dist_K_to_off_line = distance(points[K], points[off_line_index]);
+
+    // Calculate the total length of the line segment
+    double line_length = 0.0;
+    for (int i = 1; i < N; ++i) {
+        if (i != off_line_index && i - 1 != off_line_index) {
+            line_length += distance(points[i], points[i - 1]);
+        }
+    }
+
+    // Add the distance from the off-line point to the nearest endpoint of the line
+    double min_endpoint_dist = min(distance(points[off_line_index], points[0]), 
+                                   distance(points[off_line_index], points[N - 1]));
+
+    // Total path length
+    double total_path_length = dist_K_to_off_line + line_length + min_endpoint_dist;
+
+    cout << fixed;
+    cout.precision(9);
+    cout << total_path_length << endl;
+
+    return 0;
+}

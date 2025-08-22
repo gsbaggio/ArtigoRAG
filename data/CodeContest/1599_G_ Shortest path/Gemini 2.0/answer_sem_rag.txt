@@ -1,0 +1,96 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <iomanip>
+#include <algorithm>
+
+using namespace std;
+
+// Function to calculate the distance between two points
+double distance(int x1, int y1, int x2, int y2) {
+    return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
+}
+
+int main() {
+    int n, k;
+    cin >> n >> k;
+
+    vector<pair<int, int>> points(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> points[i].first >> points[i].second;
+    }
+
+    k--; // Adjust index to be 0-based
+
+    // Find the outlier point and the points on the line
+    int outlier_index = -1;
+    for (int i = 0; i < n; ++i) {
+        int on_line_count = 0;
+        for (int j = 0; j < n; ++j) {
+            if (i == j) continue;
+            for (int l = j + 1; l < n; ++l) {
+                if (i == l) continue;
+                // Check if points j and l are the same
+                if (points[j].first == points[l].first && points[j].second == points[l].second) continue;
+
+                // Check if point i is on the line formed by points j and l
+                if ((long long)(points[j].second - points[l].second) * (points[i].first - points[j].first) ==
+                    (long long)(points[i].second - points[j].second) * (points[j].first - points[l].first)) {
+                    on_line_count++;
+                    break;
+                }
+            }
+        }
+        if (on_line_count == n - 1) {
+            outlier_index = i;
+            break;
+        }
+    }
+
+    // If no outlier is found, it means all points are on the same line, which contradicts the problem statement.
+    if (outlier_index == -1) {
+        cout << "Error: No outlier found." << endl;
+        return 1;
+    }
+
+    // Calculate the minimum distance
+    double min_distance = 1e18;
+
+    // Iterate through all possible permutations of the points on the line
+    vector<int> line_indices;
+    for (int i = 0; i < n; ++i) {
+        if (i != outlier_index) {
+            line_indices.push_back(i);
+        }
+    }
+
+    sort(line_indices.begin(), line_indices.end());
+
+    do {
+        double current_distance = 0.0;
+        int current_point = k;
+
+        // Distance from the starting point to the outlier
+        current_distance += distance(points[current_point].first, points[current_point].second,
+                                     points[outlier_index].first, points[outlier_index].second);
+        current_point = outlier_index;
+
+        // Distance from the outlier to the first point on the line
+        current_distance += distance(points[current_point].first, points[current_point].second,
+                                     points[line_indices[0]].first, points[line_indices[0]].second);
+        current_point = line_indices[0];
+
+        // Distance between points on the line
+        for (size_t i = 1; i < line_indices.size(); ++i) {
+            current_distance += distance(points[current_point].first, points[current_point].second,
+                                         points[line_indices[i]].first, points[line_indices[i]].second);
+            current_point = line_indices[i];
+        }
+
+        min_distance = min(min_distance, current_distance);
+    } while (next_permutation(line_indices.begin(), line_indices.end()));
+
+    cout << fixed << setprecision(6) << min_distance << endl;
+
+    return 0;
+}

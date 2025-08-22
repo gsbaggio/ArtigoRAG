@@ -1,0 +1,133 @@
+MOD = 10**9 + 7
+MAX_FIB = 2 * 10**6
+
+# Precompute Fibonacci numbers
+fib = [0] * (MAX_FIB + 1)
+fib[1] = 1
+for i in range(2, MAX_FIB + 1):
+    fib[i] = (fib[i - 1] + fib[i - 2]) % MOD
+
+class SegmentTree:
+    def __init__(self, n):
+        self.n = n
+        self.tree = [0] * (4 * n)
+        self.lazy_min = [float('inf')] * (4 * n)
+        self.lazy_max = [-float('inf')] * (4 * n)
+        self.lazy_add = [0] * (4 * n)
+    
+    def push_down(self, node, start, end):
+        if self.lazy_min[node] != float('inf'):
+            mid = (start + end) // 2
+            self.tree[node * 2] = self.lazy_min[node] * (mid - start + 1)
+            self.tree[node * 2 + 1] = self.lazy_min[node] * (end - mid)
+            self.lazy_min[node * 2] = self.lazy_min[node]
+            self.lazy_min[node * 2 + 1] = self.lazy_min[node]
+            self.lazy_min[node] = float('inf')
+        
+        if self.lazy_max[node] != -float('inf'):
+            mid = (start + end) // 2
+            self.tree[node * 2] = self.lazy_max[node] * (mid - start + 1)
+            self.tree[node * 2 + 1] = self.lazy_max[node] * (end - mid)
+            self.lazy_max[node * 2] = self.lazy_max[node]
+            self.lazy_max[node * 2 + 1] = self.lazy_max[node]
+            self.lazy_max[node] = -float('inf')
+        
+        if self.lazy_add[node] != 0:
+            mid = (start + end) // 2
+            self.tree[node * 2] = (self.tree[node * 2] + self.lazy_add[node] * (mid - start + 1)) % MOD
+            self.tree[node * 2 + 1] = (self.tree[node * 2 + 1] + self.lazy_add[node] * (end - mid)) % MOD
+            self.lazy_add[node * 2] = (self.lazy_add[node * 2] + self.lazy_add[node]) % MOD
+            self.lazy_add[node * 2 + 1] = (self.lazy_add[node * 2 + 1] + self.lazy_add[node]) % MOD
+            self.lazy_add[node] = 0
+    
+    def update_range(self, node, start, end, l, r, val, op):
+        if self.lazy_min[node] != float('inf') or self.lazy_max[node] != -float('inf') or self.lazy_add[node] != 0:
+            self.push_down(node, start, end)
+        
+        if start > r or end < l:
+            return
+        
+        if start >= l and end <= r:
+            if op == 1:
+                self.lazy_min[node] = min(self.lazy_min[node], val)
+            elif op == 2:
+                self.lazy_max[node] = max(self.lazy_max[node], val)
+            elif op == 3:
+                self.lazy_add[node] = (self.lazy_add[node] + val) % MOD
+            self.push_down(node, start, end)
+            return
+        
+        mid = (start + end) // 2
+        self.update_range(node * 2, start, mid, l, r, val, op)
+        self.update_range(node * 2 + 1, mid + 1, end, l, r, val, op)
+        self.tree[node] = (self.tree[node * 2] + self.tree[node * 2 + 1]) % MOD
+    
+    def query_range(self, node, start, end, l, r):
+        if self.lazy_min[node] != float('inf') or self.lazy_max[node] != -float('inf') or self.lazy_add[node] != 0:
+            self.push_down(node, start, end)
+        
+        if start > r or end < l:
+            return 0
+        
+        if start >= l and end <= r:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        left_sum = self.query_range(node * 2, start, mid, l, r)
+        right_sum = self.query_range(node * 2 + 1, mid + 1, end, l, r)
+        return (left_sum + right_sum) % MOD
+
+def main():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    index = 0
+    N = int(data[index])
+    Q = int(data[index + 1])
+    index += 2
+    
+    A1 = list(map(int, data[index:index + N]))
+    index += N
+    A2 = list(map(int, data[index:index + N]))
+    index += N
+    
+    st = SegmentTree(N)
+    for i in range(N):
+        st.tree[N + i] = fib[A1[i] + A2[i]]
+    
+    for i in range(N - 1, 0, -1):
+        st.tree[i] = (st.tree[i * 2] + st.tree[i * 2 + 1]) % MOD
+    
+    results = []
+    for _ in range(Q):
+        op = int(data[index])
+        if op == 1 or op == 2:
+            k = int(data[index + 1])
+            l = int(data[index + 2]) - 1
+            r = int(data[index + 3]) - 1
+            x = int(data[index + 4])
+            index += 5
+            if k == 1:
+                st.update_range(1, 0, N - 1, l, r, x, op)
+            else:
+                st.update_range(1, 0, N - 1, l, r, x, op)
+        elif op == 3:
+            k = int(data[index + 1])
+            l = int(data[index + 2]) - 1
+            r = int(data[index + 3]) - 1
+            x = int(data[index + 4])
+            index += 5
+            st.update_range(1, 0, N - 1, l, r, x, op)
+        elif op == 4:
+            l = int(data[index + 1]) - 1
+            r = int(data[index + 2]) - 1
+            index += 3
+            total_sum = st.query_range(1, 0, N - 1, l, r)
+            results.append(total_sum)
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

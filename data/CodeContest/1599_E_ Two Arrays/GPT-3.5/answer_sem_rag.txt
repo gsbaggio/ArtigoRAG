@@ -1,0 +1,39 @@
+def fibonacci(n):
+    fib = [0, 1]
+    for i in range(2, n+1):
+        fib.append(fib[i-1] + fib[i-2])
+    return fib
+
+def process_queries(N, Q, A1, A2, queries):
+    fib = fibonacci(max(max(A1), max(A2)) + 2)
+    result = []
+
+    for query in queries:
+        if query[0] == 1:
+            k, l, r, x = query[1:]
+            for i in range(l-1, r):
+                A1[i] = min(A1[i], x)
+        elif query[0] == 2:
+            k, l, r, x = query[1:]
+            for i in range(l-1, r):
+                A2[i] = max(A2[i], x)
+        elif query[0] == 3:
+            k, l, r, x = query[1:]
+            for i in range(l-1, r):
+                A1[i] += x
+        elif query[0] == 4:
+            l, r = query[1:]
+            total_sum = sum(fib[A1[i] + A2[i]] for i in range(l-1, r))
+            result.append(total_sum % (10**9 + 7))
+
+    return result
+
+# Input parsing
+N, Q = map(int, input().split())
+A1 = list(map(int, input().split()))
+A2 = list(map(int, input().split())
+queries = [list(map(int, input().split())) for _ in range(Q)]
+
+output = process_queries(N, Q, A1, A2, queries)
+for line in output:
+    print(line)
