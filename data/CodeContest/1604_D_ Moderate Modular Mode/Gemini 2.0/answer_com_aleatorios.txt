@@ -1,0 +1,26 @@
+def solve():
+    x, y = map(int, input().split())
+    
+    # If x == y, then n = x (or y) is a solution, since x mod x = y mod x = 0.
+    if x == y:
+        print(x)
+        return
+    
+    # Otherwise, n = x + y is a solution.
+    # n mod x = (x + y) mod x = y mod x
+    # y mod n = y mod (x + y) = y (since y < x + y)
+    # We want y mod x = y, which is only true if x divides y. But we know x and y are even, and x != y.
+    # If we choose n = x + y, then n mod x = (x + y) mod x = y.
+    # y mod n = y mod (x + y) = y.
+    # So we need to find an n such that n mod x = y mod n.
+    
+    # Let's try n = x + y.
+    # (x + y) mod x = y
+    # y mod (x + y) = y
+    # So we need y = y, which is always true.
+    
+    print(x + y)
+
+t = int(input())
+for _ in range(t):
+    solve()

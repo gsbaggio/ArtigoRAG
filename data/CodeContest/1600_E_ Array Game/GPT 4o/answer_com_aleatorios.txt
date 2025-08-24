@@ -1,0 +1,42 @@
+def find_winner(N, A):
+    left, right = 0, N - 1
+    current_max = -1  # Start with a value smaller than any possible array element
+    alice_turn = True  # Alice starts first
+
+    while left <= right:
+        if A[left] > current_max and A[right] > current_max:
+            # Both left and right are valid moves, choose the smaller one
+            if A[left] < A[right]:
+                current_max = A[left]
+                left += 1
+            else:
+                current_max = A[right]
+                right -= 1
+        elif A[left] > current_max:
+            # Only the left move is valid
+            current_max = A[left]
+            left += 1
+        elif A[right] > current_max:
+            # Only the right move is valid
+            current_max = A[right]
+            right -= 1
+        else:
+            # No valid moves left
+            break
+
+        # Alternate turns
+        alice_turn = not alice_turn
+
+    # If it's Alice's turn and no moves are left, Bob wins
+    # If it's Bob's turn and no moves are left, Alice wins
+    return "Bob" if alice_turn else "Alice"
+
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    N = int(data[0])
+    A = list(map(int, data[1:]))
+    print(find_winner(N, A))

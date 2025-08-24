@@ -1,0 +1,29 @@
+def solve():
+    t = int(input())
+
+    for _ in range(t):
+        n, m = map(int, input().split())
+
+        matrix = [list(map(int, input().split())) for _ in range(n)]
+
+        # Check for a perfect coloring and cut
+        max_in_row = [max(row) for row in matrix]
+        min_in_row = [min(row) for row in matrix]
+
+        max_left = [-1] * n
+        min_right = [float('inf')] * n
+
+        for j in range(1, m):
+            max_left[0] = max(max_left[0], matrix[0][j-1])
+            for i in range(1, n):
+                max_left[i] = max(max_left[i], matrix[i][j-1])
+                min_right[i] = min(min_right[i], matrix[i][j])
+
+        if any(max_left[i] < min_in_row[i+1] and min_right[i+1] > max_in_row[i] for i in range(n-1)):
+            print("YES")
+            colors = ['R' if max_left[i] < min_in_row[i+1] else 'B' for i in range(n)]
+            print(''.join(colors), max_left.index(max(max_left)) + 1)
+        else:
+            print("NO")
+
+solve()

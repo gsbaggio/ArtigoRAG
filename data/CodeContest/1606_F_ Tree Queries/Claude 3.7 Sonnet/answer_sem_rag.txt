@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+void dfs(int node, int parent, vector<vector<int>>& tree, vector<vector<int>>& children) {
+    for (int neighbor : tree[node]) {
+        if (neighbor != parent) {
+            children[node].push_back(neighbor);
+            dfs(neighbor, node, tree, children);
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<vector<int>> tree(n+1);
+    
+    // Read edges
+    for (int i = 0; i < n-1; i++) {
+        int x, y;
+        cin >> x >> y;
+        tree[x].push_back(y);
+        tree[y].push_back(x);
+    }
+    
+    // Build the rooted tree
+    vector<vector<int>> children(n+1);
+    dfs(1, 0, tree, children);
+    
+    // Process queries
+    int q;
+    cin >> q;
+    
+    while (q--) {
+        int v, k;
+        cin >> v >> k;
+        
+        // Initial child count
+        int initial_children = children[v].size();
+        
+        // Calculate potential gains from each subtree
+        vector<int> gains;
+        for (int child : children[v]) {
+            // When we delete a node, we gain all its children but lose the node itself
+            // So the net gain is (number of grandchildren - 1)
+            int gain = children[child].size() - 1;
+            if (gain > 0) {
+                gains.push_back(gain);
+            }
+        }
+        
+        // Sort gains in descending order
+        sort(gains.rbegin(), gains.rend());
+        
+        // Try deleting nodes in order of highest gain
+        int max_result = initial_children; // Start with no deletions
+        int current_children = initial_children;
+        int deletions = 0;
+        
+        for (int gain : gains) {
+            // Only delete if beneficial considering k
+            if (gain > k) {
+                deletions++;
+                current_children += gain;
+                max_result = max(max_result, current_children - deletions * k);
+            } else {
+                break; // No more beneficial deletions
+            }
+        }
+        
+        cout << max_result << endl;
+    }
+    
+    return 0;
+}

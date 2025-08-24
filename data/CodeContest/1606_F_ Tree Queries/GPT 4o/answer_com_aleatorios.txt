@@ -1,0 +1,72 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 200005;
+
+vector<int> tree[MAXN];
+int subtree_size[MAXN];
+
+// DFS to calculate subtree sizes
+void dfs(int node, int parent) {
+    subtree_size[node] = 1; // Count the node itself
+    for (int child : tree[node]) {
+        if (child != parent) {
+            dfs(child, node);
+            subtree_size[node] += subtree_size[child];
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    int n;
+    cin >> n;
+
+    // Read the tree edges
+    for (int i = 0; i < n - 1; i++) {
+        int x, y;
+        cin >> x >> y;
+        tree[x].push_back(y);
+        tree[y].push_back(x);
+    }
+
+    // Precompute subtree sizes
+    dfs(1, -1);
+
+    int q;
+    cin >> q;
+
+    while (q--) {
+        int v, k;
+        cin >> v >> k;
+
+        // Collect the sizes of the children of v
+        vector<int> child_sizes;
+        for (int child : tree[v]) {
+            if (subtree_size[child] < subtree_size[v]) { // Ensure it's a child
+                child_sizes.push_back(subtree_size[child]);
+            }
+        }
+
+        // Sort child sizes in ascending order
+        sort(child_sizes.begin(), child_sizes.end());
+
+        // Calculate the maximum score
+        int c_v = subtree_size[v] - 1; // Initial number of children
+        int m = 0; // Number of deletions
+        int max_score = c_v;
+
+        for (int size : child_sizes) {
+            if (m + 1 > k) break; // Stop if we exceed the allowed deletions
+            c_v -= size;
+            m++;
+            max_score = max(max_score, c_v - m * k);
+        }
+
+        cout << max_score << "\n";
+    }
+
+    return 0;
+}

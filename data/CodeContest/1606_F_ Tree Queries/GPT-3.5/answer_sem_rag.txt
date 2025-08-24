@@ -1,0 +1,42 @@
+import sys
+sys.setrecursionlimit(10**6)
+
+def dfs(node, parent, graph, memo, k):
+    if node not in graph:
+        return (0, 0)
+
+    if (node, k) in memo:
+        return memo[(node, k)]
+
+    num_children = 0
+    max_score = 0
+    for child in graph[node]:
+        if child == parent:
+            continue
+        child_num_children, child_max_score = dfs(child, node, graph, memo, k)
+        
+        # Delete the subtree rooted at child
+        num_children = max(num_children, 1 + child_num_children)
+        
+        # Keep the subtree rooted at child
+        max_score = max(max_score, child_max_score)
+    
+    score = num_children - k
+    max_score = max(max_score, score)
+    
+    memo[(node, k)] = (num_children, max_score)
+    return (num_children, max_score)
+
+n = int(input())
+graph = {i: [] for i in range(1, n + 1)}
+for _ in range(n - 1):
+    x, y = map(int, input().split())
+    graph[x].append(y)
+    graph[y].append(x)
+
+q = int(input())
+for _ in range(q):
+    v, k = map(int, input().split())
+    memo = {}
+    _, max_score = dfs(v, -1, graph, memo, k)
+    print(max_score)

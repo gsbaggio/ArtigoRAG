@@ -1,0 +1,36 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+void solve() {
+    int n;
+    cin >> n;
+    
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    
+    // For n >= 2, we can always make the XOR equal to 0
+    // Case 1: Split into individual elements - each has LIS=1
+    //   If n is even, pairing them gives XOR = 0
+    //   If n is odd, we can combine the first two elements, giving LIS of either 1 or 2
+    //     and then have the rest as individual elements, which gives us an even count of 1s
+    if (n >= 2) {
+        cout << "YES\n";
+    } else {
+        cout << "NO\n"; // Impossible with just one element
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    
+    return 0;
+}

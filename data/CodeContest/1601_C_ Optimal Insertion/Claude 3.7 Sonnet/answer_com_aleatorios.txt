@@ -1,0 +1,22 @@
+def min_inversions():
+    n, m = map(int, input().split())
+    a = list(map(int, input().split()))
+    b = sorted(map(int, input().split()))
+    
+    inversions = 0
+    b_idx = 0
+    
+    # Insert sorted b elements at optimal positions
+    for i in range(n):
+        # Insert as many elements from b as possible before a[i]
+        while b_idx < m and b[b_idx] <= a[i]:
+            b_idx += 1
+            
+        # Elements in b[b_idx:] are all > a[i], so each will form an inversion with a[i]
+        inversions += m - b_idx
+    
+    return inversions
+
+t = int(input())
+for _ in range(t):
+    print(min_inversions())

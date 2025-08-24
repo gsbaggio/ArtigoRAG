@@ -1,0 +1,88 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        int n, m;
+        cin >> n >> m;
+        
+        vector<vector<int>> mat(n, vector<int>(m));
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                cin >> mat[i][j];
+            }
+        }
+        
+        // Sort rows based on max element in each row
+        vector<pair<int, int>> row_max;
+        for(int i=0; i<n; i++){
+            int mx = *max_element(mat[i].begin(), mat[i].end());
+            row_max.push_back({mx, i});
+        }
+        sort(row_max.begin(), row_max.end());
+        
+        // Color rows: first row blue, rest red
+        vector<char> color(n, 'R');
+        color[row_max[0].second] = 'B';
+        
+        // Check for valid k using binary search
+        bool found = false;
+        int k = -1;
+        for(int i=1; i<m; i++){
+            // Find max in blue rows in left part
+            int max_blue_left = -1;
+            for(int j=0; j<n; j++){
+                if(color[j] == 'B'){
+                    max_blue_left = max(max_blue_left, mat[j][i-1]);
+                }
+            }
+            
+            // Find min in red rows in left part
+            int min_red_left = 1e9;
+            for(int j=0; j<n; j++){
+                if(color[j] == 'R'){
+                    min_red_left = min(min_red_left, mat[j][i-1]);
+                }
+            }
+            
+            // Find max in blue rows in right part
+            int max_blue_right = -1;
+            for(int j=0; j<n; j++){
+                if(color[j] == 'B'){
+                    max_blue_right = max(max_blue_right, mat[j][i]);
+                }
+            }
+            
+            // Find min in red rows in right part
+            int min_red_right = 1e9;
+            for(int j=0; j<n; j++){
+                if(color[j] == 'R'){
+                    min_red_right = min(min_red_right, mat[j][i]);
+                }
+            }
+            
+            // Check if conditions are satisfied
+            if(max_blue_left < min_red_left && max_blue_right < min_red_right){
+                found = true;
+                k = i;
+                break;
+            }
+        }
+        
+        if(found){
+            cout << "YES\n";
+            for(auto c : color){
+                cout << c;
+            }
+            cout << "\n" << k << "\n";
+        }
+        else{
+            cout << "NO\n";
+        }
+    }
+}

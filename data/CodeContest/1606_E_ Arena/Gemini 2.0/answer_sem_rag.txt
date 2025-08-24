@@ -1,0 +1,37 @@
+def solve():
+    n, x = map(int, input().split())
+    mod = 998244353
+
+    dp = [[0] * (x + 1) for _ in range(n + 1)]
+    dp[n][0] = 1
+
+    for health in range(1, x + 1):
+        new_dp = [[0] * (x + 1) for _ in range(n + 1)]
+        for num_alive in range(n + 1):
+            if dp[num_alive][health - 1] == 0:
+                continue
+
+            # Case 1: A hero dies in this round
+            for num_killed in range(num_alive):
+                if num_alive - num_killed == 1:
+                    continue
+                
+                prob = pow(health, num_killed, mod)
+                new_dp[num_alive - num_killed][health] += (dp[num_alive][health - 1] * prob) % mod
+                new_dp[num_alive - num_killed][health] %= mod
+
+            # Case 2: No hero dies in this round
+            prob = pow(health, num_alive, mod)
+            new_dp[num_alive][health] += (dp[num_alive][health - 1] * prob) % mod
+            new_dp[num_alive][health] %= mod
+        
+        dp = new_dp
+
+    ans = 0
+    for num_alive in range(2, n + 1):
+        ans += dp[num_alive][x]
+        ans %= mod
+
+    print(ans)
+
+solve()

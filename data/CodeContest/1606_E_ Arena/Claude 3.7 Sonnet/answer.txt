@@ -1,0 +1,17 @@
+def solve(n, x):
+    MOD = 998244353
+    
+    # For n=2:
+    if n == 2:
+        # Two heroes with equal health will kill each other simultaneously (no winner)
+        # So we have x configurations with no winner (both have 1, both have 2, ..., both have x)
+        return x % MOD
+    
+    # For n>2:
+    # All configurations have no winner because heroes eliminate each other
+    # until either all die simultaneously or multiple heroes remain indefinitely
+    return pow(x, n, MOD)
+
+# Read input
+n, x = map(int, input().split())
+print(solve(n, x))

@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+#include <map>
+using namespace std;
+
+string solveGame(vector<int>& A) {
+    int n = A.size();
+    
+    // We'll use a map instead of a 3D array to save memory
+    map<tuple<int, int, int>, bool> memo;
+    
+    // The function to determine if the current player wins
+    function<bool(int, int, int)> canWin = [&](int left, int right, int lastVal) {
+        if (left > right) return false; // No more moves, current player loses
+        
+        auto key = make_tuple(left, right, lastVal);
+        if (memo.count(key)) return memo[key];
+        
+        // Try left
+        if (A[left] > lastVal && !canWin(left+1, right, A[left])) {
+            return memo[key] = true; // Current player wins
+        }
+        
+        // Try right
+        if (A[right] > lastVal && !canWin(left, right-1, A[right])) {
+            return memo[key] = true; // Current player wins
+        }
+        
+        return memo[key] = false; // Current player loses
+    };
+    
+    // Since the sequence is initially empty, use 0 as the starting value
+    bool aliceWins = canWin(0, n-1, 0);
+    
+    return aliceWins ? "Alice" : "Bob";
+}
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> A(n);
+    for (int i = 0; i < n; i++) {
+        cin >> A[i];
+    }
+    
+    cout << solveGame(A) << endl;
+    
+    return 0;
+}

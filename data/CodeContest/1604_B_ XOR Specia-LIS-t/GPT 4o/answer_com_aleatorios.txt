@@ -1,0 +1,24 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])  # Length of the array
+        index += 1
+        a = list(map(int, data[index:index + n]))
+        index += n
+        
+        # If the array length is even, we can always split it to satisfy the condition
+        # because XOR of any even-length sequence of numbers can be made 0.
+        # If the array length is odd, we cannot split it to satisfy the condition.
+        if n % 2 == 0:
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    sys.stdout.write("\n".join(results) + "\n")

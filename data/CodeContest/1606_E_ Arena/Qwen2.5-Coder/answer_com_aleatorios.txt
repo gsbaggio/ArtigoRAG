@@ -1,0 +1,43 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+    int n, x;
+    cin >> n >> x;
+    
+    // Base case: if (n-1)^2 >= x, no hero can survive
+    if ((n-1)*(n-1) >= x) {
+        cout << 0;
+        return 0;
+    }
+    
+    // Initialize DP table
+    vector<vector<int>> dp(n+1, vector<int>(n*x+1, 0));
+    dp[0][0] = 1; // There's one way to have 0 heroes with 0 total health
+    
+    // Fill DP table
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 0; j <= n*x; ++j) {
+            for (int k = 1; k <= x; ++k) {
+                if (j + k <= n*x) {
+                    dp[i][j+k] = (dp[i][j+k] + dp[i-1][j]) % MOD;
+                }
+            }
+        }
+    }
+    
+    // Calculate the number of valid configurations
+    int result = 0;
+    for (int j = n; j <= n*x; ++j) {
+        for (int k = 1; k <= x; ++k) {
+            if (k <= j - (n-1)) {
+                result = (result + dp[n][j]) % MOD;
+            }
+        }
+    }
+    
+    cout << result;
+    return 0;
+}

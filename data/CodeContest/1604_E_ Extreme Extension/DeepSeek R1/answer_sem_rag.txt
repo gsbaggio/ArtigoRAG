@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const ll MOD = 998244353;
+const ll INF = 1e18;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<ll> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        if (n == 0) {
+            cout << 0 << '\n';
+            continue;
+        }
+        map<ll, ll> S;
+        S[INF] = 1;
+        ll ans = 0;
+        for (int i = n-2; i >= 0; i--) {
+            map<ll, ll> new_S;
+            for (auto &[M, cnt] : S) {
+                if (M == INF) {
+                    new_S[a[i+1]] += cnt;
+                } else {
+                    if (a[i+1] <= M) {
+                        new_S[a[i+1]] += cnt;
+                    } else {
+                        ll k = (a[i+1] + M - 1) / M;
+                        ll first = a[i+1] / k;
+                        new_S[first] += cnt;
+                    }
+                }
+            }
+            new_S[INF] += 1;
+            for (auto &[M, cnt] : new_S) {
+                if (M == INF) continue;
+                ll k = (a[i] + M - 1) / M;
+                ans = (ans + (k-1) * cnt % MOD * (i+1)) % MOD;
+            }
+            S = move(new_S);
+        }
+        cout << ans << '\n';
+    }
+    return 0;
+}

@@ -1,0 +1,71 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+typedef long long ll;
+
+ll solveTestCase(vector<int>& a, vector<int>& b) {
+    int n = a.size();
+    int m = b.size();
+    
+    // Sort array b (we can insert these elements in any order)
+    sort(b.begin(), b.end());
+    
+    ll total_inversions = 0;
+    
+    for (int val : b) {
+        // For each element in b, find the position in a that minimizes inversions
+        int min_inversions = INT_MAX;
+        
+        // Count how many elements in a are less than val
+        vector<int> less_than_prefix(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            less_than_prefix[i + 1] = less_than_prefix[i] + (a[i] < val ? 1 : 0);
+        }
+        
+        // Try inserting at each position
+        for (int pos = 0; pos <= n; pos++) {
+            // Inversions if inserted at position pos:
+            // 1. Elements before pos that are greater than val
+            // 2. Elements after pos that are less than val
+            int greater_before = pos - less_than_prefix[pos];
+            int less_after = less_than_prefix[n] - less_than_prefix[pos];
+            
+            int inversions = greater_before + less_after;
+            min_inversions = min(min_inversions, inversions);
+        }
+        
+        total_inversions += min_inversions;
+    }
+    
+    return total_inversions;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+        
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        
+        vector<int> b(m);
+        for (int i = 0; i < m; i++) {
+            cin >> b[i];
+        }
+        
+        cout << solveTestCase(a, b) << "\n";
+    }
+    
+    return 0;
+}

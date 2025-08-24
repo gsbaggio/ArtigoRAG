@@ -1,0 +1,17 @@
+MOD = 998244353
+MOD_RESULT = 10**9 + 7
+
+def calculate_sum(n):
+    total_sum = 0
+    d = len(str(n))
+
+    for i in range(1, d+1):
+        count = min(n + 1, 10**i) - 1
+        total_sum = (total_sum + i * count * (10**(i-1))) % MOD
+
+    return total_sum % MOD_RESULT
+
+# Input
+n = int(input())
+result = calculate_sum(n)
+print(result)

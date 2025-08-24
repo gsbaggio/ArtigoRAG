@@ -1,0 +1,52 @@
+def find_winner(N, A):
+    if N == 1:
+        return "Alice"
+    
+    left = 0
+    right = N - 1
+    
+    left_seq = []
+    right_seq = []
+    
+    # Expand left_seq and right_seq as much as possible
+    while left <= right:
+        if not left_seq or A[left] > left_seq[-1]:
+            left_seq.append(A[left])
+            left += 1
+        elif not right_seq or A[right] > right_seq[-1]:
+            right_seq.append(A[right])
+            right -= 1
+        else:
+            break
+    
+    # Merge left_seq and right_seq into a single sequence
+    merged_seq = []
+    i, j = 0, 0
+    
+    while i < len(left_seq) and j < len(right_seq):
+        if left_seq[i] < right_seq[j]:
+            merged_seq.append(left_seq[i])
+            i += 1
+        else:
+            merged_seq.append(right_seq[j])
+            j += 1
+    
+    # Add remaining elements from left_seq or right_seq
+    while i < len(left_seq):
+        merged_seq.append(left_seq[i])
+        i += 1
+    
+    while j < len(right_seq):
+        merged_seq.append(right_seq[j])
+        j += 1
+    
+    # Determine the winner based on the length of the merged sequence
+    if len(merged_seq) % 2 == 1:
+        return "Alice"
+    else:
+        return "Bob"
+
+# Example usage:
+N = int(input())
+A = list(map(int, input().split()))
+print(find_winner(N, A))

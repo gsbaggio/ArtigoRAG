@@ -1,0 +1,42 @@
+MOD = 998244353
+
+def modular_exponentiation(base, exp, mod):
+    result = 1
+    while exp > 0:
+        if exp % 2 == 1:
+            result = (result * base) % mod
+        base = (base * base) % mod
+        exp //= 2
+    return result
+
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    results = []
+    idx = 1
+    
+    for _ in range(t):
+        n, k, x = map(int, data[idx:idx+3])
+        idx += 3
+        
+        # Calculate 2^k % MOD
+        two_pow_k = modular_exponentiation(2, k, MOD)
+        
+        if x == 0:
+            # Total sequences = (2^k)^n
+            result = modular_exponentiation(two_pow_k, n, MOD)
+        else:
+            # If x != 0, we need to exclude invalid sequences
+            if n < 20 and x >= (1 << n):
+                # If x is not representable in the range of subsequences, all sequences are valid
+                result = modular_exponentiation(two_pow_k, n, MOD)
+            else:
+                # Otherwise, use inclusion-exclusion to exclude invalid sequences
+                result = modular_exponentiation(two_pow_k - 1, n, MOD)
+        
+        results.append(result)
+    
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

@@ -1,0 +1,24 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    results = []
+    index = 1
+    
+    for _ in range(t):
+        x, y = map(int, data[index:index+2])
+        index += 2
+        
+        # Compute r = y % x
+        r = y % x
+        
+        # Compute n = x + r
+        n = x + r
+        
+        # Append result
+        results.append(n)
+    
+    # Print all results at once for efficiency
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

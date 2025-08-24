@@ -1,0 +1,58 @@
+def min_inversions(a, b):
+    # Sort array b
+    b.sort()
+    
+    # Initialize inversion count
+    inversions = 0
+    
+    # Iterate over each element in sorted b
+    for num in b:
+        # Find the position in a where num should be inserted to maintain order
+        pos = bisect_right(a, num)
+        
+        # Add the number of elements in a that are smaller than num to the inversion count
+        inversions += pos
+    
+    return inversions
+
+# Function to perform binary search (bisect_right equivalent)
+def bisect_right(arr, x):
+    lo, hi = 0, len(arr)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if arr[mid] <= x:
+            lo = mid + 1
+        else:
+            hi = mid
+    return lo
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+
+# Number of test cases
+t = int(input[0])
+index = 1
+
+results = []
+
+for _ in range(t):
+    # Read n and m
+    n = int(input[index])
+    m = int(input[index + 1])
+    index += 2
+    
+    # Read array a
+    a = list(map(int, input[index:index + n]))
+    index += n
+    
+    # Read array b
+    b = list(map(int, input[index:index + m]))
+    index += m
+    
+    # Calculate minimum inversions
+    results.append(min_inversions(a, b))
+
+# Print results
+for result in results:
+    print(result)

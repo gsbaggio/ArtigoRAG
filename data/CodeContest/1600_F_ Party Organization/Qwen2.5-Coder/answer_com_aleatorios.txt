@@ -1,0 +1,100 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        Reader.init(System.in);
+        int N = Reader.nextInt();
+        int M = Reader.nextInt();
+        
+        // Adjacency list representation of the graph
+        List<Integer>[] adjList = new ArrayList[N + 1];
+        for (int i = 1; i <= N; i++) {
+            adjList[i] = new ArrayList<>();
+        }
+        
+        // Read friendships
+        for (int i = 0; i < M; i++) {
+            int u = Reader.nextInt();
+            int v = Reader.nextInt();
+            adjList[u].add(v);
+            adjList[v].add(u);
+        }
+        
+        // Check for clique of size 5
+        if (findClique(adjList, N)) {
+            return;
+        }
+        
+        // Check for independent set of size 5
+        if (findIndependentSet(adjList, N)) {
+            return;
+        }
+        
+        // If neither found, print -1
+        System.out.println(-1);
+    }
+    
+    private static boolean findClique(List<Integer>[] adjList, int N) {
+        // Try all combinations of 5 people
+        for (int a = 1; a <= N - 4; a++) {
+            for (int b : adjList[a]) {
+                if (b <= a) continue;
+                for (int c : adjList[b]) {
+                    if (c <= b || !adjList[a].contains(c)) continue;
+                    for (int d : adjList[c]) {
+                        if (d <= c || !adjList[a].contains(d) || !adjList[b].contains(d)) continue;
+                        for (int e : adjList[d]) {
+                            if (e <= d || !adjList[a].contains(e) || !adjList[b].contains(e) || !adjList[c].contains(e)) continue;
+                            System.out.println(a + " " + b + " " + c + " " + d + " " + e);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    private static boolean findIndependentSet(List<Integer>[] adjList, int N) {
+        // Try all combinations of 5 people
+        for (int a = 1; a <= N - 4; a++) {
+            for (int b = a + 1; b <= N - 3; b++) {
+                if (adjList[a].contains(b)) continue;
+                for (int c = b + 1; c <= N - 2; c++) {
+                    if (adjList[a].contains(c) || adjList[b].contains(c)) continue;
+                    for (int d = c + 1; d <= N - 1; d++) {
+                        if (adjList[a].contains(d) || adjList[b].contains(d) || adjList[c].contains(d)) continue;
+                        for (int e = d + 1; e <= N; e++) {
+                            if (adjList[a].contains(e) || adjList[b].contains(e) || adjList[c].contains(e) || adjList[d].contains(e)) continue;
+                            System.out.println(a + " " + b + " " + c + " " + d + " " + e);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+}
+
+class Reader {
+    static BufferedReader reader;
+    static StringTokenizer tokenizer;
+
+    static void init(InputStream input) {
+        reader = new BufferedReader(new InputStreamReader(input));
+        tokenizer = new StringTokenizer("");
+    }
+
+    static String next() throws IOException {
+        while (!tokenizer.hasMoreTokens()) {
+            tokenizer = new StringTokenizer(reader.readLine());
+        }
+        return tokenizer.nextToken();
+    }
+
+    static int nextInt() throws IOException {
+        return Integer.parseInt(next());
+    }
+}

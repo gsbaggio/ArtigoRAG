@@ -1,0 +1,40 @@
+def f(n, k):
+    if k == 1:
+        # Only one interval [1, n]
+        return sum(1 for i in range(1, n + 1) for j in range(i, n + 1) if gcd(i, j) >= 1)
+    
+    # Greedy approach: intervals of length 1
+    # Intervals: [1, 1], [2, 2], ..., [k-1, k-1], [k, n]
+    result = k - 1  # Each interval [i, i] contributes 1
+    
+    # Calculate c(k, n)
+    for i in range(k, n + 1):
+        for j in range(i, n + 1):
+            if gcd(i, j) >= k:
+                result += 1
+    
+    return result
+
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+t = int(data[0])
+index = 1
+results = []
+
+for _ in range(t):
+    n = int(data[index])
+    k = int(data[index + 1])
+    index += 2
+    results.append(f(n, k))
+
+# Print results
+for result in results:
+    print(result)

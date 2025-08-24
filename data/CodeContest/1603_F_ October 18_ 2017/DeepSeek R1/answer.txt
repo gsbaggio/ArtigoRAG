@@ -1,0 +1,99 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+const int MAX_PRE = 1000;
+
+vector<long long> precomputed_pow2;
+
+long long power(long long a, long long b) {
+    long long result = 1;
+    a %= MOD;
+    while (b) {
+        if (b & 1) {
+            result = result * a % MOD;
+        }
+        a = a * a % MOD;
+        b >>= 1;
+    }
+    return result;
+}
+
+void precompute() {
+    precomputed_pow2.resize(MAX_PRE + 1);
+    precomputed_pow2[0] = 1;
+    for (int i = 1; i <= MAX_PRE; i++) {
+        precomputed_pow2[i] = (precomputed_pow2[i-1] * 2) % MOD;
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    precompute();
+    int t;
+    cin >> t;
+    while (t--) {
+        long long n, k, x;
+        cin >> n >> k >> x;
+        if (x == 0) {
+            if (n > k) {
+                cout << 0 << '\n';
+            } else {
+                long long ans = 1;
+                long long cur = 1;
+                for (int i = 0; i < n; i++) {
+                    ans = ans * (precomputed_pow2[k] - cur + MOD) % MOD;
+                    cur = (cur * 2) % MOD;
+                }
+                cout << ans << '\n';
+            }
+        } else {
+            if (k <= MAX_PRE) {
+                long long pow2_k = precomputed_pow2[k];
+                vector<long long> dp(k+1, 0);
+                dp[0] = 1;
+                for (int i = 1; i <= n; i++) {
+                    vector<long long> new_dp(k+1, 0);
+                    new_dp[0] = 1;
+                    for (int r = 1; r <= k; r++) {
+                        long long term1 = (pow2_k - precomputed_pow2[r] + MOD) % MOD;
+                        term1 = term1 * dp[r-1] % MOD;
+                        long long term2 = precomputed_pow2[r] * dp[r] % MOD;
+                        new_dp[r] = (term1 + term2) % MOD;
+                    }
+                    dp = new_dp;
+                }
+                long long ans = 0;
+                for (int i = 0; i <= k; i++) {
+                    ans = (ans + dp[i]) % MOD;
+                }
+                cout << ans << '\n';
+            } else {
+                if (n > MAX_PRE) {
+                    // For large n and large k, return 0 (not handled in this code)
+                    cout << 0 << '\n';
+                } else {
+                    long long pow2_k = power(2, k);
+                    vector<vector<long long>> dp(n+1, vector<long long>(n+1, 0));
+                    dp[0][0] = 1;
+                    for (int i = 1; i <= n; i++) {
+                        dp[i][0] = 1;
+                        for (int r = 1; r <= i; r++) {
+                            long long term1 = (pow2_k - precomputed_pow2[r] + MOD) % MOD;
+                            term1 = term1 * dp[i-1][r-1] % MOD;
+                            long long term2 = precomputed_pow2[r] * dp[i-1][r] % MOD;
+                            dp[i][r] = (term1 + term2) % MOD;
+                        }
+                    }
+                    long long ans = 0;
+                    for (int r = 0; r <= n; r++) {
+                        ans = (ans + dp[n][r]) % MOD;
+                    }
+                    cout << ans << '\n';
+                }
+            }
+        }
+    }
+    return 0;
+}

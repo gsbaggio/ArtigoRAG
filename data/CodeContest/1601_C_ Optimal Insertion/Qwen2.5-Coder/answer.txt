@@ -1,0 +1,37 @@
+import sys
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        n, m = map(int, input().split())
+        a = list(map(int, input().split()))
+        b = list(map(int, input().split()))
+        
+        a.sort()
+        b.sort()
+        
+        inversions = 0
+        i, j = 0, 0
+        merged = []
+        
+        while i < n and j < m:
+            if a[i] <= b[j]:
+                merged.append(a[i])
+                i += 1
+            else:
+                merged.append(b[j])
+                j += 1
+                inversions += (n - i)  # All remaining elements in a are greater than b[j]
+        
+        while i < n:
+            merged.append(a[i])
+            i += 1
+        
+        while j < m:
+            merged.append(b[j])
+            j += 1
+        
+        print(inversions)
+
+if __name__ == '__main__':
+    main()

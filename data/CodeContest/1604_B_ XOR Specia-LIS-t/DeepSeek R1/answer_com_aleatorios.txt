@@ -1,0 +1,17 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    n = int(input().strip())
+    a = list(map(int, input().split()))
+    if n % 2 == 0:
+        results.append("YES")
+    else:
+        found = False
+        for i in range(n-1):
+            if a[i] >= a[i+1]:
+                found = True
+                break
+        results.append("YES" if found else "NO")
+
+for res in results:
+    print(res)

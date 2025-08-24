@@ -1,0 +1,49 @@
+def solve_baltia_party():
+    # Read input
+    n, m = map(int, input().split())
+    
+    # Create adjacency matrix for friendships
+    friends = [[False] * (n+1) for _ in range(n+1)]
+    
+    # Fill the adjacency matrix
+    for _ in range(m):
+        u, v = map(int, input().split())
+        friends[u][v] = True
+        friends[v][u] = True
+    
+    # Try to find a set of 5 people where all are friends
+    for a in range(1, n+1):
+        for b in range(a+1, n+1):
+            if not friends[a][b]:
+                continue
+            for c in range(b+1, n+1):
+                if not (friends[a][c] and friends[b][c]):
+                    continue
+                for d in range(c+1, n+1):
+                    if not (friends[a][d] and friends[b][d] and friends[c][d]):
+                        continue
+                    for e in range(d+1, n+1):
+                        if friends[a][e] and friends[b][e] and friends[c][e] and friends[d][e]:
+                            return [a, b, c, d, e]
+    
+    # Try to find a set of 5 people where none are friends
+    for a in range(1, n+1):
+        for b in range(a+1, n+1):
+            if friends[a][b]:
+                continue
+            for c in range(b+1, n+1):
+                if friends[a][c] or friends[b][c]:
+                    continue
+                for d in range(c+1, n+1):
+                    if friends[a][d] or friends[b][d] or friends[c][d]:
+                        continue
+                    for e in range(d+1, n+1):
+                        if not (friends[a][e] or friends[b][e] or friends[c][e] or friends[d][e]):
+                            return [a, b, c, d, e]
+    
+    # No solution found
+    return [-1]
+
+# Driver code
+result = solve_baltia_party()
+print(" ".join(map(str, result)))

@@ -1,0 +1,44 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    def winner(arr, last):
+        if not arr:
+            return False  # No moves left, the other player won
+
+        can_move = False
+        if arr[0] > last:
+            can_move = True
+        if arr[-1] > last:
+            can_move = True
+        
+        if not can_move:
+            return False
+
+        if len(arr) == 1:
+            return True
+
+        # Alice's turn
+        if len(arr) % 2 != 0:
+            # Alice tries to win. If she can win by making either move, she does.
+            if arr[0] > last and not winner(arr[1:], arr[0]):
+                return True
+            if arr[-1] > last and not winner(arr[:-1], arr[-1]):
+                return True
+            # If Alice can't win with either move, Bob wins no matter what Alice does.
+            return False
+        else:
+            # Bob's turn. Bob tries to win. If Alice wins no matter what Bob does, Alice wins.
+            if arr[0] > last and winner(arr[1:], arr[0]):
+                return True
+            if arr[-1] > last and winner(arr[:-1], arr[-1]):
+                return True
+            # If Bob can't force Alice to win, Alice loses.
+            return False
+
+    if winner(a, -1):
+        print("Alice")
+    else:
+        print("Bob")
+
+solve()

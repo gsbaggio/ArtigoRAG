@@ -1,0 +1,65 @@
+from collections import defaultdict
+
+def find_successful_party(N, M, friendships):
+    # Step 1: Build the adjacency list
+    graph = defaultdict(set)
+    for u, v in friendships:
+        graph[u].add(v)
+        graph[v].add(u)
+    
+    # Step 2: Check for a clique of size 5
+    for node in range(1, N + 1):
+        neighbors = list(graph[node])
+        if len(neighbors) < 4:
+            continue
+        # Check all combinations of 4 neighbors
+        for i in range(len(neighbors)):
+            for j in range(i + 1, len(neighbors)):
+                for k in range(j + 1, len(neighbors)):
+                    for l in range(k + 1, len(neighbors)):
+                        # Check if these 4 neighbors form a clique with the current node
+                        a, b, c, d = neighbors[i], neighbors[j], neighbors[k], neighbors[l]
+                        if (b in graph[a] and c in graph[a] and d in graph[a] and
+                            c in graph[b] and d in graph[b] and
+                            d in graph[c]):
+                            return [node, a, b, c, d]
+    
+    # Step 3: Check for an independent set of size 5
+    # Complement graph
+    complement_graph = defaultdict(set)
+    for u in range(1, N + 1):
+        for v in range(1, N + 1):
+            if u != v and v not in graph[u]:
+                complement_graph[u].add(v)
+    
+    for node in range(1, N + 1):
+        neighbors = list(complement_graph[node])
+        if len(neighbors) < 4:
+            continue
+        # Check all combinations of 4 neighbors
+        for i in range(len(neighbors)):
+            for j in range(i + 1, len(neighbors)):
+                for k in range(j + 1, len(neighbors)):
+                    for l in range(k + 1, len(neighbors)):
+                        # Check if these 4 neighbors form a clique in the complement graph
+                        a, b, c, d = neighbors[i], neighbors[j], neighbors[k], neighbors[l]
+                        if (b in complement_graph[a] and c in complement_graph[a] and d in complement_graph[a] and
+                            c in complement_graph[b] and d in complement_graph[b] and
+                            d in complement_graph[c]):
+                            return [node, a, b, c, d]
+    
+    # Step 4: If no clique or independent set of size 5 is found, return -1
+    return -1
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    N, M = map(int, data[0].split())
+    friendships = [tuple(map(int, line.split())) for line in data[1:]]
+    result = find_successful_party(N, M, friendships)
+    if result == -1:
+        print(-1)
+    else:
+        print(" ".join(map(str, result)))

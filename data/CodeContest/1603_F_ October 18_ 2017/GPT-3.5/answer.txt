@@ -1,0 +1,61 @@
+import sys
+
+def gcd(x, y):
+    if y == 0:
+        return x
+    if x % y == 0:
+        return y
+    while x % y != 0:
+        x, y = y, x % y
+    return y
+
+def divisor(n):
+    div = [1]
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            div.append(i)
+            if i != n // i:
+                div.append(n // i)
+    div.append(n)
+    return div
+
+def solve_test_case(n, k, x):
+    a = list(range(1, 2 ** k))
+    a = [x for x in a if x != x]
+    m = a.pop()
+    ans = [m]
+    v = [0] * (n - 1)
+    ko = [[] for _ in range(m + 1)]
+    for i in range(n - 1):
+        c = a[i]
+        for j in divisor(c):
+            ko[j].append(i)
+    
+    g = m
+    while g > 1:
+        dm = sorted(divisor(g), reverse=True)
+        tmp = []
+        for d in dm:
+            if ko[d]:
+                for x in ko[d]:
+                    if v[x] == 0:
+                        v[x] = 1
+                        tmp.append(x)
+                if tmp:
+                    g = gcd(g, a[tmp[0]])
+                    ans.extend(tmp)
+                    break
+        if sum(v) == n - 1:
+            break
+    t = [m] + [a[i] for i in ans]
+    return t
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        n, k, x = map(int, input().split())
+        result = solve_test_case(n, k, x)
+        print(*result)
+
+if __name__ == "__main__":
+    main()

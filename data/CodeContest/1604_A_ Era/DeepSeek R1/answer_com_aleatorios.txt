@@ -1,0 +1,13 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    n = int(input().strip())
+    arr = list(map(int, input().split()))
+    ins = 0
+    for i in range(n):
+        if arr[i] > (i + 1 + ins):
+            ins += arr[i] - (i + 1 + ins)
+    results.append(ins)
+
+for res in results:
+    print(res)

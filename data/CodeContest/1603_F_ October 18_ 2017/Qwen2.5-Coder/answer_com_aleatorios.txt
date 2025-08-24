@@ -1,0 +1,42 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+const int MOD = 998244353;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        int n, k;
+        ll x;
+        cin >> n >> k >> x;
+        
+        int lim = min(k, 20);
+        vector<int> dp(1 << lim, 0);
+        dp[0] = 1;
+        
+        for(int i = 0; i < n; i++){
+            vector<int> ndp(1 << lim, 0);
+            for(int mask = 0; mask < (1 << lim); mask++){
+                for(int j = 0; j < (1 << k); j++){
+                    int new_mask = mask ^ (j & ((1 << lim) - 1));
+                    ndp[new_mask] = (ndp[new_mask] + dp[mask]) % MOD;
+                }
+            }
+            dp = ndp;
+        }
+        
+        int ans = 0;
+        for(int mask = 0; mask < (1 << lim); mask++){
+            if(mask != (x & ((1 << lim) - 1))){
+                ans = (ans + dp[mask]) % MOD;
+            }
+        }
+        
+        cout << ans << "\n";
+    }
+}

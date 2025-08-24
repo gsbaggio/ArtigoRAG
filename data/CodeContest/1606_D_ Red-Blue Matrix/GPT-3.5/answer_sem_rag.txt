@@ -1,0 +1,32 @@
+def solve_testcases(testcases):
+    for n, m, matrix in testcases:
+        # Check if there are any perfect colorings and cuts
+        red_rows = set()
+        blue_rows = set()
+
+        for i in range(n):
+            if i % 2 == 0:
+                red_rows.add(i)
+            else:
+                blue_rows.add(i)
+
+        left_max = [max(matrix[i][:m//2]) for i in range(n)]
+        right_min = [min(matrix[i][m//2:]) for i in range(n)]
+
+        valid = any(left_max[i] < right_min[i] for i in red_rows) or any(left_max[i] > right_min[i] for i in blue_rows)
+
+        if valid:
+            print("YES")
+            colors = ['R' if i in red_rows else 'B' for i in range(n)]
+            print("".join(colors), m // 2)
+        else:
+            print("NO")
+
+# Example input
+testcases = [
+    (5, 5, [[1, 5, 8, 8, 7], [5, 2, 1, 4, 3], [1, 6, 9, 7, 5], [9, 3, 3, 3, 2], [1, 7, 9, 9, 8]]),
+    (3, 3, [[8, 9, 8], [1, 5, 3], [7, 5, 7]]),
+    (2, 6, [[3, 3, 3, 2, 2, 2], [1, 1, 1, 4, 4, 4]])
+]
+
+solve_testcases(testcases)

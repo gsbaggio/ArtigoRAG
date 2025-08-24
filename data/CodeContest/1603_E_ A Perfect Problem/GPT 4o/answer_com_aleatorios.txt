@@ -1,0 +1,19 @@
+def modular_exponentiation(base, exp, mod):
+    result = 1
+    while exp > 0:
+        if exp % 2 == 1:  # If the exponent is odd
+            result = (result * base) % mod
+        base = (base * base) % mod
+        exp //= 2
+    return result
+
+def count_perfect_sequences(n, M):
+    base = n + 1
+    exp = n
+    return modular_exponentiation(base, exp, M)
+
+# Input
+n, M = map(int, input().split())
+
+# Output
+print(count_perfect_sequences(n, M))

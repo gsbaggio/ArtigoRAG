@@ -1,0 +1,78 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<vector<int>> adj(n+1);
+    for (int i = 0; i < n-1; i++) {
+        int x, y;
+        cin >> x >> y;
+        adj[x].push_back(y);
+        adj[y].push_back(x);
+    }
+    
+    int q;
+    cin >> q;
+    
+    while (q--) {
+        int v, k;
+        cin >> v >> k;
+        
+        // For each query, build a fresh tree
+        vector<vector<int>> tree(n+1);
+        
+        function<void(int, int)> buildTree = [&](int node, int parent) {
+            for (int neigh : adj[node]) {
+                if (neigh != parent) {
+                    tree[node].push_back(neigh);
+                    buildTree(neigh, node);
+                }
+            }
+        };
+        
+        buildTree(1, 0);
+        
+        // Calculate the gain from deleting each node (except root and v)
+        vector<int> gain(n+1, 0);
+        
+        // For each node, calculate the gain from deleting it
+        for (int i = 1; i <= n; i++) {
+            if (i == 1 || i == v) continue;
+            
+            // For nodes that are direct children of v
+            if (find(tree[v].begin(), tree[v].end(), i) != tree[v].end()) {
+                // Gain = children of i - 1 (we lose i as a direct child)
+                gain[i] = tree[i].size() - 1;
+            }
+        }
+        
+        // Sort nodes by gain in descending order
+        vector<pair<int, int>> nodesByGain;
+        for (int i = 1; i <= n; i++) {
+            if (i != 1 && i != v) {
+                nodesByGain.push_back({gain[i], i});
+            }
+        }
+        sort(nodesByGain.begin(), nodesByGain.end(), greater<pair<int, int>>());
+        
+        // Calculate the optimal score
+        int score = tree[v].size(); // Base score without deletions
+        int deletions = 0;
+        
+        for (auto [g, node] : nodesByGain) {
+            if (g <= k) break; // Stop when the gain is not worth the cost
+            
+            // Delete this node
+            score += g - k; // Add the net gain
+            deletions++;
+        }
+        
+        cout << score << endl;
+    }
+    
+    return 0;
+}

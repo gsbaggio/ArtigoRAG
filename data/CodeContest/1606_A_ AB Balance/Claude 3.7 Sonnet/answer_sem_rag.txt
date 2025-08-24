@@ -1,0 +1,95 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+// Count occurrences of pattern in string s
+int countOccurrences(const string& s, const string& pattern) {
+    int count = 0;
+    for (int i = 0; i < (int)s.size() - 1; i++) {
+        if (s[i] == pattern[0] && s[i + 1] == pattern[1]) {
+            count++;
+        }
+    }
+    return count;
+}
+
+// Check how changing character at position i affects AB and BA counts
+pair<int, int> calculateChangedCounts(const string& s, int i, char newChar) {
+    string modified = s;
+    modified[i] = newChar;
+    
+    int abCount = countOccurrences(modified, "ab");
+    int baCount = countOccurrences(modified, "ba");
+    
+    return {abCount, baCount};
+}
+
+string solveCase(string s) {
+    int initialAB = countOccurrences(s, "ab");
+    int initialBA = countOccurrences(s, "ba");
+    
+    // If AB and BA are already equal, no changes needed
+    if (initialAB == initialBA) {
+        return s;
+    }
+    
+    // Try changing each position and see if we can make AB = BA
+    int n = s.length();
+    int minChanges = n + 1; // More than maximum possible changes
+    string bestString = s;
+    
+    // Try modifying just one character
+    for (int i = 0; i < n; i++) {
+        // Try changing to 'a'
+        if (s[i] != 'a') {
+            auto [abCount, baCount] = calculateChangedCounts(s, i, 'a');
+            if (abCount == baCount && 1 < minChanges) {
+                minChanges = 1;
+                bestString = s;
+                bestString[i] = 'a';
+            }
+        }
+        
+        // Try changing to 'b'
+        if (s[i] != 'b') {
+            auto [abCount, baCount] = calculateChangedCounts(s, i, 'b');
+            if (abCount == baCount && 1 < minChanges) {
+                minChanges = 1;
+                bestString = s;
+                bestString[i] = 'b';
+            }
+        }
+    }
+    
+    // If we couldn't make AB = BA by changing one character,
+    // we can always make both zero by changing the string to all 'a' or all 'b'
+    if (minChanges > n) {
+        int aChanges = 0, bChanges = 0;
+        for (char c : s) {
+            if (c != 'a') aChanges++;
+            if (c != 'b') bChanges++;
+        }
+        
+        if (aChanges <= bChanges) {
+            return string(n, 'a');
+        } else {
+            return string(n, 'b');
+        }
+    }
+    
+    return bestString;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    
+    for (int tc = 0; tc < t; tc++) {
+        string s;
+        cin >> s;
+        cout << solveCase(s) << endl;
+    }
+    
+    return 0;
+}

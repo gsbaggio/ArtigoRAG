@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+const long long MOD1 = 998244353;
+const long long MOD2 = 1000000007;
+
+// Function to calculate modular addition
+long long mod_add(long long a, long long b, long long mod) {
+    return (a % mod + b % mod) % mod;
+}
+
+// Function to calculate modular subtraction
+long long mod_sub(long long a, long long b, long long mod) {
+    return ((a % mod - b % mod) + mod) % mod;
+}
+
+// Function to calculate the result
+long long calculate_sum(long long n) {
+    long long result = 0;
+    long long power_of_10 = 1; // Tracks the current power of 10
+
+    // Iterate over the number of digits in n
+    for (int digits = 1; power_of_10 <= n; ++digits) {
+        long long start = power_of_10;
+        long long end = min(n, power_of_10 * 10 - 1);
+
+        // Count of numbers with the current number of digits
+        long long count = end - start + 1;
+
+        // Contribution of these numbers to the sum
+        long long contribution = mod_sub(start, 1, MOD1) * count % MOD1;
+        contribution = mod_add(contribution, count * (count - 1) / 2 % MOD1, MOD1);
+
+        // Add the contribution to the result
+        result = mod_add(result, contribution, MOD1);
+
+        // Move to the next range of numbers
+        power_of_10 *= 10;
+    }
+
+    // Return the result modulo 10^9 + 7
+    return result % MOD2;
+}
+
+int main() {
+    long long n;
+    cin >> n;
+
+    cout << calculate_sum(n) << endl;
+    return 0;
+}

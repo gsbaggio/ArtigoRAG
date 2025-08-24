@@ -1,0 +1,27 @@
+MOD = 998244353
+
+def count_no_winner_ways(n, x):
+    # Initialize DP table
+    dp = [[0] * (n * x + 1) for _ in range(n + 1)]
+    dp[0][0] = 1  # Base case: 1 way to assign health to 0 heroes with total health 0
+
+    # Fill DP table
+    for i in range(1, n + 1):
+        for s in range(n * x + 1):
+            for a in range(1, x + 1):
+                if s >= a:
+                    dp[i][s] = (dp[i][s] + dp[i - 1][s - a]) % MOD
+
+    # Count valid assignments
+    total_ways = 0
+    for s in range(1, n * x + 1):
+        max_health = (s + 1) // 2  # max(a) must satisfy 2 * max(a) ≤ sum(a)
+        for a in range(1, x + 1):
+            if a <= max_health:
+                total_ways = (total_ways + dp[n - 1][s - a]) % MOD
+
+    return total_ways
+
+# Input reading
+n, x = map(int, input().split())
+print(count_no_winner_ways(n, x))

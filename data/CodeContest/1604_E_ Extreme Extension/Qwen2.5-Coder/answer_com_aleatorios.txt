@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for(int i=0;i<n;i++){
+            cin >> a[i];
+        }
+        
+        // dp[i] will store the sum of extreme values for all subarrays ending at index i
+        vector<long long> dp(n, 0);
+        
+        // Calculate dp values
+        for(int i=1;i<n;i++){
+            long long sum = 0;
+            for(int j=i-1;j>=0;j--){
+                if(a[j] <= a[i]){
+                    break;
+                }
+                sum += (a[j] - a[i] - 1);
+                sum %= MOD;
+            }
+            dp[i] = sum;
+        }
+        
+        // Calculate the total sum of extreme values for all subarrays
+        long long total_sum = 0;
+        for(int i=0;i<n;i++){
+            total_sum += dp[i];
+            total_sum %= MOD;
+        }
+        
+        // Add the extreme values of subarrays starting at each index (which is always 0)
+        // So we don't need to add anything extra
+        
+        cout << total_sum << "\n";
+    }
+}

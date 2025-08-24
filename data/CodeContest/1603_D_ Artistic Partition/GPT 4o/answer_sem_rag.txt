@@ -1,0 +1,42 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    queries = data[1:]
+    
+    # Precompute c(l, r) using a sieve-like approach
+    MAX_N = 100000
+    gcd_count = [0] * (MAX_N + 1)
+    c = [0] * (MAX_N + 1)
+    
+    for g in range(1, MAX_N + 1):
+        for multiple in range(g, MAX_N + 1, g):
+            gcd_count[multiple] += 1
+        c[g] = c[g - 1] + gcd_count[g]
+    
+    # Process each test case
+    results = []
+    idx = 0
+    for _ in range(t):
+        n = int(queries[idx])
+        k = int(queries[idx + 1])
+        idx += 2
+        
+        # Divide n into k segments
+        segment_size = n // k
+        remainder = n % k
+        
+        # Compute f(n, k)
+        total = 0
+        current = 0
+        for i in range(k):
+            next_segment = current + segment_size + (1 if i < remainder else 0)
+            total += c[next_segment] - c[current]
+            current = next_segment
+        
+        results.append(total)
+    
+    # Output results
+    sys.stdout.write('\n'.join(map(str, results)) + '\n')

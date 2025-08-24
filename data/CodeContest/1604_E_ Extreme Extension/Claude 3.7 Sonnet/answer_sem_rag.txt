@@ -1,0 +1,35 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        
+        long long sum = 0;
+        
+        // For each position i, count descents in all subarrays
+        for (int i = 0; i < n - 1; i++) {
+            if (a[i] > a[i + 1]) {
+                // This descent is included in (i+1) * (n-i-1) subarrays
+                long long subarrays = (long long)(i + 1) * (n - i - 1);
+                sum = (sum + subarrays) % MOD;
+            }
+        }
+        
+        cout << sum << endl;
+    }
+    
+    return 0;
+}

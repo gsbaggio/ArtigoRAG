@@ -1,0 +1,38 @@
+def is_possible_to_split(t, test_cases):
+    def calculate_lis_lengths(arr):
+        n = len(arr)
+        dp = [1] * n
+
+        for i in range(1, n):
+            for j in range(i):
+                if arr[i] > arr[j]:
+                    dp[i] = max(dp[i], dp[j] + 1)
+
+        return dp
+
+    results = []
+    for _ in range(t):
+        n, seq = test_cases[_]
+
+        lis_lengths = calculate_lis_lengths(seq)
+
+        # Check if the bitwise XOR of LIS lengths is 0
+        xor_result = 0
+        for length in lis_lengths:
+            xor_result ^= length
+
+        results.append("YES" if xor_result == 0 else "NO")
+
+    return results
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    seq = list(map(int, input().split()))
+    test_cases.append((n, seq))
+
+# Output the results
+for result in is_possible_to_split(t, test_cases):
+    print(result)

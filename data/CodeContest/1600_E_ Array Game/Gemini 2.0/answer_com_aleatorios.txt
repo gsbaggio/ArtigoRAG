@@ -1,0 +1,37 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    def winner(arr):
+        memo = {}
+
+        def can_win(current_arr, last_val):
+            if not current_arr:
+                return False
+
+            state = (tuple(current_arr), last_val)
+            if state in memo:
+                return memo[state]
+
+            can_alice_win = False
+            # Try removing from the left
+            if current_arr[0] > last_val:
+                if not can_win(current_arr[1:], current_arr[0]):
+                    can_alice_win = True
+
+            # Try removing from the right
+            if not can_alice_win and current_arr[-1] > last_val:
+                if not can_win(current_arr[:-1], current_arr[-1]):
+                    can_alice_win = True
+
+            memo[state] = can_alice_win
+            return can_alice_win
+
+        if can_win(arr, -1):
+            return "Alice"
+        else:
+            return "Bob"
+
+    print(winner(a))
+
+solve()

@@ -1,0 +1,34 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    long long n, M;
+    cin >> n >> M;
+    
+    // A sequence is perfect if all elements are either the same
+    // or differ by exactly 1
+    
+    // For each possible minimum value min_val
+    long long result = 0;
+    for (int min_val = 1; min_val <= n + 1; min_val++) {
+        // We can have elements min_val or min_val+1
+        if (min_val <= n) {
+            // 2^n combinations of min_val and min_val+1
+            long long ways = 1;
+            for (int i = 0; i < n; i++) {
+                ways = (ways * 2) % M;
+            }
+            result = (result + ways) % M;
+        } else {
+            // Only min_val is valid (min_val+1 exceeds the limit)
+            result = (result + 1) % M;
+        }
+    }
+    
+    // We've double-counted sequences with only one distinct value
+    // Subtract (n) from the answer
+    result = (result - n + M) % M;
+    
+    cout << result << endl;
+    return 0;
+}

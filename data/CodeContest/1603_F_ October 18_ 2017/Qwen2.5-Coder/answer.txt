@@ -1,0 +1,76 @@
+MOD = 998244353
+
+def matmul(A, B):
+    """Multiplies two matrices A and B modulo MOD."""
+    n = len(A)
+    m = len(B[0])
+    l = len(B)
+    C = [[0] * m for _ in range(n)]
+    for i in range(n):
+        for j in range(m):
+            for k in range(l):
+                C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD
+    return C
+
+def matexp(A, exp):
+    """Exponentiates matrix A to the power of exp modulo MOD."""
+    n = len(A)
+    result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+    base = A
+    while exp > 0:
+        if exp % 2 == 1:
+            result = matmul(result, base)
+        base = matmul(base, base)
+        exp //= 2
+    return result
+
+def solve(n, k, x):
+    """Computes the number of valid sequences modulo MOD."""
+    if k == 0:
+        return 1 if x != 0 else 0
+    
+    # Initialize the transition matrix
+    T = [[0] * (1 << k) for _ in range(1 << k)]
+    for i in range(1 << k):
+        for j in range(1 << k):
+            T[i][i ^ j] = 1
+    
+    # Compute T^n
+    Tn = matexp(T, n)
+    
+    # Initial state: dp[0] = 1, dp[j] = 0 for j > 0
+    dp = [1] + [0] * ((1 << k) - 1)
+    
+    # Compute the final state
+    final_dp = [0] * (1 << k)
+    for i in range(1 << k):
+        for j in range(1 << k):
+            final_dp[i] = (final_dp[i] + dp[j] * Tn[j][i]) % MOD
+    
+    # Total number of sequences is (2^k)^n
+    total_sequences = pow(1 << k, n, MOD)
+    
+    # Subtract the number of invalid sequences (those with a subsequence XOR equal to x)
+    invalid_sequences = final_dp[x]
+    
+    return (total_sequences - invalid_sequences) % MOD
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+t = int(data[0])
+index = 1
+results = []
+
+for _ in range(t):
+    n = int(data[index])
+    k = int(data[index + 1])
+    x = int(data[index + 2])
+    index += 3
+    results.append(solve(n, k, x))
+
+# Print results
+for result in results:
+    print(result)

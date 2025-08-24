@@ -1,0 +1,35 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+const int MOD = 998244353;
+const int MAX_DIGITS = 10;
+
+int main() {
+    long long n;
+    cin >> n;
+
+    long long result = 0;
+    long long power10 = 1;
+    long long currentSum = 0;
+
+    for (int digit = 1; digit <= MAX_DIGITS; digit++) {
+        power10 = (power10 * 10) % MOD;
+        long long nextSum = (currentSum * 10 + digit) % MOD;
+
+        if (power10 > n) {
+            long long count = (n - currentSum) / power10 + 1;
+            result = (result + ((count % MOD) * digit) % MOD) % MOD;
+            break;
+        } else {
+            result = (result + ((power10 - currentSum) % MOD * digit) % MOD) % MOD;
+        }
+
+        currentSum = nextSum;
+    }
+
+    cout << result << endl;
+
+    return 0;
+}

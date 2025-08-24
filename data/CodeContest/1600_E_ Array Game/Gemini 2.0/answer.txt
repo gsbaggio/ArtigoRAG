@@ -1,0 +1,47 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    def winner(arr, seq):
+        if not arr:
+            return "Bob" if len(seq) % 2 == 0 else "Alice"
+
+        can_move = False
+        
+        # Check if a move is possible from the left
+        if not seq or arr[0] > seq[-1]:
+            can_move = True
+        
+        # Check if a move is possible from the right
+        if not seq or arr[-1] > seq[-1]:
+            can_move = True
+            
+        if not can_move:
+            return "Bob" if len(seq) % 2 == 0 else "Alice"
+
+        # Alice's turn
+        if len(seq) % 2 == 0:
+            # Try to find a winning move for Alice
+            if not seq or arr[0] > seq[-1]:
+                if winner(arr[1:], seq + [arr[0]]) == "Alice":
+                    return "Alice"
+            if not seq or arr[-1] > seq[-1]:
+                if winner(arr[:-1], seq + [arr[-1]]) == "Alice":
+                    return "Alice"
+            # If no winning move is found, Bob wins
+            return "Bob"
+        # Bob's turn
+        else:
+            # Try to find a winning move for Bob
+            if not seq or arr[0] > seq[-1]:
+                if winner(arr[1:], seq + [arr[0]]) == "Bob":
+                    return "Bob"
+            if not seq or arr[-1] > seq[-1]:
+                if winner(arr[:-1], seq + [arr[-1]]) == "Bob":
+                    return "Bob"
+            # If no winning move is found, Alice wins
+            return "Alice"
+
+    print(winner(a, []))
+
+solve()

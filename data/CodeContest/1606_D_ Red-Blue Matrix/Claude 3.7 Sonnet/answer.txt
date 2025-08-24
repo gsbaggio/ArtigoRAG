@@ -1,0 +1,84 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+bool solve_test_case() {
+    int n, m;
+    cin >> n >> m;
+    
+    vector<vector<int>> a(n, vector<int>(m));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> a[i][j];
+        }
+    }
+    
+    // Try each possible cut position
+    for (int k = 1; k < m; k++) {
+        // Find min values in left part and max values in right part for each row
+        vector<int> left_min(n), right_max(n);
+        for (int i = 0; i < n; i++) {
+            left_min[i] = *min_element(a[i].begin(), a[i].begin() + k);
+            right_max[i] = *max_element(a[i].begin() + k, a[i].end());
+        }
+        
+        // Sort rows by their left_min values
+        vector<int> row_indices(n);
+        for (int i = 0; i < n; i++) {
+            row_indices[i] = i;
+        }
+        sort(row_indices.begin(), row_indices.end(), [&](int i, int j) {
+            return left_min[i] < left_min[j];
+        });
+        
+        // Try each possible split for coloring
+        for (int split = 1; split < n; split++) {
+            // First 'split' rows are colored blue, the rest are red
+            string colors(n, ' ');
+            for (int i = 0; i < n; i++) {
+                colors[i] = 'B'; // Default all to blue
+            }
+            
+            // Find min blue right and max red right values
+            int min_blue_right = INT_MAX;
+            int max_red_right = INT_MIN;
+            
+            // Color the rows with the highest left_min values as red
+            for (int i = split; i < n; i++) {
+                int row = row_indices[i];
+                colors[row] = 'R';
+                max_red_right = max(max_red_right, right_max[row]);
+            }
+            
+            // Find min blue right
+            for (int i = 0; i < split; i++) {
+                int row = row_indices[i];
+                min_blue_right = min(min_blue_right, right_max[row]);
+            }
+            
+            // Check if the coloring works
+            if (min_blue_right > max_red_right) {
+                cout << "YES" << endl << colors << " " << k << endl;
+                return true;
+            }
+        }
+    }
+    
+    cout << "NO" << endl;
+    return false;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        solve_test_case();
+    }
+    
+    return 0;
+}

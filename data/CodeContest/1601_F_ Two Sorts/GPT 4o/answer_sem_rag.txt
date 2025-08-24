@@ -1,0 +1,35 @@
+def solve(n):
+    MOD1 = 998244353
+    MOD2 = 10**9 + 7
+
+    def lexicographical_sum(n):
+        # Simulate lexicographical order traversal
+        stack = [1]  # Start with the smallest number
+        i = 1  # Position in the lexicographical order
+        total_sum = 0
+
+        while stack:
+            current = stack.pop()
+            if current > n:
+                continue
+
+            # Calculate (i - current) % MOD1
+            diff = (i - current) % MOD1
+            total_sum = (total_sum + diff) % MOD2
+            i += 1
+
+            # Push next numbers in lexicographical order
+            if current * 10 <= n:
+                stack.append(current * 10)
+            if current + 1 <= n and current % 10 != 9:
+                stack.append(current + 1)
+
+        return total_sum
+
+    # Compute the result
+    result = lexicographical_sum(n)
+    print(result)
+
+# Example usage
+n = int(input())
+solve(n)

@@ -1,0 +1,23 @@
+def main():
+    import sys
+    data = sys.stdin.read().split()
+    n = int(data[0])
+    a = list(map(int, data[1:1+n]))
+    
+    left = 0
+    while left < n-1 and a[left] < a[left+1]:
+        left += 1
+    left_len = left + 1
+    
+    right = n-1
+    while right > 0 and a[right] < a[right-1]:
+        right -= 1
+    right_len = n - right
+        
+    if left_len % 2 == 1 or right_len % 2 == 1:
+        print("Alice")
+    else:
+        print("Bob")
+
+if __name__ == "__main__":
+    main()

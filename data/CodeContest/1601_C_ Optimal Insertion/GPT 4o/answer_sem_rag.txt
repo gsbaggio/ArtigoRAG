@@ -1,0 +1,49 @@
+def count_inversions(t, test_cases):
+    results = []
+    
+    for n, m, a, b in test_cases:
+        # Sort array b
+        b.sort()
+        
+        # Two-pointer merge process
+        i, j = 0, 0
+        inversions = 0
+        while i < n and j < m:
+            if a[i] <= b[j]:
+                # No inversion, move pointer in a
+                i += 1
+            else:
+                # Inversion found, move pointer in b
+                inversions += n - i  # All remaining elements in a are greater
+                j += 1
+        
+        # Append the result for this test case
+        results.append(inversions)
+    
+    return results
+
+
+# Input reading and processing
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    index = 1
+    test_cases = []
+    
+    for _ in range(t):
+        n, m = int(data[index]), int(data[index + 1])
+        index += 2
+        a = list(map(int, data[index:index + n]))
+        index += n
+        b = list(map(int, data[index:index + m]))
+        index += m
+        test_cases.append((n, m, a, b))
+    
+    # Solve the problem
+    results = count_inversions(t, test_cases)
+    
+    # Output the results
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

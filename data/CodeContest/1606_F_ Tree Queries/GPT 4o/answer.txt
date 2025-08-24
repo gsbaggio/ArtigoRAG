@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 200005;
+
+vector<int> tree[MAXN];
+int subtree_size[MAXN];
+int parent[MAXN];
+
+// Function to calculate the size of the subtree for each node
+void dfs(int node, int par) {
+    subtree_size[node] = 1;
+    parent[node] = par;
+    for (int child : tree[node]) {
+        if (child != par) {
+            dfs(child, node);
+            subtree_size[node] += subtree_size[child];
+        }
+    }
+}
+
+// Function to process each query
+int process_query(int v, int k) {
+    int c_v = subtree_size[v] - 1; // Number of children of v
+    int m = min(k, c_v);          // Maximum vertices we can delete
+    return c_v - m * k;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+
+    // Read the tree edges
+    for (int i = 1; i < n; ++i) {
+        int x, y;
+        cin >> x >> y;
+        tree[x].push_back(y);
+        tree[y].push_back(x);
+    }
+
+    // Precompute subtree sizes
+    dfs(1, -1);
+
+    int q;
+    cin >> q;
+
+    // Process each query
+    while (q--) {
+        int v, k;
+        cin >> v >> k;
+        cout << process_query(v, k) << '\n';
+    }
+
+    return 0;
+}

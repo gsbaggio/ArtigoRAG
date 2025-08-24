@@ -1,0 +1,46 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        total_extreme_value = 0
+        mod = 998244353
+        
+        for i in range(n):
+            for j in range(i, n):
+                subarray = a[i:j+1]
+                
+                extreme_value = 0
+                
+                # Calculate extreme value for the subarray
+                if len(subarray) > 0:
+                    
+                    is_non_decreasing = all(subarray[k] <= subarray[k+1] for k in range(len(subarray)-1)) if len(subarray) > 1 else True
+                    
+                    if not is_non_decreasing:
+                        
+                        
+                        def calculate_ops(arr):
+                            ops = 0
+                            while True:
+                                non_decreasing = True
+                                for k in range(len(arr) - 1):
+                                    if arr[k] > arr[k+1]:
+                                        non_decreasing = False
+                                        
+                                        arr[k] = arr[k] // 2
+                                        arr.insert(k+1, arr[k])
+                                        ops += 1
+                                        break
+                                if non_decreasing:
+                                    break
+                            return ops
+                        
+                        extreme_value = calculate_ops(subarray[:])
+                        
+                total_extreme_value = (total_extreme_value + extreme_value) % mod
+        
+        print(total_extreme_value)
+
+solve()

@@ -1,0 +1,29 @@
+#include <iostream>
+
+long long power_mod(long long base, long long exp, long long mod) {
+    long long result = 1;
+    base %= mod;
+    while (exp > 0) {
+        if (exp & 1) result = (result * base) % mod;
+        base = (base * base) % mod;
+        exp >>= 1;
+    }
+    return result;
+}
+
+int main() {
+    long long n, M;
+    std::cin >> n >> M;
+    
+    // A sequence is perfect if and only if all elements are at least ceil((n+1)/2)
+    long long min_valid_value = (n + 2) / 2; // This gives ceiling of (n+1)/2
+    
+    // Number of valid values for each position: (n+1) - min_valid_value + 1
+    long long valid_values = n + 1 - min_valid_value + 1;
+    
+    // Total number of perfect sequences = valid_values^n
+    long long result = power_mod(valid_values, n, M);
+    
+    std::cout << result << std::endl;
+    return 0;
+}

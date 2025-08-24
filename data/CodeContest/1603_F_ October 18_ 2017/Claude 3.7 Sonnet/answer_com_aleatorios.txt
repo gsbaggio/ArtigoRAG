@@ -1,0 +1,45 @@
+#include <iostream>
+using namespace std;
+
+const long long MOD = 998244353;
+
+// Calculate (base^exp) % MOD efficiently
+long long pow_mod(long long base, long long exp) {
+    long long result = 1;
+    base %= MOD;
+    while (exp > 0) {
+        if (exp & 1) result = (result * base) % MOD;
+        base = (base * base) % MOD;
+        exp >>= 1;
+    }
+    return result;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        long long n;
+        int k, x;
+        cin >> n >> k >> x;
+        
+        // The key insight: the number of valid sequences depends on whether x = 0 or not
+        if (x == 0) {
+            // When x = 0, we need all elements to be non-zero
+            // Because if we have even one zero, we can form a subsequence with just that zero
+            // And the XOR of that single element will be 0
+            cout << pow_mod((1LL << k) - 1, n) << endl;
+        } else {
+            // When x != 0, exactly half of all possible sequences have a subsequence with XOR = x
+            // This is a property of linear algebra over GF(2)
+            // So the answer is (2^k)^n / 2 = 2^(k*n-1)
+            cout << pow_mod(1LL << k, n - 1) << endl;
+        }
+    }
+    
+    return 0;
+}

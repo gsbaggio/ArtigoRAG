@@ -1,0 +1,75 @@
+def solve():
+    n = int(input())
+    edges = []
+    for _ in range(n - 1):
+        edges.append(list(map(int, input().split())))
+    q = int(input())
+    queries = []
+    for _ in range(q):
+        queries.append(list(map(int, input().split())))
+
+    def get_children(node, adj):
+        children = []
+        for neighbor in adj[node]:
+            children.append(neighbor)
+        return children
+
+    def calculate_score(v, k, adj, deleted):
+        children = []
+        for neighbor in adj[v]:
+            if neighbor not in deleted:
+                children.append(neighbor)
+        return len(children) - len(deleted) * k
+
+    def solve_query(v, k, edges, n):
+        adj = {i: [] for i in range(1, n + 1)}
+        for edge in edges:
+            adj[edge[0]].append(edge[1])
+            adj[edge[1]].append(edge[0])
+
+        for i in range(1, n + 1):
+            adj[i] = []
+        
+        for edge in edges:
+            adj[edge[0]].append(edge[1])
+
+        def dfs(node, parent, adj_list):
+            children = []
+            for neighbor in adj_list[node]:
+                if neighbor != parent:
+                    children.append(neighbor)
+            return children
+
+        adj_tree = {i: [] for i in range(1, n + 1)}
+        
+        def build_tree(node, parent):
+            children = dfs(node, parent, adj)
+            for child in children:
+                adj_tree[node].append(child)
+                build_tree(child, node)
+
+        build_tree(1, 0)
+
+        max_score = -float('inf')
+        
+        import itertools
+        
+        nodes_to_consider = []
+        for i in range(1, n + 1):
+            if i != 1 and i != v:
+                nodes_to_consider.append(i)
+
+        for r in range(len(nodes_to_consider) + 1):
+            for deleted_set in itertools.combinations(nodes_to_consider, r):
+                deleted = set(deleted_set)
+                
+                score = calculate_score(v, k, adj_tree, deleted)
+                max_score = max(max_score, score)
+
+        return max_score
+
+    for query in queries:
+        v, k = query
+        print(solve_query(v, k, edges, n))
+
+solve()

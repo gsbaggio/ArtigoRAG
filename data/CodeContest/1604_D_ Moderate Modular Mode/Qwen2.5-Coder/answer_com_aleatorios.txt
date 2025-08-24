@@ -1,0 +1,15 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    int t;
+    cin >> t;
+    while(t--){
+        long long x, y;
+        cin >> x >> y;
+        // Compute n as y + x
+        long long n = y + x;
+        cout << n << "\n";
+    }
+    return 0;
+}

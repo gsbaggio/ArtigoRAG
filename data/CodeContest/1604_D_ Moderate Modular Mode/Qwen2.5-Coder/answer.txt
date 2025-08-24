@@ -1,0 +1,12 @@
+def find_n(x, y):
+    # Since y is even and within the range, we can directly use y as n
+    return y
+
+# Read the number of test cases
+t = int(input())
+
+# Process each test case
+for _ in range(t):
+    x, y = map(int, input().split())
+    result = find_n(x, y)
+    print(result)

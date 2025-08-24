@@ -1,0 +1,130 @@
+import sys
+import collections
+import itertools
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        print(-1)
+        return
+        
+    n = int(data[0])
+    m = int(data[1])
+    graph = [[] for _ in range(n+1)]
+    index = 2
+    for i in range(m):
+        u = int(data[index]); v = int(data[index+1]); index += 2
+        graph[u].append(v)
+        graph[v].append(u)
+        
+    if n < 43:
+        adj = [[False] * (n+1) for _ in range(n+1)]
+        for u in range(1, n+1):
+            for v in graph[u]:
+                adj[u][v] = True
+                
+        for comb in itertools.combinations(range(1, n+1), 5):
+            is_clique = True
+            is_independent = True
+            for i in range(5):
+                for j in range(i+1, 5):
+                    u = comb[i]
+                    v = comb[j]
+                    if not adj[u][v]:
+                        is_clique = False
+                    else:
+                        is_independent = False
+            if is_clique or is_independent:
+                print(" ".join(str(x) for x in comb))
+                return
+        print(-1)
+        
+    else:
+        deg = [0] * (n+1)
+        for i in range(1, n+1):
+            deg[i] = len(graph[i])
+            
+        available = [True] * (n+1)
+        I = []
+        for _ in range(5):
+            v = None
+            for i in range(1, n+1):
+                if available[i] and (v is None or deg[i] < deg[v]):
+                    v = i
+            if v is None:
+                break
+            I.append(v)
+            available[v] = False
+            for neighbor in graph[v]:
+                if available[neighbor]:
+                    available[neighbor] = False
+                    for next_neighbor in graph[neighbor]:
+                        if available[next_neighbor]:
+                            deg[next_neighbor] -= 1
+                            
+        if len(I) == 5:
+            print(" ".join(str(x) for x in I))
+            return
+            
+        deg = [0] * (n+1)
+        for i in range(1, n+1):
+            deg[i] = len(graph[i])
+        in_core = [True] * (n+1)
+        q = collections.deque()
+        for i in range(1, n+1):
+            if deg[i] < 4:
+                in_core[i] = False
+                q.append(i)
+                
+        while q:
+            u = q.popleft()
+            for v in graph[u]:
+                if in_core[v]:
+                    deg[v] -= 1
+                    if deg[v] < 4:
+                        in_core[v] = False
+                        q.append(v)
+                        
+        core = []
+        for i in range(1, n+1):
+            if in_core[i]:
+                core.append(i)
+                
+        if len(core) < 5:
+            print(-1)
+            return
+            
+        if len(core) > 43:
+            core = core[:43]
+            
+        mapping = {}
+        for idx, node in enumerate(core):
+            mapping[node] = idx
+            
+        n_core = len(core)
+        adj_core = [[False] * n_core for _ in range(n_core)]
+        for i in range(n_core):
+            u = core[i]
+            for v in graph[u]:
+                if v in mapping:
+                    j = mapping[v]
+                    adj_core[i][j] = True
+                    
+        for comb in itertools.combinations(range(n_core), 5):
+            valid = True
+            for i in range(5):
+                for j in range(i+1, 5):
+                    if not adj_core[comb[i]][comb[j]]:
+                        valid = False
+                        break
+                if not valid:
+                    break
+            if valid:
+                ans = [core[comb[i]] for i in range(5)]
+                print(" ".join(str(x) for x in ans))
+                return
+                
+        print(-1)
+
+if __name__ == '__main__':
+    main()

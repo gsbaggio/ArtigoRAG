@@ -1,0 +1,59 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 100005;
+const int INF = 1e9;
+
+// Precompute the number of pairs (i, j) for each range [l, r]
+vector<long long> precompute_c(int n) {
+    vector<long long> c(n + 1, 0);
+    vector<int> freq(n + 1, 0);
+
+    // Count multiples for each divisor
+    for (int i = 1; i <= n; i++) {
+        for (int j = i; j <= n; j += i) {
+            freq[i]++;
+        }
+    }
+
+    // Compute c(l, r) using the formula
+    for (int i = 1; i <= n; i++) {
+        c[i] = freq[i] * (freq[i] + 1LL) / 2;
+    }
+
+    return c;
+}
+
+void solve() {
+    int t;
+    cin >> t;
+
+    vector<long long> c = precompute_c(100000);
+
+    while (t--) {
+        int n, k;
+        cin >> n >> k;
+
+        // DP array
+        vector<vector<long long>> dp(n + 1, vector<long long>(k + 1, INF));
+        dp[0][0] = 0;
+
+        // Fill DP table
+        for (int i = 1; i <= k; i++) {
+            for (int j = 1; j <= n; j++) {
+                for (int p = 0; p < j; p++) {
+                    dp[j][i] = min(dp[j][i], dp[p][i - 1] + c[j - p]);
+                }
+            }
+        }
+
+        cout << dp[n][k] << endl;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    solve();
+    return 0;
+}

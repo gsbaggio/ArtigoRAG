@@ -1,0 +1,41 @@
+def is_possible_to_split(t, test_cases):
+    def is_bitwise_xor_zero(lis_lengths):
+        xor = 0
+        for length in lis_lengths:
+            xor ^= length
+        return xor == 0
+
+    results = []
+    for test in test_cases:
+        n = test[0]
+        arr = test[1]
+
+        # Find the longest increasing subsequence
+        lis_lengths = [1] * n
+        for i in range(1, n):
+            for j in range(i):
+                if arr[i] > arr[j]:
+                    lis_lengths[i] = max(lis_lengths[i], lis_lengths[j] + 1)
+
+        # Check if it's possible to split the sequence
+        if is_bitwise_xor_zero(lis_lengths):
+            results.append("YES")
+        else:
+            results.append("NO")
+
+    return results
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    test_cases.append((n, a))
+
+# Get the results
+results = is_possible_to_split(t, test_cases)
+
+# Output the results
+for res in results:
+    print(res)

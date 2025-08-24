@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+string winner(vector<int>& arr) {
+    int n = arr.size();
+    
+    // Calculate the maximum number of elements we can take
+    int max_moves = 0;
+    int last = -1;
+    int left = 0, right = n - 1;
+    
+    while (left <= right) {
+        bool moved = false;
+        
+        // Try the smallest valid option first (greedy approach)
+        if (arr[left] > last && (right == left || arr[right] > last) && arr[left] <= arr[right]) {
+            last = arr[left++];
+            max_moves++;
+            moved = true;
+        } else if (arr[right] > last) {
+            last = arr[right--];
+            max_moves++;
+            moved = true;
+        } else if (arr[left] > last) {
+            last = arr[left++];
+            max_moves++;
+            moved = true;
+        }
+        
+        if (!moved) break;
+    }
+    
+    // If max_moves is odd, Alice wins; if even, Bob wins
+    return (max_moves % 2 == 1) ? "Alice" : "Bob";
+}
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+    
+    cout << winner(arr) << endl;
+    
+    return 0;
+}

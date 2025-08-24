@@ -1,0 +1,15 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    x, y = map(int, input().split())
+    if y < x:
+        results.append(str(x + y))
+    elif y % x == 0:
+        results.append(str(x))
+    else:
+        k = y // x
+        r = y % x
+        n = k * x + r // 2
+        results.append(str(n))
+
+print("\n".join(results))

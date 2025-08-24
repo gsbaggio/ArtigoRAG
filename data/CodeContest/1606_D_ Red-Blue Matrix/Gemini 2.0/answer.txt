@@ -1,0 +1,47 @@
+def solve():
+    n, m = map(int, input().split())
+    matrix = []
+    for _ in range(n):
+        matrix.append(list(map(int, input().split())))
+
+    for i in range(1 << n):
+        if bin(i).count('1') == 0 or bin(i).count('1') == n:
+            continue
+
+        coloring = ""
+        for j in range(n):
+            if (i >> j) & 1:
+                coloring += 'R'
+            else:
+                coloring += 'B'
+
+        for k in range(1, m):
+            
+            red_left = []
+            blue_left = []
+            red_right = []
+            blue_right = []
+
+            for row_idx in range(n):
+                if coloring[row_idx] == 'R':
+                    red_left.extend(matrix[row_idx][:k])
+                    red_right.extend(matrix[row_idx][k:])
+                else:
+                    blue_left.extend(matrix[row_idx][:k])
+                    blue_right.extend(matrix[row_idx][k:])
+
+            if not red_left or not blue_left or not red_right or not blue_right:
+                continue
+
+            if all(red > blue for red in red_left for blue in blue_left) and \
+               all(blue > red for blue in blue_right for red in red_right):
+                print("YES")
+                print(coloring, k)
+                return
+
+    print("NO")
+
+
+t = int(input())
+for _ in range(t):
+    solve()

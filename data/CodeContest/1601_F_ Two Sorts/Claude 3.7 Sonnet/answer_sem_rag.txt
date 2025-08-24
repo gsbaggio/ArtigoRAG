@@ -1,0 +1,89 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// Function to calculate (a * b) % mod efficiently
+long long mulmod(long long a, long long b, long long mod) {
+    long long res = 0;
+    a %= mod;
+    while (b > 0) {
+        if (b & 1)
+            res = (res + a) % mod;
+        a = (a + a) % mod;
+        b >>= 1;
+    }
+    return res;
+}
+
+// Function to calculate (a + b) % mod efficiently
+long long addmod(long long a, long long b, long long mod) {
+    return (a % mod + b % mod) % mod;
+}
+
+// Function to calculate (a - b) % mod efficiently, ensuring result is non-negative
+long long submod(long long a, long long b, long long mod) {
+    return (a % mod - b % mod + mod) % mod;
+}
+
+int main() {
+    long long n;
+    cin >> n;
+    
+    const long long MOD1 = 998244353;
+    const long long MOD2 = 1000000007;
+    
+    long long answer = 0;
+    
+    // Process each power of 10
+    long long power = 1;
+    while (power <= n) {
+        // Calculate the lower and upper bounds for numbers with the same number of digits
+        long long lower = power;
+        long long upper = min(power * 10 - 1, n);
+        
+        if (lower > upper) break;
+        
+        // For each first digit from 1 to 9
+        for (int first_digit = 1; first_digit <= 9; first_digit++) {
+            // Calculate the range of numbers starting with first_digit
+            long long start = power * first_digit;
+            long long end = min(power * (first_digit + 1) - 1, n);
+            
+            if (start > n) break;
+            if (end < start) continue;
+            
+            // Calculate the count of numbers in this range
+            long long count = end - start + 1;
+            
+            // Calculate the sum of positions (i)
+            long long pos_start = 0;
+            // Find where this block starts in the lexicographical ordering
+            for (int d = 1; d < first_digit; d++) {
+                long long range_start = power * d;
+                long long range_end = min(power * (d+1) - 1, n);
+                if (range_end >= range_start)
+                    pos_start += (range_end - range_start + 1);
+            }
+            pos_start += 1; // Adjust to 1-based indexing
+            
+            long long pos_sum = 0;
+            // Sum of arithmetic progression from pos_start to pos_start+count-1
+            pos_sum = mulmod(count, pos_start * 2 + count - 1, MOD1);
+            pos_sum = mulmod(pos_sum, 500000002, MOD1); // Divide by 2 using modular inverse
+            
+            // Calculate the sum of values (a_i)
+            long long val_sum = mulmod(count, start + end, MOD1);
+            val_sum = mulmod(val_sum, 500000002, MOD1); // Divide by 2 using modular inverse
+            
+            // Add (pos_sum - val_sum) to answer
+            long long contribution = submod(pos_sum, val_sum, MOD1);
+            answer = addmod(answer, contribution, MOD2);
+        }
+        
+        power *= 10;
+    }
+    
+    cout << answer << endl;
+    return 0;
+}

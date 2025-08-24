@@ -1,0 +1,74 @@
+import sys
+
+class FenwickTree:
+    def __init__(self, size):
+        self.n = size
+        self.tree = [0] * (self.n + 1)
+        
+    def update(self, index, delta):
+        while index <= self.n:
+            self.tree[index] += delta
+            index += index & -index
+            
+    def query(self, index):
+        s = 0
+        while index > 0:
+            s += self.tree[index]
+            index -= index & -index
+        return s
+        
+    def range_query(self, l, r):
+        if l > r:
+            return 0
+        return self.query(r) - self.query(l-1)
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    t = int(data[0])
+    index = 1
+    output_lines = []
+    for _ in range(t):
+        n = int(data[index]); m = int(data[index+1]); index += 2
+        a = list(map(int, data[index:index+n])); index += n
+        b = list(map(int, data[index:index+m])); index += m
+        
+        # Check if a is sorted
+        is_sorted = True
+        for i in range(1, n):
+            if a[i] < a[i-1]:
+                is_sorted = False
+                break
+                
+        # Compress the values of a and b
+        all_vals = sorted(set(a + b))
+        comp_map = {}
+        for idx, val in enumerate(all_vals):
+            comp_map[val] = idx+1
+        size = len(all_vals)
+        
+        # Calculate inversion count for a
+        ft = FenwickTree(size)
+        inv_a = 0
+        for num in a:
+            comp_val = comp_map[num]
+            # Count the number of elements greater than current value
+            inv_a += ft.range_query(comp_val+1, size)
+            ft.update(comp_val, 1)
+            
+        if is_sorted:
+            output_lines.append(str(inv_a))
+        else:
+            total_cost = 0
+            for num in b:
+                comp_val = comp_map[num]
+                less = ft.range_query(1, comp_val-1)
+                greater = ft.range_query(comp_val+1, size)
+                total_cost += min(less, greater)
+            output_lines.append(str(inv_a + total_cost))
+            
+    sys.stdout.write("\n".join(output_lines))
+    
+if __name__ == "__main__":
+    main()

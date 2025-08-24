@@ -1,0 +1,30 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n, m = map(int, input().split())
+        a = list(map(int, input().split()))
+        b = sorted(map(int, input().split()))
+        
+        # For each position in A, determine how many elements from B to insert there
+        positions = [0] * (n + 1)
+        j = 0
+        
+        for i in range(n):
+            while j < m and b[j] <= a[i]:
+                positions[i] += 1
+                j += 1
+                
+        positions[n] = m - j  # Remaining elements go after the last element of A
+        
+        # Count inversions in the resulting array
+        inversions = 0
+        total_b_placed = 0
+        
+        for i in range(n + 1):
+            inversions += positions[i] * total_b_placed
+            total_b_placed += positions[i]
+        
+        print(inversions)
+
+solve()

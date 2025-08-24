@@ -1,0 +1,36 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n, m = map(int, input().split())
+        a = list(map(int, input().split()))
+        b = list(map(int, input().split()))
+        
+        b.sort()
+        c = a[:]
+        
+        total_inversions = 0
+        for val in b:
+            best_inversions = float('inf')
+            best_index = -1
+            
+            for i in range(len(c) + 1):
+                temp_inversions = 0
+                
+                # Count inversions caused by inserting val at index i
+                for j in range(i):
+                    if c[j] > val:
+                        temp_inversions += 1
+                for j in range(i, len(c)):
+                    if val > c[j]:
+                        temp_inversions += 1
+                
+                if temp_inversions < best_inversions:
+                    best_inversions = temp_inversions
+                    best_index = i
+            
+            c.insert(best_index, val)
+            total_inversions += best_inversions
+        
+        print(total_inversions)
+
+solve()

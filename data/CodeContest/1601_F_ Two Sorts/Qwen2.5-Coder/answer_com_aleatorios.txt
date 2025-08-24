@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+const ll MOD = 1e9 + 7;
+const ll M = 998244353;
+
+ll add_mod(ll a, ll b) {
+    return (a + b) % MOD;
+}
+
+ll sub_mod(ll a, ll b) {
+    return (a - b + MOD) % MOD;
+}
+
+ll mul_mod(ll a, ll b) {
+    return (a * b) % MOD;
+}
+
+ll pow_mod(ll base, ll exp) {
+    ll res = 1;
+    while (exp > 0) {
+        if (exp & 1) res = mul_mod(res, base);
+        base = mul_mod(base, base);
+        exp >>= 1;
+    }
+    return res;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    ll n;
+    cin >> n;
+    
+    ll total_sum = 0;
+    ll current_position = 1;
+    
+    for(ll k = 0; pow(10, k) <= n; k++){
+        ll start = pow(10, k);
+        ll end = min(n, pow(10, k+1) - 1);
+        ll group_size = end - start + 1;
+        
+        // Calculate the sum of (i - a_i) for this group
+        ll group_sum = 0;
+        for(ll i = 0; i < group_size; i++){
+            ll a_i = start + i;
+            ll i_pos = current_position + i;
+            group_sum = add_mod(group_sum, sub_mod(i_pos, a_i));
+        }
+        
+        // Add the group sum to the total sum
+        total_sum = add_mod(total_sum, group_sum);
+        
+        // Update the current position
+        current_position += group_size;
+    }
+    
+    cout << total_sum;
+}

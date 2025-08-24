@@ -1,0 +1,52 @@
+mod = 998244353
+
+def main():
+    import sys
+    data = sys.stdin.read().split()
+    n = int(data[0])
+    x = int(data[1])
+    
+    if n == 0:
+        print(1)
+        return
+        
+    # Precompute combination table C
+    C = [[0] * (n+1) for _ in range(n+1)]
+    for i in range(n+1):
+        C[i][0] = 1
+        for j in range(1, i+1):
+            C[i][j] = (C[i-1][j] + C[i-1][j-1]) % mod
+
+    # Precompute power table: for each base from 0 to x, and exponent from 0 to n
+    powx = [[0] * (n+1) for _ in range(x+1)]
+    for base in range(0, x+1):
+        powx[base][0] = 1
+        for exp in range(1, n+1):
+            powx[base][exp] = powx[base][exp-1] * base % mod
+
+    # Initialize dp table
+    dp = [[0] * (x+1) for _ in range(n+1)]
+    for j in range(0, x+1):
+        dp[0][j] = 1
+    for j in range(0, x+1):
+        dp[1][j] = 0
+
+    # Fill dp for i from 2 to n
+    for i in range(2, n+1):
+        for j in range(0, x+1):
+            if j == 0:
+                dp[i][j] = 0
+            elif j < i:
+                dp[i][j] = powx[j][i]
+            else:
+                total = 0
+                for k in range(0, i+1):
+                    term = C[i][k] * powx[i-1][k] % mod
+                    term = term * dp[i-k][j-i+1] % mod
+                    total = (total + term) % mod
+                dp[i][j] = total
+
+    print(dp[n][x] % mod)
+
+if __name__ == "__main__":
+    main()

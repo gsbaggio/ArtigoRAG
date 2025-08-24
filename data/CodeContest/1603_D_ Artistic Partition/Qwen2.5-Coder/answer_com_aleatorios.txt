@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 100005;
+
+int multiples[MAXN];
+
+void precompute_multiples(int n) {
+    for (int i = 1; i <= n; ++i) {
+        for (int j = i; j <= n; j += i) {
+            multiples[j]++;
+        }
+    }
+}
+
+int calculate_c(int l, int r) {
+    int result = 0;
+    for (int d = l; d <= r; ++d) {
+        int count_multiples_l = multiples[l] - multiples[l - 1];
+        int count_multiples_r = multiples[r] - multiples[r - 1];
+        int count_multiples_d = multiples[r / d] - multiples[(l - 1) / d];
+        result += count_multiples_d * (count_multiples_d - 1) / 2;
+    }
+    return result;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    
+    // Precompute multiples
+    precompute_multiples(MAXN - 1);
+    
+    while(t--){
+        int n, k;
+        cin >> n >> k;
+        
+        // Divide the interval [1, n] into k parts
+        int part_size = n / k;
+        int extra_parts = n % k;
+        
+        int result = 0;
+        int current = 1;
+        
+        for(int i = 0; i < k; ++i){
+            int next = current + part_size - 1;
+            if(extra_parts > 0){
+                next++;
+                extra_parts--;
+            }
+            result += calculate_c(current, next);
+            current = next + 1;
+        }
+        
+        cout << result << "\n";
+    }
+    
+    return 0;
+}

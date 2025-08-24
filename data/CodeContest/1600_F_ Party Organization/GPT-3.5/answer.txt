@@ -1,0 +1,29 @@
+from itertools import combinations
+
+def find_successful_party(N, M, friendships):
+    graph = {i: set() for i in range(1, N+1)}
+
+    for u, v in friendships:
+        graph[u].add(v)
+        graph[v].add(u)
+
+    for party_members in combinations(range(1, N+1), 5):
+        is_successful = all(p in graph[q] for p, q in combinations(party_members, 2)) or all(p not in graph[q] for p, q in combinations(party_members, 2))
+        
+        if is_successful:
+            return party_members
+
+    return -1
+
+# Input parsing
+N, M = map(int, input().split())
+friendships = [tuple(map(int, input().split())) for _ in range(M)]
+
+# Find a successful party arrangement
+result = find_successful_party(N, M, friendships)
+
+# Output the result
+if result == -1:
+    print(-1)
+else:
+    print(*result)

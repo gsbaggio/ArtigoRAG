@@ -1,0 +1,90 @@
+def gcd(a, b):
+    """
+    Calculates the greatest common divisor (GCD) of two integers using Euclid's algorithm.
+
+    Args:
+        a (int): The first integer.
+        b (int): The second integer.
+
+    Returns:
+        int: The greatest common divisor of a and b.
+    """
+    while b:
+        a, b = b, a % b
+    return a
+
+def count_gcd_pairs(l, r):
+    """
+    Counts the number of integer pairs (i, j) such that l <= i <= j <= r and gcd(i, j) >= l.
+
+    Args:
+        l (int): The lower bound of the range.
+        r (int): The upper bound of the range.
+
+    Returns:
+        int: The number of pairs satisfying the condition.
+    """
+    count = 0
+    for i in range(l, r + 1):
+        for j in range(i, r + 1):
+            if gcd(i, j) >= l:
+                count += 1
+    return count
+
+def solve():
+    """
+    Solves the problem for a single test case. Reads n and k from input, calculates f(n, k), and prints the result.
+    """
+    n, k = map(int, input().split())
+
+    if k == 1:
+        print(count_gcd_pairs(1, n))
+        return
+
+    # Dynamic programming approach
+    dp = {}  # Memoization dictionary to store calculated results
+
+    def calculate_min_sum(current_index, num_partitions_left):
+        """
+        Recursively calculates the minimum sum of c(x_i+1, x_{i+1}) using dynamic programming.
+
+        Args:
+            current_index (int): The index of the current partition boundary (x_i).
+            num_partitions_left (int): The number of partitions remaining to be created.
+
+        Returns:
+            int: The minimum sum of c(x_i+1, x_{i+1}) for the given parameters.
+        """
+        if (current_index, num_partitions_left) in dp:
+            return dp[(current_index, num_partitions_left)]
+
+        if num_partitions_left == 0:
+            if current_index == n:
+                return 0
+            else:
+                return float('inf')  # Invalid state
+
+        if num_partitions_left == 1:
+            result = count_gcd_pairs(current_index + 1, n)
+            dp[(current_index, num_partitions_left)] = result
+            return result
+
+        min_sum = float('inf')
+        for next_index in range(current_index + 1, n + 1):
+            current_cost = count_gcd_pairs(current_index + 1, next_index)
+            remaining_cost = calculate_min_sum(next_index, num_partitions_left - 1)
+            min_sum = min(min_sum, current_cost + remaining_cost)
+
+        dp[(current_index, num_partitions_left)] = min_sum
+        return min_sum
+
+    result = calculate_min_sum(0, k)
+    print(result)
+
+
+# Read the number of test cases
+t = int(input())
+
+# Process each test case
+for _ in range(t):
+    solve()

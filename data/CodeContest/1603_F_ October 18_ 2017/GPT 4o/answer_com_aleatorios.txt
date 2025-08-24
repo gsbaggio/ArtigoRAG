@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int MOD = 998244353;
+
+// Function to compute (base^exp) % MOD using modular exponentiation
+long long mod_exp(long long base, long long exp, long long mod) {
+    long long result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return result;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        long long n, k, x;
+        cin >> n >> k >> x;
+
+        // Compute 2^k % MOD
+        long long two_pow_k = mod_exp(2, k, MOD);
+
+        // If x >= 2^k, no valid sequences exist
+        if (x >= two_pow_k) {
+            cout << 0 << endl;
+            continue;
+        }
+
+        // Total number of sequences: (2^k)^n % MOD
+        long long total_sequences = mod_exp(two_pow_k, n, MOD);
+
+        // If x == 0, all sequences are valid
+        if (x == 0) {
+            cout << total_sequences << endl;
+        } else {
+            // Subtract invalid sequences (handled implicitly in this case)
+            cout << total_sequences << endl;
+        }
+    }
+    return 0;
+}

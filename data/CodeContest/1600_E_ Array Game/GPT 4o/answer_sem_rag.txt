@@ -1,0 +1,40 @@
+def find_winner(N, A):
+    left, right = 0, N - 1
+    last = -1  # Start with a value smaller than any possible array element
+    alice_turn = True  # Alice starts first
+
+    while left <= right:
+        # Check if we can take from the left or right
+        left_valid = A[left] > last
+        right_valid = A[right] > last
+
+        if not left_valid and not right_valid:
+            # Current player cannot make a move, the other player wins
+            return "Bob" if alice_turn else "Alice"
+
+        # Choose the smaller valid number to maximize future options
+        if left_valid and right_valid:
+            if A[left] < A[right]:
+                last = A[left]
+                left += 1
+            else:
+                last = A[right]
+                right -= 1
+        elif left_valid:
+            last = A[left]
+            left += 1
+        else:  # right_valid
+            last = A[right]
+            right -= 1
+
+        # Switch turns
+        alice_turn = not alice_turn
+
+    # If the loop ends, the last player made the last move and wins
+    return "Alice" if not alice_turn else "Bob"
+
+# Example usage
+if __name__ == "__main__":
+    N = int(input())
+    A = list(map(int, input().split()))
+    print(find_winner(N, A))

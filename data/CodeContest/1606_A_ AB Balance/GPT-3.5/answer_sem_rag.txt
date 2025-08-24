@@ -1,0 +1,31 @@
+def make_counts_equal(s):
+    ab_count = 0
+    ba_count = 0
+
+    n = len(s)
+
+    for i in range(n - 1):
+        if s[i:i+2] == "ab":
+            ab_count += 1
+        elif s[i:i+2] == "ba":
+            ba_count += 1
+
+    if ab_count == ba_count:
+        return s
+
+    if ab_count > ba_count:
+        replacement = "b" if s[0] == "b" else "a"
+        return replacement * n
+
+    replacement = "b" if s[-1] == "b" else "a"
+    return replacement * n
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        s = input().strip()
+        result = make_counts_equal(s)
+        print(result)
+
+if __name__ == "__main__":
+    main()

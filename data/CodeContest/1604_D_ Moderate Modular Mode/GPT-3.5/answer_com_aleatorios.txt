@@ -1,0 +1,18 @@
+from math import gcd
+
+def find_n(x, y):
+    g = gcd(x, y)
+    while g > 1:
+        x //= g
+        g = gcd(x, y)
+
+    return x + y
+
+# Read the number of test cases
+t = int(input())
+
+# Iterate through each test case
+for _ in range(t):
+    x, y = map(int, input().split())
+    result = find_n(x, y)
+    print(result)

@@ -1,0 +1,22 @@
+def min_operations(t, test_cases):
+    for _ in range(t):
+        n = test_cases[_][0]
+        a = test_cases[_][1]
+
+        max_insert = 0
+        for i in range(n):
+            if a[i] > i + 1:
+                max_insert = max(max_insert, a[i] - (i + 1))
+
+        print(max_insert)
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    test_cases.append((n, a))
+
+# Calculate and output results
+min_operations(t, test_cases)

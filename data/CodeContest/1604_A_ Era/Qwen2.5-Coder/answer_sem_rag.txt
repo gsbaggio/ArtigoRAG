@@ -1,0 +1,35 @@
+def min_operations_to_satisfy_condition(t, test_cases):
+    results = []
+    
+    for n, a in test_cases:
+        operations = 0
+        current_length = 0
+        
+        for i in range(n):
+            # Calculate the position in the new sequence
+            new_position = i + 1 + operations
+            
+            # If the current element is greater than its new position,
+            # we need to insert elements to make it fit
+            if a[i] > new_position:
+                operations += a[i] - new_position
+        
+        results.append(operations)
+    
+    return results
+
+# Read input
+t = int(input())
+test_cases = []
+
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    test_cases.append((n, a))
+
+# Get results
+results = min_operations_to_satisfy_condition(t, test_cases)
+
+# Print results
+for result in results:
+    print(result)

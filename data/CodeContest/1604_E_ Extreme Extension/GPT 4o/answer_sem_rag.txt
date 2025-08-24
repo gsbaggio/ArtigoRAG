@@ -1,0 +1,50 @@
+MOD = 998244353
+
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])  # Length of the array
+        idx += 1
+        a = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Monotonic stack to calculate contributions
+        left = [0] * n
+        right = [0] * n
+        stack = []
+        
+        # Calculate left limits
+        for i in range(n):
+            while stack and a[stack[-1]] > a[i]:
+                stack.pop()
+            left[i] = stack[-1] if stack else -1
+            stack.append(i)
+        
+        stack = []
+        
+        # Calculate right limits
+        for i in range(n - 1, -1, -1):
+            while stack and a[stack[-1]] >= a[i]:
+                stack.pop()
+            right[i] = stack[-1] if stack else n
+            stack.append(i)
+        
+        # Calculate the sum of extreme values
+        total = 0
+        for i in range(n):
+            # Contribution of a[i] to all subarrays it belongs to
+            left_count = i - left[i]
+            right_count = right[i] - i
+            total += a[i] * left_count * right_count
+            total %= MOD
+        
+        results.append(total)
+    
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

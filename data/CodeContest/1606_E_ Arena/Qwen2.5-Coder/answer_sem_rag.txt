@@ -1,0 +1,22 @@
+def mod_exp(base, exp, mod):
+    result = 1
+    base = base % mod
+    while exp > 0:
+        if exp % 2 == 1:  # If exp is odd, multiply base with result
+            result = (result * base) % mod
+        exp = exp >> 1  # Divide exp by 2
+        base = (base * base) % mod  # Square the base
+    return result
+
+def count_ways(n, x):
+    MOD = 998244353
+    total_ways = mod_exp(x, n, MOD)
+    invalid_ways = x
+    valid_ways = (total_ways - invalid_ways) % MOD
+    return valid_ways
+
+# Read input
+n, x = map(int, input().split())
+
+# Calculate and print the result
+print(count_ways(n, x))

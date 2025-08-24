@@ -1,0 +1,29 @@
+def determine_winner(N, A):
+    left = 0
+    right = N - 1
+    last_picked = -1
+    sequence_length = 0
+    
+    while left <= right:
+        if A[left] > last_picked and (A[right] <= last_picked or A[left] < A[right]):
+            last_picked = A[left]
+            left += 1
+        elif A[right] > last_picked and (A[left] <= last_picked or A[right] < A[left]):
+            last_picked = A[right]
+            right -= 1
+        else:
+            break
+        
+        sequence_length += 1
+    
+    if sequence_length % 2 == 1:
+        return "Alice"
+    else:
+        return "Bob"
+
+# Read input
+N = int(input())
+A = list(map(int, input().split()))
+
+# Determine and print the winner
+print(determine_winner(N, A))

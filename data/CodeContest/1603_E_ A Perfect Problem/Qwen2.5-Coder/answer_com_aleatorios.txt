@@ -1,0 +1,13 @@
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    n = int(input[0])
+    M = int(input[1])
+    
+    # There are only two valid sequences: [n, n, ..., n] and [n+1, n+1, ..., n+1]
+    result = 2 % M
+    
+    print(result)
+
+if __name__ == "__main__":
+    main()

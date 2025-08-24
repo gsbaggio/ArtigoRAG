@@ -1,0 +1,44 @@
+MOD = 998244353
+
+def sum_extreme_values(t, test_cases):
+    def calculate_contribution(arr):
+        stack = []
+        left = [0] * len(arr)
+        right = [0] * len(arr)
+
+        for i in range(len(arr)):
+            while stack and arr[stack[-1]] < arr[i]:
+                stack.pop()
+            left[i] = stack[-1] + 1 if stack else 0
+            stack.append(i)
+
+        stack = []
+        for i in range(len(arr) - 1, -1, -1):
+            while stack and arr[stack[-1]] < arr[i]:
+                stack.pop()
+            right[i] = stack[-1] if stack else len(arr)
+            stack.append(i)
+
+        total = sum((i - left[i]) * (right[i] - i) * arr[i] for i in range(len(arr))) % MOD
+        return total
+
+    results = []
+    for i in range(t):
+        n, a = test_cases[i]
+        result = calculate_contribution(a)
+        results.append(result)
+
+    return results
+
+# Input
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    test_cases.append((n, a))
+
+# Output
+results = sum_extreme_values(t, test_cases)
+for res in results:
+    print(res)

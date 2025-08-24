@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+// Calculate c(l,r) by focusing on GCD values
+vector<vector<ll>> precompute_c(int maxN) {
+    vector<vector<ll>> c(maxN + 1, vector<ll>(maxN + 1, 0));
+    
+    for (int l = 1; l <= maxN; l++) {
+        for (int r = l; r <= maxN; r++) {
+            // Initialize with pairs where i=j (since gcd(i,i)=i >= l)
+            c[l][r] = r - l + 1;
+            
+            // For each possible GCD value
+            for (int g = l; g <= r; g++) {
+                // Count pairs with GCD = g
+                int start = (l + g - 1) / g * g;  // First multiple of g >= l
+                if (start <= r) {
+                    int count = (r - start) / g + 1;  // Number of multiples in range
+                    if (count >= 2) {
+                        c[l][r] += (ll)count * (count - 1) / 2;
+                    }
+                }
+            }
+        }
+    }
+    
+    return c;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int maxN = 10000;  // Adjust based on constraints
+    vector<vector<ll>> c = precompute_c(maxN);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, k;
+        cin >> n >> k;
+        
+        // dp[i][j] = min sum for [0...i] using j segments
+        vector<vector<ll>> dp(n + 1, vector<ll>(k + 1, LLONG_MAX));
+        dp[0][0] = 0;
+        
+        for (int j = 1; j <= k; j++) {
+            for (int i = j; i <= n; i++) {
+                for (int prev = j - 1; prev < i; prev++) {
+                    if (dp[prev][j - 1] != LLONG_MAX) {
+                        dp[i][j] = min(dp[i][j], dp[prev][j - 1] + c[prev + 1][i]);
+                    }
+                }
+            }
+        }
+        
+        cout << dp[n][k] << endl;
+    }
+    
+    return 0;
+}

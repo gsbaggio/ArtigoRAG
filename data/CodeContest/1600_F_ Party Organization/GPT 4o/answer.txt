@@ -1,0 +1,62 @@
+def find_successful_party(n, m, friendships):
+    from collections import defaultdict
+
+    # Create adjacency list for the graph
+    graph = defaultdict(set)
+    for u, v in friendships:
+        graph[u].add(v)
+        graph[v].add(u)
+
+    # Check for a complete subgraph of size 5
+    for node in range(1, n + 1):
+        neighbors = list(graph[node])
+        if len(neighbors) >= 4:  # At least 4 neighbors to form a clique of size 5
+            for i in range(len(neighbors)):
+                for j in range(i + 1, len(neighbors)):
+                    for k in range(j + 1, len(neighbors)):
+                        for l in range(k + 1, len(neighbors)):
+                            # Check if these 4 neighbors form a clique with the current node
+                            if (neighbors[j] in graph[neighbors[i]] and
+                                neighbors[k] in graph[neighbors[i]] and
+                                neighbors[l] in graph[neighbors[i]] and
+                                neighbors[k] in graph[neighbors[j]] and
+                                neighbors[l] in graph[neighbors[j]] and
+                                neighbors[l] in graph[neighbors[k]]):
+                                return [node, neighbors[i], neighbors[j], neighbors[k], neighbors[l]]
+
+    # Check for an independent set of size 5
+    # Independent set means no two nodes are connected
+    all_nodes = set(range(1, n + 1))
+    for node in range(1, n + 1):
+        non_neighbors = all_nodes - graph[node] - {node}
+        non_neighbors = list(non_neighbors)
+        if len(non_neighbors) >= 4:  # At least 4 non-neighbors to form an independent set of size 5
+            for i in range(len(non_neighbors)):
+                for j in range(i + 1, len(non_neighbors)):
+                    for k in range(j + 1, len(non_neighbors)):
+                        for l in range(k + 1, len(non_neighbors)):
+                            # Check if these 4 nodes are independent with the current node
+                            if (non_neighbors[i] not in graph[non_neighbors[j]] and
+                                non_neighbors[i] not in graph[non_neighbors[k]] and
+                                non_neighbors[i] not in graph[non_neighbors[l]] and
+                                non_neighbors[j] not in graph[non_neighbors[k]] and
+                                non_neighbors[j] not in graph[non_neighbors[l]] and
+                                non_neighbors[k] not in graph[non_neighbors[l]]):
+                                return [node, non_neighbors[i], non_neighbors[j], non_neighbors[k], non_neighbors[l]]
+
+    # If no successful party is found
+    return -1
+
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    n, m = map(int, data[0].split())
+    friendships = [tuple(map(int, line.split())) for line in data[1:]]
+    result = find_successful_party(n, m, friendships)
+    if result == -1:
+        print(result)
+    else:
+        print(" ".join(map(str, result)))

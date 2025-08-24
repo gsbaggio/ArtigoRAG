@@ -1,0 +1,69 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int MOD = 998244353;
+
+int extremeValue(const vector<int>& arr) {
+    int n = arr.size();
+    if (n <= 1) {
+        return 0;
+    }
+
+    int ops = 0;
+    vector<int> b = arr;
+    bool sorted = true;
+    for (size_t i = 1; i < b.size(); ++i) {
+        if (b[i] < b[i - 1]) {
+            sorted = false;
+            break;
+        }
+    }
+
+    while (!sorted) {
+        sorted = true;
+        for (size_t i = 1; i < b.size(); ++i) {
+            if (b[i] < b[i - 1]) {
+                ops++;
+                int val = b[i - 1];
+                b.erase(b.begin() + (i - 1));
+                b.insert(b.begin() + (i - 1), val / 2);
+                b.insert(b.begin() + (i - 1) + 1, val - val / 2);
+                sorted = false;
+                break;
+            }
+        }
+    }
+    return ops;
+}
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n;
+        cin >> n;
+
+        vector<int> a(n);
+        for (int i = 0; i < n; ++i) {
+            cin >> a[i];
+        }
+
+        long long totalExtremeValue = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = i; j < n; ++j) {
+                vector<int> subarray;
+                for (int k = i; k <= j; ++k) {
+                    subarray.push_back(a[k]);
+                }
+                totalExtremeValue = (totalExtremeValue + extremeValue(subarray)) % MOD;
+            }
+        }
+
+        cout << totalExtremeValue << endl;
+    }
+
+    return 0;
+}

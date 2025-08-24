@@ -1,0 +1,53 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 2e5 + 5;
+vector<int> adj[N];
+int children[N];
+int deleted[N];
+
+void dfs(int node, int parent) {
+    children[node] = 1;
+    for (int child : adj[node]) {
+        if (child != parent && !deleted[child]) {
+            dfs(child, node);
+            children[node] += children[child];
+        }
+    }
+}
+
+void solve() {
+    int n;
+    cin >> n;
+    
+    for (int i = 1; i < n; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    int q;
+    cin >> q;
+    while (q--) {
+        int v, k;
+        cin >> v >> k;
+
+        // Reset deleted nodes
+        memset(deleted, 0, sizeof(deleted));
+        dfs(v, -1);
+
+        // Calculate the maximum value
+        int result = children[v] - 1 - min(k, children[v] - 1);
+        cout << result << endl;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    solve();
+    
+    return 0;
+}

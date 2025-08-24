@@ -1,0 +1,21 @@
+MOD = 998244353
+MOD_RESULT = 10**9 + 7
+
+def calculate_value(n):
+    result = 0
+    p = 1
+    while 10 * p <= n:
+        p *= 10
+        curr = (n // (10 * p)) * p % MOD
+        result = (result + curr) % MOD
+    for i in range(p, n + 1):
+        result = (result + (i - int(str(i)[0]) * p) % MOD) % MOD
+    return result
+
+def main():
+    n = int(input())
+    result = calculate_value(n)
+    print((result + MOD_RESULT) % MOD_RESULT)
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,106 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+
+using namespace std;
+
+const int MOD = 998244353;
+
+// Structure to represent a node in the segment tree
+struct Node {
+    long long sum_extreme_values;
+};
+
+// Function to build the segment tree
+void buildSegmentTree(vector<Node> &tree, const vector<int> &arr, int start, int end, int treeNode) {
+    if (start == end) {
+        tree[treeNode].sum_extreme_values = arr[start];
+        return;
+    }
+    
+    int mid = (start + end) / 2;
+    buildSegmentTree(tree, arr, start, mid, 2 * treeNode);
+    buildSegmentTree(tree, arr, mid + 1, end, 2 * treeNode + 1);
+    
+    tree[treeNode].sum_extreme_values = (tree[2 * treeNode].sum_extreme_values + tree[2 * treeNode + 1].sum_extreme_values) % MOD;
+}
+
+// Function to update the segment tree
+void updateSegmentTree(vector<Node> &tree, int start, int end, int idx, long long val, int treeNode) {
+    if (start == end) {
+        tree[treeNode].sum_extreme_values = val;
+        return;
+    }
+    
+    int mid = (start + end) / 2;
+    if (idx <= mid) {
+        updateSegmentTree(tree, start, mid, idx, val, 2 * treeNode);
+    } else {
+        updateSegmentTree(tree, mid + 1, end, idx, val, 2 * treeNode + 1);
+    }
+    
+    tree[treeNode].sum_extreme_values = (tree[2 * treeNode].sum_extreme_values + tree[2 * treeNode + 1].sum_extreme_values) % MOD;
+}
+
+// Function to query the segment tree for a given range
+long long querySegmentTree(vector<Node> &tree, int start, int end, int left, int right, int treeNode) {
+    // No overlap
+    if (start > right || end < left) {
+        return 0;
+    }
+    
+    // Complete overlap
+    if (start >= left && end <= right) {
+        return tree[treeNode].sum_extreme_values;
+    }
+    
+    int mid = (start + end) / 2;
+    long long sumLeft = querySegmentTree(tree, start, mid, left, right, 2 * treeNode);
+    long long sumRight = querySegmentTree(tree, mid + 1, end, left, right, 2 * treeNode + 1);
+    
+    return (sumLeft + sumRight) % MOD;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<int> arr(n);
+        for (int i = 0; i < n; i++) {
+            cin >> arr[i];
+        }
+        
+        // Build the segment tree
+        int treeSize = 4 * n;
+        vector<Node> tree(treeSize);
+        buildSegmentTree(tree, arr, 0, n - 1, 1);
+        
+        stack<pair<int, long long>> st;
+        long long totalSum = 0;
+        
+        for (int i = 0; i < n; i++) {
+            long long sum = 0;
+            while (!st.empty() && st.top().first > arr[i]) {
+                sum += st.top().second;
+                st.pop();
+            }
+            
+            sum += arr[i];
+            totalSum = (totalSum + sum) % MOD;
+            st.push({arr[i], sum});
+            
+            updateSegmentTree(tree, 0, n - 1, i, sum, 1);
+        }
+        
+        // Query the segment tree for total sum of extreme values
+        long long result = querySegmentTree(tree, 0, n - 1, 0, n - 1, 1);
+        
+        cout << result << endl;
+    }
+    
+    return 0;
+}

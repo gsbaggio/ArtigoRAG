@@ -1,0 +1,36 @@
+def who_wins(n, arr):
+    # Memoization to avoid recalculation
+    memo = {}
+    
+    def minimax(left, right, last):
+        # If no more elements, current player loses
+        if left > right:
+            return False
+        
+        # Check memoization
+        state = (left, right, last)
+        if state in memo:
+            return memo[state]
+        
+        # Try taking from left
+        if arr[left] > last and not minimax(left + 1, right, arr[left]):
+            memo[state] = True
+            return True
+                
+        # Try taking from right
+        if arr[right] > last and not minimax(left, right - 1, arr[right]):
+            memo[state] = True
+            return True
+        
+        # If no winning move, current player loses
+        memo[state] = False
+        return False
+    
+    # Start game with Alice's move
+    alice_wins = minimax(0, n-1, -1)
+    return "Alice" if alice_wins else "Bob"
+
+# Read input
+n = int(input())
+arr = list(map(int, input().split()))
+print(who_wins(n, arr))

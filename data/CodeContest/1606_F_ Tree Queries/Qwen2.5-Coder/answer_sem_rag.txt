@@ -1,0 +1,77 @@
+def dfs(u, p, adj, subtree_size, children_count):
+    subtree_size[u] = 1
+    for v in adj[u]:
+        if v != p:
+            dfs(v, u, adj, subtree_size, children_count)
+            subtree_size[u] += subtree_size[v]
+            children_count[u].append(subtree_size[v])
+    children_count[u].sort()
+
+def process_queries(n, edges, q, queries):
+    # Step 1: Build the adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for x, y in edges:
+        adj[x].append(y)
+        adj[y].append(x)
+    
+    # Step 2: Initialize arrays for subtree size and children count
+    subtree_size = [0] * (n + 1)
+    children_count = [[] for _ in range(n + 1)]
+    
+    # Step 3: Perform DFS to fill subtree_size and children_count
+    dfs(1, -1, adj, subtree_size, children_count)
+    
+    # Step 4: Process each query
+    results = []
+    for v, k in queries:
+        if k == 0:
+            # If k is 0, we can't delete any vertices, so c(v) is the number of direct children
+            results.append(len(children_count[v]))
+            continue
+        
+        # Calculate the maximum possible value of c(v) - m * k
+        max_value = len(children_count[v])  # Initial value without any deletions
+        total_deleted = 0
+        num_children = len(children_count[v])
+        
+        # Try to delete parents of smaller subtrees first
+        for i in range(num_children):
+            if children_count[v][i] - 1 > k * total_deleted:
+                total_deleted += 1
+                max_value = num_children - total_deleted + 1
+            else:
+                break
+        
+        results.append(max_value)
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+index = 0
+
+n = int(input[index])
+index += 1
+
+edges = []
+for _ in range(n - 1):
+    x = int(input[index])
+    y = int(input[index + 1])
+    index += 2
+    edges.append((x, y))
+
+q = int(input[index])
+index += 1
+
+queries = []
+for _ in range(q):
+    v = int(input[index])
+    k = int(input[index + 1])
+    index += 2
+    queries.append((v, k))
+
+# Process queries and print results
+results = process_queries(n, edges, q, queries)
+for result in results:
+    print(result)

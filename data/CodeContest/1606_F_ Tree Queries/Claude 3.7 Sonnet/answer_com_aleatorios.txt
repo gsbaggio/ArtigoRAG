@@ -1,0 +1,67 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+const int MAXN = 2e5 + 5;
+vector<int> adj[MAXN]; // Adjacency list
+vector<int> tree[MAXN]; // Tree with parent-child relationships
+
+// Process the tree and identify parent-child relationships
+void processTree(int node, int parent) {
+    for (int neighbor : adj[node]) {
+        if (neighbor != parent) {
+            tree[node].push_back(neighbor);
+            processTree(neighbor, node);
+        }
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n;
+    cin >> n;
+    
+    // Read edges
+    for (int i = 0; i < n - 1; i++) {
+        int x, y;
+        cin >> x >> y;
+        adj[x].push_back(y);
+        adj[y].push_back(x);
+    }
+    
+    // Root the tree at vertex 1
+    processTree(1, -1);
+    
+    int q;
+    cin >> q;
+    
+    while (q--) {
+        int v, k;
+        cin >> v >> k;
+        
+        vector<int> gains;
+        for (int child : tree[v]) {
+            gains.push_back(tree[child].size() - 1);
+        }
+        
+        sort(gains.begin(), gains.end(), greater<int>());
+        
+        int max_value = tree[v].size();
+        int current = tree[v].size();
+        int deleted = 0;
+        
+        for (int gain : gains) {
+            deleted++;
+            current += gain;
+            max_value = max(max_value, current - deleted * k);
+        }
+        
+        cout << max_value << endl;
+    }
+    
+    return 0;
+}

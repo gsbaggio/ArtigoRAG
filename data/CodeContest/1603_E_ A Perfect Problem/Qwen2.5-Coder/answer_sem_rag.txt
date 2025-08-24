@@ -1,0 +1,19 @@
+def mod_exp(base, exp, mod):
+    result = 1
+    base = base % mod
+    while exp > 0:
+        if exp % 2 == 1:
+            result = (result * base) % mod
+        exp = exp >> 1
+        base = (base * base) % mod
+    return result
+
+def count_perfect_sequences(n, M):
+    # We need to compute n^n % M
+    return mod_exp(n, n, M)
+
+# Read input
+n, M = map(int, input().split())
+
+# Compute and print the result
+print(count_perfect_sequences(n, M))

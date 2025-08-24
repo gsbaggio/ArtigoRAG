@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int N;
+    cin >> N;
+    vector<int> A(N);
+    for (int i = 0; i < N; ++i) {
+        cin >> A[i];
+    }
+    
+    int left = 0, right = N - 1;
+    int last = -1; // Initialize last to a value smaller than any possible element in A
+    bool aliceTurn = true;
+    
+    while (left <= right) {
+        bool validMove = false;
+        
+        if (A[left] > last) {
+            last = A[left];
+            left++;
+            validMove = true;
+        }
+        
+        if (!validMove && A[right] > last) {
+            last = A[right];
+            right--;
+            validMove = true;
+        }
+        
+        if (!validMove) {
+            break;
+        }
+        
+        aliceTurn = !aliceTurn; // Switch turns
+    }
+    
+    if (aliceTurn) {
+        cout << "Bob";
+    } else {
+        cout << "Alice";
+    }
+    
+    return 0;
+}

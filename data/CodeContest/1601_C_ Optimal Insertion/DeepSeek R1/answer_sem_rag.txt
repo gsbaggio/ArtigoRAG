@@ -1,0 +1,43 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); m = int(data[index+1]); index += 2
+        a = list(map(int, data[index:index+n])); index += n
+        b = list(map(int, data[index:index+m])); index += m
+        
+        # Calculate within-a inversions
+        inv = 0
+        for i in range(n):
+            for j in range(i+1, n):
+                if a[i] > a[j]:
+                    inv += 1
+                    
+        b.sort()
+        for x in b:
+            best_cost = float('inf')
+            best_i = -1
+            for i in range(len(a) + 1):
+                cost = 0
+                for j in range(i):
+                    if a[j] > x:
+                        cost += 1
+                for j in range(i, len(a)):
+                    if a[j] < x:
+                        cost += 1
+                if cost < best_cost:
+                    best_cost = cost
+                    best_i = i
+            inv += best_cost
+            a.insert(best_i, x)
+            
+        results.append(str(inv))
+        
+    sys.stdout.write("\n".join(results))
+    
+if __name__ == "__main__":
+    main()

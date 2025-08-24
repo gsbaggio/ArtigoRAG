@@ -1,0 +1,38 @@
+def lis_length(arr):
+    # Function to compute the LIS length using a greedy approach with binary search
+    from bisect import bisect_left
+    lis = []
+    for x in arr:
+        pos = bisect_left(lis, x)
+        if pos == len(lis):
+            lis.append(x)
+        else:
+            lis[pos] = x
+    return len(lis)
+
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])  # Length of the array
+        index += 1
+        a = list(map(int, data[index:index + n]))
+        index += n
+        
+        # Compute the LIS length of the entire array
+        lis_len = lis_length(a)
+        
+        # Check the condition
+        if lis_len % 2 == 0:
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    # Print all results
+    sys.stdout.write("\n".join(results) + "\n")

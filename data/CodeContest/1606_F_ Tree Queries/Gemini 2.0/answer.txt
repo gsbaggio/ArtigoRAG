@@ -1,0 +1,88 @@
+def solve():
+    n = int(input())
+    edges = []
+    for _ in range(n - 1):
+        edges.append(list(map(int, input().split())))
+
+    q = int(input())
+    queries = []
+    for _ in range(q):
+        queries.append(list(map(int, input().split())))
+
+    def get_children(node, graph):
+        children = []
+        for edge in graph:
+            if edge[0] == node:
+                children.append(edge[1])
+            elif edge[1] == node:
+                children.append(edge[0])
+        return children
+
+    def calculate_result(v, k, graph):
+        children = get_children(v, graph)
+        return len(children) - m * k
+
+    def process_query(v, k, initial_edges):
+        max_result = float('-inf')
+        
+        # Iterate through all possible subsets of vertices to delete
+        for i in range(1 << n):
+            deleted_vertices = []
+            for j in range(n):
+                if (i >> j) & 1:
+                    if j + 1 != 1 and j + 1 != v:  # Cannot delete root or v
+                        deleted_vertices.append(j + 1)
+
+            # Create a copy of the initial edges for this subset
+            current_graph = initial_edges[:]
+
+            # Remove edges connected to deleted vertices
+            edges_to_remove = []
+            for edge in current_graph:
+                if edge[0] in deleted_vertices or edge[1] in deleted_vertices:
+                    edges_to_remove.append(edge)
+            
+            for edge in edges_to_remove:
+                current_graph.remove(edge)
+
+            # Re-wire the tree after deletion
+            parent = {}
+            children_map = {}
+            
+            def build_tree(node, par, graph):
+                parent[node] = par
+                children_map[node] = []
+                for edge in graph:
+                    if edge[0] == node and edge[1] != par:
+                        children_map[node].append(edge[1])
+                        build_tree(edge[1], node, graph)
+                    elif edge[1] == node and edge[0] != par:
+                        children_map[node].append(edge[0])
+                        build_tree(edge[0], node, graph)
+
+            build_tree(1, 0, current_graph)
+
+            # Count the number of deleted vertices
+            m = len(deleted_vertices)
+
+            # Calculate the number of children of v in the modified tree
+            children_of_v = []
+            for edge in current_graph:
+                if edge[0] == v:
+                    children_of_v.append(edge[1])
+                elif edge[1] == v:
+                    children_of_v.append(edge[0])
+            
+            c_v = len(children_of_v)
+
+            # Calculate the result and update the maximum
+            result = c_v - m * k
+            max_result = max(max_result, result)
+
+        return max_result
+
+    # Process each query and print the result
+    for v, k in queries:
+        print(process_query(v, k, edges))
+
+solve()

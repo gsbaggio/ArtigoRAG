@@ -1,0 +1,65 @@
+def find_successful_party(N, M, edges):
+    # Create adjacency list
+    adj_list = [[] for _ in range(N + 1)]
+    for u, v in edges:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
+
+    # Function to check if a set of 5 people forms a K5
+    def is_k5(people):
+        for i in range(len(people)):
+            for j in range(i + 1, len(people)):
+                if people[j] not in adj_list[people[i]]:
+                    return False
+        return True
+
+    # Function to check if a set of 5 people forms an independent set
+    def is_independent_set(people):
+        for i in range(len(people)):
+            for j in range(i + 1, len(people)):
+                if people[j] in adj_list[people[i]]:
+                    return False
+        return True
+
+    # Check for K5
+    for person in range(1, N + 1):
+        if len(adj_list[person]) >= 4:
+            friends = adj_list[person]
+            for i in range(len(friends)):
+                for j in range(i + 1, len(friends)):
+                    for k in range(j + 1, len(friends)):
+                        for l in range(k + 1, len(friends)):
+                            if is_k5([person, friends[i], friends[j], friends[k], friends[l]]):
+                                return [person, friends[i], friends[j], friends[k], friends[l]]
+
+    # Check for Independent Set
+    # Sort people by the number of friends
+    people_sorted_by_friends = sorted(range(1, N + 1), key=lambda x: len(adj_list[x]))
+    
+    # Try to build an independent set of size 5
+    independent_set = []
+    for person in people_sorted_by_friends:
+        if all(person not in adj_list[p] for p in independent_set):
+            independent_set.append(person)
+            if len(independent_set) == 5:
+                return independent_set
+    
+    return [-1]
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+index = 0
+N = int(input[index])
+M = int(input[index + 1])
+index += 2
+edges = []
+for _ in range(M):
+    u = int(input[index])
+    v = int(input[index + 1])
+    index += 2
+    edges.append((u, v))
+
+# Find and print the result
+result = find_successful_party(N, M, edges)
+print(" ".join(map(str, result)))

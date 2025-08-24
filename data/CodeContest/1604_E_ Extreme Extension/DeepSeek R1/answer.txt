@@ -1,0 +1,48 @@
+import sys
+
+MOD = 998244353
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    res = []
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        if n == 0:
+            res.append("0")
+            continue
+            
+        next_list = []
+        next_list.append((n-1, n-1, a[n-1]))
+        total_ans = 0
+        
+        for i in range(n-2, -1, -1):
+            new_list = []
+            new_list.append((i, i, a[i]))
+            for (L, R, x) in next_list:
+                k = (a[i] + x - 1) // x
+                y = a[i] // k
+                cnt = (R - L + 1) % MOD
+                to_add = (k - 1) * cnt % MOD
+                to_add = to_add * (i + 1) % MOD
+                total_ans = (total_ans + to_add) % MOD
+                
+                last_L, last_R, last_val = new_list[-1]
+                if last_val == y and last_R == L - 1:
+                    new_list[-1] = (last_L, R, y)
+                else:
+                    new_list.append((L, R, y))
+                    
+            next_list = new_list
+            
+        res.append(str(total_ans))
+        
+    print("\n".join(res))
+
+if __name__ == "__main__":
+    main()

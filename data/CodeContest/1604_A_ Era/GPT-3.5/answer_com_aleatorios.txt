@@ -1,0 +1,21 @@
+# Function to calculate the minimum number of operations needed to satisfy the condition
+def min_operations_to_satisfy_condition(n, arr):
+    operations = 0
+    max_value = 0
+    
+    for i in range(n):
+        if arr[i] > max_value:
+            operations += arr[i] - max_value
+            max_value = arr[i]
+    
+    return operations
+
+# Input processing
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    
+    # Calculate and print the minimum operations for each test case
+    result = min_operations_to_satisfy_condition(n, arr)
+    print(result)

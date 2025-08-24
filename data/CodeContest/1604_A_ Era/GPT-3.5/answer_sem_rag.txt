@@ -1,0 +1,25 @@
+def min_operations_to_satisfy_condition(t, test_cases):
+    for i in range(t):
+        n = test_cases[i][0]
+        sequence = test_cases[i][1]
+
+        max_seen = 0
+        operations = 0
+
+        for num in sequence:
+            if num > max_seen:
+                operations += num - max_seen
+                max_seen = num
+            max_seen += 1
+
+        print(operations)
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    sequence = list(map(int, input().split()))
+    test_cases.append((n, sequence))
+
+min_operations_to_satisfy_condition(t, test_cases)

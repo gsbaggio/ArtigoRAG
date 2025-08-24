@@ -1,0 +1,20 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        total_extreme_value = 0
+        MOD = 998244353
+        
+        for i in range(n):
+            for j in range(i, n):
+                subarray = a[i:j+1]
+                extreme_value = 0
+                
+                # Calculate extreme value for the subarray
+                for k in range(len(subarray) - 1):
+                    if subarray[k] > subarray[k+1]:
+                        extreme_value += 1
+                
+                total_extreme_value = (total_extreme_value + extreme_value) % MOD

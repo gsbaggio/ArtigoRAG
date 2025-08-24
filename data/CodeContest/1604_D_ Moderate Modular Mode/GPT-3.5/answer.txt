@@ -1,0 +1,14 @@
+# Read the number of test cases
+t = int(input())
+
+# Iterate through each test case
+for _ in range(t):
+    x, y = map(int, input().split())
+    
+    # Check if y satisfies the condition directly
+    if 1 <= y <= 2 * 10**18:
+        n = y
+    else:
+        n = y + x
+    
+    print(n)

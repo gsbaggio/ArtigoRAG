@@ -1,0 +1,75 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to perform DFS and calculate children count
+void dfs(int node, int parent, vector<vector<int>>& tree, vector<int>& children_count) {
+    for (int child : tree[node]) {
+        if (child != parent) {
+            dfs(child, node, tree, children_count);
+            children_count[node] += children_count[child] + 1; // +1 for the direct child
+        }
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    cin >> n;
+    
+    // Initialize tree structure
+    vector<vector<int>> tree(n+1);
+    for(int i=0;i<n-1;i++){
+        int x, y;
+        cin >> x >> y;
+        tree[x].push_back(y);
+        tree[y].push_back(x);
+    }
+    
+    // Initialize children count array
+    vector<int> children_count(n+1, 0);
+    
+    // Perform DFS to calculate children count for each node
+    dfs(1, -1, tree, children_count);
+    
+    int q;
+    cin >> q;
+    
+    // Process each query
+    while(q--){
+        int v, k;
+        cin >> v >> k;
+        
+        // Priority queue to store children of v with their children count
+        priority_queue<int> pq;
+        for(int child : tree[v]){
+            if(child != 1){ // Root cannot be deleted
+                pq.push(children_count[child] + 1); // +1 for the direct child
+            }
+        }
+        
+        int m = 0; // Number of vertices deleted
+        int c_v = children_count[v]; // Initial number of children of v
+        
+        // Delete vertices until the cost of deleting more vertices outweighs the benefit
+        while(!pq.empty()){
+            int max_children = pq.top();
+            pq.pop();
+            
+            // Check if deleting this vertex is beneficial
+            if(max_children - k > 0){
+                c_v -= max_children;
+                m++;
+            }
+            else{
+                break;
+            }
+        }
+        
+        // Output the result for the current query
+        cout << c_v - m * k << "\n";
+    }
+    
+    return 0;
+}

@@ -1,0 +1,43 @@
+def count_no_winner_configurations(n, x):
+    MOD = 998244353
+    
+    # For n=2, no winner only when both have the same health
+    if n == 2:
+        return x % MOD
+    
+    # Calculate how many rounds a hero with health 'h' survives
+    def survive_rounds(h):
+        return (h + n - 2) // (n - 1)
+    
+    # Count health values by survival rounds
+    max_rounds = survive_rounds(x)
+    count_by_rounds = [0] * (max_rounds + 1)
+    
+    for health in range(1, x + 1):
+        rounds = survive_rounds(health)
+        count_by_rounds[rounds] += 1
+    
+    # Total ways to assign health
+    total_ways = pow(x, n, MOD)
+    
+    # Ways with a single winner
+    winner_ways = 0
+    
+    for r in range(1, max_rounds + 1):
+        # Health values that survive exactly r rounds
+        health_count = count_by_rounds[r]
+        if health_count == 0:
+            continue
+        
+        # Health values that survive less than r rounds
+        less_health_count = sum(count_by_rounds[:r])
+        if less_health_count == 0:
+            continue
+        
+        # Ways to choose exactly one hero with maximum survival
+        ways = n * health_count % MOD  # n ways to choose which hero, health_count ways to choose their health
+        ways = ways * pow(less_health_count, n-1, MOD) % MOD  # ways to choose health for other heroes
+        
+        winner_ways = (winner_ways + ways) % MOD
+    
+    return (total_ways - winner_ways) % MOD

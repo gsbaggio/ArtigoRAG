@@ -1,0 +1,37 @@
+def solve():
+    s = input()
+    n = len(s)
+    
+    def count_ab(s):
+        count = 0
+        for i in range(len(s) - 1):
+            if s[i:i+2] == "ab":
+                count += 1
+        return count
+    
+    def count_ba(s):
+        count = 0
+        for i in range(len(s) - 1):
+            if s[i:i+2] == "ba":
+                count += 1
+        return count
+    
+    ab_count = count_ab(s)
+    ba_count = count_ba(s)
+    
+    if ab_count == ba_count:
+        print(s)
+        return
+    
+    if n == 1:
+        print(s)
+        return
+    
+    if s[0] != s[-1]:
+        print(s[-1] + s[1:])
+    else:
+        print(s[0] * n)
+
+t = int(input())
+for _ in range(t):
+    solve()

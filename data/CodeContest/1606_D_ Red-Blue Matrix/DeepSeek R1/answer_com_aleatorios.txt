@@ -1,0 +1,124 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    output_lines = []
+    for _ in range(t):
+        n = int(data[index]); m = int(data[index+1]); index += 2
+        mat = []
+        for i in range(n):
+            row = list(map(int, data[index:index+m]))
+            index += m
+            mat.append(row)
+            
+        if n == 1:
+            output_lines.append("NO")
+            continue
+            
+        indices = list(range(n))
+        indices_sorted = sorted(indices, key=lambda i: mat[i][0])
+        
+        # Group by the first column value
+        groups = []
+        current_val = mat[indices_sorted[0]][0]
+        count = 1
+        for i in range(1, n):
+            val = mat[indices_sorted[i]][0]
+            if val == current_val:
+                count += 1
+            else:
+                groups.append(count)
+                count = 1
+                current_val = val
+        groups.append(count)
+        
+        candidates = []
+        total = 0
+        for i in range(len(groups)-1):
+            total += groups[i]
+            candidates.append(total)
+            
+        if not candidates:
+            output_lines.append("NO")
+            continue
+            
+        # Precompute V for each column
+        V = []
+        for c in range(m):
+            arr = [0] * n
+            for i in range(n):
+                row_idx = indices_sorted[i]
+                arr[i] = mat[row_idx][c]
+            V.append(arr)
+            
+        pre_max = []
+        pre_min = []
+        suf_min = []
+        suf_max = []
+        for c in range(m):
+            p_max = [0] * n
+            p_min = [0] * n
+            s_min = [0] * n
+            s_max = [0] * n
+            p_max[0] = V[c][0]
+            p_min[0] = V[c][0]
+            for i in range(1, n):
+                p_max[i] = max(p_max[i-1], V[c][i])
+                p_min[i] = min(p_min[i-1], V[c][i])
+            s_min[n-1] = V[c][n-1]
+            s_max[n-1] = V[c][n-1]
+            for i in range(n-2, -1, -1):
+                s_min[i] = min(s_min[i+1], V[c][i])
+                s_max[i] = max(s_max[i+1], V[c][i])
+            pre_max.append(p_max)
+            pre_min.append(p_min)
+            suf_min.append(s_min)
+            suf_max.append(s_max)
+            
+        found_solution = False
+        for s in candidates:
+            L = [False] * m
+            R = [False] * m
+            for c in range(m):
+                maxF = pre_max[c][s-1]
+                minNonF = suf_min[c][s]
+                L[c] = (maxF < minNonF)
+                minF = pre_min[c][s-1]
+                maxNonF = suf_max[c][s]
+                R[c] = (minF > maxNonF)
+                
+            L_prefix = [False] * m
+            if L[0]:
+                L_prefix[0] = True
+            for j in range(1, m):
+                L_prefix[j] = L_prefix[j-1] and L[j]
+                
+            R_suffix = [False] * m
+            if R[m-1]:
+                R_suffix[m-1] = True
+            for j in range(m-2, -1, -1):
+                R_suffix[j] = R_suffix[j+1] and R[j]
+                
+            for k in range(1, m):
+                if L_prefix[k-1] and R_suffix[k]:
+                    color_arr = ['R'] * n
+                    for i in range(s):
+                        row_idx = indices_sorted[i]
+                        color_arr[row_idx] = 'B'
+                    color_str = ''.join(color_arr)
+                    output_lines.append(f"YES")
+                    output_lines.append(f"{color_str} {k}")
+                    found_solution = True
+                    break
+            if found_solution:
+                break
+                
+        if not found_solution:
+            output_lines.append("NO")
+            
+    sys.stdout.write("\n".join(output_lines))
+    
+if __name__ == "__main__":
+    main()

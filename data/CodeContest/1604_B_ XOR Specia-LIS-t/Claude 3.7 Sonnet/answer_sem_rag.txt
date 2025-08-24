@@ -1,0 +1,35 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        
+        // Key insight: For n ≥ 3, we can always achieve XOR = 0
+        if (n >= 3) {
+            cout << "YES" << endl;
+            continue;
+        }
+        
+        // For n = 2, check if array is sorted (LIS = 2) or not (LIS = 1)
+        if (a[0] < a[1]) {
+            cout << "NO" << endl;  // LIS = 2, can't split to get XOR = 0
+        } else {
+            cout << "YES" << endl; // LIS = 1, can split to get 1 ⊕ 1 = 0
+        }
+    }
+    
+    return 0;
+}

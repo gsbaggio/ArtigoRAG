@@ -1,0 +1,91 @@
+#include <iostream>
+using namespace std;
+
+const long long MOD1 = 998244353;
+const long long MOD2 = 1000000007;
+
+// Calculates (a + b) % mod safely
+long long add_mod(long long a, long long b, long long mod) {
+    return (a % mod + b % mod) % mod;
+}
+
+// Calculates (a - b) % mod safely
+long long sub_mod(long long a, long long b, long long mod) {
+    return ((a % mod - b % mod) % mod + mod) % mod;
+}
+
+// Calculates (a * b) % mod safely
+long long mul_mod(long long a, long long b, long long mod) {
+    return ((a % mod) * (b % mod)) % mod;
+}
+
+int main() {
+    long long n;
+    cin >> n;
+    
+    long long result = 0;
+    
+    long long pow10 = 1;  // 10^0
+    long long len = 1;    // Current number length
+    
+    // Process each digit length
+    while (pow10 * 10 <= n + 1) {
+        // Process contribution from numbers with 'len' digits
+        for (int first_digit = 1; first_digit <= 9; first_digit++) {
+            long long start = pow10 * first_digit;
+            long long end = min(pow10 * (first_digit + 1) - 1, n);
+            
+            if (start > n) break;
+            if (end < start) continue;
+            
+            // Count of numbers in this range
+            long long count = end - start + 1;
+            
+            // For numbers with first digit > 1, calculate the shift
+            if (first_digit > 1) {
+                // Calculate position indices for these numbers
+                long long positions_start = (first_digit - 1) * pow10 + 1;
+                long long positions_end = positions_start + count - 1;
+                
+                // Calculate sum of positions
+                long long sum_positions = mul_mod(add_mod(positions_start, positions_end, MOD1), 
+                                                mul_mod(count, 500000003, MOD1), MOD1);
+                
+                // Calculate sum of values
+                long long sum_values = mul_mod(add_mod(start, end, MOD1), 
+                                             mul_mod(count, 500000003, MOD1), MOD1);
+                
+                // Add the difference to result
+                long long diff = sub_mod(positions_start, start, MOD1);
+                diff = mul_mod(diff, count, MOD1);
+                
+                result = add_mod(result, diff, MOD2);
+            }
+        }
+        
+        pow10 *= 10;
+        len++;
+    }
+    
+    // Handle remaining numbers
+    if (pow10 <= n) {
+        for (int first_digit = 1; first_digit <= 9; first_digit++) {
+            long long start = pow10 * first_digit;
+            if (start > n) break;
+            
+            long long end = min(n, pow10 * (first_digit + 1) - 1);
+            long long count = end - start + 1;
+            
+            if (first_digit > 1) {
+                long long positions_start = (first_digit - 1) * pow10 + 1;
+                long long diff = sub_mod(positions_start, start, MOD1);
+                diff = mul_mod(diff, count, MOD1);
+                
+                result = add_mod(result, diff, MOD2);
+            }
+        }
+    }
+    
+    cout << result << endl;
+    return 0;
+}

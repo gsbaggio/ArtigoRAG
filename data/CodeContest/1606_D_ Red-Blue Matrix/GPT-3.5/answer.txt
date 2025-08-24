@@ -1,0 +1,31 @@
+def solve_testcase():
+    n, m = map(int, input().split())
+    matrix = [list(map(int, input().split())) for _ in range(n)]
+
+    # Find the maximum value in each column
+    max_in_cols = [max(col) for col in zip(*matrix)]
+
+    # Find the minimum value in each row
+    min_in_rows = [min(row) for row in matrix]
+
+    # Find the minimum value in max_in_cols and the maximum value in min_in_rows
+    max_left = min(max_in_cols)
+    min_right = max(min_in_rows)
+
+    # Check if a perfect coloring and cut is possible
+    if max_left >= min_right:
+        print("NO")
+    else:
+        print("YES")
+
+        # Assign colors to rows based on the conditions
+        colors = ['R' if row.index(max(row)) < m // 2 else 'B' for row in matrix]
+
+        # Find the optimal k value
+        k = max_left
+        print(''.join(colors), k)
+
+
+t = int(input())
+for _ in range(t):
+    solve_testcase()

@@ -1,0 +1,73 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<vector<int>> graph(n+1);
+    for (int i = 0; i < n-1; i++) {
+        int x, y;
+        cin >> x >> y;
+        graph[x].push_back(y);
+        graph[y].push_back(x);
+    }
+
+    vector<vector<int>> children(n+1);
+    vector<int> orig_children(n+1, 0);
+    vector<int> parent(n+1, 0);
+    vector<bool> visited(n+1, false);
+    queue<int> q;
+    q.push(1);
+    visited[1] = true;
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        for (int v : graph[u]) {
+            if (!visited[v]) {
+                visited[v] = true;
+                parent[v] = u;
+                children[u].push_back(v);
+                orig_children[u]++;
+                q.push(v);
+            }
+        }
+    }
+
+    int qry;
+    cin >> qry;
+    while (qry--) {
+        int v, k;
+        cin >> v >> k;
+        vector<int> nodes;
+        queue<int> q2;
+        q2.push(v);
+        while (!q2.empty()) {
+            int u = q2.front(); q2.pop();
+            nodes.push_back(u);
+            for (int w : children[u]) {
+                q2.push(w);
+            }
+        }
+        reverse(nodes.begin(), nodes.end());
+        vector<int> dp(n+1, 0);
+        for (int u : nodes) {
+            if (u == v) continue;
+            dp[u] = orig_children[u] - 1 - k;
+            for (int w : children[u]) {
+                if (dp[w] > 0) {
+                    dp[u] += dp[w];
+                }
+            }
+        }
+        int ans = orig_children[v];
+        for (int w : children[v]) {
+            if (dp[w] > 0) {
+                ans += dp[w];
+            }
+        }
+        cout << ans << endl;
+    }
+    return 0;
+}

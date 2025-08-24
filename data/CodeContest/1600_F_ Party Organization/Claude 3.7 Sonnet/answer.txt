@@ -1,0 +1,65 @@
+def solve():
+    # Parse input
+    n, m = map(int, input().split())
+    
+    # Create adjacency list representation
+    graph = [[] for _ in range(n+1)]
+    for _ in range(m):
+        u, v = map(int, input().split())
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    # Check for 5 people where all are friends (complete subgraph)
+    # This is O(n^5) in worst case, but typically faster with pruning
+    def find_clique():
+        for a in range(1, n+1):
+            for b in range(a+1, n+1):
+                if b not in graph[a]:
+                    continue
+                
+                for c in range(b+1, n+1):
+                    if c not in graph[a] or c not in graph[b]:
+                        continue
+                    
+                    for d in range(c+1, n+1):
+                        if d not in graph[a] or d not in graph[b] or d not in graph[c]:
+                            continue
+                        
+                        for e in range(d+1, n+1):
+                            if e in graph[a] and e in graph[b] and e in graph[c] and e in graph[d]:
+                                return [a, b, c, d, e]
+        return None
+    
+    # Check for 5 people where none are friends (independent set)
+    # This is O(n^5) in worst case, but typically faster with pruning
+    def find_independent_set():
+        for a in range(1, n+1):
+            for b in range(a+1, n+1):
+                if b in graph[a]:
+                    continue
+                
+                for c in range(b+1, n+1):
+                    if c in graph[a] or c in graph[b]:
+                        continue
+                    
+                    for d in range(c+1, n+1):
+                        if d in graph[a] or d in graph[b] or d in graph[c]:
+                            continue
+                        
+                        for e in range(d+1, n+1):
+                            if e not in graph[a] and e not in graph[b] and e not in graph[c] and e not in graph[d]:
+                                return [a, b, c, d, e]
+        return None
+    
+    # Try to find either a clique or an independent set
+    clique = find_clique()
+    if clique:
+        return ' '.join(map(str, clique))
+    
+    independent_set = find_independent_set()
+    if independent_set:
+        return ' '.join(map(str, independent_set))
+    
+    return -1
+
+print(solve())

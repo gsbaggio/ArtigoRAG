@@ -1,0 +1,23 @@
+MOD = 998244353
+
+def count_ways(n, x):
+    # Total number of configurations
+    total_configurations = pow(x, n, MOD)
+    
+    # Subtract the number of invalid configurations
+    # Invalid configurations are those where all heroes except one have health 1
+    # There are n choices for which hero has health > 1, and (x - 1) choices for that hero's health
+    invalid_configurations = 0
+    if x > 1:
+        invalid_configurations = n * (x - 1)
+    
+    # Valid configurations are total configurations minus invalid configurations
+    valid_configurations = (total_configurations - invalid_configurations) % MOD
+    
+    return valid_configurations
+
+# Read input
+n, x = map(int, input().split())
+
+# Print the result
+print(count_ways(n, x))

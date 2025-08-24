@@ -1,0 +1,98 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+const int MOD = 998244353;
+const int MAX_DIGITS = 14; // Maximum number of digits in 10^12
+
+// Function to perform modular addition
+ll add(ll a, ll b) {
+    return (a + b) % MOD;
+}
+
+// Function to perform modular subtraction
+ll sub(ll a, ll b) {
+    return (a - b + MOD) % MOD;
+}
+
+// Function to perform modular multiplication
+ll mul(ll a, ll b) {
+    return (a * b) % MOD;
+}
+
+// Function to perform modular exponentiation
+ll pow_mod(ll base, ll exp) {
+    ll result = 1;
+    while (exp > 0) {
+        if (exp & 1) result = mul(result, base);
+        base = mul(base, base);
+        exp >>= 1;
+    }
+    return result;
+}
+
+// Function to calculate factorial modulo MOD
+ll fact[MAX_DIGITS];
+ll ifact[MAX_DIGITS];
+
+void precompute_factorials() {
+    fact[0] = 1;
+    for (int i = 1; i < MAX_DIGITS; ++i) {
+        fact[i] = mul(fact[i - 1], i);
+    }
+    ifact[MAX_DIGITS - 1] = pow_mod(fact[MAX_DIGITS - 1], MOD - 2);
+    for (int i = MAX_DIGITS - 2; i >= 0; --i) {
+        ifact[i] = mul(ifact[i + 1], i + 1);
+    }
+}
+
+// Function to calculate nCr % MOD
+ll nCr(int n, int r) {
+    if (r > n) return 0;
+    return mul(fact[n], mul(ifact[r], ifact[n - r]));
+}
+
+// Function to calculate the lexicographical position of a number
+ll lexicographical_position(const vector<int>& digits) {
+    int len = digits.size();
+    ll pos = 0;
+    for (int i = 0; i < len; ++i) {
+        for (int d = 0; d < digits[i]; ++d) {
+            pos = add(pos, mul(nCr(len - i - 1, count(digits.begin() + i + 1, digits.end(), d)), pow_mod(10, len - i - 1)));
+        }
+        pos = add(pos, 1);
+    }
+    return pos;
+}
+
+// Main function to calculate the required sum
+ll calculate_sum(ll n) {
+    precompute_factorials();
+    string num_str = to_string(n);
+    int len = num_str.size();
+    vector<int> digits(len);
+    for (int i = 0; i < len; ++i) {
+        digits[i] = num_str[i] - '0';
+    }
+
+    ll total_sum = 0;
+    for (ll i = 1; i <= n; ++i) {
+        string curr_str = to_string(i);
+        vector<int> curr_digits(curr_str.size());
+        for (int j = 0; j < curr_str.size(); ++j) {
+            curr_digits[j] = curr_str[j] - '0';
+        }
+        ll lex_pos = lexicographical_position(curr_digits);
+        total_sum = add(total_sum, sub(i, lex_pos));
+    }
+    return total_sum;
+}
+
+int main() {
+    ll n;
+    cin >> n;
+    ll result = calculate_sum(n);
+    cout << result % (MOD + 7) << endl;
+    return 0;
+}

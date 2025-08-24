@@ -1,0 +1,19 @@
+def optimalPlay(N, A):
+    dp = [[0] * N for _ in range(N)]
+
+    for i in range(N):
+        dp[i][i] = A[i]
+
+    for length in range(2, N + 1):
+        for left in range(N - length + 1):
+            right = left + length - 1
+            dp[left][right] = max(A[left] - dp[left + 1][right], A[right] - dp[left][right - 1])
+
+    return "Alice" if dp[0][N - 1] > 0 else "Bob"
+
+# Input processing
+N = int(input())
+A = list(map(int, input().split()))
+
+# Call the function and output the result
+print(optimalPlay(N, A))

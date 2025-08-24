@@ -1,0 +1,99 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+
+void solve() {
+    int n, m;
+    cin >> n >> m;
+    
+    vector<vector<int>> matrix(n, vector<int>(m));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> matrix[i][j];
+        }
+    }
+    
+    // Try each possible cut position
+    for (int k = 1; k < m; k++) {
+        vector<int> leftMin(n), leftMax(n), rightMin(n), rightMax(n);
+        
+        // Calculate min/max for each row in left and right parts
+        for (int i = 0; i < n; i++) {
+            leftMin[i] = *min_element(matrix[i].begin(), matrix[i].begin() + k);
+            leftMax[i] = *max_element(matrix[i].begin(), matrix[i].begin() + k);
+            rightMin[i] = *min_element(matrix[i].begin() + k, matrix[i].end());
+            rightMax[i] = *max_element(matrix[i].begin() + k, matrix[i].end());
+        }
+        
+        // For this cut position, we need to determine which rows should be red and which blue
+        // We can use a greedy approach by sorting rows based on a criterion
+        
+        // The key insight: For a valid coloring, we need:
+        // - Every red cell in left part > every blue cell in left part
+        // - Every blue cell in right part > every red cell in right part
+        
+        // Define a "row value" based on our criteria for selecting red/blue
+        // For a valid coloring, red rows should have higher leftMin and lower rightMax
+        vector<pair<int, int>> rowValues(n);
+        for (int i = 0; i < n; i++) {
+            // Value = leftMin - rightMax (higher is better for red)
+            rowValues[i] = {leftMin[i] - rightMax[i], i};
+        }
+        
+        // Sort rows by this value (descending)
+        sort(rowValues.begin(), rowValues.end(), greater<pair<int, int>>());
+        
+        // Try different prefixes of sorted rows as red, and the rest as blue
+        for (int redCount = 1; redCount < n; redCount++) {
+            vector<bool> isRed(n, false);
+            for (int i = 0; i < redCount; i++) {
+                isRed[rowValues[i].second] = true;
+            }
+            
+            // Calculate min/max values for the current coloring
+            int minRedLeft = INT_MAX;
+            int maxBlueLeft = INT_MIN;
+            int minBlueRight = INT_MAX;
+            int maxRedRight = INT_MIN;
+            
+            for (int i = 0; i < n; i++) {
+                if (isRed[i]) {
+                    minRedLeft = min(minRedLeft, leftMin[i]);
+                    maxRedRight = max(maxRedRight, rightMax[i]);
+                } else { // blue
+                    maxBlueLeft = max(maxBlueLeft, leftMax[i]);
+                    minBlueRight = min(minBlueRight, rightMin[i]);
+                }
+            }
+            
+            // Check if this coloring satisfies both conditions
+            if (minRedLeft > maxBlueLeft && minBlueRight > maxRedRight) {
+                cout << "YES" << endl;
+                string coloring(n, ' ');
+                for (int i = 0; i < n; i++) {
+                    coloring[i] = isRed[i] ? 'R' : 'B';
+                }
+                cout << coloring << " " << k << endl;
+                return;
+            }
+        }
+    }
+    
+    cout << "NO" << endl;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    return 0;
+}

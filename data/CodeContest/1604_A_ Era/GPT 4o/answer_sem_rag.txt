@@ -1,0 +1,30 @@
+def minimum_operations(t, test_cases):
+    results = []
+    for case in test_cases:
+        n, a = case
+        operations = 0
+        for i in range(n):
+            if a[i] > i + 1:  # i + 1 because indices are 0-based
+                operations += a[i] - (i + 1)
+        results.append(operations)
+    return results
+
+# Input Reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    test_cases = []
+    index = 1
+    for _ in range(t):
+        n = int(data[index])
+        a = list(map(int, data[index + 1: index + 1 + n]))
+        test_cases.append((n, a))
+        index += 1 + n
+    
+    # Solve and Output Results
+    results = minimum_operations(t, test_cases)
+    for res in results:
+        print(res)

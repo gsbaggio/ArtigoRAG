@@ -1,0 +1,39 @@
+def balance_ab_ba(t, test_cases):
+    results = []
+    
+    for s in test_cases:
+        ab_count = sum(1 for i in range(len(s) - 1) if s[i:i+2] == "ab")
+        ba_count = sum(1 for i in range(len(s) - 1) if s[i:i+2] == "ba")
+        
+        # If already balanced, no changes needed
+        if ab_count == ba_count:
+            results.append(s)
+            continue
+        
+        # Modify the string minimally
+        s = list(s)  # Convert to list for mutability
+        if ab_count > ba_count:
+            # Replace the first "ab" to balance
+            for i in range(len(s) - 1):
+                if s[i:i+2] == ["a", "b"]:
+                    s[i] = "b"  # Change "ab" to "bb"
+                    break
+        else:
+            # Replace the first "ba" to balance
+            for i in range(len(s) - 1):
+                if s[i:i+2] == ["b", "a"]:
+                    s[i] = "a"  # Change "ba" to "aa"
+                    break
+        
+        results.append("".join(s))
+    
+    return results
+
+
+# Input reading and output
+if __name__ == "__main__":
+    t = int(input())
+    test_cases = [input().strip() for _ in range(t)]
+    results = balance_ab_ba(t, test_cases)
+    for res in results:
+        print(res)

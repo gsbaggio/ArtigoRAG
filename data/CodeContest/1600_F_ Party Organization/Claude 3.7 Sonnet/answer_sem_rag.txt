@@ -1,0 +1,67 @@
+def solve_party_problem():
+    # Read input
+    n, m = map(int, input().split())
+    
+    # Create adjacency matrix to represent friendships
+    friends = [[False for _ in range(n + 1)] for _ in range(n + 1)]
+    
+    # Fill the adjacency matrix
+    for _ in range(m):
+        u, v = map(int, input().split())
+        friends[u][v] = True
+        friends[v][u] = True
+    
+    # Try to find an independent set (no one is friends)
+    non_friends_count = [0] * (n + 1)
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            if i != j and not friends[i][j]:
+                non_friends_count[i] += 1
+    
+    # Find 5 people with no friendships between them
+    independent_set = []
+    for i in range(1, n + 1):
+        if non_friends_count[i] >= 4:  # Need at least 4 non-friends
+            independent_set.append(i)
+            if len(independent_set) == 5:
+                # Verify this is truly an independent set
+                valid = True
+                for j in range(len(independent_set)):
+                    for k in range(j+1, len(independent_set)):
+                        if friends[independent_set[j]][independent_set[k]]:
+                            valid = False
+                            break
+                    if not valid:
+                        break
+                
+                if valid:
+                    return independent_set
+            
+            independent_set.pop()  # Backtrack if not successful
+    
+    # Try to find a clique (all are friends)
+    for a in range(1, n + 1):
+        for b in range(a + 1, n + 1):
+            if not friends[a][b]:
+                continue
+            for c in range(b + 1, n + 1):
+                if not (friends[a][c] and friends[b][c]):
+                    continue
+                for d in range(c + 1, n + 1):
+                    if not (friends[a][d] and friends[b][d] and friends[c][d]):
+                        continue
+                    for e in range(d + 1, n + 1):
+                        if (friends[a][e] and friends[b][e] and 
+                            friends[c][e] and friends[d][e]):
+                            return [a, b, c, d, e]
+    
+    # Option 3: Look for any 5 people with no friendships at all
+    if m == 0 and n >= 5:
+        return [i for i in range(1, 6)]
+    
+    # If we reach here, it's impossible to organize a successful party
+    return [-1]
+
+# Main function
+result = solve_party_problem()
+print(*result)

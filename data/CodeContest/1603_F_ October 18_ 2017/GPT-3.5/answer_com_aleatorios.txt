@@ -1,0 +1,35 @@
+MOD = 998244353
+
+def count_sequences(n, k, x):
+    if n == 1:
+        return 1 if x < 2 ** k else 2
+    
+    dp = [[0] * (1 << k) for _ in range(n)]
+    
+    for j in range(1 << k):
+        dp[0][j] = 1 if j == x else 2
+    
+    for i in range(1, n):
+        for j in range(1 << k):
+            if j == x:
+                for l in range(1 << k):
+                    if (l & j) == 0:
+                        dp[i][j] = (dp[i][j] + dp[i-1][l]) % MOD
+            else:
+                for l in range(1 << k):
+                    if (l & j) == 0:
+                        dp[i][j] = (dp[i][j] + dp[i-1][l]) % MOD
+    
+    total = sum(dp[-1]) % MOD
+    return total
+
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n, k, x = map(int, input().split())
+        result = count_sequences(n, min(20, k), x)
+        print(result)
+
+# Main function to read input and call solve
+if __name__ == "__main__":
+    solve()

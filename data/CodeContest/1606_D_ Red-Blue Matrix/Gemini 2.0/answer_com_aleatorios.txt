@@ -1,0 +1,59 @@
+def solve():
+    n, m = map(int, input().split())
+    matrix = []
+    for _ in range(n):
+        matrix.append(list(map(int, input().split())))
+
+    for i in range(1 << n):
+        # Iterate through all possible colorings
+        coloring = ""
+        red_count = 0
+        blue_count = 0
+        for j in range(n):
+            if (i >> j) & 1:
+                coloring += 'R'
+                red_count += 1
+            else:
+                coloring += 'B'
+                blue_count += 1
+
+        if red_count == 0 or blue_count == 0:
+            continue
+
+        for k in range(1, m):
+            # Iterate through all possible cuts
+            
+            # Check if the coloring and cut are perfect
+            left_red = []
+            left_blue = []
+            right_red = []
+            right_blue = []
+
+            for row_idx in range(n):
+                row_color = coloring[row_idx]
+                
+                left_row = matrix[row_idx][:k]
+                right_row = matrix[row_idx][k:]
+
+                if row_color == 'R':
+                    left_red.extend(left_row)
+                    right_red.extend(right_row)
+                else:
+                    left_blue.extend(left_row)
+                    right_blue.extend(right_row)
+
+            if not left_red or not left_blue or not right_red or not right_blue:
+                continue
+
+            if all(red_val > blue_val for red_val in left_red for blue_val in left_blue) and \
+               all(blue_val > red_val for blue_val in right_blue for red_val in right_red):
+                print("YES")
+                print(coloring, k)
+                return
+
+    print("NO")
+
+
+t = int(input())
+for _ in range(t):
+    solve()

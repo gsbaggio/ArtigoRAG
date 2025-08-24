@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+using namespace std;
+
+const int MOD = 998244353;
+
+// Function to perform modular exponentiation
+long long mod_exp(long long base, long long exp, long long mod) {
+    long long result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return result;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        long long n, k, x;
+        cin >> n >> k >> x;
+
+        // Compute 2^k % MOD
+        long long two_pow_k = mod_exp(2, k, MOD);
+
+        // Compute (2^k)^n % MOD
+        long long total_sequences = mod_exp(two_pow_k, n, MOD);
+
+        // If x != 0, we need to exclude invalid sequences
+        long long result;
+        if (x == 0) {
+            result = total_sequences;
+        } else {
+            // Compute the number of invalid sequences
+            long long invalid_sequences = mod_exp(2, k - 1, MOD);
+            invalid_sequences = mod_exp(invalid_sequences, n, MOD);
+
+            // Subtract invalid sequences from total sequences
+            result = (total_sequences - invalid_sequences + MOD) % MOD;
+        }
+
+        cout << result << endl;
+    }
+    return 0;
+}

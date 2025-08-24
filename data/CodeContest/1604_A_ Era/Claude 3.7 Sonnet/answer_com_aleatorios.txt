@@ -1,0 +1,20 @@
+def solve(arr):
+    n = len(arr)
+    operations = 0
+    new_size = n
+    
+    for i in range(n):
+        pos = i + 1  # 1-indexed position
+        if arr[i] > pos:
+            # If element exceeds its position, we need to insert (arr[i] - pos) elements before it
+            diff = arr[i] - pos
+            operations += diff
+            new_size += diff  # Sequence size increases with each insertion
+            
+    return operations
+
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    print(solve(a))

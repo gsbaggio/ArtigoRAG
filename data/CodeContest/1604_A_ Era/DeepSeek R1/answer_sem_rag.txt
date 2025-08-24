@@ -1,0 +1,13 @@
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    count = 0
+    next_index = 1
+    for a in arr:
+        if next_index < a:
+            count += (a - next_index)
+            next_index = a + 1
+        else:
+            next_index += 1
+    print(count)

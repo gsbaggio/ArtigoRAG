@@ -1,0 +1,62 @@
+def balance_ab_ba(s):
+    n = len(s)
+    ab_count = 0
+    ba_count = 0
+    
+    # Count occurrences of "ab" and "ba"
+    for i in range(n - 1):
+        if s[i] == 'a' and s[i + 1] == 'b':
+            ab_count += 1
+        elif s[i] == 'b' and s[i + 1] == 'a':
+            ba_count += 1
+    
+    # Calculate the difference
+    diff = ab_count - ba_count
+    
+    # Convert string to list for easy modification
+    s_list = list(s)
+    
+    # Balance counts
+    if diff > 0:
+        # We need to reduce ab_count and increase ba_count
+        for i in range(n - 1):
+            if s_list[i] == 'a' and s_list[i + 1] == 'b':
+                if diff > 0:
+                    s_list[i] = 'b'
+                    diff -= 1
+                if diff > 0:
+                    s_list[i + 1] = 'a'
+                    diff -= 1
+    elif diff < 0:
+        # We need to reduce ba_count and increase ab_count
+        for i in range(n - 1):
+            if s_list[i] == 'b' and s_list[i + 1] == 'a':
+                if diff < 0:
+                    s_list[i] = 'a'
+                    diff += 1
+                if diff < 0:
+                    s_list[i + 1] = 'b'
+                    diff += 1
+    
+    # Convert list back to string
+    return ''.join(s_list)
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+# Number of test cases
+t = int(data[0])
+
+# Process each test case
+results = []
+index = 1
+for _ in range(t):
+    s = data[index]
+    index += 1
+    results.append(balance_ab_ba(s))
+
+# Print results
+for result in results:
+    print(result)

@@ -1,0 +1,78 @@
+def solve():
+    n = int(input())
+    edges = []
+    for _ in range(n - 1):
+        u, v = map(int, input().split())
+        edges.append((u, v))
+
+    q = int(input())
+    queries = []
+    for _ in range(q):
+        v, k = map(int, input().split())
+        queries.append((v, k))
+
+    def get_children(node, graph):
+        children = []
+        for u, v in graph:
+            if u == node:
+                children.append(v)
+            elif v == node:
+                children.append(u)
+        return children
+
+    def calculate_score(v, deleted, graph):
+        children = []
+        for u, w in graph:
+            if u == v and w not in deleted:
+                children.append(w)
+            elif w == v and u not in deleted:
+                children.append(u)
+        return len(children)
+
+    def solve_query(v, k, edges, n):
+        graph = list(edges)
+        
+        max_score = float('-inf')
+        
+        # Iterate through all possible subsets of vertices to delete
+        for i in range(1 << (n - 1)):  # Iterate through all possible subsets of vertices (excluding root 1)
+            deleted = set()
+            m = 0
+            
+            # Construct the subset of deleted vertices
+            vertices_to_consider = set(range(2, n + 1))  # Exclude root 1
+            vertices_to_consider.discard(v) # Exclude target node v
+            
+            vertices_list = list(vertices_to_consider)
+            
+            for j in range(len(vertices_list)):
+                if (i >> j) & 1:
+                    deleted.add(vertices_list[j])
+                    m += 1
+            
+            # Check if we are deleting root or target node
+            if 1 in deleted or v in deleted:
+                continue
+            
+            # Create a copy of the graph and remove edges connected to deleted nodes
+            current_graph = []
+            for u, w in edges:
+                if u not in deleted and w not in deleted:
+                    current_graph.append((u, w))
+            
+            # Calculate the number of children of v in the modified graph
+            c_v = calculate_score(v, deleted, current_graph)
+            
+            # Calculate the score
+            score = c_v - m * k
+            
+            # Update the maximum score
+            max_score = max(max_score, score)
+        
+        return max_score
+
+    for v, k in queries:
+        result = solve_query(v, k, edges, n)
+        print(result)
+
+solve()

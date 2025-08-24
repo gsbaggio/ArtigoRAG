@@ -1,0 +1,79 @@
+def find_successful_party(N, M, friendships):
+    from collections import defaultdict
+    
+    # Build adjacency list
+    adj_list = defaultdict(set)
+    degree = [0] * (N + 1)
+    
+    for u, v in friendships:
+        adj_list[u].add(v)
+        adj_list[v].add(u)
+        degree[u] += 1
+        degree[v] += 1
+    
+    # Function to check if a set of 5 people forms a clique
+    def is_clique(nodes):
+        for u in nodes:
+            for v in nodes:
+                if u != v and v not in adj_list[u]:
+                    return False
+        return True
+    
+    # Function to check if a set of 5 people forms an independent set
+    def is_independent_set(nodes):
+        for u in nodes:
+            for v in nodes:
+                if u != v and v in adj_list[u]:
+                    return False
+        return True
+    
+    # Try to find a clique of 5 people
+    for u in range(1, N + 1):
+        if degree[u] >= 4:
+            neighbors = list(adj_list[u])
+            for i in range(len(neighbors)):
+                for j in range(i + 1, len(neighbors)):
+                    for k in range(j + 1, len(neighbors)):
+                        for l in range(k + 1, len(neighbors)):
+                            for m in range(l + 1, len(neighbors)):
+                                nodes = [u, neighbors[i], neighbors[j], neighbors[k], neighbors[l]]
+                                if is_clique(nodes):
+                                    return nodes
+    
+    # Try to find an independent set of 5 people
+    for u in range(1, N + 1):
+        if degree[u] <= N - 5:
+            non_neighbors = [v for v in range(1, N + 1) if v != u and v not in adj_list[u]]
+            for i in range(len(non_neighbors)):
+                for j in range(i + 1, len(non_neighbors)):
+                    for k in range(j + 1, len(non_neighbors)):
+                        for l in range(k + 1, len(non_neighbors)):
+                            for m in range(l + 1, len(non_neighbors)):
+                                nodes = [u, non_neighbors[i], non_neighbors[j], non_neighbors[k], non_neighbors[l]]
+                                if is_independent_set(nodes):
+                                    return nodes
+    
+    return -1
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+N = int(data[0])
+M = int(data[1])
+
+friendships = []
+index = 2
+for _ in range(M):
+    u = int(data[index])
+    v = int(data[index + 1])
+    friendships.append((u, v))
+    index += 2
+
+# Find and print the result
+result = find_successful_party(N, M, friendships)
+if result == -1:
+    print(-1)
+else:
+    print(' '.join(map(str, result)))

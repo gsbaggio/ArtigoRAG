@@ -1,0 +1,28 @@
+#include <iostream>
+
+int main() {
+    int t;
+    std::cin >> t;
+    
+    while (t--) {
+        long long x, y;
+        std::cin >> x >> y;
+        
+        long long remainder = y % x;
+        long long n;
+        
+        if (remainder == 0) {
+            // If y is divisible by x, n = y works
+            n = y;
+        } else {
+            // We need n % x = remainder and n > y
+            // n = kx + remainder, where k is large enough that n > y
+            long long k = (y / x) + 1;
+            n = k * x + remainder;
+        }
+        
+        std::cout << n << std::endl;
+    }
+    
+    return 0;
+}

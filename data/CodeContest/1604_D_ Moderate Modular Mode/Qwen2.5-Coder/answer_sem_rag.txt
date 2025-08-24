@@ -1,0 +1,28 @@
+def solve():
+    import sys
+    input = sys.stdin.read().split()
+    
+    t = int(input[0])
+    index = 1
+    
+    results = []
+    for _ in range(t):
+        x = int(input[index])
+        y = int(input[index + 1])
+        index += 2
+        
+        # Calculate y % x
+        r = y % x
+        
+        # Set n = y + r * x
+        n = y + r * x
+        
+        # Ensure n is within the range [1, 2 * 10^18]
+        # Since y and x are both even and <= 10^9, n will be within the range
+        results.append(n)
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    solve()

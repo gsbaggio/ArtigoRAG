@@ -1,0 +1,93 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int n;
+vector<int> a;
+
+int simulate(bool use_left) {
+    int l = 0;
+    int r = n - 1;
+    int last = -1;
+    int moves = 0;
+    if (use_left) {
+        if (l <= r && a[l] > last) {
+            last = a[l];
+            l++;
+            moves++;
+        } else {
+            return moves;
+        }
+    } else {
+        if (r >= l && a[r] > last) {
+            last = a[r];
+            r--;
+            moves++;
+        } else {
+            return moves;
+        }
+    }
+    while (l <= r) {
+        if (a[l] > last && a[r] > last) {
+            if (a[l] < a[r]) {
+                last = a[l];
+                l++;
+                moves++;
+            } else if (a[l] > a[r]) {
+                last = a[r];
+                r--;
+                moves++;
+            } else {
+                int count_left = 1;
+                for (int i = l + 1; i <= r; i++) {
+                    if (a[i] > a[i - 1]) {
+                        count_left++;
+                    } else {
+                        break;
+                    }
+                }
+                int count_right = 1;
+                for (int i = r - 1; i >= l; i--) {
+                    if (a[i] > a[i + 1]) {
+                        count_right++;
+                    } else {
+                        break;
+                    }
+                }
+                if (count_left > count_right) {
+                    moves += count_left;
+                } else {
+                    moves += count_right;
+                }
+                return moves;
+            }
+        } else if (a[l] > last) {
+            last = a[l];
+            l++;
+            moves++;
+        } else if (a[r] > last) {
+            last = a[r];
+            r--;
+            moves++;
+        } else {
+            break;
+        }
+    }
+    return moves;
+}
+
+int main() {
+    cin >> n;
+    a.resize(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    int moves_left = simulate(true);
+    int moves_right = simulate(false);
+    if (moves_left % 2 == 1 || moves_right % 2 == 1) {
+        cout << "Alice" << endl;
+    } else {
+        cout << "Bob" << endl;
+    }
+    return 0;
+}

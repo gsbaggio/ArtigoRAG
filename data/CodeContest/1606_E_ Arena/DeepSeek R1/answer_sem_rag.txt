@@ -1,0 +1,49 @@
+MOD = 998244353
+
+def main():
+    import sys
+    data = sys.stdin.read().split()
+    n = int(data[0])
+    x = int(data[1])
+    
+    # Precompute binomial coefficients
+    C = [[0] * (n+1) for _ in range(n+1)]
+    for i in range(n+1):
+        C[i][0] = 1
+        for j in range(1, i+1):
+            C[i][j] = (C[i-1][j] + C[i-1][j-1]) % MOD
+            
+    # Precompute power table for base from 0 to n, exponent from 0 to n
+    powTable = [[0] * (n+1) for _ in range(n+1)]
+    for base in range(n+1):
+        powTable[base][0] = 1
+        for exp in range(1, n+1):
+            powTable[base][exp] = powTable[base][exp-1] * base % MOD
+            
+    # Initialize dp array
+    dp = [[0] * (x+1) for _ in range(n+1)]
+    for j in range(x+1):
+        dp[0][j] = 1
+    for j in range(x+1):
+        dp[1][j] = 0
+        
+    # Fill dp for i from 2 to n
+    for i in range(2, n+1):
+        for j in range(0, x+1):
+            if j < i:
+                dp[i][j] = powTable[j][i]
+            else:
+                total = 0
+                j_prime = j - (i-1)
+                for k in range(0, i+1):
+                    if k == 1:
+                        continue
+                    term = C[i][k] * powTable[i-1][i-k] % MOD
+                    term = term * dp[k][j_prime] % MOD
+                    total = (total + term) % MOD
+                dp[i][j] = total
+                
+    print(dp[n][x] % MOD)
+
+if __name__ == "__main__":
+    main()

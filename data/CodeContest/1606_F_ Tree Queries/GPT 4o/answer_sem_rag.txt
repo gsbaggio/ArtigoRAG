@@ -1,0 +1,57 @@
+from collections import defaultdict, deque
+
+# filepath: c:\Users\gabriel\Desktop\trabbolsaia\ArtigoRAG\solution.py
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n = int(data[0])
+    edges = data[1:2 * (n - 1) + 1]
+    q = int(data[2 * (n - 1) + 1])
+    queries = data[2 * (n - 1) + 2:]
+    
+    # Build adjacency list for the tree
+    tree = defaultdict(list)
+    for i in range(n - 1):
+        x, y = int(edges[2 * i]), int(edges[2 * i + 1])
+        tree[x].append(y)
+        tree[y].append(x)
+    
+    # Precompute subtree sizes using DFS
+    subtree_size = [0] * (n + 1)
+    parent = [-1] * (n + 1)
+    
+    def dfs(node, par):
+        subtree_size[node] = 1
+        parent[node] = par
+        for neighbor in tree[node]:
+            if neighbor != par:
+                dfs(neighbor, node)
+                subtree_size[node] += subtree_size[neighbor]
+    
+    dfs(1, -1)
+    
+    # Process queries
+    result = []
+    idx = 0
+    for _ in range(q):
+        v, k = int(queries[idx]), int(queries[idx + 1])
+        idx += 2
+        
+        # c(v) is the number of children of v
+        c_v = subtree_size[v] - 1
+        
+        # If k == 0, we cannot delete any nodes
+        if k == 0:
+            result.append(c_v)
+        else:
+            # Maximize c(v) - m * k
+            # m is the number of nodes deleted
+            # Deleting all nodes in the subtree of v gives m = subtree_size[v] - 1
+            m = 0
+            max_value = c_v - m * k
+            result.append(max_value)
+    
+    # Print results
+    sys.stdout.write("\n".join(map(str, result)) + "\n")

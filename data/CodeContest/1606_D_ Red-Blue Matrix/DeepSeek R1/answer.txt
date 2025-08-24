@@ -1,0 +1,91 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+        vector<vector<int>> a(n, vector<int>(m));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                cin >> a[i][j];
+            }
+        }
+        
+        vector<int> order(n);
+        iota(order.begin(), order.end(), 0);
+        sort(order.begin(), order.end(), [&](int i, int j) {
+            return a[i][0] > a[j][0];
+        });
+        
+        vector<vector<int>> v(m, vector<int>(n));
+        for (int j = 0; j < m; j++) {
+            for (int i = 0; i < n; i++) {
+                v[j][i] = a[order[i]][j];
+            }
+        }
+        
+        vector<vector<int>> M(m, vector<int>(n));
+        vector<vector<int>> P(m, vector<int>(n));
+        for (int j = 0; j < m; j++) {
+            M[j][0] = v[j][0];
+            P[j][0] = v[j][0];
+            for (int i = 1; i < n; i++) {
+                M[j][i] = min(M[j][i-1], v[j][i]);
+                P[j][i] = max(P[j][i-1], v[j][i]);
+            }
+        }
+        
+        vector<vector<int>> L(m, vector<int>(n));
+        vector<vector<int>> N(m, vector<int>(n));
+        if (n > 1) {
+            for (int j = 0; j < m; j++) {
+                L[j][n-2] = v[j][n-1];
+                N[j][n-2] = v[j][n-1];
+                for (int i = n-3; i >= 0; i--) {
+                    L[j][i] = max(L[j][i+1], v[j][i+1]);
+                    N[j][i] = min(N[j][i+1], v[j][i+1]);
+                }
+            }
+        }
+        
+        int found_i = -1;
+        int found_k = -1;
+        for (int i = 0; i < n-1; i++) {
+            int left_fail = m;
+            int right_fail = -1;
+            for (int j = 0; j < m; j++) {
+                if (M[j][i] <= L[j][i]) {
+                    left_fail = min(left_fail, j);
+                }
+                if (N[j][i] <= P[j][i]) {
+                    right_fail = max(right_fail, j);
+                }
+            }
+            if (left_fail == 0) continue;
+            if (right_fail < left_fail) {
+                found_i = i;
+                found_k = right_fail + 1;
+                if (found_k < 1) found_k = 1;
+                if (found_k > m-1) found_k = m-1;
+                break;
+            }
+        }
+        
+        if (found_i == -1) {
+            cout << "NO\n";
+        } else {
+            string color(n, 'B');
+            for (int i = 0; i <= found_i; i++) {
+                color[order[i]] = 'R';
+            }
+            cout << "YES\n";
+            cout << color << " " << found_k << "\n";
+        }
+    }
+    return 0;
+}

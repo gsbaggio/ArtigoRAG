@@ -1,0 +1,56 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n, m = int(data[idx]), int(data[idx + 1])
+        idx += 2
+        matrix = []
+        for i in range(n):
+            matrix.append(list(map(int, data[idx:idx + m])))
+            idx += m
+        
+        # Step 1: Precompute max_left and min_right for all rows
+        max_left = [0] * n
+        min_right = [0] * n
+        for i in range(n):
+            max_left[i] = max(matrix[i])
+            min_right[i] = min(matrix[i])
+        
+        # Step 2: Sort rows by max_left
+        sorted_rows = sorted(range(n), key=lambda x: max_left[x])
+        
+        # Step 3: Binary search for k
+        valid = False
+        for k in range(1, m):
+            red_max = -1
+            blue_min = 10**6 + 1
+            
+            # Divide rows into red and blue
+            red_rows = set()
+            blue_rows = set()
+            
+            for i in sorted_rows:
+                if max(matrix[i][:k]) > min(matrix[i][k:]):
+                    red_rows.add(i)
+                    red_max = max(red_max, max(matrix[i][:k]))
+                else:
+                    blue_rows.add(i)
+                    blue_min = min(blue_min, min(matrix[i][k:]))
+            
+            # Check if the division is valid
+            if red_rows and blue_rows and red_max < blue_min:
+                valid = True
+                coloring = ['R' if i in red_rows else 'B' for i in range(n)]
+                results.append(f"YES\n{''.join(coloring)} {k}")
+                break
+        
+        if not valid:
+            results.append("NO")
+    
+    sys.stdout.write("\n".join(results) + "\n")

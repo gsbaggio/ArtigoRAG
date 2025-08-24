@@ -1,0 +1,30 @@
+def solve():
+    s = input()
+    n = len(s)
+    
+    ab_count = 0
+    ba_count = 0
+    
+    for i in range(n - 1):
+        if s[i:i+2] == "ab":
+            ab_count += 1
+        elif s[i:i+2] == "ba":
+            ba_count += 1
+            
+    if ab_count == ba_count:
+        print(s)
+        return
+    
+    if n == 1:
+        print(s)
+        return
+
+    
+    if s[0] == s[-1]:
+        print(s[0] * n)
+    else:
+        print(s[0] + s[0] * (n - 2) + s[0])
+
+t = int(input())
+for _ in range(t):
+    solve()

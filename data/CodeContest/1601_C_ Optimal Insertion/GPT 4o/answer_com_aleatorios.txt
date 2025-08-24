@@ -1,0 +1,73 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    # Fenwick Tree (Binary Indexed Tree) for inversion counting
+    class FenwickTree:
+        def __init__(self, size):
+            self.size = size
+            self.tree = [0] * (size + 1)
+        
+        def add(self, index, value):
+            while index <= self.size:
+                self.tree[index] += value
+                index += index & -index
+        
+        def sum(self, index):
+            result = 0
+            while index > 0:
+                result += self.tree[index]
+                index -= index & -index
+            return result
+        
+        def range_sum(self, left, right):
+            return self.sum(right) - self.sum(left - 1)
+    
+    # Read number of test cases
+    idx = 0
+    t = int(data[idx])
+    idx += 1
+    results = []
+    
+    # Process each test case
+    for _ in range(t):
+        n, m = map(int, data[idx:idx+2])
+        idx += 2
+        a = list(map(int, data[idx:idx+n]))
+        idx += n
+        b = list(map(int, data[idx:idx+m]))
+        idx += m
+        
+        # Sort b
+        b.sort()
+        
+        # Coordinate compression for Fenwick Tree
+        all_values = sorted(set(a + b))
+        value_to_compressed = {v: i + 1 for i, v in enumerate(all_values)}
+        max_compressed = len(all_values)
+        
+        # Compress a and b
+        a = [value_to_compressed[x] for x in a]
+        b = [value_to_compressed[x] for x in b]
+        
+        # Fenwick Tree for inversion counting
+        fenwick = FenwickTree(max_compressed)
+        inversions = 0
+        
+        # Merge a and b while counting inversions
+        j = 0  # Pointer for b
+        for x in a:
+            # Add all elements from b that are <= x
+            while j < len(b) and b[j] <= x:
+                fenwick.add(b[j], 1)
+                j += 1
+            
+            # Count inversions for the current element of a
+            inversions += fenwick.range_sum(x + 1, max_compressed)
+        
+        # Add remaining elements of b
+        results.append(inversions)
+    
+    # Print results
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

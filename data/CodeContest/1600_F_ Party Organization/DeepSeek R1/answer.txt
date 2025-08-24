@@ -1,0 +1,66 @@
+import itertools
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    
+    n = int(data[0])
+    m = int(data[1])
+    edges = set()
+    adj = [set() for _ in range(n+1)]
+    index = 2
+    for i in range(m):
+        u = int(data[index]); v = int(data[index+1]); index += 2
+        adj[u].add(v)
+        adj[v].add(u)
+        if u < v:
+            edges.add((u, v))
+        else:
+            edges.add((v, u))
+            
+    if n < 43:
+        vertices = list(range(1, n+1))
+        for comb in itertools.combinations(vertices, 5):
+            is_clique = True
+            is_independent = True
+            for i in range(5):
+                for j in range(i+1, 5):
+                    a = comb[i]
+                    b = comb[j]
+                    if a > b:
+                        a, b = b, a
+                    if (a, b) in edges:
+                        is_independent = False
+                    else:
+                        is_clique = False
+            if is_clique or is_independent:
+                print(f"{comb[0]} {comb[1]} {comb[2]} {comb[3]} {comb[4]}")
+                return
+        print(-1)
+    else:
+        total_edges = n * (n-1) // 2
+        if m == total_edges:
+            print("1 2 3 4 5")
+        else:
+            vertices = list(range(1, n+1))
+            vertices.sort(key=lambda x: len(adj[x]))
+            independent_set = []
+            for v in vertices:
+                conflict = False
+                for u in independent_set:
+                    if v in adj[u]:
+                        conflict = True
+                        break
+                if not conflict:
+                    independent_set.append(v)
+                    if len(independent_set) == 5:
+                        break
+            if len(independent_set) == 5:
+                print(f"{independent_set[0]} {independent_set[1]} {independent_set[2]} {independent_set[3]} {independent_set[4]}")
+            else:
+                print(-1)
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,50 @@
+#include <iostream>
+using namespace std;
+const int MOD = 998244353;
+
+long long pow2(long long exponent) {
+    long long result = 1;
+    long long base = 2;
+    while (exponent) {
+        if (exponent & 1) {
+            result = (result * base) % MOD;
+        }
+        base = (base * base) % MOD;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, k, x;
+        cin >> n >> k >> x;
+        if (x == 0) {
+            if (n > k) {
+                cout << 0 << endl;
+            } else {
+                long long ans = 1;
+                for (int i = 0; i < n; i++) {
+                    long long term = (pow2(k) - pow2(i) + MOD) % MOD;
+                    ans = (ans * term) % MOD;
+                }
+                cout << ans << endl;
+            }
+        } else {
+            long long p2n = pow2(n);
+            long long ans = 0;
+            long long current = 1;
+            long long p2i = 1;
+            for (int i = 0; i < k; i++) {
+                ans = (ans * (p2n - 1) + current) % MOD;
+                long long term = (p2n - p2i + 1 + MOD) % MOD;
+                current = (current * term) % MOD;
+                p2i = (p2i * 2) % MOD;
+            }
+            cout << ans << endl;
+        }
+    }
+    return 0;
+}

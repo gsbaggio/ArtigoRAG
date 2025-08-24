@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+using namespace std;
+
+const int MOD = 998244353;
+
+// Calculate the extreme value for a subarray
+int extremeValue(const vector<int>& arr) {
+    int n = arr.size();
+    int operations = 0;
+    
+    for (int i = 0; i < n - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            int val = arr[i];
+            int target = arr[i + 1];
+            
+            // Count minimum operations needed
+            int ops = 0;
+            while (val > target) {
+                // Find the best split
+                int x = val / 2;
+                int y = val - x;
+                
+                val = max(x, y);  // We keep the larger part
+                ops++;
+            }
+            
+            operations += ops;
+        }
+    }
+    
+    return operations;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        
+        long long sum = 0;
+        
+        // Calculate extreme value for all subarrays
+        for (int l = 0; l < n; l++) {
+            for (int r = l; r < n; r++) {
+                vector<int> subarray(a.begin() + l, a.begin() + r + 1);
+                sum = (sum + extremeValue(subarray)) % MOD;
+            }
+        }
+        
+        cout << sum << endl;
+    }
+    
+    return 0;
+}

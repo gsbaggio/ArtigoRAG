@@ -1,0 +1,23 @@
+def solve(x, y):
+    # Case 1: n = y if y mod x = 0
+    if y % x == 0:
+        return y
+    
+    # Case 2: Try n = y mod x
+    n = y % x
+    if n % x == y % n:
+        return n
+    
+    # Case 3: Try n = x + (y mod x)
+    n = x + (y % x)
+    if n % x == y % n:
+        return n
+    
+    # Case 4: Find a larger value using a mathematical property
+    # Any multiple of x plus (y mod x) that's greater than y will work
+    return x * (y // x + 1) + (y % x)
+
+t = int(input())
+for _ in range(t):
+    x, y = map(int, input().split())
+    print(solve(x, y))

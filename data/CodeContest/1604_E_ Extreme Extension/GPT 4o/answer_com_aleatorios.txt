@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+
+void solve() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for (int i = 0; i < n; ++i) cin >> a[i];
+
+        long long result = 0;
+        vector<pair<int, long long>> stack; // {value, splits}
+        
+        for (int i = n - 1; i >= 0; --i) {
+            int current = a[i];
+            long long totalSplits = 0;
+
+            for (auto [value, splits] : stack) {
+                int parts = (current + value - 1) / value; // Number of parts to split current
+                totalSplits = (totalSplits + splits * (parts - 1)) % MOD;
+                current = current / parts;
+            }
+
+            totalSplits = (totalSplits + 1) % MOD; // Add the current element itself
+            result = (result + totalSplits * (i + 1)) % MOD;
+
+            if (!stack.empty() && stack.back().first == current) {
+                stack.back().second = (stack.back().second + totalSplits) % MOD;
+            } else {
+                stack.push_back({current, totalSplits});
+            }
+        }
+
+        cout << result << "\n";
+    }
+}
+ 
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}

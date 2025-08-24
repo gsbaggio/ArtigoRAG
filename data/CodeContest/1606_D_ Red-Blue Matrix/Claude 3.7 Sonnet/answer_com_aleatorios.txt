@@ -1,0 +1,56 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n, m = map(int, input().split())
+        matrix = []
+        
+        for i in range(n):
+            row = list(map(int, input().split()))
+            matrix.append(row)
+        
+        solution_found = False
+        
+        # Try each possible cut position
+        for k in range(1, m):
+            # Find min values for each row in left and right parts
+            left_mins = [min(row[:k]) for row in matrix]
+            right_maxs = [max(row[k:]) for row in matrix]
+            
+            # Sort rows by (left_min, -right_max) in descending order
+            # This prioritizes rows with high left_min values (good for red in left part)
+            # and for ties, prioritizes those with lower right_max (good for red in right part)
+            rows_sorted = sorted(range(n), key=lambda i: (left_mins[i], -right_maxs[i]), reverse=True)
+            
+            # Try different numbers of red rows
+            for red_count in range(1, n):
+                red_rows = set(rows_sorted[:red_count])
+                blue_rows = set(rows_sorted[red_count:])
+                
+                # Calculate the minimum red value and maximum blue value in left part
+                min_red_left = min(min(matrix[i][:k]) for i in red_rows)
+                max_blue_left = max(max(matrix[i][:k]) for i in blue_rows)
+                
+                # Calculate the minimum blue value and maximum red value in right part
+                min_blue_right = min(min(matrix[i][k:]) for i in blue_rows)
+                max_red_right = max(max(matrix[i][k:]) for i in red_rows)
+                
+                # Check if this is a perfect coloring and cut
+                if min_red_left > max_blue_left and min_blue_right > max_red_right:
+                    solution_found = True
+                    colors = ['B'] * n
+                    for i in red_rows:
+                        colors[i] = 'R'
+                    
+                    print("YES")
+                    print(''.join(colors), k)
+                    break
+            
+            if solution_found:
+                break
+        
+        if not solution_found:
+            print("NO")
+
+if __name__ == "__main__":
+    solve()

@@ -1,0 +1,50 @@
+mod = 998244353
+
+import sys
+
+def main():
+    data = sys.stdin.readline().split()
+    n = int(data[0])
+    x = int(data[1])
+    
+    # Precompute binomial coefficients
+    C = [[0] * (n+1) for _ in range(n+1)]
+    for i in range(n+1):
+        C[i][0] = 1
+        for j in range(1, i+1):
+            C[i][j] = (C[i-1][j] + C[i-1][j-1]) % mod
+            
+    # Precompute power table
+    pw = [[0] * (n+1) for _ in range(x+1)]
+    for i in range(x+1):
+        pw[i][0] = 1
+        for j in range(1, n+1):
+            pw[i][j] = (pw[i][j-1] * i) % mod
+            
+    # Initialize dp
+    dp = [[0] * (x+1) for _ in range(n+1)]
+    dp[n][0] = 1
+    
+    # Iterate over states
+    for i in range(n, 1, -1):
+        for j in range(0, x):
+            if dp[i][j] == 0:
+                continue
+            nxt_val = min(x, j + i - 1)
+            base = nxt_val - j
+            current = dp[i][j]
+            rowC = C[i]
+            rowP = pw[base]
+            for k in range(0, i+1):
+                term = current * rowC[k] % mod
+                term = term * rowP[i - k] % mod
+                dp[k][nxt_val] = (dp[k][nxt_val] + term) % mod
+                
+    ans = 0
+    for j in range(x+1):
+        ans = (ans + dp[0][j]) % mod
+        
+    print(ans % mod)
+    
+if __name__ == "__main__":
+    main()

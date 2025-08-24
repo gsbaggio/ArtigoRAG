@@ -1,0 +1,30 @@
+import sys
+sys.setrecursionlimit(10**6)
+
+def dfs(node, parent, adj_list, deleted, children_count):
+    children = 0
+    for neighbor in adj_list[node]:
+        if neighbor != parent and not deleted[neighbor]:
+            children += dfs(neighbor, node, adj_list, deleted, children_count)
+    children_count[node] = children
+    return children + 1
+
+def main():
+    n = int(input())
+    adj_list = [[] for _ in range(n+1)]
+    for _ in range(n-1):
+        u, v = map(int, input().split())
+        adj_list[u].append(v)
+        adj_list[v].append(u)
+
+    q = int(input())
+    for _ in range(q):
+        v, k = map(int, input().split())
+        deleted = [False] * (n+1)
+        deleted[v] = True
+        children_count = [0] * (n+1)
+        dfs(1, 0, adj_list, deleted, children_count)
+        print(max(0, children_count[v] - k))
+
+if __name__ == "__main__":
+    main()

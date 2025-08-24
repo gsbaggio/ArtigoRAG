@@ -1,0 +1,46 @@
+def solve(n):
+    MOD1 = 998244353
+    MOD2 = 10**9 + 7
+    
+    result = 0
+    pos = 1
+    
+    # Process each length of numbers
+    digit_len = 1
+    while 10**(digit_len-1) <= n:
+        for first_digit in range(1, 10):
+            if digit_len == 1:
+                start = first_digit
+                end = first_digit
+            else:
+                start = first_digit * 10**(digit_len-1)
+                end = min(first_digit * 10**digit_len - 1, n)
+            
+            if start > n:
+                break
+            
+            count = end - start + 1
+            if count <= 0:
+                continue
+            
+            # Sum of positions
+            sum_pos = (pos * count) % MOD1
+            pos_arithmetic_sum = (count * (count - 1) // 2) % MOD1
+            sum_pos = (sum_pos + pos_arithmetic_sum) % MOD1
+            
+            # Sum of values using arithmetic series formula
+            sum_val = ((start + end) * count // 2) % MOD1
+            
+            # Calculate difference
+            diff = (sum_pos - sum_val + MOD1) % MOD1
+            result = (result + diff) % MOD1
+            
+            # Update position for next range
+            pos = (pos + count) % MOD1
+        
+        digit_len += 1
+    
+    return result % MOD2
+
+n = int(input())
+print(solve(n))

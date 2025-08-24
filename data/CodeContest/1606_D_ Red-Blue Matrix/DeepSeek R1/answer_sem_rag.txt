@@ -1,0 +1,75 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    for _ in range(t):
+        n = int(data[index]); m = int(data[index+1]); index += 2
+        a = []
+        for i in range(n):
+            row = list(map(int, data[index:index+m]))
+            index += m
+            a.append(row)
+            
+        if n == 1:
+            # Only one row, but we need at least one red and one blue -> impossible
+            print("NO")
+            continue
+            
+        indices = list(range(n))
+        indices.sort(key=lambda i: a[i][0])
+        sorted_rows = [a[i] for i in indices]
+        
+        # Precompute arrays for each column
+        blue_max_arr = []
+        blue_min_arr = []
+        red_min_arr = []
+        red_max_arr = []
+        for c in range(m):
+            blue_max = [-10**9] * (n+1)
+            blue_min = [10**9] * (n+1)
+            for i in range(1, n+1):
+                blue_max[i] = max(blue_max[i-1], sorted_rows[i-1][c])
+                blue_min[i] = min(blue_min[i-1], sorted_rows[i-1][c])
+            blue_max_arr.append(blue_max)
+            blue_min_arr.append(blue_min)
+            
+            red_min = [10**9] * (n+1)
+            red_max = [-10**9] * (n+1)
+            for i in range(n-1, -1, -1):
+                red_min[i] = min(red_min[i+1], sorted_rows[i][c])
+                red_max[i] = max(red_max[i+1], sorted_rows[i][c])
+            red_min_arr.append(red_min)
+            red_max_arr.append(red_max)
+            
+        candidates = []
+        for i in range(1, n):
+            if sorted_rows[i][0] > sorted_rows[i-1][0]:
+                candidates.append(i)
+                
+        found = False
+        for i in candidates:
+            left_fail = m
+            for c in range(m):
+                if red_min_arr[c][i] <= blue_max_arr[c][i]:
+                    left_fail = min(left_fail, c)
+            right_fail = -1
+            for c in range(m):
+                if blue_min_arr[c][i] <= red_max_arr[c][i]:
+                    right_fail = c
+            if left_fail > right_fail and right_fail < m-1:
+                color = ['B'] * n
+                for j in range(i, n):
+                    orig_idx = indices[j]
+                    color[orig_idx] = 'R'
+                print("YES")
+                print(''.join(color), right_fail+1)
+                found = True
+                break
+                
+        if not found:
+            print("NO")
+            
+if __name__ == "__main__":
+    main()

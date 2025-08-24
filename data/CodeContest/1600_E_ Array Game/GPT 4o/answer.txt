@@ -1,0 +1,38 @@
+def find_winner(N, A):
+    left, right = 0, N - 1
+    last = -1  # Last number in the sequence
+    turn = 0   # 0 for Alice, 1 for Bob
+
+    while left <= right:
+        # Check if we can pick from the left or right
+        if A[left] > last and A[right] > last:
+            # Both ends are valid, pick the smaller one
+            if A[left] < A[right]:
+                last = A[left]
+                left += 1
+            else:
+                last = A[right]
+                right -= 1
+        elif A[left] > last:
+            # Only the left end is valid
+            last = A[left]
+            left += 1
+        elif A[right] > last:
+            # Only the right end is valid
+            last = A[right]
+            right -= 1
+        else:
+            # No valid move for the current player
+            return "Bob" if turn == 0 else "Alice"
+
+        # Switch turns
+        turn = 1 - turn
+
+    # If we exit the loop, the last player made the final move
+    return "Alice" if turn == 1 else "Bob"
+
+# Input reading
+if __name__ == "__main__":
+    N = int(input())
+    A = list(map(int, input().split()))
+    print(find_winner(N, A))

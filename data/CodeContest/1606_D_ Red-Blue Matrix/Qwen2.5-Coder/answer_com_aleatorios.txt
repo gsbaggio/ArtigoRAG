@@ -1,0 +1,66 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    index = 0
+    t = int(data[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])
+        m = int(data[index + 1])
+        index += 2
+        
+        matrix = []
+        for i in range(n):
+            row = list(map(int, data[index:index + m]))
+            index += m
+            matrix.append(row)
+        
+        # Compute min and max for each row
+        min_values = [min(row) for row in matrix]
+        max_values = [max(row) for row in matrix]
+        
+        # Find the row with the smallest max value (blue candidate)
+        min_max = min(max_values)
+        blue_row_index = max_values.index(min_max)
+        
+        # Find the row with the largest min value (red candidate)
+        max_min = max(min_values)
+        red_row_index = min_values.index(max_min)
+        
+        # Check if we can color differently
+        if blue_row_index == red_row_index:
+            results.append("NO")
+            continue
+        
+        # Initialize coloring
+        coloring = ['B'] * n
+        coloring[red_row_index] = 'R'
+        
+        # Try to find a valid k
+        found_k = False
+        for k in range(1, m):
+            left_max_red = max(matrix[i][k-1] for i in range(n) if coloring[i] == 'R')
+            left_min_blue = min(matrix[i][k-1] for i in range(n) if coloring[i] == 'B')
+            
+            right_max_red = max(matrix[i][k] for i in range(n) if coloring[i] == 'R')
+            right_min_blue = min(matrix[i][k] for i in range(n) if coloring[i] == 'B')
+            
+            if left_max_red < left_min_blue and right_max_red < right_min_blue:
+                found_k = True
+                break
+        
+        if found_k:
+            results.append(f"YES\n{''.join(coloring)} {k}")
+        else:
+            results.append("NO")
+    
+    for result in results:
+        print(result)
+
+# Call the solve function
+solve()

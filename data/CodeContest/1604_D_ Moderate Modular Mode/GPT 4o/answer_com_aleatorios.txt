@@ -1,0 +1,17 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    results = []
+    
+    index = 1
+    for _ in range(t):
+        x, y = int(data[index]), int(data[index + 1])
+        index += 2
+        # Output y as the solution for each test case
+        results.append(y)
+    
+    # Print all results at once
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

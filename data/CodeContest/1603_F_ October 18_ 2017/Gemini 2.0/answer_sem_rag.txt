@@ -1,0 +1,32 @@
+def solve():
+    n, k, x = map(int, input().split())
+    mod = 998244353
+
+    if x >= (1 << min(20, k)):
+        print(pow(pow(2, k, mod), n, mod))
+        return
+
+    basis = []
+    sz = 0
+
+    def insertVector(mask):
+        nonlocal sz
+        for b in basis:
+            mask = min(mask, mask ^ b)
+        if mask > 0:
+            basis.append(mask)
+            basis.sort(reverse=True)
+            sz += 1
+
+    for i in range(1 << min(20, k)):
+        if i != x:
+            insertVector(i)
+
+    ans = pow(2, k - sz, mod)
+    ans = pow(ans, n, mod)
+    
+    print(ans)
+
+t = int(input())
+for _ in range(t):
+    solve()

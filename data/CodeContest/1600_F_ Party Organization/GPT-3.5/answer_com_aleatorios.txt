@@ -1,0 +1,33 @@
+from collections import deque
+
+def create_graph(N, friendships):
+    graph = {i: set() for i in range(1, N+1)}
+    for u, v in friendships:
+        graph[u].add(v)
+        graph[v].add(u)
+    return graph
+
+def successful_party(N, friendships):
+    graph = create_graph(N, friendships)
+    for i in range(1, N+1):
+        friends = graph[i]
+        friends_of_friends = set()
+        for friend in friends:
+            friends_of_friends.update(graph[friend])
+        friends_of_friends.discard(i)
+        
+        invite_list = friends.union(friends_of_friends)
+        invite_list.add(i)
+        
+        if len(invite_list) >= 5:
+            print(*list(invite_list)[:5])
+            return
+
+    print(-1)
+
+# Input parsing
+N, M = map(int, input().split())
+friendships = [tuple(map(int, input().split())) for _ in range(M)]
+
+# Calling the function
+successful_party(N, friendships)

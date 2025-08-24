@@ -1,0 +1,74 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+typedef long long ll;
+
+// Precompute c(l,r) for all segments efficiently
+vector<vector<ll>> precompute_c(int n) {
+    vector<vector<ll>> result(n+1, vector<ll>(n+1, 0));
+    
+    // For each range [l,r]
+    for (int l = 1; l <= n; l++) {
+        for (int r = l; r <= n; r++) {
+            ll count = 0;
+            
+            // Use a sieve-like approach
+            vector<bool> counted(r+1, false);
+            
+            // Count all pairs (i,j) where l ≤ i ≤ j ≤ r and gcd(i,j) ≥ l
+            for (int g = r; g >= l; g--) {
+                // Count multiples of g in the range
+                int multiples = 0;
+                for (int m = g; m <= r; m += g) {
+                    if (m >= l && !counted[m]) {
+                        multiples++;
+                        counted[m] = true;
+                    }
+                }
+                
+                // Add pairs with gcd = g
+                count += (ll)multiples * (multiples + 1) / 2;
+            }
+            
+            result[l][r] = count;
+        }
+    }
+    
+    return result;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n, k;
+        cin >> n >> k;
+        
+        // dp[i][j] = min cost to split [1...i] into j segments
+        vector<vector<ll>> dp(n+1, vector<ll>(k+1, LLONG_MAX/2));
+        
+        // Precompute c(l,r) values
+        vector<vector<ll>> c = precompute_c(n);
+        
+        // Base case
+        dp[0][0] = 0;
+        
+        // Fill dp table
+        for (int j = 1; j <= k; j++) {
+            for (int i = j; i <= n; i++) {
+                for (int prev = j-1; prev < i; prev++) {
+                    dp[i][j] = min(dp[i][j], dp[prev][j-1] + c[prev+1][i]);
+                }
+            }
+        }
+        
+        cout << dp[n][k] << endl;
+    }
+    
+    return 0;
+}

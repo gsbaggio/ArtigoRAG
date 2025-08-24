@@ -1,0 +1,46 @@
+def calculate_sum(n):
+    MOD1 = 998244353
+    MOD2 = 10**9 + 7
+
+    # Convert n to string for digit-wise processing
+    n_str = str(n)
+    length = len(n_str)
+
+    # Precompute powers of 10 modulo MOD1
+    power10_mod1 = [1] * (length + 1)
+    for i in range(1, length + 1):
+        power10_mod1[i] = (power10_mod1[i - 1] * 10) % MOD1
+
+    # Function to calculate the lexicographical position of a number
+    def lexicographical_position(x):
+        x_str = str(x)
+        x_len = len(x_str)
+        position = 0
+
+        # Count numbers with fewer digits
+        for i in range(1, x_len):
+            position += power10_mod1[i]
+            position %= MOD1
+
+        # Count numbers with the same number of digits
+        for i in range(x_len):
+            for d in range(0 if i > 0 else 1, int(x_str[i])):
+                position += power10_mod1[x_len - i - 1]
+                position %= MOD1
+
+        return position + 1  # 1-based index
+
+    # Compute the sum
+    total_sum = 0
+    for i in range(1, n + 1):
+        pos = lexicographical_position(i)
+        total_sum += (i - pos) % MOD1
+        total_sum %= MOD1
+
+    # Return the result modulo MOD2
+    return total_sum % MOD2
+
+# Input and output
+if __name__ == "__main__":
+    n = int(input().strip())
+    print(calculate_sum(n))

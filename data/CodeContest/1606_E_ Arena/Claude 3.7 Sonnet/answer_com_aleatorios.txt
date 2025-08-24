@@ -1,0 +1,30 @@
+def count_no_winner(n, x):
+    MOD = 998244353
+    
+    # Total configurations
+    total_ways = pow(x, n, MOD)
+    
+    # Count ways where there is a winner
+    winner_ways = 0
+    
+    for winner_health in range(1, x + 1):
+        # Winner survives for r rounds
+        r = (winner_health + n - 2) // (n - 1)
+        
+        # Max health others can have to die in r rounds
+        max_health = min(x, r * (n - 1))
+        
+        # If winner has unique highest health
+        if winner_health > max_health:
+            # Ways to select 1 hero as winner
+            ways = n
+            # Ways to assign health to others so they all die
+            others_ways = pow(max_health, n - 1, MOD)
+            winner_ways = (winner_ways + ways * others_ways) % MOD
+    
+    # Result is total ways minus ways with a winner
+    no_winner_ways = (total_ways - winner_ways + MOD) % MOD
+    return no_winner_ways
+
+n, x = map(int, input().split())
+print(count_no_winner(n, x))

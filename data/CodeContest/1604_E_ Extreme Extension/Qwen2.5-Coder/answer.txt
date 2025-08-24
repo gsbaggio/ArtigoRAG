@@ -1,0 +1,94 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+const int MAXN = 100005;
+
+struct SegmentTree {
+    int tree[4 * MAXN];
+    
+    void build(int node, int start, int end, vector<int>& a) {
+        if (start == end) {
+            tree[node] = 1;
+        } else {
+            int mid = (start + end) / 2;
+            build(2 * node, start, mid, a);
+            build(2 * node + 1, mid + 1, end, a);
+            tree[node] = (tree[2 * node] + tree[2 * node + 1]) % MOD;
+        }
+    }
+    
+    void update(int node, int start, int end, int idx, int val) {
+        if (start == end) {
+            tree[node] = val;
+        } else {
+            int mid = (start + end) / 2;
+            if (idx <= mid) {
+                update(2 * node, start, mid, idx, val);
+            } else {
+                update(2 * node + 1, mid + 1, end, idx, val);
+            }
+            tree[node] = (tree[2 * node] + tree[2 * node + 1]) % MOD;
+        }
+    }
+    
+    int query(int node, int start, int end, int l, int r) {
+        if (r < start || end < l) {
+            return 0;
+        }
+        if (l <= start && end <= r) {
+            return tree[node];
+        }
+        int mid = (start + end) / 2;
+        int p1 = query(2 * node, start, mid, l, r);
+        int p2 = query(2 * node + 1, mid + 1, end, l, r);
+        return (p1 + p2) % MOD;
+    }
+};
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for(int i=0;i<n;i++){
+            cin >> a[i];
+        }
+        
+        // Coordinate compression
+        vector<int> compressed_a = a;
+        sort(compressed_a.begin(), compressed_a.end());
+        compressed_a.erase(unique(compressed_a.begin(), compressed_a.end()), compressed_a.end());
+        unordered_map<int, int> rank;
+        for(int i=0;i<compressed_a.size();i++){
+            rank[compressed_a[i]] = i;
+        }
+        
+        // Initialize segment tree
+        SegmentTree st;
+        vector<int> freq(compressed_a.size(), 0);
+        st.build(1, 0, compressed_a.size()-1, freq);
+        
+        long long total_inversions = 0;
+        
+        // Iterate over all subarrays
+        for(int l=0;l<n;l++){
+            long long inversions = 0;
+            st.update(1, 0, compressed_a.size()-1, rank[a[l]], 0);
+            for(int r=l;r<n;r++){
+                inversions += st.query(1, 0, compressed_a.size()-1, rank[a[r]]+1, compressed_a.size()-1);
+                inversions %= MOD;
+                st.update(1, 0, compressed_a.size()-1, rank[a[r]], 1);
+            }
+            total_inversions += inversions;
+            total_inversions %= MOD;
+            st.update(1, 0, compressed_a.size()-1, rank[a[l]], 1);
+        }
+        
+        cout << total_inversions << "\n";
+    }
+}

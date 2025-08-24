@@ -1,0 +1,17 @@
+t = int(input())
+
+for _ in range(t):
+    s = input().strip()
+    count_a = s.count('a')
+    count_b = s.count('b')
+
+    if count_a == 0 or count_b == 0:
+        print(s)
+    elif count_a == count_b:
+        print(s)
+    elif count_a > count_b:
+        result = s.replace('ab', 'aa')
+        print(result)
+    else:
+        result = s.replace('ba', 'bb')
+        print(result)

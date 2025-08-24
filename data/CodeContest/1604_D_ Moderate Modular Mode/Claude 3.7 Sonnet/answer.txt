@@ -1,0 +1,14 @@
+t = int(input())
+for _ in range(t):
+    x, y = map(int, input().split())
+    
+    # If y is divisible by x, then y is a solution
+    if y % x == 0:
+        print(y)
+    else:
+        # If y >= x, we can use y itself
+        if y >= x:
+            print(y)
+        else:
+            # Otherwise, we can use x + y
+            print(x + y)

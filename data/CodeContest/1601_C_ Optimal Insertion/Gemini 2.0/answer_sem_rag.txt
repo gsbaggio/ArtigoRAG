@@ -1,0 +1,112 @@
+def solve():
+    n, m = map(int, input().split())
+    a = list(map(int, input().split()))
+    b = list(map(int, input().split()))
+
+    def count_inversions(arr):
+        count = 0
+        for i in range(len(arr)):
+            for j in range(i + 1, len(arr)):
+                if arr[i] > arr[j]:
+                    count += 1
+        return count
+
+    b.sort()
+    
+    min_inversions = float('inf')
+
+    def find_min_inversions(a, b, current_array, b_idx):
+        nonlocal min_inversions
+        
+        if b_idx == len(b):
+            temp_array = current_array[:]
+            for x in a:
+                temp_array.append(x)
+            inversions = count_inversions(temp_array)
+            min_inversions = min(min_inversions, inversions)
+            return
+
+        for i in range(len(a) + 1):
+            new_a = a[:]
+            new_a.insert(i, b[b_idx])
+            
+            remaining_a = new_a[:]
+            
+            find_min_inversions(remaining_a, b, current_array, b_idx + 1)
+
+    import itertools
+    
+    min_inversions = float('inf')
+    
+    for p in itertools.permutations(b):
+        
+        current_inversions = 0
+        temp_array = []
+        a_idx = 0
+        b_idx = 0
+        
+        while a_idx < len(a) or b_idx < len(b):
+            
+            if a_idx < len(a):
+                
+                best_inversions = float('inf')
+                best_temp_array = []
+                
+                # Try inserting b[b_idx] before a[a_idx]
+                temp_array_with_b_first = temp_array[:]
+                
+                remaining_b = list(p)
+                
+                
+                temp_array_with_b_first.append(p[b_idx])
+                
+                
+                temp_array_with_b_first.append(a[a_idx])
+                
+                
+                inversions_with_b_first = count_inversions(temp_array_with_b_first)
+                
+                
+                
+                if inversions_with_b_first < best_inversions:
+                    best_inversions = inversions_with_b_first
+                    best_temp_array = temp_array_with_b_first
+                
+                
+                # Try inserting a[a_idx] before b[b_idx]
+                temp_array_with_a_first = temp_array[:]
+                
+                temp_array_with_a_first.append(a[a_idx])
+                
+                inversions_with_a_first = count_inversions(temp_array_with_a_first)
+                
+                if inversions_with_a_first < best_inversions:
+                    best_inversions = inversions_with_a_first
+                    best_temp_array = temp_array_with_a_first
+                
+                
+                if len(temp_array) == 0:
+                    temp_array.append(a[a_idx])
+                    a_idx += 1
+                else:
+                    
+                    if a[a_idx] < p[b_idx]:
+                        temp_array.append(a[a_idx])
+                        a_idx += 1
+                    else:
+                        temp_array.append(p[b_idx])
+                        b_idx += 1
+                
+            else:
+                temp_array.append(p[b_idx])
+                b_idx += 1
+        
+        current_inversions = count_inversions(temp_array)
+        min_inversions = min(min_inversions, current_inversions)
+
+    print(min_inversions)
+
+
+t = int(input())
+for _ in range(t):
+    solve()

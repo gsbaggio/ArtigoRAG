@@ -1,0 +1,10 @@
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    max_diff = 0
+    for i in range(n):
+        diff = a[i] - (i + 1)
+        if diff > max_diff:
+            max_diff = diff
+    print(max_diff)

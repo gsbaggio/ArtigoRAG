@@ -1,0 +1,37 @@
+def solve():
+    n, M = map(int, input().split())
+    
+    def is_good(arr):
+        if not arr:
+            return True
+        return max(arr) * min(arr) >= sum(arr)
+    
+    def is_perfect(arr):
+        for i in range(1 << len(arr)):
+            subsequence = []
+            for j in range(len(arr)):
+                if (i >> j) & 1:
+                    subsequence.append(arr[j])
+            if subsequence and not is_good(subsequence):
+                return False
+        return True
+
+    def count_perfect_sequences(n, M):
+        count = 0
+        
+        def generate_sequences(current_sequence):
+            nonlocal count
+            if len(current_sequence) == n:
+                if is_perfect(current_sequence):
+                    count = (count + 1) % M
+                return
+            
+            for i in range(1, n + 2):
+                generate_sequences(current_sequence + [i])
+
+        generate_sequences([])
+        return count
+
+    print(count_perfect_sequences(n, M))
+
+solve()

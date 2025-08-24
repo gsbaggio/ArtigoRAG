@@ -1,0 +1,49 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n, m = map(int, data[idx:idx+2])  # Rows and columns
+        idx += 2
+        matrix = []
+        for i in range(n):
+            matrix.append(list(map(int, data[idx:idx+m])))
+            idx += m
+        
+        # Step 1: Extract max values and sort rows
+        max_values = [(max(row), i) for i, row in enumerate(matrix)]
+        max_values.sort()  # Sort by maximum value
+        
+        # Step 2: Try to find a valid split
+        red_rows = set()
+        blue_rows = set()
+        valid = False
+        k = -1
+        
+        for split in range(1, n):  # At least one red and one blue row
+            red_rows = set(i for _, i in max_values[:split])
+            blue_rows = set(i for _, i in max_values[split:])
+            
+            # Check the conditions for a valid split
+            left_red_max = max(matrix[i][:split] for i in red_rows)
+            left_blue_max = max(matrix[i][:split] for i in blue_rows)
+            right_red_min = min(matrix[i][split:] for i in red_rows)
+            right_blue_min = min(matrix[i][split:] for i in blue_rows)
+            
+            if left_red_max > left_blue_max and right_blue_min > right_red_min:
+                valid = True
+                k = split
+                break
+        
+        if valid:
+            coloring = ['R' if i in red_rows else 'B' for i in range(n)]
+            results.append(f"YES\n{''.join(coloring)} {k}")
+        else:
+            results.append("NO")
+    
+    sys.stdout.write("\n".join(results) + "\n")

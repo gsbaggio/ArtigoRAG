@@ -1,0 +1,43 @@
+MOD = 998244353
+
+def compute_extreme_values(a):
+    n = len(a)
+    dp = [[0] * n for _ in range(n)]
+    
+    # Fill the DP table
+    for length in range(2, n + 1):  # Subarray lengths from 2 to n
+        for i in range(n - length + 1):
+            j = i + length - 1
+            dp[i][j] = dp[i][j-1]
+            max_val = max(a[i:j])  # Maximum value in the subarray [a_i, ..., a_{j-1}]
+            if a[j] < max_val:
+                dp[i][j] += 1
+    
+    # Sum up all the extreme values
+    total_sum = 0
+    for i in range(n):
+        for j in range(i, n):
+            total_sum = (total_sum + dp[i][j]) % MOD
+    
+    return total_sum
+
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    idx = 0
+    t = int(input[idx])
+    idx += 1
+    results = []
+    for _ in range(t):
+        n = int(input[idx])
+        idx += 1
+        a = list(map(int, input[idx:idx+n]))
+        idx += n
+        result = compute_extreme_values(a)
+        results.append(result)
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

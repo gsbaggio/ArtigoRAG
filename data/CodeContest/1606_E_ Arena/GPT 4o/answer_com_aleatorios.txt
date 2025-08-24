@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+
+// Function to compute modular exponentiation
+long long mod_exp(long long base, long long exp, long long mod) {
+    long long result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1) result = (result * base) % mod;
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return result;
+}
+
+// Function to precompute factorials and modular inverses
+void precompute_factorials(vector<long long>& fact, vector<long long>& inv_fact, int max_n, int mod) {
+    fact[0] = 1;
+    for (int i = 1; i <= max_n; i++) {
+        fact[i] = (fact[i - 1] * i) % mod;
+    }
+    inv_fact[max_n] = mod_exp(fact[max_n], mod - 2, mod);
+    for (int i = max_n - 1; i >= 0; i--) {
+        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % mod;
+    }
+}
+
+// Function to compute nCr % MOD
+long long nCr(int n, int r, const vector<long long>& fact, const vector<long long>& inv_fact, int mod) {
+    if (r > n || r < 0) return 0;
+    return (((fact[n] * inv_fact[r]) % mod) * inv_fact[n - r]) % mod;
+}
+
+int main() {
+    int n, x;
+    cin >> n >> x;
+
+    // Precompute factorials and modular inverses
+    vector<long long> fact(501), inv_fact(501);
+    precompute_factorials(fact, inv_fact, 500, MOD);
+
+    // Total number of configurations
+    long long total_ways = mod_exp(x, n, MOD);
+
+    // Count configurations where there is a winner
+    long long winner_ways = 0;
+    for (int rounds = 1; rounds <= x / (n - 1); rounds++) {
+        long long max_health = rounds * (n - 1);
+        if (max_health > x) break;
+
+        // Count ways to assign health points such that all heroes are eliminated in `rounds` rounds
+        long long valid_ways = nCr(x - max_health + n - 1, n - 1, fact, inv_fact, MOD);
+        winner_ways = (winner_ways + valid_ways) % MOD;
+    }
+
+    // Subtract winner configurations from total configurations
+    long long no_winner_ways = (total_ways - winner_ways + MOD) % MOD;
+
+    cout << no_winner_ways << endl;
+    return 0;
+}

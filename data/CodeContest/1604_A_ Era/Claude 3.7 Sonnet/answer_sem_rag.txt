@@ -1,0 +1,33 @@
+def min_operations(arr):
+    n = len(arr)
+    operations = 0
+    
+    for i in range(n):
+        # Adjust index to 1-based for comparing with element values
+        pos = i + 1
+        
+        # Account for previous insertions which shifted this element
+        pos += operations
+        
+        # If the element is greater than its position
+        if arr[i] > pos:
+            # Calculate how many insertions are needed
+            needed = arr[i] - pos
+            operations += needed
+    
+    return operations
+
+def solve():
+    t = int(input())
+    results = []
+    
+    for _ in range(t):
+        n = int(input())
+        arr = list(map(int, input().split()))
+        results.append(min_operations(arr))
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    solve()

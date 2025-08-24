@@ -1,0 +1,72 @@
+def gcd(a, b):
+    """
+    Calculates the greatest common divisor (GCD) of two integers using the Euclidean algorithm.
+
+    Args:
+        a (int): The first integer.
+        b (int): The second integer.
+
+    Returns:
+        int: The greatest common divisor of a and b.
+    """
+    while b:
+        a, b = b, a % b
+    return a
+
+def count_pairs(l, r):
+    """
+    Counts the number of integer pairs (i, j) such that l <= i <= j <= r and gcd(i, j) >= l.
+
+    Args:
+        l (int): The lower bound of the range.
+        r (int): The upper bound of the range.
+
+    Returns:
+        int: The number of pairs satisfying the condition.
+    """
+    count = 0
+    for i in range(l, r + 1):
+        for j in range(i, r + 1):
+            if gcd(i, j) >= l:
+                count += 1
+    return count
+
+def solve():
+    """
+    Reads input, calculates the minimum sum of c(x_i+1, x_{i+1}), and prints the result.
+    """
+    n, k = map(int, input().split())
+
+    if k == 1:
+        print(count_pairs(1, n))
+        return
+
+    min_sum = float('inf')
+    
+    def find_min_sum(index, current_sum, last_x, sequence):
+        """
+        Recursively explores possible sequences to find the minimum sum of c(x_i+1, x_{i+1}).
+
+        Args:
+            index (int): The current index in the sequence being built.
+            current_sum (int): The current sum of c(x_i+1, x_{i+1}) values.
+            last_x (int): The last value added to the sequence.
+            sequence (list): The current sequence being built.
+        """
+        nonlocal min_sum
+
+        if index == k:
+            current_sum += count_pairs(last_x + 1, n)
+            min_sum = min(min_sum, current_sum)
+            return
+
+        for next_x in range(last_x + 1, n):
+            find_min_sum(index + 1, current_sum + count_pairs(last_x + 1, next_x), next_x, sequence + [next_x])
+
+    find_min_sum(0, 0, 0, [0])
+    print(min_sum)
+
+# Main execution block
+t = int(input())
+for _ in range(t):
+    solve()

@@ -1,0 +1,19 @@
+def min_operations(arr, n):
+    operations = 0
+    shift = 0  # Track how many elements we've inserted
+    
+    for i in range(n):
+        current_pos = i + 1 + shift  # Current position after shifts
+        if arr[i] > current_pos:
+            # Calculate how many elements we need to insert
+            insertions_needed = arr[i] - current_pos
+            operations += insertions_needed
+            shift += insertions_needed
+    
+    return operations
+
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    print(min_operations(arr, n))

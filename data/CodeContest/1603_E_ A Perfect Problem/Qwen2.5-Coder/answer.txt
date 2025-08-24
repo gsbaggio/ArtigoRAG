@@ -1,0 +1,27 @@
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    n = int(input[0])
+    M = int(input[1])
+
+    # Initialize dp table
+    dp = [[0] * (n + 2) for _ in range(n + 1)]
+    dp[0][0] = 1  # Base case: one way to have an empty sequence
+
+    # Fill dp table
+    for i in range(1, n + 1):
+        for j in range(1, n + 2):
+            dp[i][j] = dp[i][j - 1]  # Carry forward the count from previous max value
+            dp[i][j] += dp[i - 1][j]  # Add sequences of length i-1 with max value j
+            dp[i][j] %= M  # Take modulo M to prevent overflow
+
+    # Calculate the result
+    result = 0
+    for j in range(1, n + 2):
+        result += dp[n][j]
+        result %= M
+
+    print(result)
+
+if __name__ == '__main__':
+    main()
