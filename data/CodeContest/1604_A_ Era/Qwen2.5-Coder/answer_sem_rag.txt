@@ -2,19 +2,14 @@ def min_operations_to_satisfy_condition(t, test_cases):
     results = []
     
     for n, a in test_cases:
-        operations = 0
-        current_length = 0
+        insertions = 0
         
         for i in range(n):
-            # Calculate the position in the new sequence
-            new_position = i + 1 + operations
-            
-            # If the current element is greater than its new position,
-            # we need to insert elements to make it fit
-            if a[i] > new_position:
-                operations += a[i] - new_position
+            # Calculate the number of insertions needed for the current element
+            if a[i] > i + 1:
+                insertions += a[i] - (i + 1)
         
-        results.append(operations)
+        results.append(insertions)
     
     return results
 

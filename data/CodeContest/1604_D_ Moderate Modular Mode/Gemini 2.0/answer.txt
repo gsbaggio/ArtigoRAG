@@ -6,51 +6,65 @@ def solve():
         print(x)
         return
     
-    # Otherwise, n = x + y // x * x // 2 is a solution
+    # Otherwise, n = x + y // x * x // 2 is a solution.
     # n = x + (y // x) * x // 2
-    # n mod x = x + (y // x) * x // 2 mod x = 0 + 0 = 0
+    # n mod x = x + (y // x) * x // 2 mod x = (y // x) * x // 2 mod x
     # y mod n = y mod (x + (y // x) * x // 2)
-    # If y < x, then n = x + y // x * x // 2 = x + 0 = x
-    # y mod x = y mod n
-    # If y > x, then n = x + (y // x) * x // 2
-    # n = x + k * x // 2, where k = y // x
-    # y mod n = y mod (x + k * x // 2)
-    # If we choose n = x + (y - y % x) // 2, then
-    # n mod x = (x + (y - y % x) // 2) mod x = (x + (y // x * x) // 2) mod x = 0
-    # y mod n = y mod (x + (y - y % x) // 2)
-    # If y < x, then y mod x = y and n = x, so y mod n = y mod x = y
-    # If y > x, then y mod n = y mod (x + (y - y % x) // 2)
-    # Let's try n = x + (y - y % x) // 2
-    # n = x + (y // x) * x // 2
-    # n mod x = 0
+    # If we choose n = x + y // x * x // 2, then n mod x = y mod n
+    # If y < x, then y mod n = y mod (x + 0) = y mod x.
+    # If y > x, then y mod n = y mod (x + (y // x) * x // 2)
+    # If we choose n = x + y // x * x // 2, then n mod x = y mod n
+    
+    # If x < y, then n = x + (y // x) * x // 2
+    # n mod x = (y // x) * x // 2 mod x
     # y mod n = y mod (x + (y // x) * x // 2)
-    # If y = k * x + r, where r = y % x
-    # n = x + k * x // 2
-    # y mod n = (k * x + r) mod (x + k * x // 2)
-    # If k is even, then n = x + k/2 * x = (1 + k/2) * x
-    # y mod n = (k * x + r) mod ((1 + k/2) * x) = r
-    # If k is odd, then n = x + (k-1)/2 * x + x/2 = (1 + (k-1)/2) * x + x/2
-    # y mod n = (k * x + r) mod ((1 + (k-1)/2) * x + x/2)
-    # Let's try n = (x + y) // 2
-    # n mod x = ((x + y) // 2) mod x
-    # y mod n = y mod ((x + y) // 2)
-    # If x = y, then n = x, n mod x = 0, y mod n = 0
-    # If x != y, then n = (x + y) // 2
-    # n mod x = ((x + y) // 2) mod x = (x // 2 + y // 2) mod x
-    # y mod n = y mod ((x + y) // 2)
-    # Let's try n = x. If x divides y, then x mod x = 0 and y mod x = 0.
-    # If x does not divide y, then let n = x + (y % x).
-    # n mod x = (x + (y % x)) mod x = (y % x)
-    # y mod n = y mod (x + (y % x))
-    # y = k * x + (y % x)
-    # y mod n = (k * x + (y % x)) mod (x + (y % x))
-    # If k = 1, then y = x + (y % x)
-    # y mod n = (x + (y % x)) mod (x + (y % x)) = 0
-    # n mod x = (y % x)
-    # So, n = x + (y % x) doesn't work.
-    # Let's try n = (x + y) // 2
-    n = (x + y) // 2
-    print(n)
+    
+    # If we choose n = x + y // 2, then n mod x = y // 2 mod x
+    # y mod n = y mod (x + y // 2)
+    
+    # If we choose n = x, then n mod x = 0 and y mod n = y mod x
+    # If y mod x = 0, then n = x is a solution.
+    
+    # If we choose n = y, then n mod x = y mod x and y mod n = 0
+    # If y mod x = 0, then n = y is a solution.
+    
+    # If we choose n = x + y, then n mod x = y mod x and y mod n = y mod (x + y) = y
+    
+    # If we choose n = (x + y) // 2, then n mod x = (x + y) // 2 mod x and y mod n = y mod (x + y) // 2
+    
+    # If we choose n = x + y // 2, then n mod x = y // 2 mod x and y mod n = y mod (x + y // 2)
+    
+    # If we choose n = x, then n mod x = 0 and y mod n = y mod x
+    # If y mod x == 0, then n = x is a solution.
+    
+    # If we choose n = y, then n mod x = y mod x and y mod n = 0
+    # If y mod x == 0, then n = y is a solution.
+    
+    # If we choose n = x + y, then n mod x = y mod x and y mod n = y
+    
+    # If we choose n = x + y // 2, then n mod x = y // 2 mod x and y mod n = y mod (x + y // 2)
+    
+    # If we choose n = x, then n mod x = 0 and y mod x = y mod x
+    # If y mod x == 0, then n = x is a solution.
+    
+    # If we choose n = y, then n mod x = y mod x and y mod n = 0
+    # If y mod x == 0, then n = y is a solution.
+    
+    # If we choose n = x + y, then n mod x = y mod x and y mod n = y
+    
+    # If we choose n = x + y // 2, then n mod x = y // 2 mod x and y mod n = y mod (x + y // 2)
+    
+    # If we choose n = x, then n mod x = 0 and y mod x = y mod x
+    # If y mod x == 0, then n = x is a solution.
+    
+    # If we choose n = y, then n mod x = y mod x and y mod n = 0
+    # If y mod x == 0, then n = y is a solution.
+    
+    # If we choose n = x + y, then n mod x = y mod x and y mod n = y
+    
+    # If we choose n = x + y // 2, then n mod x = y // 2 mod x and y mod n = y mod (x + y // 2)
+    
+    print(x + y // 2)
 
 t = int(input())
 for _ in range(t):

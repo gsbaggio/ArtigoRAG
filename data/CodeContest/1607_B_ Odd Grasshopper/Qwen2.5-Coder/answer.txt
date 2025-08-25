@@ -1,0 +1,40 @@
+def final_position(x0, n):
+    # Calculate the number of right and left jumps
+    if n % 2 == 0:
+        r = n // 2
+        l = n // 2
+    else:
+        if x0 % 2 == 0:
+            r = (n - 1) // 2
+            l = (n + 1) // 2
+        else:
+            r = (n + 1) // 2
+            l = (n - 1) // 2
+    
+    # Calculate the sum of distances for right and left jumps
+    sum_right = r * (r + 1) // 2
+    sum_left = l * (l + 1) // 2
+    
+    # Calculate the final position
+    xf = x0 + sum_right - sum_left
+    return xf
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+
+# Number of test cases
+t = int(input[0])
+
+# Process each test case
+results = []
+index = 1
+for _ in range(t):
+    x0 = int(input[index])
+    n = int(input[index + 1])
+    results.append(final_position(x0, n))
+    index += 2
+
+# Print results
+for result in results:
+    print(result)

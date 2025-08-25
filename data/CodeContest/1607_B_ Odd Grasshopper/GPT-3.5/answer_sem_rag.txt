@@ -1,0 +1,21 @@
+# Function to calculate the final position of the grasshopper after n jumps from position x_0
+def final_position(x_0, n):
+    # Calculate the total distance the grasshopper will travel after n jumps
+    total_distance = n * (n + 1) // 2
+    
+    # Calculate the direction of the final jump based on the starting position x_0
+    direction = 1 if x_0 % 2 == 0 else -1
+    
+    # Calculate the final position by applying the total distance in the correct direction
+    final_position = x_0 + (direction * total_distance)
+    
+    return final_position
+
+# Read the number of test cases
+t = int(input())
+
+# Iterate through each test case
+for _ in range(t):
+    x_0, n = map(int, input().split())
+    result = final_position(x_0, n)
+    print(result)

@@ -1,0 +1,31 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    data = input().split()
+    x0 = int(data[0])
+    n = int(data[1])
+    if n == 0:
+        results.append(str(x0))
+    else:
+        if x0 % 2 == 0:
+            r = n % 4
+            if r == 0:
+                results.append(str(x0))
+            elif r == 1:
+                results.append(str(x0 - n))
+            elif r == 2:
+                results.append(str(x0 + 1))
+            else:
+                results.append(str(x0 + n + 1))
+        else:
+            r = n % 4
+            if r == 0:
+                results.append(str(x0))
+            elif r == 1:
+                results.append(str(x0 + n))
+            elif r == 2:
+                results.append(str(x0 - 1))
+            else:
+                results.append(str(x0 - n - 1))
+
+print("\n".join(results))

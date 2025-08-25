@@ -1,0 +1,25 @@
+def solve_grasshopper(x0, n):
+    # Calculate the final position after n jumps
+    remainder = n % 4
+    
+    if remainder == 0:
+        # n % 4 == 0: No change to original position
+        return x0
+    elif remainder == 1:
+        # n % 4 == 1: Subtract (n+1)/2
+        return x0 - (n + 1) // 2 if x0 % 2 == 0 else x0 + (n + 1) // 2
+    elif remainder == 2:
+        # n % 4 == 2: Add 1 if starting position is even, subtract 1 if odd
+        return x0 + 1 if x0 % 2 == 0 else x0 - 1
+    else:  # remainder == 3
+        # n % 4 == 3: Add (n+1)/2
+        return x0 + (n + 1) // 2 if x0 % 2 == 0 else x0 - (n + 1) // 2
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        x0, n = map(int, input().split())
+        print(solve_grasshopper(x0, n))
+
+if __name__ == "__main__":
+    main()

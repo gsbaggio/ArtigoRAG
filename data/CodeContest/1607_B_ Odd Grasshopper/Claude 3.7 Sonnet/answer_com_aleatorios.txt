@@ -1,0 +1,31 @@
+def solve(x0, n):
+    # If no jumps, return starting position
+    if n == 0:
+        return x0
+    
+    # Calculate the final offset based on n mod 4
+    n_mod_4 = n % 4
+    
+    if n_mod_4 == 0:
+        offset = 0
+    elif n_mod_4 == 1:
+        offset = -(n)
+    elif n_mod_4 == 2:
+        offset = 1
+    else:  # n_mod_4 == 3
+        offset = n + 1
+    
+    # Adjust direction based on parity of x0
+    if x0 % 2 == 1:
+        offset = -offset
+    
+    return x0 + offset
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        x0, n = map(int, input().split())
+        print(solve(x0, n))
+
+if __name__ == "__main__":
+    main()

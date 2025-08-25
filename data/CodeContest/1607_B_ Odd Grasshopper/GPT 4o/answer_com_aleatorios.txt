@@ -1,0 +1,40 @@
+def grasshopper_position(t, test_cases):
+    results = []
+    for x0, n in test_cases:
+        if n == 0:
+            # No jumps, position remains the same
+            results.append(x0)
+            continue
+        
+        # Determine the net displacement based on the parity of n
+        if n % 4 == 1:
+            displacement = -n
+        elif n % 4 == 2:
+            displacement = 1
+        elif n % 4 == 3:
+            displacement = n + 1
+        else:  # n % 4 == 0
+            displacement = 0
+        
+        # Adjust based on the initial position's parity
+        if x0 % 2 == 0:
+            results.append(x0 + displacement)
+        else:
+            results.append(x0 - displacement)
+    
+    return results
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    
+    t = int(data[0])
+    test_cases = [tuple(map(int, line.split())) for line in data[1:]]
+    
+    # Solve the problem
+    results = grasshopper_position(t, test_cases)
+    
+    # Output results
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

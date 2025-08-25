@@ -1,0 +1,32 @@
+def get_final_position(x, n):
+    # Calculate which jump number the grasshopper will make when it reaches the final position
+    jump_num = int((2 * n + abs(x * 2)) ** 0.5)
+    
+    # Calculate the total distance covered in jumps up to jump_num
+    total_distance = jump_num * (jump_num + 1) // 2
+
+    # Adjust the total distance based on whether x is odd or even
+    if total_distance % 2 == 0:  # Sum of first m odd numbers is even
+        if x % 2 == 0:  # x is even
+            total_distance += x
+        else:  # x is odd
+            total_distance -= x
+    else:  # Sum of first m odd numbers is odd
+        if x % 2 == 0:  # x is even
+            total_distance -= x
+        else:  # x is odd
+            total_distance += x
+
+    # Calculate the final position based on the total distance covered
+    final_position = total_distance - x
+
+    return final_position
+
+# Read the number of test cases
+t = int(input())
+
+# Process each test case
+for _ in range(t):
+    x, n = map(int, input().split())
+    result = get_final_position(x, n)
+    print(result)

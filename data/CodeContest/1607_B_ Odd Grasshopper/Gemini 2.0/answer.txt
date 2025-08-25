@@ -1,0 +1,33 @@
+def solve():
+    x0, n = map(int, input().split())
+    
+    if n == 0:
+        print(x0)
+        return
+
+    rem = n % 4
+    
+    if x0 % 2 == 0:
+        if rem == 0:
+            x0 += 0
+        elif rem == 1:
+            x0 -= n + 1
+        elif rem == 2:
+            x0 += 1
+        else:
+            x0 += n + 2
+    else:
+        if rem == 0:
+            x0 += 0
+        elif rem == 1:
+            x0 += n + 1
+        elif rem == 2:
+            x0 -= 1
+        else:
+            x0 -= n + 2
+            
+    print(x0)
+
+t = int(input())
+for _ in range(t):
+    solve()

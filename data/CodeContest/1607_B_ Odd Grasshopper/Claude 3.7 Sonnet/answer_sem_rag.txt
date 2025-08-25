@@ -1,0 +1,40 @@
+def solve(x0, n):
+    if n == 0:
+        return x0
+    
+    # We only need to consider the last (n % 4) jumps
+    n_mod = n % 4
+    
+    if n_mod == 0:
+        return x0
+    
+    # Calculate sum of the last n_mod jumps
+    first_in_range = n - n_mod + 1
+    last_in_range = n
+    remainder_sum = (first_in_range + last_in_range) * n_mod // 2
+    
+    # Apply the pattern based on starting position parity and n_mod
+    if x0 % 2 == 0:  # even starting position
+        if n_mod == 1:
+            return x0 - remainder_sum
+        elif n_mod == 2:
+            return x0 + 1
+        else:  # n_mod == 3
+            return x0 + remainder_sum
+    else:  # odd starting position
+        if n_mod == 1:
+            return x0 + remainder_sum
+        elif n_mod == 2:
+            return x0 - 1
+        else:  # n_mod == 3
+            return x0 - remainder_sum
+
+def main():
+    t = int(input())
+    
+    for _ in range(t):
+        x0, n = map(int, input().split())
+        print(solve(x0, n))
+
+if __name__ == "__main__":
+    main()

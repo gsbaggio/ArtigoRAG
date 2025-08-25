@@ -1,0 +1,29 @@
+def grasshopper_position(t, test_cases):
+    results = []
+    for x0, n in test_cases:
+        # Calculate the number of complete groups of 4 and the remainder
+        groups = n // 4
+        remainder = n % 4
+        
+        # Calculate the net effect of the remainder jumps
+        net_effect = 0
+        if remainder == 1:
+            net_effect = -1 if x0 % 2 == 0 else 1
+        elif remainder == 2:
+            net_effect = 1 if x0 % 2 == 0 else -1
+        elif remainder == 3:
+            net_effect = 2 if x0 % 2 == 0 else -2
+        
+        # Final position
+        final_position = x0 + net_effect
+        results.append(final_position)
+    
+    return results
+
+# Input reading
+t = int(input())
+test_cases = [tuple(map(int, input().split())) for _ in range(t)]
+
+# Solve and output results
+results = grasshopper_position(t, test_cases)
+print("\n".join(map(str, results)))

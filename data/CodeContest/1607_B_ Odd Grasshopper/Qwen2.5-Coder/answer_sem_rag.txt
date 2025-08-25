@@ -1,0 +1,27 @@
+def final_position(x0, n):
+    # Calculate the sum of the first n natural numbers
+    Sn = n * (n + 1) // 2
+    
+    # Determine the final position based on the parity of x0 and n
+    if (x0 % 2 == 0 and n % 2 == 1) or (x0 % 2 == 1 and n % 2 == 0):
+        return x0 - Sn
+    else:
+        return x0 + Sn
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+t = int(input[0])
+index = 1
+
+# Process each test case
+results = []
+for _ in range(t):
+    x0 = int(input[index])
+    n = int(input[index + 1])
+    index += 2
+    results.append(final_position(x0, n))
+
+# Print results
+for result in results:
+    print(result)

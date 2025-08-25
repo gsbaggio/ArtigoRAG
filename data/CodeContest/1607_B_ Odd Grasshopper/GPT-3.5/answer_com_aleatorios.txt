@@ -1,0 +1,21 @@
+def final_position(x_0, n):
+    # Calculate the total displacement after n jumps
+    displacement = n * (n + 1) // 2
+
+    # Determine the direction of the final jump based on the parity of x_0
+    if x_0 % 2 == 0:
+        if n % 2 == 0:
+            return x_0 + displacement
+        else:
+            return x_0 - displacement
+    else:
+        if n % 2 == 0:
+            return x_0 - displacement
+        else:
+            return x_0 + displacement
+
+# Input parsing
+t = int(input())
+for _ in range(t):
+    x_0, n = map(int, input().split())
+    print(final_position(x_0, n))
