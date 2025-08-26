@@ -1,0 +1,50 @@
+def solve():
+    n, a, b = map(int, input().split())
+
+    if abs(a - b) > 1 or a + b > n - 2:
+        print(-1)
+        return
+
+    p = [0] * n
+    
+    if a > b:
+        
+        start = 0
+        end = n - 1
+        
+        for i in range(n):
+            if i % 2 == 0 and a > 0:
+                p[i] = end
+                end -= 1
+                a -= 1
+            else:
+                p[i] = start
+                start += 1
+    elif b > a:
+        start = 0
+        end = n - 1
+        for i in range(n):
+            if i % 2 == 0 and b > 0:
+                p[i] = start
+                start += 1
+                b -= 1
+            else:
+                p[i] = end
+                end -= 1
+    else:
+        start = 0
+        end = n - 1
+        for i in range(n):
+            if i % 2 == 0 and a > 0:
+                p[i] = end
+                end -= 1
+                a -= 1
+            else:
+                p[i] = start
+                start += 1
+
+    print(*p)
+
+t = int(input())
+for _ in range(t):
+    solve()

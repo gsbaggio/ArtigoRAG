@@ -1,0 +1,103 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<string> dominoes(n);
+    for (int i = 0; i < n; i++) {
+        cin >> dominoes[i];
+    }
+    
+    // For n=1, handle special case
+    if (n == 1) {
+        char left = dominoes[0][0];
+        char right = dominoes[0][1];
+        
+        if (left == '?' && right == '?') {
+            cout << 2 << endl;  // BW or WB
+            return 0;
+        }
+        if (left == '?') {
+            cout << 1 << endl;  // Only one choice to make left != right
+            return 0;
+        }
+        if (right == '?') {
+            cout << 1 << endl;  // Only one choice to make left != right
+            return 0;
+        }
+        if (left != right) {
+            cout << 1 << endl;  // Already valid
+            return 0;
+        } else {
+            cout << 0 << endl;  // Invalid, can't fix
+            return 0;
+        }
+    }
+    
+    // For general case, we'll use dp[pos][first_left][last_right] to track valid colorings
+    // where:
+    // - pos is the current position in the sequence (0 to n)
+    // - first_left is the color of the left side of the first domino (0=W, 1=B)
+    // - last_right is the color of the right side of the current domino (0=W, 1=B)
+    
+    vector<vector<vector<int>>> dp(n+1, vector<vector<int>>(2, vector<int>(2, 0)));
+    
+    // Initialize: we can start with either color for the first left side
+    // if it's not already fixed
+    for (int first_left = 0; first_left < 2; first_left++) {
+        char color = (first_left == 0) ? 'W' : 'B';
+        if (dominoes[0][0] == '?' || dominoes[0][0] == color) {
+            for (int first_right = 0; first_right < 2; first_right++) {
+                color = (first_right == 0) ? 'W' : 'B';
+                if (dominoes[0][1] == '?' || dominoes[0][1] == color) {
+                    dp[1][first_left][first_right] = 1;
+                }
+            }
+        }
+    }
+    
+    // Fill dp table
+    for (int pos = 1; pos < n; pos++) {
+        for (int first_left = 0; first_left < 2; first_left++) {
+            for (int prev_right = 0; prev_right < 2; prev_right++) {
+                if (dp[pos][first_left][prev_right] == 0) continue;
+                
+                // Try all possible colors for the next domino
+                for (int curr_left = 0; curr_left < 2; curr_left++) {
+                    // Skip if current left equals previous right (invalid cycle)
+                    if (curr_left == prev_right) continue;
+                    
+                    char color = (curr_left == 0) ? 'W' : 'B';
+                    if (dominoes[pos][0] == '?' || dominoes[pos][0] == color) {
+                        for (int curr_right = 0; curr_right < 2; curr_right++) {
+                            color = (curr_right == 0) ? 'W' : 'B';
+                            if (dominoes[pos][1] == '?' || dominoes[pos][1] == color) {
+                                dp[pos+1][first_left][curr_right] = (dp[pos+1][first_left][curr_right] + dp[pos][first_left][prev_right]) % MOD;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Count final valid arrangements: last right must not equal first left
+    int result = 0;
+    for (int first_left = 0; first_left < 2; first_left++) {
+        for (int last_right = 0; last_right < 2; last_right++) {
+            if (last_right != first_left) {
+                result = (result + dp[n][first_left][last_right]) % MOD;
+            }
+        }
+    }
+    
+    cout << result << endl;
+    return 0;
+}

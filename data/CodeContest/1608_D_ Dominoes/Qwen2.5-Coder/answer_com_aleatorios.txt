@@ -1,0 +1,142 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    cin >> n;
+    
+    // Initialize dp arrays
+    long long dp_B[n+1], dp_W[n+1];
+    memset(dp_B, 0, sizeof(dp_B));
+    memset(dp_W, 0, sizeof(dp_W));
+    
+    // Read the first domino separately to handle circular arrangement
+    string first_domino;
+    cin >> first_domino;
+    char first_left = first_domino[0];
+    char first_right = first_domino[1];
+    
+    if(first_left == '?'){
+        if(first_right == '?'){
+            dp_B[1] = 1;
+            dp_W[1] = 1;
+        }
+        else if(first_right == 'B'){
+            dp_W[1] = 1;
+        }
+        else{
+            dp_B[1] = 1;
+        }
+    }
+    else if(first_left == 'B'){
+        if(first_right == '?'){
+            dp_W[1] = 1;
+        }
+        else if(first_right == 'W'){
+            dp_W[1] = 1;
+        }
+        else{
+            dp_W[1] = 0;
+        }
+    }
+    else{
+        if(first_right == '?'){
+            dp_B[1] = 1;
+        }
+        else if(first_right == 'B'){
+            dp_B[1] = 0;
+        }
+        else{
+            dp_B[1] = 1;
+        }
+    }
+    
+    // Process the rest of the dominoes
+    for(int i = 2; i <= n; i++){
+        string domino;
+        cin >> domino;
+        char left = domino[0];
+        char right = domino[1];
+        
+        if(left == '?'){
+            if(right == '?'){
+                dp_B[i] = (dp_B[i-1] + dp_W[i-1]) % MOD;
+                dp_W[i] = (dp_B[i-1] + dp_W[i-1]) % MOD;
+            }
+            else if(right == 'B'){
+                dp_W[i] = dp_B[i-1];
+            }
+            else{
+                dp_B[i] = dp_W[i-1];
+            }
+        }
+        else if(left == 'B'){
+            if(right == '?'){
+                dp_W[i] = dp_B[i-1];
+            }
+            else if(right == 'W'){
+                dp_W[i] = dp_B[i-1];
+            }
+            else{
+                dp_W[i] = 0;
+            }
+        }
+        else{
+            if(right == '?'){
+                dp_B[i] = dp_W[i-1];
+            }
+            else if(right == 'B'){
+                dp_B[i] = dp_W[i-1];
+            }
+            else{
+                dp_B[i] = 0;
+            }
+        }
+    }
+    
+    // Handle the circular arrangement
+    long long total_ways = (dp_B[n] + dp_W[n]) % MOD;
+    long long invalid_ways = 0;
+    
+    if(first_left == '?'){
+        if(first_right == '?'){
+            invalid_ways = (dp_B[n-1] + dp_W[n-1]) % MOD;
+        }
+        else if(first_right == 'B'){
+            invalid_ways = dp_B[n-1];
+        }
+        else{
+            invalid_ways = dp_W[n-1];
+        }
+    }
+    else if(first_left == 'B'){
+        if(first_right == '?'){
+            invalid_ways = dp_B[n-1];
+        }
+        else if(first_right == 'W'){
+            invalid_ways = dp_B[n-1];
+        }
+        else{
+            invalid_ways = 0;
+        }
+    }
+    else{
+        if(first_right == '?'){
+            invalid_ways = dp_W[n-1];
+        }
+        else if(first_right == 'B'){
+            invalid_ways = dp_W[n-1];
+        }
+        else{
+            invalid_ways = 0;
+        }
+    }
+    
+    long long valid_ways = (total_ways - invalid_ways + MOD) % MOD;
+    cout << valid_ways;
+}

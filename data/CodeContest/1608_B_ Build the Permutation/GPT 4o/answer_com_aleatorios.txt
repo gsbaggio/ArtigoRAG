@@ -1,0 +1,48 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    results = []
+    idx = 1
+    
+    for _ in range(t):
+        n, a, b = map(int, data[idx:idx+3])
+        idx += 3
+        
+        # Check if the constraints are violated
+        if a + b > n - 2:
+            results.append("-1")
+            continue
+        
+        # Construct the permutation
+        perm = []
+        peaks = a
+        valleys = b
+        remaining = n - (a + b)
+        
+        # Start with the smallest numbers for valleys and largest for peaks
+        low = 1
+        high = n
+        
+        # Alternate between peaks and valleys
+        for i in range(a + b):
+            if i % 2 == 0 and peaks > 0:  # Place a peak
+                perm.append(high)
+                high -= 1
+                peaks -= 1
+            elif valleys > 0:  # Place a valley
+                perm.append(low)
+                low += 1
+                valleys -= 1
+        
+        # Fill the remaining numbers
+        if a > b:
+            perm.extend(range(low, high + 1))
+        else:
+            perm = list(range(low, high + 1)) + perm
+        
+        results.append(" ".join(map(str, perm)))
+    
+    sys.stdout.write("\n".join(results) + "\n")

@@ -1,0 +1,26 @@
+def generate_permutation(n, a, b):
+    if a + b > n - 1 or a * b == 0:
+        return [-1]
+
+    permutation = []
+    for i in range(b + 1):
+        permutation.append(i + 1)
+
+    rest = n - b - 1
+    for i in range(a):
+        permutation.append(rest + a - i + 1)
+    
+    for i in range(rest):
+        permutation.append(b + i + 2)
+
+    return permutation
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        n, a, b = map(int, input().split())
+        result = generate_permutation(n, a, b)
+        print(*result)
+
+if __name__ == "__main__":
+    main()

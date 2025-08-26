@@ -1,0 +1,96 @@
+mod = 998244353
+
+def ntt(a, inverse=False):
+    n = len(a)
+    j = 0
+    for i in range(1, n):
+        bit = n >> 1
+        while j >= bit:
+            j -= bit
+            bit >>= 1
+        j += bit
+        if i < j:
+            a[i], a[j] = a[j], a[i]
+    L = 2
+    while L <= n:
+        wlen = pow(3, (mod-1)//L, mod)
+        if inverse:
+            wlen = pow(wlen, mod-2, mod)
+        for i in range(0, n, L):
+            w = 1
+            for j in range(0, L//2):
+                u = a[i+j]
+                v = w * a[i+j+L//2] % mod
+                a[i+j] = (u + v) % mod
+                a[i+j+L//2] = (u - v) % mod
+                w = w * wlen % mod
+        L <<= 1
+    if inverse:
+        inv_n = pow(n, mod-2, mod)
+        for i in range(n):
+            a[i] = a[i] * inv_n % mod
+
+def conv(a, b):
+    n1 = len(a)
+    n2 = len(b)
+    n = 1
+    while n < n1 + n2 - 1:
+        n <<= 1
+    a_ntt = a + [0] * (n - n1)
+    b_ntt = b + [0] * (n - n2)
+    ntt(a_ntt, False)
+    ntt(b_ntt, False)
+    c = [a_ntt[i] * b_ntt[i] % mod for i in range(n)]
+    ntt(c, True)
+    return c[:n1+n2-1]
+
+def main():
+    import sys
+    data = sys.stdin.read().splitlines()
+    if not data:
+        return
+    n = int(data[0])
+    polys = []
+    C0 = 1
+    C1 = 1
+    C2 = 1
+    for i in range(1, n+1):
+        s = data[i].strip()
+        l = s[0]
+        r = s[1]
+        clB = 1 if l == 'B' or l == '?' else 0
+        clW = 1 if l == 'W' or l == '?' else 0
+        crB = 1 if r == 'B' or r == '?' else 0
+        crW = 1 if r == 'W' or r == '?' else 0
+        a_i = clB * crB % mod
+        b_i = (clB * crW + clW * crB) % mod
+        c_i = clW * crW % mod
+        d_i = clB * crW % mod
+        e_i = clW * crB % mod
+        polys.append([c_i, b_i, a_i])
+        C0 = (C0 * b_i) % mod
+        C1 = (C1 * d_i) % mod
+        C2 = (C2 * e_i) % mod
+
+    # Combine polynomials using divide and conquer
+    while len(polys) > 1:
+        new_polys = []
+        for i in range(0, len(polys), 2):
+            if i+1 < len(polys):
+                new_polys.append(conv(polys[i], polys[i+1]))
+            else:
+                new_polys.append(polys[i])
+        polys = new_polys
+
+    poly = polys[0]
+    if n < len(poly):
+        A = poly[n]
+    else:
+        A = 0
+    ans = (A - C0 + C1 + C2) % mod
+    if ans < 0:
+        ans += mod
+    print(ans)
+
+if __name__ == '__main__':
+    main()

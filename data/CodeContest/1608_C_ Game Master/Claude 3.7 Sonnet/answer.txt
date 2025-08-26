@@ -1,0 +1,30 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        strengths_map1 = list(map(int, input().split()))
+        strengths_map2 = list(map(int, input().split()))
+        
+        result = ['0'] * n
+        
+        for i in range(n):
+            can_win = True
+            
+            # Check if player i can beat every other player on at least one map
+            for j in range(n):
+                if i == j:
+                    continue
+                
+                # If player i can't beat player j on either map, they can't win
+                if (strengths_map1[i] < strengths_map1[j] and 
+                    strengths_map2[i] < strengths_map2[j]):
+                    can_win = False
+                    break
+            
+            if can_win:
+                result[i] = '1'
+        
+        print(''.join(result))
+
+solve()

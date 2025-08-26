@@ -1,0 +1,40 @@
+def can_win_tournament(test_cases):
+    results = []
+    
+    for n, strengths_a, strengths_b in test_cases:
+        max_a = max(strengths_a)
+        max_b = max(strengths_b)
+        
+        # Create a result string for the current test case
+        result = ""
+        for i in range(n):
+            if strengths_a[i] == max_a or strengths_b[i] == max_b:
+                result += "1"
+            else:
+                result += "0"
+        
+        results.append(result)
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read().splitlines()
+
+t = int(input[0])
+test_cases = []
+
+index = 1
+for _ in range(t):
+    n = int(input[index])
+    strengths_a = list(map(int, input[index + 1].split()))
+    strengths_b = list(map(int, input[index + 2].split()))
+    test_cases.append((n, strengths_a, strengths_b))
+    index += 3
+
+# Get results
+results = can_win_tournament(test_cases)
+
+# Print results
+for result in results:
+    print(result)

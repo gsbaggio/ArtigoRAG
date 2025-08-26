@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, a, b;
+        cin >> n >> a >> b;
+        
+        // Check if it's possible to have a local maxima and minima
+        if (a + b > n - 2) {
+            cout << "-1\n";
+            continue;
+        }
+        
+        vector<int> p(n);
+        int left = 1, right = n;
+        int i = 0;
+        
+        // Create local maxima
+        while (a > 0 && i < n - 2) {
+            p[i++] = left++;
+            p[i++] = right--;
+            a--;
+        }
+        
+        // Create local minima
+        while (b > 0 && i < n - 2) {
+            p[i++] = right--;
+            p[i++] = left++;
+            b--;
+        }
+        
+        // Fill the remaining positions
+        while (i < n) {
+            if (left <= right) {
+                p[i++] = left++;
+            } else {
+                p[i++] = right--;
+            }
+        }
+        
+        // Output the permutation
+        for (int j = 0; j < n; j++) {
+            cout << p[j] << (j == n - 1 ? "\n" : " ");
+        }
+    }
+    return 0;
+}

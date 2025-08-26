@@ -1,0 +1,59 @@
+def solve():
+    n = int(input())
+    colors = [[] for _ in range(3)]  # 0-indexed colors
+    
+    for _ in range(n):
+        x, y, c = map(int, input().split())
+        colors[c-1].append((x, y))
+    
+    # A more efficient approach: use sets to track which points are inside rectangles
+    max_points = 0
+    
+    # For each color, find all relevant rectangles
+    relevant_rectangles = []
+    
+    for color_idx, color_points in enumerate(colors):
+        xs = sorted(list(set(x for x, y in color_points)))
+        ys = sorted(list(set(y for x, y in color_points)))
+        
+        # For each point, create a map of point index -> (x, y)
+        point_map = {i: point for i, point in enumerate(color_points)}
+        
+        # Try all possible rectangles
+        color_rects = []
+        for i1, x1 in enumerate(xs):
+            for i2, x2 in enumerate(xs[i1:], i1):
+                for j1, y1 in enumerate(ys):
+                    for j2, y2 in enumerate(ys[j1:], j1):
+                        # Find which points are inside this rectangle
+                        points_inside = []
+                        for idx, (x, y) in point_map.items():
+                            if x1 <= x <= x2 and y1 <= y <= y2:
+                                points_inside.append(idx)
+                        
+                        if points_inside:
+                            color_rects.append(((x1, x2, y1, y2), set(points_inside)))
+        
+        relevant_rectangles.append(color_rects)
+    
+    # Check if rectangles overlap
+    def is_overlap(r1, r2):
+        x1_min, x1_max, y1_min, y1_max = r1
+        x2_min, x2_max, y2_min, y2_max = r2
+        
+        return not (x1_max < x2_min or x2_max < x1_min or 
+                   y1_max < y2_min or y2_max < y1_min)
+    
+    # Try all combinations of rectangles
+    for rect1, points1 in relevant_rectangles[0]:
+        for rect2, points2 in relevant_rectangles[1]:
+            if is_overlap(rect1, rect2):
+                continue
+            for rect3, points3 in relevant_rectangles[2]:
+                if is_overlap(rect1, rect3) or is_overlap(rect2, rect3):
+                    continue
+                max_points = max(max_points, len(points1) + len(points2) + len(points3))
+    
+    print(max_points)
+
+solve()

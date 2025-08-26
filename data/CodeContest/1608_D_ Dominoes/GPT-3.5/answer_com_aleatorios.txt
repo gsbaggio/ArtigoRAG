@@ -1,0 +1,34 @@
+MOD = 998244353
+
+def count_valid_colorings(n, dominoes):
+    memo = {}
+
+    def dp(i, same):
+        if i == n+1:
+            return 1 if not same else 0
+
+        if (i, same) in memo:
+            return memo[(i, same)]
+
+        res = 0
+        if dominoes[i-1] == '?':
+            res = (res + dp(i+1, same ^ False)) % MOD
+            res = (res + dp(i+1, same ^ True)) % MOD
+        else:
+            if (dominoes[i-1] == 'B') ^ same:
+                res = (res + dp(i+1, same ^ False)) % MOD
+            else:
+                res = (res + dp(i+1, same ^ False)) % MOD
+                res = (res + dp(i+1, same ^ True)) % MOD
+
+        memo[(i, same)] = res
+        return res
+
+    return dp(1, False)
+
+# Input
+n = int(input())
+dominoes = [input() for _ in range(n)]
+
+# Output
+print(count_valid_colorings(n, dominoes))

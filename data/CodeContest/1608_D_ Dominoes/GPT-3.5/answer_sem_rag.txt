@@ -1,0 +1,32 @@
+MOD = 998244353
+
+def count_valid_colorings(n, dominoes):
+    dp = [[[0 for _ in range(2)] for _ in range(2)] for _ in range(n+1)]
+    dp[0][0][1] = dp[0][1][0] = 1
+
+    for i in range(1, n+1):
+        for l in range(2):
+            for r in range(2):
+                if dominoes[i-1][0] != '?' and dominoes[i-1][0] != 'BW'[l]:
+                    continue
+                if dominoes[i-1][1] != '?' and dominoes[i-1][1] != 'BW'[r]:
+                    continue
+
+                for lp in range(2):
+                    for rp in range(2):
+                        if l == 1 and lp == 1:
+                            continue
+                        if r == 0 and rp == 0:
+                            continue
+                        dp[i][l][r] += dp[i-1][lp][rp]
+                        dp[i][l][r] %= MOD
+
+    return sum(sum(dp[n][l]) for l in range(2)) % MOD
+
+# Input parsing
+n = int(input())
+dominoes = [input().strip() for _ in range(n)]
+
+# Calculate and output the result
+result = count_valid_colorings(n, dominoes)
+print(result)

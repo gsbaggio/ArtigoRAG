@@ -1,0 +1,50 @@
+def can_win_tournament(t, test_cases):
+    results = []
+    
+    for case in test_cases:
+        n, a, b = case
+        players = [(a[i], b[i], i) for i in range(n)]
+        
+        # Sort players by strength on the first map, then by the second map
+        players.sort()
+        
+        # Result array for this test case
+        result = ['0'] * n
+        max_b = -1  # Maximum strength on the second map seen so far
+        
+        # Traverse the sorted players in reverse order
+        for _, b_strength, idx in reversed(players):
+            if b_strength > max_b:
+                result[idx] = '1'
+                max_b = b_strength
+        
+        # Append the result for this test case
+        results.append(''.join(result))
+    
+    return results
+
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    test_cases = []
+    idx = 1
+    
+    for _ in range(t):
+        n = int(data[idx])
+        idx += 1
+        a = list(map(int, data[idx:idx + n]))
+        idx += n
+        b = list(map(int, data[idx:idx + n]))
+        idx += n
+        test_cases.append((n, a, b))
+    
+    # Solve the problem
+    results = can_win_tournament(t, test_cases)
+    
+    # Output results
+    sys.stdout.write("\n".join(results) + "\n")

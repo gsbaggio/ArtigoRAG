@@ -1,0 +1,60 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n, a, b = map(int, input().split())
+        
+        # Check if solution exists
+        if a + b > n - 2 or a + b < n - 2:
+            print(-1)
+            continue
+        
+        # Create a permutation with exactly a local maximums and b local minimums
+        permutation = construct_permutation(n, a, b)
+        print(" ".join(map(str, permutation)))
+
+def construct_permutation(n, a, b):
+    # Base case: n=2
+    if n == 2:
+        return [1, 2]
+    
+    # We'll construct a permutation in a zig-zag pattern
+    result = []
+    
+    # Start with ascending values
+    ascending = True
+    
+    # Count remaining peaks and valleys we need to create
+    remaining_peaks = a
+    remaining_valleys = b
+    
+    # Track available numbers
+    available = list(range(1, n+1))
+    
+    # For the first element, choose the smallest value
+    result.append(available.pop(0))
+    
+    # Construct the permutation with exactly a peaks and b valleys
+    for i in range(1, n-1):
+        if ascending and remaining_peaks > 0:
+            # Create a peak - use the largest available number
+            result.append(available.pop(-1))
+            remaining_peaks -= 1
+            ascending = False
+        elif not ascending and remaining_valleys > 0:
+            # Create a valley - use the smallest available number
+            result.append(available.pop(0))
+            remaining_valleys -= 1
+            ascending = True
+        elif ascending:
+            # No more peaks needed, create an ascending segment
+            result.append(available.pop(0))
+        else:
+            # No more valleys needed, create a descending segment
+            result.append(available.pop(-1))
+    
+    # Add the last element
+    result.append(available.pop())
+    
+    return result
+
+solve()

@@ -1,0 +1,43 @@
+MOD = 998244353
+
+def count_valid_colorings(n, dominoes):
+    # Helper function to calculate modular exponentiation
+    def mod_exp(base, exp, mod):
+        result = 1
+        while exp > 0:
+            if exp % 2 == 1:
+                result = (result * base) % mod
+            base = (base * base) % mod
+            exp //= 2
+        return result
+
+    # Count total configurations
+    total = 1
+    for left, right in dominoes:
+        if left == '?' and right == '?':
+            total = (total * 4) % MOD
+        elif left == '?' or right == '?':
+            total = (total * 2) % MOD
+
+    # Count invalid configurations
+    invalid_same = 1
+    invalid_diff = 1
+    for left, right in dominoes:
+        if left == '?' and right == '?':
+            invalid_same = (invalid_same * 2) % MOD
+            invalid_diff = (invalid_diff * 2) % MOD
+        elif left == '?' or right == '?':
+            invalid_diff = (invalid_diff * 1) % MOD
+        elif left == right:
+            invalid_diff = 0
+
+    # Total valid configurations
+    valid = (total - invalid_same - invalid_diff) % MOD
+    return valid
+
+# Input reading
+n = int(input())
+dominoes = [input().strip() for _ in range(n)]
+
+# Output the result
+print(count_valid_colorings(n, dominoes))

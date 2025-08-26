@@ -1,0 +1,71 @@
+import heapq
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    output_lines = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n])); index += n
+        b = list(map(int, data[index:index+n])); index += n
+        
+        players = []
+        for i in range(n):
+            players.append((a[i], b[i], i))
+            
+        players.sort(key=lambda x: x[0], reverse=True)
+        
+        inGroup = [False] * n
+        first_idx = players[0][2]
+        inGroup[first_idx] = True
+        min_a = players[0][0]
+        min_b = players[0][1]
+        
+        heap_a = []
+        heap_b = []
+        
+        for i in range(1, n):
+            a_val, b_val, idx = players[i]
+            heapq.heappush(heap_a, (-a_val, idx))
+            heapq.heappush(heap_b, (-b_val, idx))
+            
+        changed = True
+        while changed:
+            changed = False
+            while heap_a:
+                neg_a, idx = heapq.heappop(heap_a)
+                if inGroup[idx]:
+                    continue
+                a_val = -neg_a
+                if a_val > min_a:
+                    inGroup[idx] = True
+                    min_a = min(min_a, a_val)
+                    min_b = min(min_b, b[idx])
+                    changed = True
+                else:
+                    heapq.heappush(heap_a, (neg_a, idx))
+                    break
+                    
+            while heap_b:
+                neg_b, idx = heapq.heappop(heap_b)
+                if inGroup[idx]:
+                    continue
+                b_val = -neg_b
+                if b_val > min_b:
+                    inGroup[idx] = True
+                    min_a = min(min_a, a[idx])
+                    min_b = min(min_b, b_val)
+                    changed = True
+                else:
+                    heapq.heappush(heap_b, (neg_b, idx))
+                    break
+                    
+        s = ''.join('1' if inGroup[i] else '0' for i in range(n))
+        output_lines.append(s)
+        
+    sys.stdout.write("\n".join(output_lines))
+    
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,27 @@
+def can_win_tournament(n, strengths_map1, strengths_map2):
+    max_strength_map1 = max(strengths_map1)
+    max_strength_map2 = max(strengths_map2)
+    
+    winners = []
+    
+    for i in range(n):
+        if strengths_map1[i] < max_strength_map1 and strengths_map2[i] < max_strength_map2:
+            winners.append('0')
+        else:
+            winners.append('1')
+    
+    return ''.join(winners)
+
+def main():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        strengths_map1 = list(map(int, input().split()))
+        strengths_map2 = list(map(int, input().split()))
+        
+        result = can_win_tournament(n, strengths_map1, strengths_map2)
+        print(result)
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,54 @@
+def construct_permutation(n, a, b):
+    if a + b >= n - 1:
+        return -1
+    
+    # Initialize the permutation
+    perm = []
+    
+    # Pointers for smallest and largest numbers
+    left = 1
+    right = n
+    
+    # Create local minima and maxima
+    while a > 0 or b > 0:
+        if b > 0:
+            perm.append(left)
+            perm.append(right)
+            left += 1
+            right -= 1
+            b -= 1
+        if a > 0:
+            perm.append(right)
+            perm.append(left)
+            left += 1
+            right -= 1
+            a -= 1
+    
+    # Add remaining numbers
+    if left <= right:
+        perm.extend(range(left, right + 1))
+    else:
+        perm.extend(range(right, left - 1, -1))
+    
+    return perm
+
+# Read input
+import sys
+input = sys.stdin.read().splitlines()
+
+t = int(input[0])
+results = []
+
+# Process each test case
+index = 1
+for _ in range(t):
+    n, a, b = map(int, input[index].split())
+    result = construct_permutation(n, a, b)
+    if result == -1:
+        results.append("-1")
+    else:
+        results.append(" ".join(map(str, result)))
+    index += 1
+
+# Print results
+print("\n".join(results))

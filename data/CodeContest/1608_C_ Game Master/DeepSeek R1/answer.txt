@@ -1,0 +1,103 @@
+import java.util.*;
+import java.io.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int t = Integer.parseInt(br.readLine());
+        while (t-- > 0) {
+            int n = Integer.parseInt(br.readLine());
+            int[] a = new int[n];
+            int[] b = new int[n];
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < n; i++) {
+                a[i] = Integer.parseInt(st.nextToken());
+            }
+            st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < n; i++) {
+                b[i] = Integer.parseInt(st.nextToken());
+            }
+            
+            // Find initial winners: players with maximum a and maximum b
+            int maxA = -1, idxA = -1;
+            int maxB = -1, idxB = -1;
+            for (int i = 0; i < n; i++) {
+                if (a[i] > maxA) {
+                    maxA = a[i];
+                    idxA = i;
+                }
+                if (b[i] > maxB) {
+                    maxB = b[i];
+                    idxB = i;
+                }
+            }
+            
+            boolean[] won = new boolean[n];
+            int minA = Integer.MAX_VALUE;
+            int minB = Integer.MAX_VALUE;
+            
+            won[idxA] = true;
+            won[idxB] = true;
+            minA = Math.min(a[idxA], a[idxB]);
+            minB = Math.min(b[idxA], b[idxB]);
+            
+            // Create arrays of indices to sort by a and by b descending
+            Integer[] indicesA = new Integer[n];
+            Integer[] indicesB = new Integer[n];
+            for (int i = 0; i < n; i++) {
+                indicesA[i] = i;
+                indicesB[i] = i;
+            }
+            
+            Arrays.sort(indicesA, (i, j) -> Integer.compare(a[j], a[i]));
+            Arrays.sort(indicesB, (i, j) -> Integer.compare(b[j], b[i]));
+            
+            int ptrA = 0, ptrB = 0;
+            boolean added;
+            do {
+                added = false;
+                // Process sortedA list
+                while (ptrA < n) {
+                    int idx = indicesA[ptrA];
+                    if (won[idx]) {
+                        ptrA++;
+                        continue;
+                    }
+                    if (a[idx] > minA) {
+                        won[idx] = true;
+                        minA = Math.min(minA, a[idx]);
+                        minB = Math.min(minB, b[idx]);
+                        ptrA++;
+                        added = true;
+                    } else {
+                        break;
+                    }
+                }
+                
+                // Process sortedB list
+                while (ptrB < n) {
+                    int idx = indicesB[ptrB];
+                    if (won[idx]) {
+                        ptrB++;
+                        continue;
+                    }
+                    if (b[idx] > minB) {
+                        won[idx] = true;
+                        minA = Math.min(minA, a[idx]);
+                        minB = Math.min(minB, b[idx]);
+                        ptrB++;
+                        added = true;
+                    } else {
+                        break;
+                    }
+                }
+            } while (added);
+            
+            StringBuilder sb = new StringBuilder();
+            for (boolean w : won) {
+                sb.append(w ? '1' : '0');
+            }
+            System.out.println(sb);
+        }
+    }
+}

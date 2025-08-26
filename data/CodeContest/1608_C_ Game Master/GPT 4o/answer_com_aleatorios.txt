@@ -1,0 +1,41 @@
+def can_win_tournament(t, test_cases):
+    results = []
+    
+    for case in test_cases:
+        n, a, b = case
+        max_a = max(a)
+        max_b = max(b)
+        
+        result = []
+        for i in range(n):
+            if a[i] == max_a or b[i] == max_b:
+                result.append('1')
+            else:
+                result.append('0')
+        
+        results.append(''.join(result))
+    
+    return results
+
+
+# Input Reading
+import sys
+input = sys.stdin.read
+data = input().split()
+
+t = int(data[0])
+index = 1
+test_cases = []
+
+for _ in range(t):
+    n = int(data[index])
+    index += 1
+    a = list(map(int, data[index:index + n]))
+    index += n
+    b = list(map(int, data[index:index + n]))
+    index += n
+    test_cases.append((n, a, b))
+
+# Solve and Output Results
+results = can_win_tournament(t, test_cases)
+sys.stdout.write('\n'.join(results) + '\n')

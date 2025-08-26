@@ -1,0 +1,83 @@
+def solve():
+    n, a, b = map(int, input().split())
+
+    if abs(a - b) > 1 or a + b > n - 2:
+        print(-1)
+        return
+
+    p = [0] * n
+    
+    if a > b:
+        
+        curr_small = 1
+        curr_large = n
+        
+        for i in range(a):
+            p[2*i] = curr_large
+            curr_large -= 1
+        
+        for i in range(a, n // 2 + 1):
+            p[2*i] = curr_small
+            curr_small += 1
+            
+        for i in range(a):
+            p[2*i + 1] = curr_small
+            curr_small += 1
+        
+        for i in range(a, (n - 1) // 2):
+            p[2*i + 1] = curr_large
+            curr_large -= 1
+            
+        if n % 2 == 0:
+            p[n-1] = curr_small
+            
+    elif b > a:
+        curr_small = 1
+        curr_large = n
+        
+        for i in range(b):
+            p[2*i] = curr_small
+            curr_small += 1
+        
+        for i in range(b, n // 2 + 1):
+            p[2*i] = curr_large
+            curr_large -= 1
+            
+        for i in range(b):
+            p[2*i + 1] = curr_large
+            curr_large -= 1
+        
+        for i in range(b, (n - 1) // 2):
+            p[2*i + 1] = curr_small
+            curr_small += 1
+            
+        if n % 2 == 0:
+            p[n-1] = curr_large
+    else:
+        curr_small = 1
+        curr_large = n
+        
+        for i in range(a):
+            p[2*i] = curr_large
+            curr_large -= 1
+        
+        for i in range(a, n // 2 + 1):
+            p[2*i] = curr_small
+            curr_small += 1
+            
+        for i in range(a):
+            p[2*i + 1] = curr_small
+            curr_small += 1
+        
+        for i in range(a, (n - 1) // 2):
+            p[2*i + 1] = curr_large
+            curr_large -= 1
+            
+        if n % 2 == 0:
+            p[n-1] = curr_small
+
+    print(*p)
+
+t = int(input())
+for _ in range(t):
+    solve()

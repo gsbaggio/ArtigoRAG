@@ -1,0 +1,43 @@
+def solve(n, a, b):
+    # Check if the permutation is possible
+    if a + b != n - 2:
+        return [-1]
+    
+    # For n=2, there can't be local extrema
+    if n == 2:
+        if a == 0 and b == 0:
+            return [1, 2]
+        else:
+            return [-1]
+    
+    # Construct a zigzag pattern
+    perm = []
+    remaining = list(range(1, n + 1))
+    
+    # Start with peaks
+    for _ in range(a):
+        if len(remaining) >= 2:
+            # Take largest available number for the peak
+            peak = max(remaining)
+            remaining.remove(peak)
+            
+            # Take smallest available number after the peak
+            valley = min(remaining)
+            remaining.remove(valley)
+            
+            perm.extend([valley, peak])
+    
+    # Add all remaining numbers in ascending order
+    perm.extend(sorted(remaining))
+    
+    return perm
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        n, a, b = map(int, input().split())
+        result = solve(n, a, b)
+        print(" ".join(map(str, result)) if result[0] != -1 else "-1")
+
+if __name__ == "__main__":
+    main()

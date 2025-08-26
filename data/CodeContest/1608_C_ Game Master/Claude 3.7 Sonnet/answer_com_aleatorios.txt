@@ -1,0 +1,26 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        map1 = list(map(int, input().split()))
+        map2 = list(map(int, input().split()))
+        
+        result = ['0'] * n
+        
+        for i in range(n):
+            can_win = True
+            for j in range(n):
+                if i == j:
+                    continue
+                # If player j is stronger than player i on both maps,
+                # player i cannot win against player j
+                if map1[j] > map1[i] and map2[j] > map2[i]:
+                    can_win = False
+                    break
+            
+            if can_win:
+                result[i] = '1'
+        
+        print(''.join(result))
+
+solve()

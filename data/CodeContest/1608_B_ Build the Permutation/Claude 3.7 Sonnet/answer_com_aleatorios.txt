@@ -1,0 +1,67 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void solve() {
+    int n, a, b;
+    cin >> n >> a >> b;
+    
+    // Check if valid
+    if (a + b > n - 2 || a + b < n - 2 || abs(a - b) > 1) {
+        cout << "-1\n";
+        return;
+    }
+    
+    vector<int> perm(n);
+    int pos = 0;
+    
+    // Start with the remaining elements
+    int next = 1;
+    
+    // Start with peak (local maximum) if a >= b
+    // Start with valley (local minimum) if b > a
+    bool peak = (a >= b);
+    
+    // Construct alternating pattern
+    while (a > 0 || b > 0) {
+        if (peak && a > 0) {
+            // Place a peak: small, large, small
+            if (pos == 0) {
+                perm[pos++] = next++;
+            }
+            perm[pos++] = n - (a + b) + 1;
+            a--;
+            peak = false;
+        } else if (!peak && b > 0) {
+            // Place a valley: large, small, large
+            if (pos == 0) {
+                perm[pos++] = n - (a + b) + 1;
+            }
+            perm[pos++] = next++;
+            b--;
+            peak = true;
+        } else {
+            break;
+        }
+    }
+    
+    // Fill remaining positions
+    while (pos < n) {
+        perm[pos++] = next++;
+    }
+    
+    // Output the permutation
+    for (int i = 0; i < n; i++) {
+        cout << perm[i] << " ";
+    }
+    cout << "\n";
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    return 0;
+}

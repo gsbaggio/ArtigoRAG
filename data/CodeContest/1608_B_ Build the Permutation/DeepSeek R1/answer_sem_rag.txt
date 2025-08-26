@@ -1,0 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, a, b;
+        cin >> n >> a >> b;
+        if (abs(a - b) > 1 || a + b > n - 2) {
+            cout << -1 << endl;
+            continue;
+        }
+        
+        vector<int> res;
+        int l = 1, r = n;
+        int L = a + b + 1;
+        
+        if (a > b) {
+            for (int i = 0; i < L; i++) {
+                if (i % 2 == 0) {
+                    res.push_back(l++);
+                } else {
+                    res.push_back(r--);
+                }
+            }
+            if (L % 2 == 1) {
+                while (l <= r) {
+                    res.push_back(l++);
+                }
+            } else {
+                while (l <= r) {
+                    res.push_back(r--);
+                }
+            }
+        } else if (a < b) {
+            for (int i = 0; i < L; i++) {
+                if (i % 2 == 0) {
+                    res.push_back(r--);
+                } else {
+                    res.push_back(l++);
+                }
+            }
+            if (L % 2 == 1) {
+                while (l <= r) {
+                    res.push_back(r--);
+                }
+            } else {
+                while (l <= r) {
+                    res.push_back(l++);
+                }
+            }
+        } else {
+            for (int i = 0; i < L; i++) {
+                if (i % 2 == 0) {
+                    res.push_back(l++);
+                } else {
+                    res.push_back(r--);
+                }
+            }
+            if (L % 2 == 1) {
+                while (l <= r) {
+                    res.push_back(l++);
+                }
+            } else {
+                while (l <= r) {
+                    res.push_back(r--);
+                }
+            }
+        }
+        
+        for (int i = 0; i < n; i++) {
+            cout << res[i] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}

@@ -1,0 +1,63 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<pair<char, char>> dominoes(n);
+    for (int i = 0; i < n; i++) {
+        char left, right;
+        cin >> left >> right;
+        dominoes[i] = {left, right};
+    }
+    
+    long long answer = 0;
+    
+    // Try both possible patterns
+    for (int start = 0; start < 2; start++) {
+        bool valid = true;
+        int unknown_count = 0;
+        
+        // Check if preset colors match the pattern
+        for (int i = 0; i < n && valid; i++) {
+            // For a valid arrangement in a cycle, colors must alternate
+            // Pattern 0: B,W,B,W,... for left cells and W,B,W,B,... for right cells
+            // Pattern 1: W,B,W,B,... for left cells and B,W,B,W,... for right cells
+            
+            char expected_left = (i % 2 == start) ? 'B' : 'W';
+            char expected_right = ((i + 1) % 2 == start) ? 'B' : 'W';
+            
+            // Check if preset colors match expected
+            if (dominoes[i].first != '?' && dominoes[i].first != expected_left) {
+                valid = false;
+            }
+            if (dominoes[i].second != '?' && dominoes[i].second != expected_right) {
+                valid = false;
+            }
+            
+            // Count unknown cells
+            if (dominoes[i].first == '?') unknown_count++;
+            if (dominoes[i].second == '?') unknown_count++;
+        }
+        
+        if (valid) {
+            // Once we commit to a pattern, each unknown cell has only one valid color
+            // But we have 2^unknown_count total possible colorings because we can
+            // choose either pattern
+            long long ways = 1;
+            for (int i = 0; i < unknown_count; i++) {
+                ways = (ways * 2) % MOD;
+            }
+            
+            answer = (answer + ways) % MOD;
+        }
+    }
+    
+    cout << answer << endl;
+    return 0;
+}

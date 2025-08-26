@@ -1,0 +1,34 @@
+def can_win_tournament(t, test_cases):
+    results = []
+    
+    for case in test_cases:
+        n, a, b = case
+        players = list(enumerate(zip(a, b)))  # Pair strengths with indices
+        players.sort(key=lambda x: x[1][0])  # Sort by strength on the first map (a[i])
+        
+        max_b = -1  # Maximum strength on the second map encountered so far
+        winners = [0] * n  # Initialize all players as non-winners
+        
+        # Traverse the sorted players
+        for idx, (strength_a, strength_b) in players:
+            if strength_b > max_b:
+                winners[idx] = 1  # Mark as a potential winner
+                max_b = strength_b  # Update the maximum strength on the second map
+        
+        results.append("".join(map(str, winners)))
+    
+    return results
+
+
+# Input reading and output
+if __name__ == "__main__":
+    t = int(input())
+    test_cases = []
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        b = list(map(int, input().split()))
+        test_cases.append((n, a, b))
+    
+    results = can_win_tournament(t, test_cases)
+    print("\n".join(results))

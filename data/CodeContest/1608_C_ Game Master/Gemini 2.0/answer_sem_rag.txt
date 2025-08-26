@@ -1,0 +1,64 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+    b = list(map(int, input().split()))
+
+    can_win = [False] * n
+    
+    for i in range(n):
+        can_win[i] = True
+        
+        for start_map in [0, 1]:
+            
+            possible = False
+            
+            def check_win(current_players, current_map):
+                nonlocal possible
+                
+                if len(current_players) == 1:
+                    if current_players[0] == i:
+                        possible = True
+                    return
+                
+                for p1_idx in range(len(current_players)):
+                    for p2_idx in range(p1_idx + 1, len(current_players)):
+                        
+                        p1 = current_players[p1_idx]
+                        p2 = current_players[p2_idx]
+                        
+                        
+                        if current_map == 0:
+                            if a[p1] > a[p2]:
+                                winner = p1
+                                loser = p2
+                            else:
+                                winner = p2
+                                loser = p1
+                        else:
+                            if b[p1] > b[p2]:
+                                winner = p1
+                                loser = p2
+                            else:
+                                winner = p2
+                                loser = p1
+                        
+                        remaining_players = []
+                        for p in current_players:
+                            if p != loser:
+                                remaining_players.append(p)
+                        
+                        check_win(remaining_players, 1 - current_map)
+            
+            check_win(list(range(n)), start_map)
+            if possible:
+                break
+        
+        if not possible:
+            can_win[i] = False
+
+    print("".join(["1" if x else "0" for x in can_win]))
+
+
+t = int(input())
+for _ in range(t):
+    solve()

@@ -1,0 +1,184 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+const int root = 3;
+
+int powmod(int a, int b) {
+    int res = 1;
+    a %= MOD;
+    for (; b; b >>= 1) {
+        if (b & 1) res = 1LL * res * a % MOD;
+        a = 1LL * a * a % MOD;
+    }
+    return res;
+}
+
+void ntt(vector<int> &a, bool invert) {
+    int n = a.size();
+    for (int i = 1, j = 0; i < n; i++) {
+        int bit = n >> 1;
+        for (; j >= bit; bit >>= 1) j -= bit;
+        j += bit;
+        if (i < j) swap(a[i], a[j]);
+    }
+    for (int len = 2; len <= n; len <<= 1) {
+        int wlen = powmod(root, (MOD - 1) / len);
+        if (invert) wlen = powmod(wlen, MOD - 2);
+        for (int i = 0; i < n; i += len) {
+            int w = 1;
+            for (int j = 0; j < len / 2; j++) {
+                int u = a[i + j], v = 1LL * a[i + j + len / 2] * w % MOD;
+                a[i + j] = (u + v) % MOD;
+                a[i + j + len / 2] = (u - v + MOD) % MOD;
+                w = 1LL * w * wlen % MOD;
+            }
+        }
+    }
+    if (invert) {
+        int inv_n = powmod(n, MOD - 2);
+        for (int i = 0; i < n; i++) a[i] = 1LL * a[i] * inv_n % MOD;
+    }
+}
+
+vector<int> multiply_direct(const vector<int> &a, const vector<int> &b) {
+    int na = a.size(), nb = b.size();
+    vector<int> c(na + nb - 1, 0);
+    for (int i = 0; i < na; i++) {
+        for (int j = 0; j < nb; j++) {
+            c[i + j] = (c[i + j] + 1LL * a[i] * b[j]) % MOD;
+        }
+    }
+    return c;
+}
+
+vector<int> multiply(vector<int> a, vector<int> b) {
+    if (a.size() + b.size() <= 100) {
+        return multiply_direct(a, b);
+    }
+    int n = 1;
+    int size = a.size() + b.size() - 1;
+    while (n < size) n <<= 1;
+    a.resize(n);
+    b.resize(n);
+    ntt(a, false);
+    ntt(b, false);
+    for (int i = 0; i < n; i++) a[i] = 1LL * a[i] * b[i] % MOD;
+    ntt(a, true);
+    a.resize(size);
+    return a;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+
+    int n;
+    cin >> n;
+    vector<string> dominoes(n);
+    for (int i = 0; i < n; i++) {
+        cin >> dominoes[i];
+    }
+
+    int S0 = 1;
+    int C0 = 1;
+    vector<int> p(n), q(n), r(n);
+
+    for (int i = 0; i < n; i++) {
+        char left = dominoes[i][0];
+        char right = dominoes[i][1];
+
+        // Compute S0: number of ways to have left != right for this domino
+        if (left != '?' && right != '?') {
+            if (left == right) {
+                S0 = 0;
+            }
+        } else if (left == '?' && right == '?') {
+            S0 = 1LL * S0 * 2 % MOD;
+        } else {
+            // S0 remains unchanged since one '?' has only one choice to make different
+        }
+
+        // Compute C0: number of ways to have left='W' and right='B'
+        if ((left == 'W' || left == '?') && (right == 'B' || right == '?')) {
+            // C0 multiplied by 1
+        } else {
+            C0 = 0;
+        }
+
+        // Compute p_i, q_i, r_i
+        if (left == 'B' && right == 'B') {
+            p[i] = 1;
+            q[i] = 0;
+            r[i] = 0;
+        } else if (left == 'B' && right == 'W') {
+            p[i] = 0;
+            q[i] = 0;
+            r[i] = 1;
+        } else if (left == 'W' && right == 'B') {
+            p[i] = 0;
+            q[i] = 0;
+            r[i] = 1;
+        } else if (left == 'W' && right == 'W') {
+            p[i] = 0;
+            q[i] = 1;
+            r[i] = 0;
+        } else if (left == 'B' && right == '?') {
+            p[i] = 1;
+            q[i] = 0;
+            r[i] = 1;
+        } else if (left == '?' && right == 'B') {
+            p[i] = 1;
+            q[i] = 0;
+            r[i] = 1;
+        } else if (left == 'W' && right == '?') {
+            p[i] = 0;
+            q[i] = 1;
+            r[i] = 1;
+        } else if (left == '?' && right == 'W') {
+            p[i] = 0;
+            q[i] = 1;
+            r[i] = 1;
+        } else if (left == '?' && right == '?') {
+            p[i] = 1;
+            q[i] = 1;
+            r[i] = 2;
+        }
+    }
+
+    if (n == 1) {
+        cout << S0 << endl;
+        return 0;
+    }
+
+    vector<vector<int>> polys;
+    for (int i = 0; i < n; i++) {
+        polys.push_back({q[i], r[i], p[i]});
+    }
+
+    auto cmp = [](const vector<int> &a, const vector<int> &b) {
+        return a.size() > b.size();
+    };
+    priority_queue<vector<int>, vector<vector<int>>, decltype(cmp)> pq(cmp);
+    for (auto &poly : polys) {
+        pq.push(poly);
+    }
+
+    while (pq.size() > 1) {
+        vector<int> a = pq.top();
+        pq.pop();
+        vector<int> b = pq.top();
+        pq.pop();
+        vector<int> c = multiply(a, b);
+        pq.push(c);
+    }
+
+    vector<int> H = pq.top();
+    int T = (n < H.size()) ? H[n] : 0;
+
+    int ans = (1LL * C0 + T - S0) % MOD;
+    if (ans < 0) ans += MOD;
+    cout << ans << endl;
+
+    return 0;
+}

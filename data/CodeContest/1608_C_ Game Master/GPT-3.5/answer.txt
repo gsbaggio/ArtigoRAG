@@ -1,0 +1,29 @@
+def can_win_tournament(t, test_cases):
+    results = []
+
+    for _ in range(t):
+        n = test_cases[_][0]
+        a = test_cases[_][1]
+        b = test_cases[_][2]
+
+        max_a = max(a)
+        max_b = max(b)
+
+        result = [1 if max(a[i], b[i]) < max_a or max(a[i], b[i]) < max_b else 0 for i in range(n)]
+        results.append(result)
+
+    return results
+
+# Input
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    b = list(map(int, input().split()))
+    test_cases.append((n, a, b))
+
+# Output
+results = can_win_tournament(t, test_cases)
+for result in results:
+    print("".join(map(str, result)))

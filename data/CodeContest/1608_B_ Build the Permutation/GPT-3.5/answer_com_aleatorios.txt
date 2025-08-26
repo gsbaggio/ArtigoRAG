@@ -1,0 +1,46 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void solve() {
+    int n, a, b;
+    cin >> n >> a >> b;
+
+    if (a + b > n || a * 2 + b * 2 > n + 1 || a * 2 + b * 2 < n) {
+        cout << "-1\n";
+        return;
+    }
+
+    vector<int> permutation;
+    for (int i = 0; i < a; ++i) {
+        permutation.push_back(n - a + i * 2);
+    }
+
+    if (a * 2 + b * 2 == n) {
+        for (int i = 0; i < b; ++i) {
+            permutation.insert(permutation.begin() + i * 2, n - a - 1 - i);
+        }
+    } else {
+        for (int i = 0; i < b; ++i) {
+            permutation.insert(permutation.begin() + i * 2, n - a - i);
+        }
+        permutation.insert(permutation.begin() + b * 2, n - a - b - 1);
+    }
+
+    for (int num : permutation) {
+        cout << num << " ";
+    }
+    cout << "\n";
+}
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        solve();
+    }
+
+    return 0;
+}

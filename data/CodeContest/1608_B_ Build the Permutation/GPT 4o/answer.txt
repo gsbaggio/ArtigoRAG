@@ -1,0 +1,54 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    results = []
+    idx = 1
+    
+    for _ in range(t):
+        n, a, b = map(int, data[idx:idx+3])
+        idx += 3
+        
+        # Check if the problem is solvable
+        if a + b > n - 2:
+            results.append("-1")
+            continue
+        
+        # Construct the permutation
+        perm = [0] * n
+        left = 1
+        right = n
+        
+        # Place peaks (local maxima)
+        for i in range(1, n-1, 2):
+            if a > 0:
+                perm[i] = right
+                right -= 1
+                a -= 1
+            elif b > 0:
+                perm[i] = left
+                left += 1
+                b -= 1
+        
+        # Place valleys (local minima)
+        for i in range(2, n-1, 2):
+            if b > 0:
+                perm[i] = left
+                left += 1
+                b -= 1
+            elif a > 0:
+                perm[i] = right
+                right -= 1
+                a -= 1
+        
+        # Fill remaining positions
+        for i in range(n):
+            if perm[i] == 0:
+                perm[i] = left
+                left += 1
+        
+        results.append(" ".join(map(str, perm)))
+    
+    sys.stdout.write("\n".join(results) + "\n")

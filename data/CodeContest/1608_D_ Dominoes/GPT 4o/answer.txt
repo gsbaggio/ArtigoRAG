@@ -1,0 +1,67 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+const int MOD = 998244353;
+
+// Function to calculate modular exponentiation
+int modExp(int base, int exp, int mod) {
+    int result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = (1LL * result * base) % mod;
+        }
+        base = (1LL * base * base) % mod;
+        exp /= 2;
+    }
+    return result;
+}
+
+// Function to solve the problem
+int countValidColorings(int n, const vector<string>& dominoes) {
+    int totalWays = 1; // Total ways to color the dominoes
+    int validWays = 0; // Valid ways to color the dominoes
+
+    // Count the number of '?' in the dominoes
+    int questionMarks = 0;
+    for (const string& domino : dominoes) {
+        for (char cell : domino) {
+            if (cell == '?') {
+                questionMarks++;
+            }
+        }
+    }
+
+    // Calculate total ways to color all '?' cells
+    totalWays = modExp(2, questionMarks, MOD);
+
+    // Count invalid configurations
+    int invalidWays = 1; // Ways where all dominoes are BB or WW
+    for (const string& domino : dominoes) {
+        if (domino == "??") {
+            invalidWays = (2LL * invalidWays) % MOD;
+        } else if (domino == "B?" || domino == "?B" || domino == "W?" || domino == "?W") {
+            invalidWays = (1LL * invalidWays) % MOD;
+        } else if (domino == "BB" || domino == "WW") {
+            invalidWays = (1LL * invalidWays) % MOD;
+        }
+    }
+
+    // Calculate valid ways
+    validWays = (totalWays - invalidWays + MOD) % MOD;
+
+    return validWays;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    vector<string> dominoes(n);
+    for (int i = 0; i < n; i++) {
+        cin >> dominoes[i];
+    }
+
+    cout << countValidColorings(n, dominoes) << endl;
+    return 0;
+}

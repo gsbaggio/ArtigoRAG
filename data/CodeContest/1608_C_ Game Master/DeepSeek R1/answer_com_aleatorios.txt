@@ -1,0 +1,73 @@
+import heapq
+from collections import deque
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    output_lines = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n])); index += n
+        b = list(map(int, data[index:index+n])); index += n
+        if n == 0:
+            output_lines.append("")
+            continue
+            
+        added = [False] * n
+        min_a = 10**10
+        min_b = 10**10
+        pq_a = []
+        pq_b = []
+        for i in range(n):
+            heapq.heappush(pq_a, (-a[i], i))
+            heapq.heappush(pq_b, (-b[i], i))
+            
+        q = deque()
+        if pq_a:
+            neg_a, j = pq_a[0]
+            q.append(j)
+        if pq_b:
+            neg_b, j = pq_b[0]
+            q.append(j)
+            
+        while q:
+            i = q.popleft()
+            if added[i]:
+                continue
+            added[i] = True
+            min_a = min(min_a, a[i])
+            min_b = min(min_b, b[i])
+            
+            while pq_a:
+                while pq_a and added[pq_a[0][1]]:
+                    heapq.heappop(pq_a)
+                if not pq_a:
+                    break
+                neg_a, j = pq_a[0]
+                if -neg_a > min_a:
+                    heapq.heappop(pq_a)
+                    q.append(j)
+                else:
+                    break
+                    
+            while pq_b:
+                while pq_b and added[pq_b[0][1]]:
+                    heapq.heappop(pq_b)
+                if not pq_b:
+                    break
+                neg_b, j = pq_b[0]
+                if -neg_b > min_b:
+                    heapq.heappop(pq_b)
+                    q.append(j)
+                else:
+                    break
+                    
+        s = ''.join('1' if added[i] else '0' for i in range(n))
+        output_lines.append(s)
+        
+    sys.stdout.write("\n".join(output_lines))
+    
+if __name__ == "__main__":
+    main()

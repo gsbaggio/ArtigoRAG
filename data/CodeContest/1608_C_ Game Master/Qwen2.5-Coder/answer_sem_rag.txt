@@ -1,0 +1,53 @@
+def can_win_tournament():
+    import sys
+    input = sys.stdin.read().split()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        
+        a = list(map(int, input[index:index + n]))
+        index += n
+        
+        b = list(map(int, input[index:index + n]))
+        index += n
+        
+        max_a = max(a)
+        max_b = max(b)
+        
+        result = ""
+        for i in range(n):
+            if a[i] == max_a or b[i] == max_b:
+                result += "1"
+            else:
+                result += "0"
+        
+        results.append(result)
+    
+    for result in results:
+        print(result)
+
+# Uncomment the following line to run the function when using standard input/output
+# can_win_tournament()
+
+# Example usage with predefined input
+if __name__ == "__main__":
+    input_data = """3
+4
+1 2 3 4
+1 2 3 4
+4
+11 12 20 21
+44 22 11 30
+1
+1000000000
+1000000000"""
+    import io
+    sys.stdin = io.StringIO(input_data)
+    can_win_tournament()

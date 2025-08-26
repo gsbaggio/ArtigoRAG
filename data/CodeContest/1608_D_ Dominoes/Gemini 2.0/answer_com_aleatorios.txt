@@ -1,0 +1,46 @@
+def solve():
+    n = int(input())
+    dominoes = []
+    for _ in range(n):
+        dominoes.append(input())
+
+    def is_valid(arrangement):
+        for i in range(n):
+            if arrangement[i][1] == arrangement[(i + 1) % n][0]:
+                return False
+        return True
+
+    def count_valid_colorings(index, current_coloring, unknown_cells):
+        if index == len(unknown_cells):
+            arrangement = []
+            k = 0
+            for domino in dominoes:
+                new_domino = ""
+                for cell in domino:
+                    if cell == '?':
+                        new_domino += current_coloring[k]
+                        k += 1
+                    else:
+                        new_domino += cell
+                arrangement.append(new_domino)
+            
+            if is_valid(arrangement):
+                return 1
+            else:
+                return 0
+
+        count = 0
+        count += count_valid_colorings(index + 1, current_coloring + ['B'], unknown_cells)
+        count += count_valid_colorings(index + 1, current_coloring + ['W'], unknown_cells)
+        return count % 998244353
+
+    unknown_cells = []
+    for domino in dominoes:
+        for cell in domino:
+            if cell == '?':
+                unknown_cells.append(True)
+
+    result = count_valid_colorings(0, [], unknown_cells)
+    print(result)
+
+solve()

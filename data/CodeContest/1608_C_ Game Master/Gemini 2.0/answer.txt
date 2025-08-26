@@ -1,0 +1,29 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        b = list(map(int, input().split()))
+        
+        can_win = [False] * n
+        
+        for i in range(n):
+            can_win[i] = True
+            
+            for j in range(n):
+                if i == j:
+                    continue
+                
+                possible = False
+                
+                # Check if player i can win against player j
+                if a[i] > a[j] or b[i] > b[j]:
+                    possible = True
+                
+                if not possible:
+                    can_win[i] = False
+                    break
+        
+        print("".join(['1' if can_win[i] else '0' for i in range(n)]))
+
+solve()

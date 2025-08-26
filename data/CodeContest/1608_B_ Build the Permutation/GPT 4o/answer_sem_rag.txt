@@ -1,0 +1,41 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    results = []
+    idx = 1
+    
+    for _ in range(t):
+        n, a, b = map(int, data[idx:idx+3])
+        idx += 3
+        
+        # Check feasibility
+        if a + b > n - 2 or abs(a - b) > 1:
+            results.append("-1")
+            continue
+        
+        # Construct the permutation
+        high = list(range(n, n - (a + b + 1), -1))  # Largest a + b + 1 numbers
+        low = list(range(1, n - (a + b + 1) + 1))  # Remaining numbers
+        
+        perm = []
+        is_peak = a >= b  # Start with a peak if a >= b, otherwise start with a valley
+        
+        for i in range(a + b):
+            if is_peak:
+                perm.append(high.pop(0))  # Add a peak
+                a -= 1
+            else:
+                perm.append(high.pop(0))  # Add a valley
+                b -= 1
+            is_peak = not is_peak  # Alternate between peak and valley
+        
+        # Add the remaining high and low values
+        perm.extend(high)
+        perm.extend(low)
+        
+        results.append(" ".join(map(str, perm)))
+    
+    sys.stdout.write("\n".join(results) + "\n")

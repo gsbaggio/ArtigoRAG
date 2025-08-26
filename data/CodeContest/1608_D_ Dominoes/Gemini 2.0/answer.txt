@@ -1,0 +1,49 @@
+def solve():
+    n = int(input())
+    dominoes = []
+    for _ in range(n):
+        dominoes.append(input())
+
+    def is_valid(coloring):
+        for i in range(n):
+            if coloring[i][1] == coloring[(i + 1) % n][0]:
+                return False
+        return True
+
+    def count_valid_colorings(index, current_coloring):
+        if index == n:
+            if is_valid(current_coloring):
+                return 1
+            else:
+                return 0
+
+        domino = dominoes[index]
+        count = 0
+
+        def get_possible_colors(domino_str):
+            possible_left = []
+            possible_right = []
+
+            if domino_str[0] == '?':
+                possible_left.extend(['B', 'W'])
+            else:
+                possible_left.append(domino_str[0])
+
+            if domino_str[1] == '?':
+                possible_right.extend(['B', 'W'])
+            else:
+                possible_right.append(domino_str[1])
+
+            return possible_left, possible_right
+
+        possible_left, possible_right = get_possible_colors(domino)
+
+        for left_color in possible_left:
+            for right_color in possible_right:
+                count = (count + count_valid_colorings(index + 1, current_coloring + [(left_color, right_color)])) % 998244353
+
+        return count
+
+    print(count_valid_colorings(0, []))
+
+solve()

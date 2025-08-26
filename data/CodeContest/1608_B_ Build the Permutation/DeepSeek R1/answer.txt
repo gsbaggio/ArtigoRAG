@@ -1,0 +1,59 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    output_lines = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        a = int(data[index]); index += 1
+        b = int(data[index]); index += 1
+        
+        if a + b > n - 2 or abs(a - b) > 1:
+            output_lines.append("-1")
+            continue
+            
+        l = 1
+        r = n
+        res = []
+        if a > b:
+            for i in range(a + b + 1):
+                if i % 2 == 0:
+                    res.append(l)
+                    l += 1
+                else:
+                    res.append(r)
+                    r -= 1
+            while l <= r:
+                res.append(r)
+                r -= 1
+        elif a < b:
+            for i in range(a + b + 1):
+                if i % 2 == 0:
+                    res.append(r)
+                    r -= 1
+                else:
+                    res.append(l)
+                    l += 1
+            while l <= r:
+                res.append(l)
+                l += 1
+        else:
+            for i in range(a + b + 1):
+                if i % 2 == 0:
+                    res.append(l)
+                    l += 1
+                else:
+                    res.append(r)
+                    r -= 1
+            while l <= r:
+                res.append(l)
+                l += 1
+                
+        output_lines.append(" ".join(map(str, res)))
+        
+    sys.stdout.write("\n".join(output_lines))
+
+if __name__ == "__main__":
+    main()

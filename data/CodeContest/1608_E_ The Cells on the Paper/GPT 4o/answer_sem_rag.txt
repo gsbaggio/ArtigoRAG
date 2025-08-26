@@ -1,0 +1,57 @@
+def can_form_rectangles(cells, k):
+    # Check if we can form rectangles for k/3 cells of each color
+    required = k // 3
+    for color in range(1, 4):
+        # Filter cells of the current color
+        color_cells = [(x, y) for x, y, c in cells if c == color]
+        if len(color_cells) < required:
+            return False
+        
+        # Sort by x and y coordinates
+        color_cells.sort()
+        x_coords = [x for x, y in color_cells]
+        y_coords = [y for x, y in color_cells]
+        
+        # Sliding window to find a valid rectangle
+        valid = False
+        for i in range(len(color_cells) - required + 1):
+            x_min, x_max = x_coords[i], x_coords[i + required - 1]
+            y_window = y_coords[i:i + required]
+            y_window.sort()
+            for j in range(len(y_window) - required + 1):
+                y_min, y_max = y_window[j], y_window[j + required - 1]
+                if len([1 for x, y in color_cells if x_min <= x <= x_max and y_min <= y <= y_max]) >= required:
+                    valid = True
+                    break
+            if valid:
+                break
+        if not valid:
+            return False
+    return True
+
+def largest_k(n, cells):
+    # Binary search for the largest k
+    left, right = 3, n
+    best_k = 3
+    while left <= right:
+        mid = (left + right) // 2
+        if mid % 3 != 0:
+            mid -= mid % 3  # Ensure mid is divisible by 3
+        if mid < 3:
+            break
+        if can_form_rectangles(cells, mid):
+            best_k = mid
+            left = mid + 3
+        else:
+            right = mid - 3
+    return best_k
+
+# Input reading
+n = int(input())
+cells = []
+for _ in range(n):
+    x, y, c = map(int, input().split())
+    cells.append((x, y, c))
+
+# Output the result
+print(largest_k(n, cells))

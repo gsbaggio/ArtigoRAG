@@ -1,0 +1,86 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    long long dp0 = 0; // Number of ways to end with a black cell
+    long long dp1 = 0; // Number of ways to end with a white cell
+    
+    string firstDomino;
+    cin >> firstDomino;
+    
+    if (firstDomino == "BW") {
+        dp1 = 1;
+    } else if (firstDomino == "WB") {
+        dp0 = 1;
+    } else if (firstDomino == "B?") {
+        dp1 = 1;
+    } else if (firstDomino == "?B") {
+        dp0 = 1;
+    } else if (firstDomino == "W?") {
+        dp1 = 1;
+    } else if (firstDomino == "?W") {
+        dp0 = 1;
+    } else if (firstDomino == "??") {
+        dp0 = 1;
+        dp1 = 1;
+    }
+    
+    for (int i = 1; i < n; ++i) {
+        string domino;
+        cin >> domino;
+        
+        long long new_dp0 = 0;
+        long long new_dp1 = 0;
+        
+        if (domino == "BW") {
+            new_dp1 = dp0;
+        } else if (domino == "WB") {
+            new_dp0 = dp1;
+        } else if (domino == "B?") {
+            new_dp1 = dp0;
+        } else if (domino == "?B") {
+            new_dp0 = dp1;
+        } else if (domino == "W?") {
+            new_dp1 = dp0;
+        } else if (domino == "?W") {
+            new_dp0 = dp1;
+        } else if (domino == "??") {
+            new_dp0 = (dp0 + dp1) % MOD;
+            new_dp1 = (dp0 + dp1) % MOD;
+        }
+        
+        dp0 = new_dp0;
+        dp1 = new_dp1;
+    }
+    
+    long long totalWays = (dp0 + dp1) % MOD;
+    
+    // Handle the circular condition
+    if (firstDomino == "BW" && dp0 > 0) {
+        totalWays = (totalWays - dp0 + MOD) % MOD;
+    } else if (firstDomino == "WB" && dp1 > 0) {
+        totalWays = (totalWays - dp1 + MOD) % MOD;
+    } else if (firstDomino == "B?" && dp0 > 0) {
+        totalWays = (totalWays - dp0 + MOD) % MOD;
+    } else if (firstDomino == "?B" && dp1 > 0) {
+        totalWays = (totalWays - dp1 + MOD) % MOD;
+    } else if (firstDomino == "W?" && dp1 > 0) {
+        totalWays = (totalWays - dp1 + MOD) % MOD;
+    } else if (firstDomino == "?W" && dp0 > 0) {
+        totalWays = (totalWays - dp0 + MOD) % MOD;
+    } else if (firstDomino == "??") {
+        totalWays = (totalWays - dp0 + MOD) % MOD;
+        totalWays = (totalWays - dp1 + MOD) % MOD;
+    }
+    
+    cout << totalWays;
+    
+    return 0;
+}

@@ -1,0 +1,86 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+
+    // Initialize DP variables
+    long long dp_prev_black = 0, dp_prev_white = 0;
+    long long dp_curr_black = 0, dp_curr_white = 0;
+
+    // Read the first domino
+    char left, right;
+    cin >> left >> right;
+
+    if (left == 'B') {
+        dp_prev_black = 1;
+    } else if (left == 'W') {
+        dp_prev_white = 1;
+    } else {
+        dp_prev_black = 1;
+        dp_prev_white = 1;
+    }
+
+    // Process the rest of the dominoes
+    for (int i = 1; i < n; i++) {
+        cin >> left >> right;
+
+        if (left == 'B') {
+            dp_curr_black = dp_prev_white;
+            dp_curr_white = 0;
+        } else if (left == 'W') {
+            dp_curr_black = 0;
+            dp_curr_white = dp_prev_black;
+        } else if (right == 'B') {
+            dp_curr_black = 0;
+            dp_curr_white = dp_prev_black;
+        } else if (right == 'W') {
+            dp_curr_black = dp_prev_white;
+            dp_curr_white = 0;
+        } else {
+            dp_curr_black = dp_prev_white;
+            dp_curr_white = dp_prev_black;
+        }
+
+        // Update dp_prev for the next iteration
+        dp_prev_black = dp_curr_black;
+        dp_prev_white = dp_curr_white;
+    }
+
+    // Read the first domino again to check the circular constraint
+    cin >> left >> right;
+
+    long long total_ways = 0;
+
+    if (left == '?') {
+        if (right == '?') {
+            total_ways = (dp_curr_black + dp_curr_white) % MOD;
+        } else if (right == 'B') {
+            total_ways = dp_curr_white;
+        } else if (right == 'W') {
+            total_ways = dp_curr_black;
+        }
+    } else if (left == 'B') {
+        if (right == '?') {
+            total_ways = dp_curr_white;
+        } else if (right == 'W') {
+            total_ways = dp_curr_white;
+        }
+    } else if (left == 'W') {
+        if (right == '?') {
+            total_ways = dp_curr_black;
+        } else if (right == 'B') {
+            total_ways = dp_curr_black;
+        }
+    }
+
+    cout << total_ways << endl;
+
+    return 0;
+}

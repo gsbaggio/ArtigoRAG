@@ -1,0 +1,113 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<string> dominoes(n);
+    for (int i = 0; i < n; i++) {
+        cin >> dominoes[i];
+    }
+    
+    // Create a graph: Each cell is a node
+    vector<vector<int>> graph(2 * n);
+    vector<int> color(2 * n, -1); // -1 = uncolored, 0 = black, 1 = white
+    
+    // Connect cells that must have different colors
+    for (int i = 0; i < n; i++) {
+        int right = 2 * i + 1;
+        int next_left = 2 * ((i + 1) % n);
+        
+        // Right cell of i must differ from left cell of (i+1)%n
+        graph[right].push_back(next_left);
+        graph[next_left].push_back(right);
+    }
+    
+    // DFS to color the graph
+    vector<bool> visited(2 * n, false);
+    vector<int> component(2 * n);
+    bool possible = true;
+    int comp_id = 0;
+    
+    auto dfs = [&](auto&& self, int node, int c) -> void {
+        color[node] = c;
+        visited[node] = true;
+        component[node] = comp_id;
+        
+        for (int nei : graph[node]) {
+            if (!visited[nei]) {
+                self(self, nei, 1 - c); // Assign opposite color
+            } else if (color[nei] == c) {
+                possible = false; // Conflict detected
+                return;
+            }
+        }
+    };
+    
+    // Find connected components and color them
+    for (int i = 0; i < 2 * n && possible; i++) {
+        if (!visited[i]) {
+            dfs(dfs, i, 0);
+            comp_id++;
+        }
+    }
+    
+    if (!possible) {
+        cout << 0 << endl;
+        return 0;
+    }
+    
+    // Check if fixed colors are consistent with our coloring
+    for (int i = 0; i < n; i++) {
+        int left = 2 * i;
+        int right = 2 * i + 1;
+        
+        // Check left cell
+        if (dominoes[i][0] == 'B' && color[left] != 0) possible = false;
+        if (dominoes[i][0] == 'W' && color[left] != 1) possible = false;
+        
+        // Check right cell
+        if (dominoes[i][1] == 'B' && color[right] != 0) possible = false;
+        if (dominoes[i][1] == 'W' && color[right] != 1) possible = false;
+    }
+    
+    if (!possible) {
+        cout << 0 << endl;
+        return 0;
+    }
+    
+    // For each component, we have two choices unless it has a fixed cell
+    vector<bool> has_fixed_color(comp_id, false);
+    
+    for (int i = 0; i < n; i++) {
+        if (dominoes[i][0] != '?') {
+            has_fixed_color[component[2 * i]] = true;
+        }
+        if (dominoes[i][1] != '?') {
+            has_fixed_color[component[2 * i + 1]] = true;
+        }
+    }
+    
+    // Count free components
+    int free_components = 0;
+    for (int i = 0; i < comp_id; i++) {
+        if (!has_fixed_color[i]) {
+            free_components++;
+        }
+    }
+    
+    // Result is 2^free_components
+    long long result = 1;
+    for (int i = 0; i < free_components; i++) {
+        result = (result * 2) % MOD;
+    }
+    
+    cout << result << endl;
+    
+    return 0;
+}

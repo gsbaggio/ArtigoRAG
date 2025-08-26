@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+#include <cstring>
+
+using namespace std;
+
+const int MOD = 998244353;
+const int MAX_N = 100005;
+
+int dp[MAX_N][3][3]; // dp array to store the states
+
+int countWays(int n, vector<pair<char, char>>& dominoes) {
+    memset(dp, 0, sizeof(dp));
+
+    // Base case initialization
+    dp[0][0][0] = 1; // No dominoes placed yet
+
+    for (int i = 1; i <= n; ++i) {
+        auto [left, right] = dominoes[i - 1];
+
+        for (int l1 = 0; l1 < 3; ++l1) {
+            for (int r1 = 0; r1 < 3; ++r1) {
+                if (left == '?') {
+                    for (int l2 = 0; l2 < 3; ++l2) {
+                        if (l1 != l2) {
+                            dp[i][l2][r1] = (dp[i][l2][r1] + dp[i - 1][l1][r1]) % MOD;
+                        }
+                    }
+                } else {
+                    int l2 = (left == 'W') ? 1 : 2;
+                    if (l1 != l2) {
+                        dp[i][l2][r1] = (dp[i][l2][r1] + dp[i - 1][l1][r1]) % MOD;
+                    }
+                }
+
+                if (right == '?') {
+                    for (int r2 = 0; r2 < 3; ++r2) {
+                        if (r1 != r2) {
+                            dp[i][l1][r2] = (dp[i][l1][r2] + dp[i - 1][l1][r1]) % MOD;
+                        }
+                    }
+                } else {
+                    int r2 = (right == 'W') ? 1 : 2;
+                    if (r1 != r2) {
+                        dp[i][l1][r2] = (dp[i][l1][r2] + dp[i - 1][l1][r1]) % MOD;
+                    }
+                }
+            }
+        }
+    }
+
+    int result = 0;
+    for (int l = 0; l < 3; ++l) {
+        for (int r = 0; r < 3; ++r) {
+            result = (result + dp[n][l][r]) % MOD;
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    vector<pair<char, char>> dominoes(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> dominoes[i].first >> dominoes[i].second;
+    }
+
+    int ways = countWays(n, dominoes);
+    cout << ways << endl;
+
+    return 0;
+}

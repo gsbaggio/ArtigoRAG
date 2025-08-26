@@ -1,0 +1,37 @@
+def max_non_intersecting_cells(n, cells):
+    # Separate cells by color
+    color_cells = [[] for _ in range(3)]
+    for x, y, c in cells:
+        color_cells[c-1].append((x, y))
+    
+    # Calculate bounding boxes for each color
+    bounding_boxes = []
+    for color in range(3):
+        min_x = min(cell[0] for cell in color_cells[color])
+        max_x = max(cell[0] for cell in color_cells[color])
+        min_y = min(cell[1] for cell in color_cells[color])
+        max_y = max(cell[1] for cell in color_cells[color])
+        bounding_boxes.append((min_x, max_x, min_y, max_y, len(color_cells[color])))
+    
+    # Sort bounding boxes by their rightmost x-coordinate
+    bounding_boxes.sort(key=lambda box: box[1])
+    
+    # Greedily select non-overlapping rectangles
+    max_y_so_far = float('-inf')
+    selected_rectangles = []
+    for box in bounding_boxes:
+        min_x, max_x, min_y, max_y, count = box
+        if min_y > max_y_so_far:
+            selected_rectangles.append(box)
+            max_y_so_far = max_y
+    
+    # Count the total number of cells in the selected rectangles
+    k = sum(count for _, _, _, _, count in selected_rectangles)
+    return k
+
+# Read input
+n = int(input())
+cells = [tuple(map(int, input().split())) for _ in range(n)]
+
+# Output the result
+print(max_non_intersecting_cells(n, cells))

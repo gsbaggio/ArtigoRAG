@@ -1,0 +1,53 @@
+MOD = 998244353
+
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    
+    n = int(data[0])
+    dominoes = data[1:]
+    
+    # Count the number of ? in left and right cells
+    total_question_marks = 0
+    for domino in dominoes:
+        total_question_marks += domino.count('?')
+    
+    # Helper function to calculate modular exponentiation
+    def mod_exp(base, exp, mod):
+        result = 1
+        while exp > 0:
+            if exp % 2 == 1:
+                result = (result * base) % mod
+            base = (base * base) % mod
+            exp //= 2
+        return result
+    
+    # Count all possible configurations without constraints
+    total_ways = mod_exp(2, total_question_marks, MOD)
+    
+    # Count invalid configurations
+    invalid_ways = 0
+    
+    # Case 1: All dominoes are BB or WW
+    all_bb = all(domino[0] in 'B?' and domino[1] in 'B?' for domino in dominoes)
+    all_ww = all(domino[0] in 'W?' and domino[1] in 'W?' for domino in dominoes)
+    if all_bb:
+        invalid_ways += 1
+    if all_ww:
+        invalid_ways += 1
+    
+    # Case 2: Count valid configurations with alternating colors
+    alternating_ways = 1
+    for domino in dominoes:
+        if domino == '??':
+            alternating_ways = (alternating_ways * 2) % MOD
+        elif domino in ['BW', 'WB']:
+            continue
+        else:
+            alternating_ways = 0
+            break
+    
+    # Subtract invalid configurations from total
+    result = (total_ways - invalid_ways + alternating_ways) % MOD
+    print(result)
