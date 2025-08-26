@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void solve_test_case() {
+    int n;
+    cin >> n;
+    
+    // Simple solution: Use consecutive prime numbers
+    // Starting with 2, 3, 5, 7, 11, 13, etc.
+    vector<int> result;
+    
+    // For n=1, just output 1
+    if (n == 1) {
+        cout << "1\n";
+        return;
+    }
+    
+    // A simpler approach for n > 1 is to use consecutive integers where each is one more than a multiple of the previous
+    result.push_back(2); // First element
+    
+    for (int i = 1; i < n; i++) {
+        // Each next element is (previous_element * 2 + 1)
+        // This ensures it's not divisible by the previous element
+        result.push_back(result[i-1] * 2 + 1);
+    }
+    
+    // Output the result
+    for (int i = 0; i < n; i++) {
+        cout << result[i];
+        if (i < n-1) cout << " ";
+    }
+    cout << "\n";
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        solve_test_case();
+    }
+    
+    return 0;
+}

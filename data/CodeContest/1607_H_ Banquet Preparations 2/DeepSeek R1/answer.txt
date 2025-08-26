@@ -1,0 +1,51 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    output_lines = []
+    for _ in range(t):
+        # Skip any empty tokens until we get n
+        while index < len(data) and data[index] == '':
+            index += 1
+        if index >= len(data):
+            break
+        n = int(data[index]); index += 1
+        dishes = []
+        for i in range(n):
+            a = int(data[index]); b = int(data[index+1]); m = int(data[index+2])
+            index += 3
+            dishes.append((a, b, m))
+        
+        groups = {}
+        assigned_r = [0] * n
+        for idx, (a, b, m) in enumerate(dishes):
+            T = a + b - m
+            L = max(0, a - m)
+            R = min(a, T)
+            if T not in groups:
+                groups[T] = []
+            groups[T].append((L, R, idx))
+            
+        total_variety = 0
+        for T, intervals in groups.items():
+            intervals.sort(key=lambda x: x[1])
+            current = -10**18
+            for (L, R, idx) in intervals:
+                if current < L:
+                    current = R
+                    total_variety += 1
+                assigned_r[idx] = current
+                
+        output_lines.append(str(total_variety))
+        for i in range(n):
+            a, b, m = dishes[i]
+            x = a - assigned_r[i]
+            y = m - x
+            output_lines.append(f"{x} {y}")
+            
+    sys.stdout.write("\n".join(output_lines))
+
+if __name__ == "__main__":
+    main()

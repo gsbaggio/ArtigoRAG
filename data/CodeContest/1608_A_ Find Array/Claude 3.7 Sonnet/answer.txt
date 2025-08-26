@@ -1,0 +1,39 @@
+#include <iostream>
+#include <vector>
+
+void solve() {
+    int n;
+    std::cin >> n;
+    
+    std::vector<int> result(n);
+    
+    // Handle the first element
+    result[0] = 1;
+    
+    // For remaining elements, use consecutive odd numbers
+    for (int i = 1; i < n; i++) {
+        result[i] = result[i-1] + 2;
+    }
+    
+    // Special case: if second element is 3, it's divisible by first element (1)
+    // Fix by changing the second element to 2
+    if (n > 1) {
+        result[1] = 2;
+    }
+    
+    // Print the result
+    for (int i = 0; i < n; i++) {
+        std::cout << result[i];
+        if (i < n - 1) std::cout << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    int t;
+    std::cin >> t;
+    while (t--) {
+        solve();
+    }
+    return 0;
+}

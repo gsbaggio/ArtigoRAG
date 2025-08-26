@@ -1,0 +1,48 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n, m = map(int, input().split())
+        s = input().strip()
+        
+        # Find maximum number of commands we can execute
+        min_r, max_r = 1, 1  # min and max row reached
+        min_c, max_c = 1, 1  # min and max column reached
+        curr_r, curr_c = 1, 1  # current position
+        
+        max_cmds = 0
+        for i, cmd in enumerate(s):
+            if cmd == 'L':
+                curr_c -= 1
+            elif cmd == 'R':
+                curr_c += 1
+            elif cmd == 'U':
+                curr_r -= 1
+            else:  # 'D'
+                curr_r += 1
+                
+            # Update min/max positions
+            min_r = min(min_r, curr_r)
+            max_r = max(max_r, curr_r)
+            min_c = min(min_c, curr_c)
+            max_c = max(max_c, curr_c)
+            
+            # Check if we can fit this path on our board
+            if max_r - min_r + 1 <= n and max_c - min_c + 1 <= m:
+                max_cmds = i + 1
+            else:
+                break
+        
+        # Calculate the required starting position
+        # Shift the path to fit within board boundaries
+        r_shift = max(1 - min_r, 0)
+        c_shift = max(1 - min_c, 0)
+        
+        # Starting position
+        start_r = 1 + r_shift
+        start_c = 1 + c_shift
+        
+        print(f"{start_r} {start_c}")
+
+if __name__ == "__main__":
+    solve()

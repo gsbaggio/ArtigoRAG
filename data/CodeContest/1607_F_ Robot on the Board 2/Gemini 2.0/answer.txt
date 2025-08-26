@@ -1,0 +1,45 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        input()  # Blank line
+        n, m = map(int, input().split())
+        board = [input() for _ in range(n)]
+
+        def get_next_cell(r, c, direction):
+            if direction == 'L':
+                return r, c - 1
+            elif direction == 'R':
+                return r, c + 1
+            elif direction == 'U':
+                return r - 1, c
+            elif direction == 'D':
+                return r + 1, c
+            return None
+
+        def simulate(start_r, start_c):
+            r, c = start_r, start_c
+            visited = set()
+            steps = 0
+            while True:
+                if (r, c) in visited:
+                    break
+                if not (0 <= r < n and 0 <= c < m):
+                    break
+                visited.add((r, c))
+                direction = board[r][c]
+                r, c = get_next_cell(r, c, direction)
+                steps += 1
+            return steps
+
+        max_steps = 0
+        best_r, best_c = 1, 1
+        for r in range(n):
+            for c in range(m):
+                steps = simulate(r, c)
+                if steps > max_steps:
+                    max_steps = steps
+                    best_r, best_c = r, c
+
+        print(best_r + 1, best_c + 1, max_steps)
+
+solve()

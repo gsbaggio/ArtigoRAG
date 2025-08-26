@@ -1,0 +1,59 @@
+def can_form_permutation(t, test_cases):
+    results = []
+    
+    for case in test_cases:
+        n, a, colors = case
+        blue = []
+        red = []
+        
+        # Separate elements by color
+        for i in range(n):
+            if colors[i] == 'B':
+                blue.append(a[i])
+            else:
+                red.append(a[i])
+        
+        # Sort blue in ascending order and red in descending order
+        blue.sort()
+        red.sort(reverse=True)
+        
+        # Check if blue can cover [1, len(blue)]
+        valid = True
+        for i in range(len(blue)):
+            if blue[i] < i + 1:  # Blue can't cover the required range
+                valid = False
+                break
+        
+        # Check if red can cover [len(blue) + 1, n]
+        if valid:
+            for i in range(len(red)):
+                if red[i] > n - i:  # Red can't cover the required range
+                    valid = False
+                    break
+        
+        results.append("YES" if valid else "NO")
+    
+    return results
+
+
+# Input reading
+import sys
+input = sys.stdin.read
+data = input().split()
+
+t = int(data[0])
+test_cases = []
+index = 1
+
+for _ in range(t):
+    n = int(data[index])
+    index += 1
+    a = list(map(int, data[index:index + n]))
+    index += n
+    colors = data[index]
+    index += 1
+    test_cases.append((n, a, colors))
+
+# Solve and output results
+results = can_form_permutation(t, test_cases)
+sys.stdout.write("\n".join(results) + "\n")

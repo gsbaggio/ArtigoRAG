@@ -1,0 +1,122 @@
+def find_optimal_starting_point(n, m, commands):
+    # Reverse the commands
+    reverse_commands = []
+    for cmd in commands:
+        if cmd == 'L':
+            reverse_commands.append('R')
+        elif cmd == 'R':
+            reverse_commands.append('L')
+        elif cmd == 'D':
+            reverse_commands.append('U')
+        elif cmd == 'U':
+            reverse_commands.append('D')
+    
+    # Initialize the DP table for boundaries
+    dp_top = [0] * m
+    dp_bottom = [0] * m
+    dp_left = [0] * n
+    dp_right = [0] * n
+    
+    # Simulate movements from the top boundary
+    for c in range(m):
+        r = 0
+        for cmd in reverse_commands:
+            if cmd == 'L' and c > 0:
+                c -= 1
+            elif cmd == 'R' and c < m - 1:
+                c += 1
+            elif cmd == 'D' and r < n - 1:
+                r += 1
+            else:
+                break
+            dp_top[c] += 1
+    
+    # Simulate movements from the bottom boundary
+    for c in range(m):
+        r = n - 1
+        for cmd in reverse_commands:
+            if cmd == 'L' and c > 0:
+                c -= 1
+            elif cmd == 'R' and c < m - 1:
+                c += 1
+            elif cmd == 'U' and r > 0:
+                r -= 1
+            else:
+                break
+            dp_bottom[c] += 1
+    
+    # Simulate movements from the left boundary
+    for r in range(n):
+        c = 0
+        for cmd in reverse_commands:
+            if cmd == 'R' and c < m - 1:
+                c += 1
+            elif cmd == 'L' and c > 0:
+                c -= 1
+            elif cmd == 'D' and r < n - 1:
+                r += 1
+            else:
+                break
+            dp_left[r] += 1
+    
+    # Simulate movements from the right boundary
+    for r in range(n):
+        c = m - 1
+        for cmd in reverse_commands:
+            if cmd == 'L' and c > 0:
+                c -= 1
+            elif cmd == 'R' and c < m - 1:
+                c += 1
+            elif cmd == 'U' and r > 0:
+                r -= 1
+            else:
+                break
+            dp_right[r] += 1
+    
+    # Find the maximum value in the DP tables
+    max_commands = 0
+    optimal_start = (1, 1)
+    
+    # Check top boundary
+    for c in range(m):
+        if dp_top[c] > max_commands:
+            max_commands = dp_top[c]
+            optimal_start = (1, c + 1)
+    
+    # Check bottom boundary
+    for c in range(m):
+        if dp_bottom[c] > max_commands:
+            max_commands = dp_bottom[c]
+            optimal_start = (n, c + 1)
+    
+    # Check left boundary
+    for r in range(n):
+        if dp_left[r] > max_commands:
+            max_commands = dp_left[r]
+            optimal_start = (r + 1, 1)
+    
+    # Check right boundary
+    for r in range(n):
+        if dp_right[r] > max_commands:
+            max_commands = dp_right[r]
+            optimal_start = (r + 1, m)
+    
+    return optimal_start
+
+# Read input
+import sys
+input = sys.stdin.read().splitlines()
+
+t = int(input[0])
+index = 1
+results = []
+
+for _ in range(t):
+    n, m = map(int, input[index].split())
+    commands = input[index + 1]
+    index += 2
+    results.append(find_optimal_starting_point(n, m, commands))
+
+# Print results
+for result in results:
+    print(result[0], result[1])

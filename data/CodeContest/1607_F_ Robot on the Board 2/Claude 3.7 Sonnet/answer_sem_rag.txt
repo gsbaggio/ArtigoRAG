@@ -1,0 +1,72 @@
+def solve_robot_movement():
+    t = int(input())
+    
+    for _ in range(t):
+        try:
+            blank = input()
+        except EOFError:
+            pass
+        
+        n, m = map(int, input().split())
+        board = []
+        for i in range(n):
+            board.append(input().strip())
+        
+        # Find the maximum path length
+        max_steps = 0
+        best_r, best_c = 1, 1
+        
+        # Create a graph representation
+        # For each cell, compute where the robot would go next
+        next_cell = {}
+        for r in range(n):
+            for c in range(m):
+                next_r, next_c = r, c
+                if board[r][c] == 'U':
+                    next_r -= 1
+                elif board[r][c] == 'D':
+                    next_r += 1
+                elif board[r][c] == 'L':
+                    next_c -= 1
+                elif board[r][c] == 'R':
+                    next_c += 1
+                
+                # Store the next position if it's within bounds
+                if 0 <= next_r < n and 0 <= next_c < m:
+                    next_cell[(r, c)] = (next_r, next_c)
+                else:
+                    # Mark as falling off the board
+                    next_cell[(r, c)] = None
+        
+        # For each starting cell, compute max steps
+        for r in range(n):
+            for c in range(m):
+                steps = compute_max_steps(r, c, next_cell)
+                if steps > max_steps:
+                    max_steps = steps
+                    best_r, best_c = r + 1, c + 1  # Convert to 1-based indexing for output
+        
+        print(best_r, best_c, max_steps)
+
+def compute_max_steps(start_r, start_c, next_cell):
+    visited = {}  # Maps cell to step when it was visited
+    r, c = start_r, start_c
+    step = 0
+    
+    while True:
+        # If we've visited this cell before, we've found a cycle
+        if (r, c) in visited:
+            return step
+        
+        visited[(r, c)] = step
+        step += 1
+        
+        # If next move falls off the board
+        if next_cell.get((r, c)) is None:
+            return step
+        
+        # Move to next cell
+        r, c = next_cell[(r, c)]
+
+if __name__ == "__main__":
+    solve_robot_movement()

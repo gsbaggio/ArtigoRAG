@@ -5,26 +5,26 @@ def solve():
         print(x0)
         return
 
-    remainder = n % 4
+    rem = n % 4
     
     if x0 % 2 == 0:
-        if remainder == 0:
+        if rem == 0:
             print(x0)
-        elif remainder == 1:
-            print(x0 - n)
-        elif remainder == 2:
+        elif rem == 1:
+            print(x0 - n - 1)
+        elif rem == 2:
             print(x0 + 1)
         else:
-            print(x0 + n + 1)
+            print(x0 + n + 2)
     else:
-        if remainder == 0:
+        if rem == 0:
             print(x0)
-        elif remainder == 1:
-            print(x0 + n)
-        elif remainder == 2:
+        elif rem == 1:
+            print(x0 + n + 1)
+        elif rem == 2:
             print(x0 - 1)
         else:
-            print(x0 - n - 1)
+            print(x0 - n - 2)
 
 t = int(input())
 for _ in range(t):

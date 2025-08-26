@@ -1,0 +1,38 @@
+def can_transform_to_permutation(n, arr, colors):
+    # Sort the array to find optimal matching with permutation [1,2,...,n]
+    # Store the original colors with each element
+    elements = [(arr[i], colors[i]) for i in range(n)]
+    elements.sort()
+    
+    # Check if we can transform elements to get permutation [1,2,...,n]
+    for i in range(n):
+        target = i + 1  # Target value in the permutation
+        val, color = elements[i]
+        
+        if color == 'B':  # Blue element can only be decreased
+            if val < target:  # Can't decrease to reach the target
+                return False
+        else:  # Red element can only be increased
+            if val > target:  # Can't increase to reach the target
+                return False
+    
+    return True
+
+def solve():
+    t = int(input())
+    results = []
+    
+    for _ in range(t):
+        n = int(input())
+        arr = list(map(int, input().split()))
+        colors = input()
+        
+        if can_transform_to_permutation(n, arr, colors):
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    for result in results:
+        print(result)
+
+solve()

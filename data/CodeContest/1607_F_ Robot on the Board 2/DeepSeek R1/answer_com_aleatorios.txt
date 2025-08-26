@@ -1,0 +1,99 @@
+import sys
+
+def main():
+    data = sys.stdin.read().splitlines()
+    t = int(data[0].strip())
+    index = 1
+    results = []
+    for _ in range(t):
+        while index < len(data) and data[index].strip() == '':
+            index += 1
+        if index >= len(data):
+            break
+        n_m = data[index].split()
+        index += 1
+        n = int(n_m[0])
+        m = int(n_m[1])
+        grid = []
+        for i in range(n):
+            grid.append(data[index].strip())
+            index += 1
+        
+        next_i = [[-1] * m for _ in range(n)]
+        next_j = [[-1] * m for _ in range(n)]
+        for i in range(n):
+            for j in range(m):
+                c = grid[i][j]
+                if c == 'L':
+                    ni, nj = i, j-1
+                elif c == 'R':
+                    ni, nj = i, j+1
+                elif c == 'U':
+                    ni, nj = i-1, j
+                elif c == 'D':
+                    ni, nj = i+1, j
+                if 0 <= ni < n and 0 <= nj < m:
+                    next_i[i][j] = ni
+                    next_j[i][j] = nj
+                else:
+                    next_i[i][j] = -1
+                    next_j[i][j] = -1
+        
+        dp = [[-1] * m for _ in range(n)]
+        for i in range(n):
+            for j in range(m):
+                if next_i[i][j] == -1:
+                    dp[i][j] = 1
+        
+        for i in range(n):
+            for j in range(m):
+                if dp[i][j] == -1:
+                    path = []
+                    path_set = set()
+                    cur_i, cur_j = i, j
+                    while True:
+                        if dp[cur_i][cur_j] != -1:
+                            break
+                        if (cur_i, cur_j) in path_set:
+                            break
+                        path.append((cur_i, cur_j))
+                        path_set.add((cur_i, cur_j))
+                        ni = next_i[cur_i][cur_j]
+                        nj = next_j[cur_i][cur_j]
+                        cur_i, cur_j = ni, nj
+                    
+                    if dp[cur_i][cur_j] != -1:
+                        value = dp[cur_i][cur_j]
+                        for cell in reversed(path):
+                            value += 1
+                            ci, cj = cell
+                            dp[ci][cj] = value
+                    else:
+                        for idx, cell in enumerate(path):
+                            if cell == (cur_i, cur_j):
+                                index_idx = idx
+                                break
+                        cycle_length = len(path) - index_idx
+                        for idx in range(index_idx, len(path)):
+                            ci, cj = path[idx]
+                            dp[ci][cj] = cycle_length
+                        value = cycle_length
+                        for idx in range(index_idx-1, -1, -1):
+                            value += 1
+                            ci, cj = path[idx]
+                            dp[ci][cj] = value
+        
+        best_i, best_j, best_d = 0, 0, 0
+        for i in range(n):
+            for j in range(m):
+                if dp[i][j] > best_d:
+                    best_d = dp[i][j]
+                    best_i = i
+                    best_j = j
+        results.append(f"{best_i+1} {best_j+1} {best_d}")
+    
+    for res in results:
+        print(res)
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,49 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void solve() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m;
+        string s;
+        cin >> n >> m >> s;
+
+        // Track cumulative displacement and bounds
+        int dr = 0, dc = 0;
+        int min_row = 0, max_row = 0, min_col = 0, max_col = 0;
+
+        for (char cmd : s) {
+            if (cmd == 'U') dr--;
+            else if (cmd == 'D') dr++;
+            else if (cmd == 'L') dc--;
+            else if (cmd == 'R') dc++;
+
+            // Update bounds
+            min_row = min(min_row, dr);
+            max_row = max(max_row, dr);
+            min_col = min(min_col, dc);
+            max_col = max(max_col, dc);
+        }
+
+        // Determine the starting cell
+        int start_row = 1 - min_row;
+        int start_col = 1 - min_col;
+
+        // Ensure the robot stays within bounds
+        if (start_row + max_row > n) start_row = n - max_row;
+        if (start_col + max_col > m) start_col = m - max_col;
+
+        cout << start_row << " " << start_col << endl;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}

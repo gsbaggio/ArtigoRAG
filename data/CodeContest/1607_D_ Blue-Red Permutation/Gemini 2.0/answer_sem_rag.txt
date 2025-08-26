@@ -1,0 +1,43 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+    colors = input()
+
+    blue = []
+    red = []
+    for i in range(n):
+        if colors[i] == 'B':
+            blue.append(a[i])
+        else:
+            red.append(a[i])
+
+    blue.sort()
+    red.sort()
+
+    possible = True
+    curr = 1
+    for val in blue:
+        if val < curr:
+            possible = False
+            break
+        curr += 1
+
+    if not possible:
+        print("NO")
+        return
+
+    for val in red:
+        if val > curr:
+            possible = False
+            break
+        curr += 1
+
+    if not possible:
+        print("NO")
+    else:
+        print("YES")
+
+
+t = int(input())
+for _ in range(t):
+    solve()

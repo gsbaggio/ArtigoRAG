@@ -1,0 +1,5 @@
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    arr = list(range(n, 2 * n))
+    print(' '.join(map(str, arr)))

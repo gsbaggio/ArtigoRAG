@@ -1,0 +1,14 @@
+def generate_array(n):
+    arr = [1] * n  # Start with an array of all 1s
+    for i in range(1, n):
+        arr[i] = arr[i - 1] * 2  # Fill the array with powers of 2
+    return arr
+
+# Read the number of test cases
+t = int(input())
+
+# Process each test case
+for _ in range(t):
+    n = int(input())  # Read the value of n for the current test case
+    result = generate_array(n)  # Generate the array for the current test case
+    print(*result)  # Print the array elements for the current test case

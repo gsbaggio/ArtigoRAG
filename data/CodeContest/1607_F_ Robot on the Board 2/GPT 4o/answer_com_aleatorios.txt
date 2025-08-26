@@ -1,0 +1,57 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    directions = {'L': (0, -1), 'R': (0, 1), 'U': (-1, 0), 'D': (1, 0)}
+    
+    for _ in range(t):
+        n, m = map(int, data[idx:idx+2])
+        idx += 2
+        grid = data[idx:idx+n]
+        idx += n
+        
+        max_steps = 0
+        best_start = (1, 1)
+        
+        steps = [[-1] * m for _ in range(n)]  # Memoization for steps
+        visited = [[False] * m for _ in range(n)]  # Visited array
+        
+        def dfs(x, y):
+            if x < 0 or x >= n or y < 0 or y >= m:
+                return 0  # Out of bounds
+            
+            if steps[x][y] != -1:
+                return steps[x][y]  # Already computed
+            
+            if visited[x][y]:
+                return float('-inf')  # Cycle detected
+            
+            visited[x][y] = True
+            dx, dy = directions[grid[x][y]]
+            next_x, next_y = x + dx, y + dy
+            result = dfs(next_x, next_y)
+            visited[x][y] = False
+            
+            if result == float('-inf'):
+                steps[x][y] = float('-inf')  # Mark as part of a cycle
+            else:
+                steps[x][y] = 1 + result
+            
+            return steps[x][y]
+        
+        for i in range(n):
+            for j in range(m):
+                if steps[i][j] == -1:
+                    dfs(i, j)
+                if steps[i][j] > max_steps:
+                    max_steps = steps[i][j]
+                    best_start = (i + 1, j + 1)
+        
+        results.append(f"{best_start[0]} {best_start[1]} {max_steps}")
+    
+    sys.stdout.write("\n".join(results) + "\n")

@@ -1,0 +1,48 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+void solve() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m;
+        string s;
+        cin >> n >> m >> s;
+
+        int x = 0, y = 0; // Current position
+        int min_x = 0, max_x = 0, min_y = 0, max_y = 0; // Boundaries of movement
+        int start_x = 1, start_y = 1; // Starting position
+
+        for (char c : s) {
+            if (c == 'L') y--;
+            else if (c == 'R') y++;
+            else if (c == 'U') x--;
+            else if (c == 'D') x++;
+
+            min_x = min(min_x, x);
+            max_x = max(max_x, x);
+            min_y = min(min_y, y);
+            max_y = max(max_y, y);
+
+            // Check if the robot can still fit within the board
+            if (max_x - min_x >= n || max_y - min_y >= m) {
+                break;
+            }
+
+            // Update the starting position
+            start_x = 1 - min_x;
+            start_y = 1 - min_y;
+        }
+
+        cout << start_x << " " << start_y << "\n";
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}

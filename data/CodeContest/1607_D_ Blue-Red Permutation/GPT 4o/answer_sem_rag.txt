@@ -1,0 +1,48 @@
+def can_transform_to_permutation(t, test_cases):
+    results = []
+    
+    for case in test_cases:
+        n, a, colors = case
+        blue = []
+        red = []
+        
+        # Separate blue and red elements
+        for i in range(n):
+            if colors[i] == 'B':
+                blue.append(a[i])
+            else:
+                red.append(a[i])
+        
+        # Sort blue and red elements
+        blue.sort()
+        red.sort(reverse=True)
+        
+        # Check blue elements
+        for i, value in enumerate(blue):
+            if value < i + 1:  # Blue elements must be >= their target
+                results.append("NO")
+                break
+        else:
+            # Check red elements
+            for i, value in enumerate(red):
+                if value > n - i:  # Red elements must be <= their target
+                    results.append("NO")
+                    break
+            else:
+                results.append("YES")
+    
+    return results
+
+
+# Input reading
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    colors = input().strip()
+    test_cases.append((n, a, colors))
+
+# Solve and output results
+results = can_transform_to_permutation(t, test_cases)
+print("\n".join(results))

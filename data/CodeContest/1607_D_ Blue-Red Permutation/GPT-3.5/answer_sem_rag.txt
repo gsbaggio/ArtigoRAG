@@ -1,0 +1,35 @@
+def can_transform_to_permutation(t, test_cases):
+    for test in test_cases:
+        n = test[0]
+        a = test[1]
+        colors = test[2]
+
+        if sum(a) != n * (n + 1) // 2:
+            print("NO")
+            continue
+
+        min_blue = float('inf')
+        max_red = float('-inf')
+
+        for i in range(n):
+            if colors[i] == 'B':
+                min_blue = min(min_blue, a[i])
+            else:
+                max_red = max(max_red, a[i])
+        
+        if min_blue < 1 or max_red > n:
+            print("NO")
+        else:
+            print("YES")
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    colors = input()
+    test_cases.append((n, a, colors))
+
+# Check if the array can be transformed into a permutation for each test case
+can_transform_to_permutation(t, test_cases)

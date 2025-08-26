@@ -1,0 +1,106 @@
+#include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<tuple<int, int, int>> dishes(n);  // (fish, meat, eat)
+        for (auto& [fish, meat, eat] : dishes) {
+            cin >> fish >> meat >> eat;
+        }
+        
+        // We will store the remaining pairs (fish, meat) and their frequency
+        map<pair<int, int>, int> remaining_count;
+        map<pair<int, int>, vector<pair<int, int>>> dish_eats;  // Maps remaining to how to eat
+        
+        // For each dish, try all possible ways to eat
+        for (int i = 0; i < n; i++) {
+            auto [fish, meat, eat] = dishes[i];
+            
+            // Try all ways to distribute eating between fish and meat
+            for (int fish_eat = 0; fish_eat <= min(fish, eat); fish_eat++) {
+                int meat_eat = eat - fish_eat;
+                if (meat_eat <= meat) {
+                    int remaining_fish = fish - fish_eat;
+                    int remaining_meat = meat - meat_eat;
+                    pair<int, int> remain = {remaining_fish, remaining_meat};
+                    
+                    // Track this possible outcome
+                    if (dish_eats[remain].size() < n) {
+                        dish_eats[remain].push_back({fish_eat, meat_eat});
+                    }
+                    remaining_count[remain]++;
+                }
+            }
+        }
+        
+        // Find the remaining configuration that appears most frequently
+        pair<int, int> best_remain;
+        int max_count = 0;
+        
+        for (const auto& [remain, count] : remaining_count) {
+            if (count > max_count) {
+                max_count = count;
+                best_remain = remain;
+            }
+        }
+        
+        // Prepare the result
+        vector<pair<int, int>> result(n);  // How much to eat from each dish
+        vector<bool> is_matched(n, false);
+        
+        // Try to match as many dishes as possible to the best configuration
+        for (int i = 0; i < n; i++) {
+            auto [fish, meat, eat] = dishes[i];
+            int fish_eat = fish - best_remain.first;
+            int meat_eat = meat - best_remain.second;
+            
+            if (fish_eat >= 0 && meat_eat >= 0 && fish_eat + meat_eat == eat &&
+                fish_eat <= fish && meat_eat <= meat) {
+                result[i] = {fish_eat, meat_eat};
+                is_matched[i] = true;
+            }
+        }
+        
+        // For dishes that cannot be matched, pick any valid eating combination
+        for (int i = 0; i < n; i++) {
+            if (!is_matched[i]) {
+                auto [fish, meat, eat] = dishes[i];
+                
+                // Default: eat as much fish as possible
+                int fish_eat = min(fish, eat);
+                int meat_eat = eat - fish_eat;
+                
+                result[i] = {fish_eat, meat_eat};
+            }
+        }
+        
+        // Count unique remaining configurations
+        map<pair<int, int>, int> unique_remains;
+        for (int i = 0; i < n; i++) {
+            auto [fish, meat, eat] = dishes[i];
+            auto [fish_eat, meat_eat] = result[i];
+            
+            unique_remains[{fish - fish_eat, meat - meat_eat}]++;
+        }
+        
+        // Output
+        cout << unique_remains.size() << endl;
+        for (const auto& [fish_eat, meat_eat] : result) {
+            cout << fish_eat << " " << meat_eat << endl;
+        }
+    }
+    
+    return 0;
+}

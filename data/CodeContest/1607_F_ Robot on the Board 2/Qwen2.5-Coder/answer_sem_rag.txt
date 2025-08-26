@@ -1,0 +1,75 @@
+def dfs(grid, memo, visited, r, c, n, m):
+    # If out of bounds or revisiting a cell in the current path, return 0
+    if r < 0 or r >= n or c < 0 or c >= m or visited[r][c]:
+        return 0
+    
+    # If already computed, return the stored result
+    if memo[r][c] != -1:
+        return memo[r][c]
+    
+    # Mark the current cell as visited in the current path
+    visited[r][c] = True
+    
+    # Determine the next cell based on the direction in the current cell
+    if grid[r][c] == 'L':
+        next_r, next_c = r, c - 1
+    elif grid[r][c] == 'R':
+        next_r, next_c = r, c + 1
+    elif grid[r][c] == 'D':
+        next_r, next_c = r + 1, c
+    else:  # grid[r][c] == 'U'
+        next_r, next_c = r - 1, c
+    
+    # Recursively compute the maximum steps from the next cell
+    max_steps = dfs(grid, memo, visited, next_r, next_c, n, m)
+    
+    # Unmark the current cell for future paths
+    visited[r][c] = False
+    
+    # Update the memo table with the result and return
+    memo[r][c] = max_steps + 1
+    return memo[r][c]
+
+def find_max_steps(grid, n, m):
+    memo = [[-1] * m for _ in range(n)]
+    max_steps = 0
+    best_start = (0, 0)
+    
+    for r in range(n):
+        for c in range(m):
+            # Use a new visited array for each starting position
+            visited = [[False] * m for _ in range(n)]
+            steps = dfs(grid, memo, visited, r, c, n, m)
+            
+            # Update the best starting position if more steps are found
+            if steps > max_steps:
+                max_steps = steps
+                best_start = (r, c)
+    
+    return best_start[0] + 1, best_start[1] + 1, max_steps
+
+def main():
+    import sys
+    input = sys.stdin.read().splitlines()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        index += 1  # Skip the blank line
+        n, m = map(int, input[index].split())
+        index += 1
+        
+        grid = [input[index + i] for i in range(n)]
+        index += n
+        
+        r, c, d = find_max_steps(grid, n, m)
+        results.append(f"{r} {c} {d}")
+    
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

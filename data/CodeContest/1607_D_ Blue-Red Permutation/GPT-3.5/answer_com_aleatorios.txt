@@ -1,0 +1,56 @@
+def can_form_permutation(t, test_cases):
+    answers = []
+
+    for _ in range(t):
+        n = test_cases[_][0]
+        arr = test_cases[_][1]
+        colors = test_cases[_][2]
+
+        freq = {}
+        total_blue = 0
+        total_red = 0
+        total_sum = sum(arr)
+
+        for i in range(n):
+            if arr[i] not in freq:
+                freq[arr[i]] = 0
+            freq[arr[i]] += 1
+
+            if colors[i] == 'B':
+                total_blue += 1
+            else:
+                total_red += 1
+
+        target_sum = n * (n + 1) // 2
+
+        possible = True
+
+        if total_sum != target_sum:
+            possible = False
+
+        for i in range(1, n + 1):
+            if i not in freq:
+                if total_blue == 0 or total_red == 0:
+                    possible = False
+                    break
+
+        answers.append("YES" if possible else "NO")
+
+    return answers
+
+# Example usage
+test_cases = [
+    (4, [1, 2, 5, 2], 'BRBR'),
+    (2, [1, 1], 'BB'),
+    (5, [3, 1, 4, 2, 5], 'RBRRB'),
+    (5, [3, 1, 3, 1, 3], 'RBRRB'),
+    (5, [5, 1, 5, 1, 5], 'RBRRB'),
+    (4, [2, 2, 2, 2], 'BRBR'),
+    (2, [1, -2], 'BR'),
+    (4, [-2, -1, 4, 0], 'RRRR')
+]
+
+t = len(test_cases)
+output = can_form_permutation(t, test_cases)
+for ans in output:
+    print(ans)

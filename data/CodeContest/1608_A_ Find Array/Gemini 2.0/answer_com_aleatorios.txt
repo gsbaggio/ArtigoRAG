@@ -1,0 +1,14 @@
+def solve():
+    n = int(input())
+    
+    arr = []
+    start = 2
+    for i in range(n):
+        arr.append(start)
+        start += 1
+        
+    print(*arr)
+
+t = int(input())
+for _ in range(t):
+    solve()

@@ -1,0 +1,12 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    n = int(input().strip())
+    if n == 1:
+        results.append("1")
+    else:
+        arr = [str(i) for i in range(2, n+2)]
+        results.append(" ".join(arr))
+
+for res in results:
+    print(res)

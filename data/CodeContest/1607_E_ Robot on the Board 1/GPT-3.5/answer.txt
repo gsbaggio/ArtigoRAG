@@ -1,0 +1,42 @@
+def find_starting_cell(t, test_cases):
+    results = []
+    
+    for i in range(t):
+        n, m = test_cases[i][0]
+        commands = test_cases[i][1]
+        
+        # Initialize variables to track the potential starting cells
+        left, right, up, down = 0, 0, 0, 0
+        
+        for j in range(len(commands)):
+            if commands[j] == 'L':
+                left += 1
+            elif commands[j] == 'R':
+                right += 1
+            elif commands[j] == 'U':
+                up += 1
+            elif commands[j] == 'D':
+                down += 1
+        
+        # Calculate the best starting cell based on the maximum number of commands that can be executed
+        start_row = 1 + min(down, n) - max(up - n, 0)
+        start_col = 1 + min(right, m) - max(left - m, 0)
+        
+        results.append((start_row, start_col))
+    
+    return results
+
+# Input
+t = int(input())
+test_cases = []
+for _ in range(t):
+    nm = list(map(int, input().split()))
+    s = input().strip()
+    test_cases.append((nm, s))
+
+# Find the starting cells for each test case
+output = find_starting_cell(t, test_cases)
+
+# Output
+for result in output:
+    print(result[0], result[1])

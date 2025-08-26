@@ -1,0 +1,63 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+    colors = input()
+
+    def check(arr):
+        arr.sort()
+        for i in range(n):
+            if arr[i] != i + 1:
+                return False
+        return True
+
+    def solve_test_case():
+        import itertools
+        
+        for adjustments in itertools.product(*[([-1, 0, 1] if colors[i] == 'B' else [0, 1]) for i in range(n)]):
+            temp_a = a[:]
+            possible = True
+            for i in range(n):
+                if colors[i] == 'B':
+                    temp_a[i] -= abs(adjustments[i])
+                else:
+                    temp_a[i] += adjustments[i]
+            
+            if check(temp_a):
+                return True
+        return False
+
+    
+    def solve_efficient():
+        blue = []
+        red = []
+        for i in range(n):
+            if colors[i] == 'B':
+                blue.append(a[i])
+            else:
+                red.append(a[i])
+        
+        blue.sort()
+        red.sort()
+        
+        idx = 0
+        for b in blue:
+            if b > idx + 1:
+                return False
+            idx += 1
+        
+        red_start = n - len(red) + 1
+        for r in red:
+            if r < red_start:
+                return False
+            red_start += 1
+        
+        return True
+
+    if solve_efficient():
+        print("YES")
+    else:
+        print("NO")
+
+t = int(input())
+for _ in range(t):
+    solve()

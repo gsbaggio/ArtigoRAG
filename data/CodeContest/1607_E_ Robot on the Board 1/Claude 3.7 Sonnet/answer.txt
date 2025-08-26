@@ -1,0 +1,83 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n, m = map(int, input().split())
+        s = input()
+        
+        # Start with maximum possible prefix length
+        for prefix_len in range(len(s), -1, -1):
+            r, c = 0, 0
+            min_r, min_c = 0, 0
+            max_r, max_c = 0, 0
+            
+            # Calculate boundaries for the prefix
+            for i in range(prefix_len):
+                if s[i] == 'L': c -= 1
+                elif s[i] == 'R': c += 1
+                elif s[i] == 'U': r -= 1
+                elif s[i] == 'D': r += 1
+                
+                min_r = min(min_r, r)
+                min_c = min(min_c, c)
+                max_r = max(max_r, r)
+                max_c = max(max_c, c)
+            
+            height = max_r - min_r + 1
+            width = max_c - min_c + 1
+            
+            if height <= n and width <= m:
+                # We can fit this prefix
+                # Calculate a valid starting position
+                start_r = 1 - min_r
+                start_c = 1 - min_c
+                
+                # Make sure we don't go out of bounds
+                if start_r + max_r > n:
+                    start_r = n - max_r
+                if start_c + max_c > m:
+                    start_c = m - max_c
+                
+                print(start_r, start_c)
+                break
+
+t = int(input())
+for _ in range(t):
+    n, m = map(int, input().split())
+    s = input()
+    
+    # Start with the entire sequence and work backward
+    for prefix_len in range(len(s), 0, -1):
+        # Simulate movement for this prefix
+        r, c = 0, 0
+        min_r, max_r = 0, 0
+        min_c, max_c = 0, 0
+        
+        for i in range(prefix_len):
+            if s[i] == 'L': c -= 1
+            elif s[i] == 'R': c += 1
+            elif s[i] == 'U': r -= 1
+            elif s[i] == 'D': r += 1
+            
+            min_r = min(min_r, r)
+            max_r = max(max_r, r)
+            min_c = min(min_c, c)
+            max_c = max(max_c, c)
+        
+        # Check if this prefix can fit on the board
+        height = max_r - min_r + 1
+        width = max_c - min_c + 1
+        
+        if height <= n and width <= m:
+            # We can fit this prefix, calculate a valid starting position
+            start_r = 1 - min_r
+            start_c = 1 - min_c
+            
+            # Adjust if needed
+            if start_r + max_r > n:
+                start_r = n - max_r
+            if start_c + max_c > m:
+                start_c = m - max_c
+            
+            print(start_r, start_c)
+            break

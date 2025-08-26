@@ -1,0 +1,62 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n, m = map(int, data[index:index+2])
+        index += 2
+        grid = data[index:index+n]
+        index += n
+        
+        # Directions mapping
+        directions = {'L': (0, -1), 'R': (0, 1), 'U': (-1, 0), 'D': (1, 0)}
+        
+        # Memoization and visited arrays
+        memo = [[-1] * m for _ in range(n)]
+        visited = [[0] * m for _ in range(n)]
+        
+        def dfs(x, y):
+            if not (0 <= x < n and 0 <= y < m):
+                return 0  # Out of bounds
+            
+            if visited[x][y] == 2:
+                return memo[x][y]  # Already computed
+            
+            if visited[x][y] == 1:
+                # Cycle detected
+                memo[x][y] = -1  # Mark as part of a cycle
+                return -1
+            
+            visited[x][y] = 1
+            dx, dy = directions[grid[x][y]]
+            nx, ny = x + dx, y + dy
+            
+            moves = dfs(nx, ny)
+            if moves == -1:
+                memo[x][y] = -1  # Propagate cycle
+            else:
+                memo[x][y] = moves + 1
+            
+            visited[x][y] = 2
+            return memo[x][y]
+        
+        max_moves = 0
+        start_cell = (1, 1)
+        
+        for i in range(n):
+            for j in range(m):
+                if memo[i][j] == -1:
+                    continue
+                moves = dfs(i, j)
+                if moves > max_moves:
+                    max_moves = moves
+                    start_cell = (i + 1, j + 1)
+        
+        results.append((*start_cell, max_moves))
+    
+    sys.stdout.write('\n'.join(f"{r} {c} {d}" for r, c, d in results) + '\n')

@@ -1,0 +1,94 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        long long n, m;
+        cin >> n >> m;
+        string s;
+        cin >> s;
+        
+        // Initialize boundaries
+        long long left = 1, right = m, top = 1, bottom = n;
+        long long r = 1, c = 1;
+        long long max_commands = 0;
+        long long best_r = 1, best_c = 1;
+        
+        // Function to simulate movements and calculate max commands
+        auto simulate = [&](long long start_r, long long start_c){
+            long long local_left = 1, local_right = m, local_top = 1, local_bottom = n;
+            long long local_r = start_r, local_c = start_c;
+            long long commands = 0;
+            
+            for(char ch : s){
+                if(ch == 'L'){
+                    if(local_c > local_left){
+                        local_c--;
+                        commands++;
+                    }
+                    else{
+                        break;
+                    }
+                }
+                else if(ch == 'R'){
+                    if(local_c < local_right){
+                        local_c++;
+                        commands++;
+                    }
+                    else{
+                        break;
+                    }
+                }
+                else if(ch == 'U'){
+                    if(local_r > local_top){
+                        local_r--;
+                        commands++;
+                    }
+                    else{
+                        break;
+                    }
+                }
+                else if(ch == 'D'){
+                    if(local_r < local_bottom){
+                        local_r++;
+                        commands++;
+                    }
+                    else{
+                        break;
+                    }
+                }
+            }
+            
+            if(commands > max_commands){
+                max_commands = commands;
+                best_r = start_r;
+                best_c = start_c;
+            }
+        };
+        
+        // Simulate for key cells: corners and edges
+        simulate(1, 1); // Top-left corner
+        simulate(1, m); // Top-right corner
+        simulate(n, 1); // Bottom-left corner
+        simulate(n, m); // Bottom-right corner
+        
+        for(long long i = 1; i <= n; i++){
+            simulate(i, 1); // Left edge
+            simulate(i, m); // Right edge
+        }
+        
+        for(long long j = 1; j <= m; j++){
+            simulate(1, j); // Top edge
+            simulate(n, j); // Bottom edge
+        }
+        
+        cout << best_r << " " << best_c << "\n";
+    }
+    
+    return 0;
+}

@@ -1,0 +1,10 @@
+def solve():
+    n = int(input())
+    a = []
+    for i in range(n):
+        a.append(i + 2)
+    print(*a)
+
+t = int(input())
+for _ in range(t):
+    solve()

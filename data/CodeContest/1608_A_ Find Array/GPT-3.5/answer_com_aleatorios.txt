@@ -1,0 +1,18 @@
+# Function to generate the array for a test case
+def generate_array(n):
+    result = [int('1' + '1' * i) for i in range(n)]
+    return result
+
+# Read the number of test cases
+t = int(input())
+
+# Iterate through each test case
+for _ in range(t):
+    # Read the value of n for the current test case
+    n = int(input())
+    
+    # Generate the array for the current test case
+    result = generate_array(n)
+    
+    # Print the array elements separated by a space
+    print(*result)

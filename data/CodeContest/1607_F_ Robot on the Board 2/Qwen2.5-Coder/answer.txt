@@ -1,0 +1,95 @@
+#include <iostream>
+#include <vector>
+#include <cstring>
+
+using namespace std;
+
+// Directions mapping: L, R, D, U
+const int dr[] = {0, 0, 1, -1};
+const int dc[] = {-1, 1, 0, 0};
+
+// Function to perform DFS and return the number of moves
+int dfs(int r, int c, vector<vector<char>>& grid, vector<vector<int>>& memo, vector<vector<bool>>& visited) {
+    int n = grid.size();
+    int m = grid[0].size();
+    
+    // If already visited in the current path, cycle detected
+    if (visited[r][c]) return -1;
+    
+    // If already computed, return the stored result
+    if (memo[r][c] != -1) return memo[r][c];
+    
+    // Mark the current cell as visited
+    visited[r][c] = true;
+    
+    // Determine the next cell based on the direction in the current cell
+    char dir = grid[r][c];
+    int next_r = r + dr[dir == 'D' ? 2 : dir == 'U' ? 3 : dir == 'L' ? 0 : 1];
+    int next_c = c + dc[dir == 'D' ? 2 : dir == 'U' ? 3 : dir == 'L' ? 0 : 1];
+    
+    int moves = 0;
+    
+    // If the next cell is within bounds, recursively compute the number of moves
+    if (next_r >= 0 && next_r < n && next_c >= 0 && next_c < m) {
+        int next_moves = dfs(next_r, next_c, grid, memo, visited);
+        
+        // If a cycle is detected, return -1
+        if (next_moves == -1) {
+            memo[r][c] = -1;
+        } else {
+            moves = 1 + next_moves;
+        }
+    }
+    
+    // Unmark the current cell as visited for future paths
+    visited[r][c] = false;
+    
+    // Store the result in the memoization table
+    memo[r][c] = moves;
+    return moves;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    cin.ignore(); // Ignore the newline character after reading t
+    
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+        cin.ignore(); // Ignore the newline character after reading n and m
+        
+        vector<vector<char>> grid(n, vector<char>(m));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                cin >> grid[i][j];
+            }
+            cin.ignore(); // Ignore the newline character after reading each row
+        }
+        
+        vector<vector<int>> memo(n, vector<int>(m, -1));
+        int max_moves = 0;
+        int start_r = 1;
+        int start_c = 1;
+        
+        // Try starting from each cell
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                vector<vector<bool>> visited(n, vector<bool>(m, false));
+                int moves = dfs(r, c, grid, memo, visited);
+                
+                // Update the maximum number of moves and the starting cell
+                if (moves > max_moves) {
+                    max_moves = moves;
+                    start_r = r + 1;
+                    start_c = c + 1;
+                }
+            }
+        }
+        
+        // Output the result
+        cout << start_r << " " << start_c << " " << max_moves << "\n";
+    }
+    
+    return 0;
+}

@@ -1,0 +1,51 @@
+def can_form_permutation(t):
+    results = []
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        colors = input().strip()
+        
+        min_val = float('inf')
+        max_val = float('-inf')
+        blue_count = 0
+        red_count = 0
+        
+        for val, color in zip(a, colors):
+            if color == 'B':
+                blue_count += 1
+                min_val = min(min_val, val)
+                max_val = max(max_val, val)
+            else:
+                red_count += 1
+                min_val = min(min_val, val)
+                max_val = max(max_val, val)
+        
+        # Calculate required adjustments
+        required_increases = 1 - min_val
+        required_decreases = max_val - n
+        
+        # Check feasibility
+        if required_increases <= red_count and required_decreases <= blue_count:
+            # Check if we can form a permutation of 1 to n
+            adjusted_values = set()
+            for val, color in zip(a, colors):
+                if color == 'B':
+                    val -= required_decreases
+                else:
+                    val += required_increases
+                if 1 <= val <= n and val not in adjusted_values:
+                    adjusted_values.add(val)
+                else:
+                    results.append("NO")
+                    break
+            else:
+                results.append("YES" if len(adjusted_values) == n else "NO")
+        else:
+            results.append("NO")
+    
+    for result in results:
+        print(result)
+
+# Read the number of test cases
+t = int(input())
+can_form_permutation(t)

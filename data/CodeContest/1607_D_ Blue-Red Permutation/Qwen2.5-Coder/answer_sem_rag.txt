@@ -1,0 +1,56 @@
+def can_form_permutation(t, test_cases):
+    results = []
+    
+    for n, a, colors in test_cases:
+        blue_elements = [a[i] for i in range(n) if colors[i] == 'B']
+        red_elements = [a[i] for i in range(n) if colors[i] == 'R']
+        
+        min_blue = min(blue_elements) if blue_elements else float('inf')
+        max_red = max(red_elements) if red_elements else float('-inf')
+        
+        # Check if we can make the minimum blue element to 1
+        # and the maximum red element to n
+        if min_blue >= 1 and max_red <= n:
+            # Check if the range from min_blue to max_red can cover 1 to n
+            if min_blue <= n and max_red >= 1:
+                # Check if all numbers from 1 to n can be formed
+                # by adjusting blue and red elements
+                if len(set(a)) == n:
+                    results.append("YES")
+                else:
+                    results.append("NO")
+            else:
+                results.append("NO")
+        elif min_blue > 1 and max_red < n:
+            # If we cannot directly make min_blue to 1 or max_red to n,
+            # check if we can adjust them to cover the range
+            if min_blue - 1 + (n - max_red) >= n:
+                results.append("YES")
+            else:
+                results.append("NO")
+        else:
+            results.append("NO")
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read().splitlines()
+
+t = int(input[0])
+test_cases = []
+
+index = 1
+for _ in range(t):
+    n = int(input[index])
+    a = list(map(int, input[index + 1].split()))
+    colors = input[index + 2]
+    test_cases.append((n, a, colors))
+    index += 3
+
+# Get results
+results = can_form_permutation(t, test_cases)
+
+# Print results
+for result in results:
+    print(result)

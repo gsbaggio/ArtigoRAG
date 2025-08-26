@@ -1,0 +1,59 @@
+def main():
+    import sys
+    input = sys.stdin.read().splitlines()
+    
+    index = 0
+    t = int(input[index])
+    results = []
+    
+    for _ in range(t):
+        index += 1
+        n = int(input[index])
+        dishes = []
+        
+        for i in range(n):
+            index += 1
+            a_i, b_i, m_i = map(int, input[index].split())
+            dishes.append((a_i, b_i, m_i))
+        
+        # Dictionary to store the remaining compositions
+        remaining_compositions = {}
+        
+        for a_i, b_i, m_i in dishes:
+            if a_i == 0:
+                x_i = 0
+                y_i = m_i
+            elif b_i == 0:
+                x_i = m_i
+                y_i = 0
+            else:
+                # Calculate the proportion of fish to consume
+                r = a_i / (a_i + b_i)
+                x_i = round(m_i * r)
+                y_i = m_i - x_i
+            
+            # Remaining fish and meat
+            r_a_i = a_i - x_i
+            r_b_i = b_i - y_i
+            
+            # Store the remaining composition in the dictionary
+            if (r_a_i, r_b_i) in remaining_compositions:
+                remaining_compositions[(r_a_i, r_b_i)].append((x_i, y_i))
+            else:
+                remaining_compositions[(r_a_i, r_b_i)] = [(x_i, y_i)]
+        
+        # Minimum variety is the number of unique remaining compositions
+        min_variety = len(remaining_compositions)
+        
+        # Collect the results for this test case
+        results.append(min_variety)
+        for x_i, y_i in remaining_compositions.values():
+            for x, y in x_i:
+                results.append(f"{x} {y}")
+    
+    # Print all results
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

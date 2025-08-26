@@ -1,0 +1,91 @@
+def gcd(x, y):
+    while y:
+        x, y = y, x % y
+    return x
+
+def solve():
+    import sys
+    input = sys.stdin.read().splitlines()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        index += 1  # Skip the blank line
+        n = int(input[index])
+        index += 1
+        
+        dishes = []
+        for i in range(n):
+            a, b, m = map(int, input[index].split())
+            dishes.append((a, b, m))
+            index += 1
+        
+        # Dictionary to store groups of dishes by their normalized ratios
+        groups = {}
+        
+        for i, (a, b, m) in enumerate(dishes):
+            remaining_fish = a - m
+            remaining_meat = b - m
+            
+            if remaining_fish == 0 and remaining_meat == 0:
+                # Special case: if no food is left, the ratio is undefined
+                ratio = (0, 0)
+            elif remaining_fish == 0:
+                ratio = (0, 1)
+            elif remaining_meat == 0:
+                ratio = (1, 0)
+            else:
+                g = gcd(remaining_fish, remaining_meat)
+                ratio = (remaining_fish // g, remaining_meat // g)
+            
+            if ratio not in groups:
+                groups[ratio] = []
+            groups[ratio].append(i)
+        
+        # Minimum variety is the number of unique groups
+        min_variety = len(groups)
+        results.append(str(min_variety))
+        
+        # Determine the distribution for each dish
+        for ratio, indices in groups.items():
+            fish_ratio, meat_ratio = ratio
+            total_remaining_fish = sum(a - m for a, b, m in dishes if dishes.index((a, b, m)) in indices)
+            total_remaining_meat = sum(b - m for a, b, m in dishes if dishes.index((a, b, m)) in indices)
+            
+            for i in indices:
+                a, b, m = dishes[i]
+                if fish_ratio == 0 and meat_ratio == 0:
+                    # No food left, any distribution is fine
+                    x = a
+                    y = b
+                elif fish_ratio == 0:
+                    # Only meat left
+                    x = 0
+                    y = b
+                elif meat_ratio == 0:
+                    # Only fish left
+                    x = a
+                    y = 0
+                else:
+                    # Calculate the distribution based on the normalized ratio
+                    remaining_fish = a - m
+                    remaining_meat = b - m
+                    
+                    if remaining_fish == 0 and remaining_meat == 0:
+                        x = a
+                        y = b
+                    else:
+                        g = gcd(remaining_fish, remaining_meat)
+                        x = (fish_ratio * m) // (fish_ratio + meat_ratio)
+                        y = m - x
+                
+                results.append(f"{x} {y}")
+    
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    solve()

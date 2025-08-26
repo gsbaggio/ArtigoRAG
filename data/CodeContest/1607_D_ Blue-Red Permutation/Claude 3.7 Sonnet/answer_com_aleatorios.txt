@@ -1,0 +1,43 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        colors = input()
+        
+        blue = []
+        red = []
+        
+        # Separate elements by color
+        for i in range(n):
+            if colors[i] == 'B':
+                blue.append(a[i])
+            else:
+                red.append(a[i])
+        
+        # Sort blue elements in descending order
+        blue.sort(reverse=True)
+        # Sort red elements in ascending order
+        red.sort()
+        
+        possible = True
+        
+        # Check blue elements (can only decrease)
+        for i in range(len(blue)):
+            position = n - len(blue) + i + 1  # Position in final permutation
+            if blue[i] < position:
+                possible = False
+                break
+        
+        # Check red elements (can only increase)
+        for i in range(len(red)):
+            position = i + 1  # Position in final permutation
+            if red[i] > position:
+                possible = False
+                break
+        
+        print("YES" if possible else "NO")
+
+if __name__ == "__main__":
+    solve()

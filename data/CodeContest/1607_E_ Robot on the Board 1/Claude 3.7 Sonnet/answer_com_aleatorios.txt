@@ -1,0 +1,71 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+        string s;
+        cin >> s;
+        
+        // Track min/max coordinates we need to be able to reach
+        int min_r = 0, min_c = 0;
+        int max_r = 0, max_c = 0;
+        int curr_r = 0, curr_c = 0;
+        
+        // Process each command and track boundaries
+        for (char cmd : s) {
+            if (cmd == 'L') curr_c--;
+            else if (cmd == 'R') curr_c++;
+            else if (cmd == 'U') curr_r--;
+            else if (cmd == 'D') curr_r++;
+            
+            min_r = min(min_r, curr_r);
+            min_c = min(min_c, curr_c);
+            max_r = max(max_r, curr_r);
+            max_c = max(max_c, curr_c);
+        }
+        
+        // Check if the robot can execute all commands
+        if (max_r - min_r + 1 <= n && max_c - min_c + 1 <= m) {
+            // Any position within these boundaries works
+            cout << 1 - min_r << " " << 1 - min_c << endl;
+        } else {
+            // We need to find the maximum prefix of commands that can be executed
+            int best_len = 0;
+            int best_r = 1, best_c = 1;
+            
+            curr_r = 0; curr_c = 0;
+            min_r = 0; min_c = 0;
+            max_r = 0; max_c = 0;
+            
+            for (int i = 0; i < s.length(); i++) {
+                if (s[i] == 'L') curr_c--;
+                else if (s[i] == 'R') curr_c++;
+                else if (s[i] == 'U') curr_r--;
+                else if (s[i] == 'D') curr_r++;
+                
+                min_r = min(min_r, curr_r);
+                min_c = min(min_c, curr_c);
+                max_r = max(max_r, curr_r);
+                max_c = max(max_c, curr_c);
+                
+                // Check if this prefix is valid
+                if (max_r - min_r + 1 <= n && max_c - min_c + 1 <= m) {
+                    best_len = i + 1;
+                    best_r = 1 - min_r;
+                    best_c = 1 - min_c;
+                }
+            }
+            
+            cout << best_r << " " << best_c << endl;
+        }
+    }
+    
+    return 0;
+}

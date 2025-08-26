@@ -1,0 +1,79 @@
+def solve():
+    n, m = map(int, input().split())
+    board = [input() for _ in range(n)]
+
+    def get_next_cell(r, c):
+        """
+        Determines the next cell based on the current cell's direction.
+        Returns None if the next cell is out of bounds.
+        """
+        direction = board[r][c]
+        if direction == 'L':
+            next_c = c - 1
+            if 0 <= next_c < m:
+                return r, next_c
+            else:
+                return None
+        elif direction == 'R':
+            next_c = c + 1
+            if 0 <= next_c < m:
+                return r, next_c
+            else:
+                return None
+        elif direction == 'U':
+            next_r = r - 1
+            if 0 <= next_r < n:
+                return next_r, c
+            else:
+                return None
+        elif direction == 'D':
+            next_r = r + 1
+            if 0 <= next_r < n:
+                return next_r, c
+            else:
+                return None
+        else:
+            return None
+
+    def simulate(start_r, start_c):
+        """
+        Simulates the robot's movement starting from a given cell.
+        Returns the number of steps taken before breaking or going out of bounds.
+        """
+        r, c = start_r, start_c
+        visited = set()
+        steps = 0
+
+        while True:
+            if (r, c) in visited:
+                break
+            
+            visited.add((r, c))
+            next_cell = get_next_cell(r, c)
+
+            if next_cell is None:
+                steps += 1
+                break
+
+            r, c = next_cell
+            steps += 1
+
+        return steps
+
+    max_steps = 0
+    best_start_r, best_start_c = 0, 0
+
+    for r in range(n):
+        for c in range(m):
+            steps = simulate(r, c)
+            if steps > max_steps:
+                max_steps = steps
+                best_start_r, best_start_c = r, c
+
+    print(best_start_r + 1, best_start_c + 1, max_steps)
+
+
+t = int(input())
+for _ in range(t):
+    input()  # Consume the blank line
+    solve()

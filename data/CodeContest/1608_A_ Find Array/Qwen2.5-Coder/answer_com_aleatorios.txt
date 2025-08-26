@@ -1,0 +1,33 @@
+def sieve_of_eratosthenes(limit):
+    is_prime = [True] * (limit + 1)
+    p = 2
+    while (p * p <= limit):
+        if (is_prime[p] == True):
+            for i in range(p * p, limit + 1, p):
+                is_prime[i] = False
+        p += 1
+    prime_numbers = [p for p in range(2, limit + 1) if is_prime[p]]
+    return prime_numbers
+
+# Generate the first 1000 prime numbers
+limit = 10**4  # This is a safe upper bound to get the first 1000 primes
+prime_numbers = sieve_of_eratosthenes(limit)
+
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    index = 1
+    
+    results = []
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        results.append(" ".join(map(str, prime_numbers[:n])))
+    
+    for result in results:
+        print(result)
+
+solve()

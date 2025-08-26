@@ -1,0 +1,57 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        # Skip blank line if present
+        try:
+            blank = input().strip()
+        except:
+            pass
+        
+        n = int(input())
+        dishes = []
+        
+        for i in range(n):
+            a, b, m = map(int, input().split())
+            dishes.append((a, b, m))
+        
+        # For each dish, compute all possible final states
+        final_states_count = {}
+        dish_possibilities = []
+        
+        for i, (a, b, m) in enumerate(dishes):
+            # Store all possibilities for this dish
+            possibilities = []
+            for x in range(min(a, m) + 1):
+                y = m - x
+                if y <= b:
+                    final_state = (a - x, b - y)
+                    possibilities.append((final_state, x, y))
+                    final_states_count[final_state] = final_states_count.get(final_state, 0) + 1
+            dish_possibilities.append(possibilities)
+        
+        # Find most common final state
+        best_state = max(final_states_count.items(), key=lambda x: x[1])[0]
+        
+        # Generate result - how much to eat from each dish
+        result = []
+        for i, possibilities in enumerate(dish_possibilities):
+            for state, x, y in possibilities:
+                if state == best_state:
+                    result.append((x, y))
+                    break
+            else:
+                # If no match, use first valid option
+                result.append((possibilities[0][1], possibilities[0][2]))
+        
+        # Count unique states after eating
+        unique_states = set()
+        for i, (a, b, m) in enumerate(dishes):
+            x, y = result[i]
+            unique_states.add((a - x, b - y))
+        
+        print(len(unique_states))
+        for x, y in result:
+            print(x, y)
+
+solve()

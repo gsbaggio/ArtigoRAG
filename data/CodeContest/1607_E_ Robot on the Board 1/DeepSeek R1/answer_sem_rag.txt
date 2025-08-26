@@ -1,0 +1,43 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    data = input().split()
+    n = int(data[0])
+    m = int(data[1])
+    s = input().strip()
+    
+    x, y = 0, 0
+    minX, maxX = 0, 0
+    minY, maxY = 0, 0
+    safe_r, safe_c = 1, 1
+    
+    for move in s:
+        if move == 'U':
+            x -= 1
+        elif move == 'D':
+            x += 1
+        elif move == 'L':
+            y -= 1
+        elif move == 'R':
+            y += 1
+            
+        minX = min(minX, x)
+        maxX = max(maxX, x)
+        minY = min(minY, y)
+        maxY = max(maxY, y)
+        
+        low_r = max(1, 1 - minX)
+        high_r = min(n, n - maxX)
+        low_c = max(1, 1 - minY)
+        high_c = min(m, m - maxY)
+        
+        if low_r <= high_r and low_c <= high_c:
+            safe_r = low_r
+            safe_c = low_c
+        else:
+            break
+            
+    results.append(f"{safe_r} {safe_c}")
+
+for res in results:
+    print(res)

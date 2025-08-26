@@ -1,0 +1,29 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<int> result;
+        for (int i = 0; i < n; i++) {
+            // Starting from 2^0 + 1 = 2, 2^1 + 1 = 3, 2^2 + 1 = 5, etc.
+            // This ensures each number is not divisible by the previous
+            result.push_back((1 << i) + 1);
+        }
+        
+        // Output the array
+        for (int i = 0; i < n; i++) {
+            cout << result[i];
+            if (i < n - 1) cout << " ";
+        }
+        cout << endl;
+    }
+    
+    return 0;
+}

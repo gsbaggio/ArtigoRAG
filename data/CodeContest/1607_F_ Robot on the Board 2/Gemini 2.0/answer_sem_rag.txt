@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int solve() {
+    int n, m;
+    cin >> n >> m;
+
+    vector<string> board(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> board[i];
+    }
+
+    int max_moves = 0;
+    int best_r = 1, best_c = 1;
+
+    for (int start_r = 0; start_r < n; ++start_r) {
+        for (int start_c = 0; start_c < m; ++start_c) {
+            int moves = 0;
+            int r = start_r;
+            int c = start_c;
+            vector<vector<bool>> visited(n, vector<bool>(m, false));
+
+            while (r >= 0 && r < n && c >= 0 && c < m && !visited[r][c]) {
+                visited[r][c] = true;
+                moves++;
+
+                char direction = board[r][c];
+                if (direction == 'L') {
+                    c--;
+                } else if (direction == 'R') {
+                    c++;
+                } else if (direction == 'U') {
+                    r--;
+                } else {
+                    r++;
+                }
+            }
+
+            if (moves > max_moves) {
+                max_moves = moves;
+                best_r = start_r + 1;
+                best_c = start_c + 1;
+            }
+        }
+    }
+
+    cout << best_r << " " << best_c << " " << max_moves << endl;
+    return 0;
+}
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        solve();
+    }
+
+    return 0;
+}

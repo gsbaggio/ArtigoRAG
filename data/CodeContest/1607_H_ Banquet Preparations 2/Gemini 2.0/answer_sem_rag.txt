@@ -1,0 +1,83 @@
+def solve():
+    n = int(input())
+    dishes = []
+    for _ in range(n):
+        dishes.append(list(map(int, input().split())))
+
+    def calculate_variety(transformed_dishes):
+        unique_dishes = set()
+        for dish in transformed_dishes:
+            unique_dishes.add(tuple(dish))
+        return len(unique_dishes)
+
+    def find_optimal_tasting():
+        best_variety = float('inf')
+        best_tasting = []
+
+        for i in range(3**n):
+            tasting = []
+            temp = i
+            
+            possible = True
+            transformed_dishes = []
+            
+            for j in range(n):
+                
+                choice = temp % 3
+                temp //= 3
+                
+                a, b, m = dishes[j]
+                
+                x, y = -1, -1
+                
+                if choice == 0:
+                    x = max(0, min(m, a))
+                    y = m - x
+                    if 0 <= x <= a and 0 <= y <= b and x + y == m:
+                        pass
+                    else:
+                        possible = False
+                        break
+                elif choice == 1:
+                    y = max(0, min(m, b))
+                    x = m - y
+                    if 0 <= x <= a and 0 <= y <= b and x + y == m:
+                        pass
+                    else:
+                        possible = False
+                        break
+                else:
+                    x = 0
+                    y = m
+                    if 0 <= x <= a and 0 <= y <= b and x + y == m:
+                        pass
+                    else:
+                        x = m
+                        y = 0
+                        if 0 <= x <= a and 0 <= y <= b and x + y == m:
+                            pass
+                        else:
+                            possible = False
+                            break
+                
+                tasting.append((x, y))
+                transformed_dishes.append((a - x, b - y))
+            
+            if possible:
+                variety = calculate_variety(transformed_dishes)
+                if variety < best_variety:
+                    best_variety = variety
+                    best_tasting = tasting
+        
+        return best_variety, best_tasting
+
+    variety, tasting = find_optimal_tasting()
+    print(variety)
+    for x, y in tasting:
+        print(x, y)
+
+
+t = int(input())
+for _ in range(t):
+    input()  # Read the blank line
+    solve()

@@ -1,0 +1,60 @@
+def minimize_variety(t, test_cases):
+    results = []
+    
+    for case in test_cases:
+        n, dishes = case
+        seen = {}
+        result = []
+        
+        for a, b, m in dishes:
+            # Calculate the resulting pair (a - x, b - y)
+            # Choose x = min(a, m) and y = m - x
+            x = min(a, m)
+            y = m - x
+            new_a = a - x
+            new_b = b - y
+            
+            # Track the resulting pair
+            if (new_a, new_b) not in seen:
+                seen[(new_a, new_b)] = 0
+            seen[(new_a, new_b)] += 1
+            
+            # Store the chosen x, y
+            result.append((x, y))
+        
+        # The variety is the number of unique resulting pairs
+        variety = len(seen)
+        results.append((variety, result))
+    
+    return results
+
+
+# Input reading
+import sys
+input = sys.stdin.read
+data = input().split()
+
+t = int(data[0])
+index = 1
+test_cases = []
+
+for _ in range(t):
+    n = int(data[index])
+    index += 1
+    dishes = []
+    for _ in range(n):
+        a, b, m = map(int, data[index:index+3])
+        index += 3
+        dishes.append((a, b, m))
+    test_cases.append((n, dishes))
+
+# Solve the problem
+results = minimize_variety(t, test_cases)
+
+# Output the results
+output = []
+for variety, result in results:
+    output.append(str(variety))
+    for x, y in result:
+        output.append(f"{x} {y}")
+print("\n".join(output))

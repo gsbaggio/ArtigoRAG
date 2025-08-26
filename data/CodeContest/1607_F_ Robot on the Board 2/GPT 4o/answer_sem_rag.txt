@@ -1,0 +1,56 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split("\n")
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    directions = {'L': (0, -1), 'R': (0, 1), 'U': (-1, 0), 'D': (1, 0)}
+    
+    for _ in range(t):
+        if data[index] == '':
+            index += 1  # Skip blank line
+        
+        n, m = map(int, data[index].split())
+        index += 1
+        
+        board = [data[index + i] for i in range(n)]
+        index += n
+        
+        visited = [[0] * m for _ in range(n)]
+        dp = [[0] * m for _ in range(n)]
+        
+        def dfs(x, y):
+            if visited[x][y] == 1:  # Cycle detected
+                return 0
+            if visited[x][y] == 2:  # Already processed
+                return dp[x][y]
+            
+            visited[x][y] = 1
+            dx, dy = directions[board[x][y]]
+            nx, ny = x + dx, y + dy
+            
+            if 0 <= nx < n and 0 <= ny < m:
+                dp[x][y] = 1 + dfs(nx, ny)
+            else:
+                dp[x][y] = 1  # Falls off the grid
+            
+            visited[x][y] = 2
+            return dp[x][y]
+        
+        max_moves = 0
+        start_cell = (1, 1)
+        
+        for i in range(n):
+            for j in range(m):
+                if visited[i][j] == 0:
+                    dfs(i, j)
+                if dp[i][j] > max_moves:
+                    max_moves = dp[i][j]
+                    start_cell = (i + 1, j + 1)
+        
+        results.append(f"{start_cell[0]} {start_cell[1]} {max_moves}")
+    
+    sys.stdout.write("\n".join(results) + "\n")

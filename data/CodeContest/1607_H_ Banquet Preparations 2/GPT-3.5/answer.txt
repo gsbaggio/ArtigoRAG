@@ -1,0 +1,33 @@
+def minimize_variety(t, test_cases):
+    for _ in range(t):
+        n = test_cases[_][0]
+        dishes = test_cases[_][1]
+
+        # Sort dishes based on total food amount in non-decreasing order
+        sorted_dishes = sorted(enumerate(dishes), key=lambda x: x[1][0] + x[1][1])
+
+        variety = 0
+        min_variety_dishes = []
+
+        for i in range(n):
+            dish_idx = sorted_dishes[i][0]
+            min_fish = min(dishes[dish_idx][0], dishes[dish_idx][2])
+            min_meat = dishes[dish_idx][2] - min_fish
+
+            min_variety_dishes.append((min_fish, min_meat))
+            variety += 1 if (min_fish, min_meat) != (dishes[dish_idx][0], dishes[dish_idx][1]) else 0
+
+        # Output minimum variety and the required amounts of fish and meat for each dish
+        print(variety)
+        for dish in min_variety_dishes:
+            print(dish[0], dish[1])
+
+# Example Input
+test_cases = [
+    (3, [(10, 10, 2), (9, 9, 0), (10, 9, 1)]),
+    (2, [(3, 4, 1), (5, 1, 2)]),
+    (3, [(7, 2, 5), (6, 5, 4), (5, 5, 6)]),
+    (1, [(13, 42, 50)]),
+    (5, [(5, 7, 12), (3, 1, 4), (7, 3, 7), (0, 0, 0), (4, 1, 5)])
+]
+minimize_variety(5, test_cases)

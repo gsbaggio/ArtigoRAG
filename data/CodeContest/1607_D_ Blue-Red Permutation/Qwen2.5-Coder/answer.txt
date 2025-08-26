@@ -1,0 +1,58 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    index = 0
+    results = []
+    
+    t = int(data[index])
+    index += 1
+    
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        colors = data[index]
+        index += 1
+        
+        blue_elements = []
+        red_elements = []
+        
+        for i in range(n):
+            if colors[i] == 'B':
+                blue_elements.append(a[i])
+            else:
+                red_elements.append(a[i])
+                
+        min_blue = float('inf') if not blue_elements else min(blue_elements)
+        max_red = float('-inf') if not red_elements else max(red_elements)
+        
+        # Adjust blue elements to be at least 1
+        if blue_elements:
+            min_blue = max(min_blue, 1)
+            
+        # Adjust red elements to be at most n
+        if red_elements:
+            max_red = min(max_red, n)
+            
+        # Check if we can form a permutation
+        if min_blue <= max_red:
+            # Create a set of adjusted values
+            adjusted_values = set(range(1, min_blue)) | set(blue_elements) | set(range(max_red + 1, n + 1)) | set(red_elements)
+            
+            # Check if the set has exactly n unique values
+            if len(adjusted_values) == n:
+                results.append("YES")
+            else:
+                results.append("NO")
+        else:
+            results.append("NO")
+            
+    for result in results:
+        print(result)
+
+solve()

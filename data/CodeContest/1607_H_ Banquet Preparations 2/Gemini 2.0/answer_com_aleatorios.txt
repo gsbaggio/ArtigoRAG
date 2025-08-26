@@ -1,0 +1,37 @@
+def solve():
+    input()  # Consume the blank line
+    n = int(input())
+    dishes = []
+    for _ in range(n):
+        dishes.append(list(map(int, input().split())))
+
+    def calculate_variety(modified_dishes):
+        unique_dishes = set()
+        for dish in modified_dishes:
+            unique_dishes.add(tuple(dish))
+        return len(unique_dishes)
+
+    best_variety = float('inf')
+    best_solutions = []
+
+    import itertools
+
+    for solutions in itertools.product(*[[(x, dishes[i][2] - x) for x in range(dishes[i][2] + 1) if 0 <= dishes[i][2] - x <= dishes[i][1] and 0 <= x <= dishes[i][0]] for i in range(n)]):
+        modified_dishes = []
+        for i in range(n):
+            a, b, m = dishes[i]
+            x, y = solutions[i]
+            modified_dishes.append([a - x, b - y])
+
+        variety = calculate_variety(modified_dishes)
+        if variety < best_variety:
+            best_variety = variety
+            best_solutions = solutions
+
+    print(best_variety)
+    for x, y in best_solutions:
+        print(x, y)
+
+t = int(input())
+for _ in range(t):
+    solve()

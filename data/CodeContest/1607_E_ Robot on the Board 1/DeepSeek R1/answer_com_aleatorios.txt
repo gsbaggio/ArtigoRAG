@@ -1,0 +1,52 @@
+import sys
+
+def main():
+    data = sys.stdin.read().splitlines()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n, m = map(int, data[index].split())
+        index += 1
+        s = data[index].strip()
+        index += 1
+        
+        x = 0
+        y = 0
+        minX_prev = 0
+        maxX_prev = 0
+        minY_prev = 0
+        maxY_prev = 0
+        
+        for char in s:
+            if char == 'U':
+                x -= 1
+            elif char == 'D':
+                x += 1
+            elif char == 'L':
+                y -= 1
+            elif char == 'R':
+                y += 1
+                
+            minX = min(minX_prev, x)
+            maxX = max(maxX_prev, x)
+            minY = min(minY_prev, y)
+            maxY = max(maxY_prev, y)
+            
+            if (1 - minX <= n - maxX) and (1 - minY <= m - maxY):
+                minX_prev = minX
+                maxX_prev = maxX
+                minY_prev = minY
+                maxY_prev = maxY
+            else:
+                break
+                
+        r0 = max(1, 1 - minX_prev)
+        c0 = max(1, 1 - minY_prev)
+        results.append(f"{r0} {c0}")
+    
+    for res in results:
+        print(res)
+
+if __name__ == "__main__":
+    main()

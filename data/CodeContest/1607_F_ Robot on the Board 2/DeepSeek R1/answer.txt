@@ -1,0 +1,105 @@
+import collections
+import sys
+
+def main():
+    data = sys.stdin.read().splitlines()
+    t = int(data[0].strip())
+    index = 1
+    results = []
+    for _ in range(t):
+        # Skip blank lines
+        while index < len(data) and data[index].strip() == "":
+            index += 1
+        if index >= len(data):
+            break
+        n, m = map(int, data[index].split())
+        index += 1
+        grid = []
+        for i in range(n):
+            grid.append(data[index].strip())
+            index += 1
+        
+        total = n * m
+        next_arr = [-1] * total
+        in_edges = [[] for _ in range(total)]
+        
+        for i in range(n):
+            for j in range(m):
+                id_val = i * m + j
+                d = grid[i][j]
+                ni, nj = i, j
+                if d == 'L':
+                    nj = j - 1
+                elif d == 'R':
+                    nj = j + 1
+                elif d == 'U':
+                    ni = i - 1
+                elif d == 'D':
+                    ni = i + 1
+                
+                if 0 <= ni < n and 0 <= nj < m:
+                    next_id = ni * m + nj
+                    next_arr[id_val] = next_id
+                    in_edges[next_id].append(id_val)
+                else:
+                    next_arr[id_val] = -1
+                    
+        dp = [0] * total
+        q = collections.deque()
+        for id_val in range(total):
+            if next_arr[id_val] == -1:
+                dp[id_val] = 1
+                q.append(id_val)
+                
+        while q:
+            u = q.popleft()
+            for v in in_edges[u]:
+                if dp[v] == 0:
+                    dp[v] = dp[u] + 1
+                    q.append(v)
+                    
+        visited = [0] * total
+        q2 = collections.deque()
+        for id_val in range(total):
+            if dp[id_val] == 0 and visited[id_val] == 0:
+                stack = []
+                index_map = {}
+                cur = id_val
+                while visited[cur] == 0 and cur not in index_map:
+                    index_map[cur] = len(stack)
+                    stack.append(cur)
+                    cur = next_arr[cur]
+                if cur in index_map:
+                    start_index = index_map[cur]
+                    L = len(stack) - start_index
+                    for i in range(start_index, len(stack)):
+                        node = stack[i]
+                        dp[node] = L
+                        visited[node] = 1
+                        q2.append(node)
+                        
+        while q2:
+            u = q2.popleft()
+            for v in in_edges[u]:
+                if dp[v] == 0:
+                    dp[v] = dp[u] + 1
+                    q2.append(v)
+                    
+        max_dp = 0
+        best_i = 0
+        best_j = 0
+        for i in range(n):
+            for j in range(m):
+                id_val = i * m + j
+                if dp[id_val] > max_dp:
+                    max_dp = dp[id_val]
+                    best_i = i
+                    best_j = j
+                    
+        results.append(f"{best_i+1} {best_j+1} {max_dp}")
+        
+    for res in results:
+        print(res)
+
+if __name__ == "__main__":
+    main()

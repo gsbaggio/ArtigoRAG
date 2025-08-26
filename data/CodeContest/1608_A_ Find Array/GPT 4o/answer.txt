@@ -1,0 +1,29 @@
+def sieve_of_eratosthenes(limit):
+    """Generate all prime numbers up to 'limit' using the Sieve of Eratosthenes."""
+    is_prime = [True] * (limit + 1)
+    is_prime[0] = is_prime[1] = False  # 0 and 1 are not prime numbers
+    for i in range(2, int(limit**0.5) + 1):
+        if is_prime[i]:
+            for j in range(i * i, limit + 1, i):
+                is_prime[j] = False
+    primes = [x for x in range(limit + 1) if is_prime[x]]
+    return primes
+
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    test_cases = list(map(int, data[1:]))
+    
+    # Precompute prime numbers up to a large limit
+    limit = 10**6
+    primes = sieve_of_eratosthenes(limit)
+    
+    results = []
+    for n in test_cases:
+        results.append(" ".join(map(str, primes[:n])))
+    
+    # Print all results
+    sys.stdout.write("\n".join(results) + "\n")

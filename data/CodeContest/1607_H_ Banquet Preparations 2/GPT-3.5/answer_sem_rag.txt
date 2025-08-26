@@ -1,0 +1,32 @@
+def minimize_variety(t, test_cases):
+    for test in test_cases:
+        n = test[0]
+        dishes = test[1]
+
+        # Calculate the difference between the required amount and available amount of fish and meat
+        diffs = [(max(a - mi, 0) + max(b - mi, 0), a, b, mi) for a, b, mi in dishes]
+
+        # Sort the dishes based on the difference in non-increasing order
+        diffs.sort(reverse=True)
+
+        # Output the minimum variety achieved
+        print(diffs[0][0])
+
+        # Output the amounts of fish and meat to be eaten for each dish
+        for diff, a, b, mi in diffs:
+            x = min(a, mi)  # Amount of fish to eat
+            y = mi - x  # Amount of meat to eat
+            print(x, y)
+
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    input()  # Blank line
+    n = int(input())
+    dishes = [list(map(int, input().split())) for _ in range(n)]
+    test_cases.append((n, dishes))
+
+# Call the function with the input
+minimize_variety(t, test_cases)

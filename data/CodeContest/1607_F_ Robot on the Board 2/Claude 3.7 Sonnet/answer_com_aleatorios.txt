@@ -1,0 +1,28 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        # Handle blank line if present
+        try:
+            line = input().strip()
+            if not line:
+                line = input().strip()
+        except EOFError:
+            break
+            
+        n, m = map(int, line.split())
+        board = []
+        for i in range(n):
+            board.append(input())
+        
+        max_steps = 0
+        best_r, best_c = 1, 1
+        
+        # For each possible starting position
+        for r in range(n):
+            for c in range(m):
+                visited = set()
+                curr_r, curr_c = r, c
+                steps = 0
+                
+                # Simulate robot movement

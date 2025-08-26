@@ -1,0 +1,36 @@
+def minimize_variety(t, test_cases):
+    for _ in range(t):
+        n = test_cases[_][0]
+        dishes = test_cases[_][1]
+
+        fish_needed = sum([dish[0] for dish in dishes])
+        meat_needed = sum([dish[1] for dish in dishes])
+
+        variety = 0
+        min_variety_dishes = []
+
+        for i, dish in enumerate(dishes):
+            fish_i, meat_i, total = dish
+            fish_to_eat = min(fish_i, total if total <= fish_needed else fish_needed)
+            meat_to_eat = total - fish_to_eat
+
+            min_variety_dishes.append((fish_to_eat, meat_to_eat))
+            variety += 1 if (fish_to_eat, meat_to_eat) not in min_variety_dishes[:i] else 0
+            fish_needed -= fish_to_eat
+            meat_needed -= meat_to_eat
+
+        print(variety)
+        for dish in min_variety_dishes:
+            print(f"{dish[0]} {dish[1]}")
+
+
+# Input
+test_cases = [
+    (3, [(10, 10, 2), (9, 9, 0), (10, 9, 1)]),
+    (2, [(3, 4, 1), (5, 1, 2)]),
+    (3, [(7, 2, 5), (6, 5, 4), (5, 5, 6)]),
+    (1, [(13, 42, 50)]),
+    (5, [(5, 7, 12), (3, 1, 4), (7, 3, 7), (0, 0, 0), (4, 1, 5)])
+]
+
+minimize_variety(5, test_cases)

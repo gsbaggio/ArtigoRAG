@@ -1,0 +1,46 @@
+def get_max_steps(n, m, board):
+    directions = {'L': (0, -1), 'R': (0, 1), 'U': (-1, 0), 'D': (1, 0)}
+
+    def is_valid_move(x, y):
+        return 0 <= x < n and 0 <= y < m
+
+    def simulate(x, y):
+        visited = set()
+        steps = 0
+
+        while is_valid_move(x, y):
+            if (x, y) in visited:
+                break
+
+            visited.add((x, y))
+            dx, dy = directions[board[x][y]]
+            x, y = x + dx, y + dy
+            steps += 1
+
+        return steps
+
+    max_steps = 0
+    start_cell = (1, 1)
+
+    for i in range(n):
+        for j in range(m):
+            steps = simulate(i, j)
+            if steps > max_steps:
+                max_steps = steps
+                start_cell = (i + 1, j + 1)
+
+    return start_cell[0], start_cell[1], max_steps
+
+# Input processing
+t = int(input())
+results = []
+
+for _ in range(t):
+    input()  # Consume blank line
+    n, m = map(int, input().split())
+    board = [input().strip() for _ in range(n)]
+    results.append(get_max_steps(n, m, board))
+
+# Output
+for result in results:
+    print(f"{result[0]} {result[1]} {result[2]}")

@@ -1,0 +1,46 @@
+def solve():
+    n, m = map(int, input().split())
+    s = input()
+    
+    max_moves = -1
+    best_start_row = -1
+    best_start_col = -1
+    
+    for start_row in range(1, n + 1):
+        for start_col in range(1, m + 1):
+            
+            curr_row = start_row
+            curr_col = start_col
+            moves = 0
+            
+            for move in s:
+                
+                next_row = curr_row
+                next_col = curr_col
+                
+                if move == 'U':
+                    next_row -= 1
+                elif move == 'D':
+                    next_row += 1
+                elif move == 'L':
+                    next_col -= 1
+                elif move == 'R':
+                    next_col += 1
+                    
+                if 1 <= next_row <= n and 1 <= next_col <= m:
+                    curr_row = next_row
+                    curr_col = next_col
+                    moves += 1
+                else:
+                    break
+            
+            if moves > max_moves:
+                max_moves = moves
+                best_start_row = start_row
+                best_start_col = start_col
+                
+    print(best_start_row, best_start_col)
+
+t = int(input())
+for _ in range(t):
+    solve()

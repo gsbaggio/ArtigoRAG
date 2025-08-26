@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+using namespace std;
+
+string canTransformToPermutation(int n, vector<int>& arr, string& colors) {
+    vector<int> blue, red;
+    
+    // Separate blue and red elements
+    for (int i = 0; i < n; i++) {
+        if (colors[i] == 'B') {
+            blue.push_back(arr[i]);
+        } else {
+            red.push_back(arr[i]);
+        }
+    }
+    
+    // Sort blue elements in descending order (larger blue elements have more room to decrease)
+    sort(blue.rbegin(), blue.rend());
+    
+    // Sort red elements in ascending order (smaller red elements have more room to increase)
+    sort(red.begin(), red.end());
+    
+    // Check if elements can be transformed to form a permutation of 1 to n
+    for (int i = 0; i < blue.size(); i++) {
+        // Blue elements must be >= their target position in 1...n
+        // Position is n-i (starting from the largest position for largest blue elements)
+        if (blue[i] < n - i) {
+            return "NO";
+        }
+    }
+    
+    for (int i = 0; i < red.size(); i++) {
+        // Red elements must be <= their target position in 1...n
+        // Position is i+1 (starting from smallest position for smallest red elements)
+        if (red[i] > i + 1) {
+            return "NO";
+        }
+    }
+    
+    return "YES";
+}
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<int> arr(n);
+        for (int i = 0; i < n; i++) {
+            cin >> arr[i];
+        }
+        
+        string colors;
+        cin >> colors;
+        
+        cout << canTransformToPermutation(n, arr, colors) << endl;
+    }
+    
+    return 0;
+}

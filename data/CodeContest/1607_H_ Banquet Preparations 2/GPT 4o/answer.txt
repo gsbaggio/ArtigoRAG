@@ -1,0 +1,59 @@
+def minimize_variety(t, test_cases):
+    results = []
+    
+    for case in test_cases:
+        n, dishes = case
+        unique_dishes = set()
+        result = []
+        
+        for a, b, m in dishes:
+            # Eat as much as possible from the larger component
+            x = min(a, m)  # Eat from fish
+            y = m - x      # Remaining from meat
+            
+            # Ensure constraints are satisfied
+            if y > b:
+                y = b
+                x = m - y
+            
+            # Add the resulting dish to the set
+            unique_dishes.add((a - x, b - y))
+            result.append((x, y))
+        
+        # Store the results for this test case
+        results.append((len(unique_dishes), result))
+    
+    return results
+
+
+# Input Reading
+import sys
+input = sys.stdin.read
+data = input().splitlines()
+
+t = int(data[0])
+test_cases = []
+index = 1
+
+for _ in range(t):
+    if data[index] == "":
+        index += 1
+    n = int(data[index])
+    index += 1
+    dishes = []
+    for _ in range(n):
+        a, b, m = map(int, data[index].split())
+        dishes.append((a, b, m))
+        index += 1
+    test_cases.append((n, dishes))
+
+# Solve the problem
+results = minimize_variety(t, test_cases)
+
+# Output Results
+output = []
+for variety, result in results:
+    output.append(str(variety))
+    for x, y in result:
+        output.append(f"{x} {y}")
+sys.stdout.write("\n".join(output) + "\n")

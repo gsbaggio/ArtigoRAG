@@ -1,0 +1,65 @@
+def solve():
+    import sys
+    import math
+    
+    input = sys.stdin.read().split()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        
+        dishes = []
+        
+        for i in range(n):
+            a_i = int(input[index])
+            b_i = int(input[index + 1])
+            m_i = int(input[index + 2])
+            index += 3
+            
+            if a_i + b_i == 0:
+                # Special case: no food in the dish
+                dishes.append((0, 0, m_i))
+            else:
+                # Calculate the ratio of fish to total food
+                ratio = a_i / (a_i + b_i)
+                dishes.append((ratio, a_i, b_i, m_i))
+        
+        # Sort dishes based on the ratio of fish to total food
+        dishes.sort(key=lambda x: x[0])
+        
+        # Adjust the amounts of fish and meat to be eaten
+        adjusted_dishes = []
+        for ratio, a_i, b_i, m_i in dishes:
+            if a_i + b_i == 0:
+                # No food in the dish, eat nothing
+                adjusted_dishes.append((0, 0))
+            else:
+                # Calculate the amount of fish to be eaten
+                x_i = round(m_i * ratio)
+                # Calculate the amount of meat to be eaten
+                y_i = m_i - x_i
+                adjusted_dishes.append((x_i, y_i))
+        
+        # Determine the minimum variety
+        unique_dishes = set()
+        for x_i, y_i in adjusted_dishes:
+            unique_dishes.add((x_i, y_i))
+        
+        min_variety = len(unique_dishes)
+        
+        # Store the result
+        results.append(str(min_variety))
+        for x_i, y_i in adjusted_dishes:
+            results.append(f"{x_i} {y_i}")
+    
+    # Print all results
+    print("\n".join(results))
+
+# Call the solve function
+solve()

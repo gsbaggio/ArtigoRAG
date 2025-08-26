@@ -1,0 +1,62 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        try:
+            blank = input()  # Skip blank line
+        except:
+            pass
+        
+        n = int(input())
+        dishes = []
+        
+        for i in range(n):
+            a, b, m = map(int, input().split())
+            dishes.append((a, b, m, i))  # Store original index
+        
+        # Try all possible remaining compositions
+        best_variety = n
+        best_eating_plan = [(0, 0)] * n  # Initialize with dummy values
+        
+        # Generate all possible remaining compositions
+        possible_compositions = set()
+        for a, b, m, _ in dishes:
+            for x in range(min(a, m) + 1):  # Amount of fish to eat
+                y = m - x  # Amount of meat to eat
+                if 0 <= y <= b:  # Valid meat consumption
+                    possible_compositions.add((a-x, b-y))
+        
+        # For each composition, count how many dishes can match it
+        for target_composition in possible_compositions:
+            target_a_remain, target_b_remain = target_composition
+            
+            eating_plan = [(0, 0)] * n
+            matching_dishes = set()
+            
+            for a, b, m, idx in dishes:
+                # Check if this dish can match the target remaining composition
+                fish_to_eat = a - target_a_remain
+                meat_to_eat = b - target_b_remain
+                
+                if (0 <= fish_to_eat <= a and 
+                    0 <= meat_to_eat <= b and 
+                    fish_to_eat + meat_to_eat == m):
+                    matching_dishes.add(idx)
+                    eating_plan[idx] = (fish_to_eat, meat_to_eat)
+                else:
+                    # If can't match, just eat as much fish as possible
+                    x = min(a, m)
+                    y = m - x
+                    eating_plan[idx] = (x, y)
+            
+            variety = n - len(matching_dishes)
+            if variety < best_variety:
+                best_variety = variety
+                best_eating_plan = eating_plan
+        
+        # Print the result
+        print(best_variety)
+        for x, y in best_eating_plan:
+            print(f"{x} {y}")
+
+solve()

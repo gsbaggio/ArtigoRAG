@@ -1,0 +1,43 @@
+from collections import defaultdict
+
+def max_steps(n, m, board):
+    directions = {'L': (0, -1), 'R': (0, 1), 'U': (-1, 0), 'D': (1, 0)}
+    max_steps = 0
+    start_cell = None
+
+    for r in range(n):
+        for c in range(m):
+            visited = defaultdict(bool)
+            steps = 0
+            cur_r, cur_c = r, c
+
+            while not visited[(cur_r, cur_c)]:
+                visited[(cur_r, cur_c)] = True
+                dr, dc = directions[board[cur_r][cur_c]]
+                new_r, new_c = cur_r + dr, cur_c + dc
+
+                if 0 <= new_r < n and 0 <= new_c < m:
+                    cur_r, cur_c = new_r, new_c
+                    steps += 1
+                else:
+                    break
+
+            if steps > max_steps:
+                max_steps = steps
+                start_cell = (r + 1, c + 1)
+
+    return start_cell[0], start_cell[1], max_steps
+
+# Input parsing
+test_cases = int(input())
+results = []
+
+for _ in range(test_cases):
+    input()
+    n, m = map(int, input().split())
+    board = [input().strip() for _ in range(n)]
+    results.append(max_steps(n, m, board))
+
+# Output results
+for result in results:
+    print(f"{result[0]} {result[1]} {result[2]}")

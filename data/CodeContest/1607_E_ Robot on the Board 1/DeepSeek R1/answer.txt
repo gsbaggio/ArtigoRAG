@@ -1,0 +1,40 @@
+t = int(input().strip())
+for _ in range(t):
+    data = input().split()
+    n = int(data[0])
+    m = int(data[1])
+    s = input().strip()
+    dx, dy = 0, 0
+    min_dx, max_dx = 0, 0
+    min_dy, max_dy = 0, 0
+    r0, c0 = 1, 1
+    for c in s:
+        if c == 'R':
+            dx += 1
+        elif c == 'L':
+            dx -= 1
+        elif c == 'U':
+            dy -= 1
+        elif c == 'D':
+            dy += 1
+            
+        if dx < min_dx:
+            min_dx = dx
+        if dx > max_dx:
+            max_dx = dx
+        if dy < min_dy:
+            min_dy = dy
+        if dy > max_dy:
+            max_dy = dy
+            
+        low_r = 1 - min_dy
+        high_r = n - max_dy
+        low_c = 1 - min_dx
+        high_c = m - max_dx
+        
+        if low_r <= high_r and low_c <= high_c:
+            r0 = low_r
+            c0 = low_c
+        else:
+            break
+    print(f"{r0} {c0}")

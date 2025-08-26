@@ -1,0 +1,94 @@
+import java.util.*;
+import java.io.*;
+
+public class RobotMovement {
+    static class Point {
+        int row, col;
+        
+        Point(int r, int c) {
+            row = r;
+            col = c;
+        }
+    }
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int t = Integer.parseInt(br.readLine().trim());
+        
+        StringBuilder sb = new StringBuilder();
+        for (int tc = 0; tc < t; tc++) {
+            br.readLine(); // Skip the blank line
+            
+            String[] nm = br.readLine().trim().split(" ");
+            int n = Integer.parseInt(nm[0]);
+            int m = Integer.parseInt(nm[1]);
+            
+            char[][] board = new char[n][m];
+            for (int i = 0; i < n; i++) {
+                String row = br.readLine().trim();
+                for (int j = 0; j < m; j++) {
+                    board[i][j] = row.charAt(j);
+                }
+            }
+            
+            int maxMoves = 0;
+            int startRow = 0, startCol = 0;
+            
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    int moves = simulateRobot(board, n, m, i, j);
+                    if (moves > maxMoves) {
+                        maxMoves = moves;
+                        startRow = i;
+                        startCol = j;
+                    }
+                }
+            }
+            
+            sb.append((startRow + 1)).append(" ").append((startCol + 1)).append(" ").append(maxMoves).append("\n");
+        }
+        
+        System.out.print(sb);
+    }
+    
+    static int simulateRobot(char[][] board, int n, int m, int startRow, int startCol) {
+        boolean[][] visited = new boolean[n][m];
+        int moveCount = 0;
+        
+        int curRow = startRow;
+        int curCol = startCol;
+        
+        while (true) {
+            // Mark current cell as visited
+            visited[curRow][curCol] = true;
+            
+            // Get next position based on the direction
+            int nextRow = curRow;
+            int nextCol = curCol;
+            
+            switch (board[curRow][curCol]) {
+                case 'L': nextCol--; break;
+                case 'R': nextCol++; break;
+                case 'U': nextRow--; break;
+                case 'D': nextRow++; break;
+            }
+            
+            // Count the move
+            moveCount++;
+            
+            // Check if robot falls off the board
+            if (nextRow < 0 || nextRow >= n || nextCol < 0 || nextCol >= m) {
+                return moveCount;
+            }
+            
+            // Check if robot visits a cell it has already been to
+            if (visited[nextRow][nextCol]) {
+                return moveCount;
+            }
+            
+            // Move to the next cell
+            curRow = nextRow;
+            curCol = nextCol;
+        }
+    }
+}

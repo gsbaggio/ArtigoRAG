@@ -1,0 +1,56 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n])); index += n
+        s = data[index]; index += 1
+        
+        blue = []
+        red = []
+        valid = True
+        for i in range(n):
+            if s[i] == 'B':
+                if a[i] < 1:
+                    valid = False
+                    break
+                else:
+                    blue.append(a[i])
+            else:
+                if a[i] > n:
+                    valid = False
+                    break
+                else:
+                    red.append(a[i])
+                    
+        if not valid:
+            results.append("NO")
+            continue
+            
+        blue.sort()
+        red.sort()
+        
+        for i in range(len(blue)):
+            if blue[i] < i+1:
+                valid = False
+                break
+                
+        if not valid:
+            results.append("NO")
+            continue
+            
+        for i in range(len(red)):
+            if red[i] > n - len(red) + i + 1:
+                valid = False
+                break
+                
+        results.append("YES" if valid else "NO")
+        
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,79 @@
+def main():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+
+    index = 0
+    t = int(data[index])
+    index += 1
+
+    results = []
+
+    for _ in range(t):
+        n = int(data[index])
+        m = int(data[index + 1])
+        index += 2
+
+        grid = []
+        for i in range(n):
+            row = data[index + i]
+            grid.append(list(row))
+        index += n
+
+        # Directions mapping
+        directions = {
+            'L': (0, -1),
+            'R': (0, 1),
+            'D': (1, 0),
+            'U': (-1, 0)
+        }
+
+        # Memoization table to store the maximum steps from each cell
+        memo = [[-1] * m for _ in range(n)]
+
+        def dfs(r, c):
+            if memo[r][c] != -1:
+                return memo[r][c]
+
+            visited = set()
+            steps = 0
+            current_r, current_c = r, c
+
+            while True:
+                if (current_r, current_c) in visited:
+                    break
+                visited.add((current_r, current_c))
+
+                dr, dc = directions[grid[current_r][current_c]]
+                new_r, new_c = current_r + dr, current_c + dc
+
+                if new_r < 0 or new_r >= n or new_c < 0 or new_c >= m:
+                    break
+
+                if memo[new_r][new_c] != -1:
+                    steps += memo[new_r][new_c] + 1
+                    break
+
+                current_r, current_c = new_r, new_c
+                steps += 1
+
+            memo[r][c] = steps
+            return steps
+
+        max_steps = 0
+        start_r, start_c = 0, 0
+
+        for r in range(n):
+            for c in range(m):
+                steps = dfs(r, c)
+                if steps > max_steps:
+                    max_steps = steps
+                    start_r, start_c = r + 1, c + 1
+
+        results.append(f"{start_r} {start_c} {max_steps}")
+
+    print("\n".join(results))
+
+
+if __name__ == "__main__":
+    main()

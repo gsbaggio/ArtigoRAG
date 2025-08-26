@@ -1,0 +1,40 @@
+# Function to find the best starting cell for the robot
+def find_best_starting_cell(board):
+    directions = {'L': (0, -1), 'R': (0, 1), 'D': (1, 0), 'U': (-1, 0)}
+    max_steps = 0
+    start_cell = (1, 1)
+
+    for r in range(len(board)):
+        for c in range(len(board[0])):
+            visited = set()
+            steps = 0
+            cur_r, cur_c = r, c
+
+            while (cur_r, cur_c) not in visited:
+                visited.add((cur_r, cur_c))
+                dr, dc = directions[board[cur_r][cur_c]]
+                new_r, new_c = cur_r + dr, cur_c + dc
+
+                if new_r < 0 or new_r >= len(board) or new_c < 0 or new_c >= len(board[0]):
+                    break
+
+                cur_r, cur_c = new_r, new_c
+                steps += 1
+
+            if steps > max_steps:
+                max_steps = steps
+                start_cell = (r + 1, c + 1)
+
+    return start_cell[0], start_cell[1], max_steps
+
+
+# Number of test cases
+t = int(input())
+
+for _ in range(t):
+    input()  # Skip the blank line
+    n, m = map(int, input().split())
+    board = [input() for _ in range(n)]
+
+    r, c, d = find_best_starting_cell(board)
+    print(r, c, d)
