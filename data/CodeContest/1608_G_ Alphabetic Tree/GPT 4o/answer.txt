@@ -1,0 +1,88 @@
+from collections import defaultdict, deque
+import bisect
+
+# Precompute LCA and path strings
+def preprocess_tree(n, edges):
+    tree = defaultdict(list)
+    edge_labels = {}
+    for u, v, c in edges:
+        tree[u].append((v, c))
+        tree[v].append((u, c))
+        edge_labels[(u, v)] = c
+        edge_labels[(v, u)] = c
+
+    # Depth, parent, and path string storage
+    depth = [-1] * (n + 1)
+    parent = [-1] * (n + 1)
+    path_to_root = [""] * (n + 1)
+
+    # BFS to compute depth, parent, and path strings
+    def bfs(root):
+        queue = deque([root])
+        depth[root] = 0
+        while queue:
+            node = queue.popleft()
+            for neighbor, char in tree[node]:
+                if depth[neighbor] == -1:  # Unvisited
+                    depth[neighbor] = depth[node] + 1
+                    parent[neighbor] = node
+                    path_to_root[neighbor] = path_to_root[node] + char
+                    queue.append(neighbor)
+
+    bfs(1)  # Assuming 1 is the root
+    return depth, parent, path_to_root, tree
+
+# Find LCA of two nodes
+def find_lca(u, v, depth, parent):
+    if depth[u] < depth[v]:
+        u, v = v, u
+    # Bring u and v to the same depth
+    while depth[u] > depth[v]:
+        u = parent[u]
+    while u != v:
+        u = parent[u]
+        v = parent[v]
+    return u
+
+# Count occurrences of a substring in a range of strings
+def count_occurrences(substring, strings, l, r):
+    count = 0
+    for i in range(l - 1, r):
+        count += strings[i].count(substring)
+    return count
+
+# Main function to solve the problem
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+
+    # Read n, m, q
+    n, m, q = map(int, data[0].split())
+
+    # Read tree edges
+    edges = []
+    for i in range(1, n):
+        u, v, c = data[i].split()
+        edges.append((int(u), int(v), c))
+
+    # Read strings
+    strings = data[n:n + m]
+
+    # Read queries
+    queries = []
+    for i in range(n + m, n + m + q):
+        queries.append(tuple(map(int, data[i].split())))
+
+    # Preprocess tree
+    depth, parent, path_to_root, tree = preprocess_tree(n, edges)
+
+    # Process each query
+    results = []
+    for u, v, l, r in queries:
+        lca = find_lca(u, v, depth, parent)
+        path_string = path_to_root[u] + path_to_root[v][len(path_to_root[lca]):]
+        results.append(count_occurrences(path_string, strings, l, r))
+
+    # Output results
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

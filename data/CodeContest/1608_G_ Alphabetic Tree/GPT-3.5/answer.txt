@@ -1,0 +1,49 @@
+# Implementing the solution
+import collections
+
+# Function to build a suffix tree for a given string
+def build_suffix_tree(s):
+    END = '$'
+    tree = collections.defaultdict(dict)
+    count = 0
+
+    for i in range(len(s)):
+        node = tree
+        for c in s[i:]:
+            if c not in node:
+                count += 1
+                node[c] = count
+                node[count] = {}
+            node = node[c]
+        node[END] = i  # Mark the end of the suffix
+
+    return tree
+
+# Function to traverse the suffix tree and find occurrences of a string
+def find_occurrences(tree, s):
+    END = '$'
+    node = tree
+    for c in s:
+        if c not in node:
+            return 0
+        node = node[c]
+    return node[END] + 1 if END in node else 0
+
+# Reading input
+n, m, q = map(int, input().split())
+edges = [input().split() for _ in range(n-1)]
+strings = [input().strip() for _ in range(m)]
+queries = [list(map(int, input().split())) for _ in range(q)]
+
+# Building suffix trees for each string
+suffix_trees = [build_suffix_tree(s) for s in strings]
+
+# Processing queries
+for u, v, l, r in queries:
+    total_occurrences = 0
+    str_uv = ''
+    for u, v, _ in edges:
+        str_uv += strings[int(u)-1][find_occurrences(suffix_trees[int(u)-1], strings[int(u)-1]):find_occurrences(suffix_trees[int(v)-1], strings[int(v)-1])+1]
+    for i in range(l-1, r):
+        total_occurrences += strings[i].count(str_uv)
+    print(total_occurrences)

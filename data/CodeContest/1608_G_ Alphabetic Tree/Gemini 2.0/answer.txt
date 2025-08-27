@@ -1,0 +1,63 @@
+def solve():
+    n, m, q = map(int, input().split())
+    
+    edges = []
+    for _ in range(n - 1):
+        u, v, c = input().split()
+        edges.append((int(u), int(v), c))
+    
+    strings = []
+    for _ in range(m):
+        strings.append(input())
+    
+    queries = []
+    for _ in range(q):
+        u, v, l, r = map(int, input().split())
+        queries.append((u, v, l, r))
+
+    def build_graph(edges):
+        graph = {i: [] for i in range(1, n + 1)}
+        for u, v, c in edges:
+            graph[u].append((v, c))
+            graph[v].append((u, c))
+        return graph
+
+    def get_path_string(graph, start, end):
+        
+        def dfs(node, target, path, visited):
+            if node == target:
+                return path
+            
+            visited.add(node)
+            
+            for neighbor, char in graph[node]:
+                if neighbor not in visited:
+                    result = dfs(neighbor, target, path + char, visited.copy())
+                    if result:
+                        return result
+            
+            return None
+
+        return dfs(graph, start, end, set())
+
+    def count_occurrences(text, pattern):
+        count = 0
+        for i in range(len(text) - len(pattern) + 1):
+            if text[i:i+len(pattern)] == pattern:
+                count += 1
+        return count
+
+    graph = build_graph(edges)
+    
+    results = []
+    for u, v, l, r in queries:
+        path_string = get_path_string(graph, u, v)
+        total_occurrences = 0
+        for i in range(l - 1, r):
+            total_occurrences += count_occurrences(strings[i], path_string)
+        results.append(total_occurrences)
+
+    for result in results:
+        print(result)
+
+solve()

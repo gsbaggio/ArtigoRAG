@@ -1,0 +1,151 @@
+from collections import defaultdict, deque
+import sys
+sys.setrecursionlimit(200000)
+
+# Suffix Automaton
+class SuffixAutomaton:
+    def __init__(self):
+        self.states = [{}]
+        self.link = [-1]
+        self.length = [0]
+        self.last = 0
+
+    def extend(self, c):
+        cur = len(self.states)
+        self.states.append({})
+        self.link.append(-1)
+        self.length.append(self.length[self.last] + 1)
+        p = self.last
+        while p != -1 and c not in self.states[p]:
+            self.states[p][c] = cur
+            p = self.link[p]
+        if p == -1:
+            self.link[cur] = 0
+        else:
+            q = self.states[p][c]
+            if self.length[p] + 1 == self.length[q]:
+                self.link[cur] = q
+            else:
+                clone = len(self.states)
+                self.states.append(self.states[q].copy())
+                self.link.append(self.link[q])
+                self.length.append(self.length[p] + 1)
+                while p != -1 and self.states[p].get(c) == q:
+                    self.states[p][c] = clone
+                    p = self.link[p]
+                self.link[q] = self.link[cur] = clone
+        self.last = cur
+
+    def count_occurrences(self, s):
+        state = 0
+        for c in s:
+            if c not in self.states[state]:
+                return 0
+            state = self.states[state][c]
+        return 1
+
+# Tree and LCA
+class Tree:
+    def __init__(self, n):
+        self.adj = defaultdict(list)
+        self.parent = [-1] * n
+        self.depth = [0] * n
+        self.path_char = [''] * n
+        self.lca_pre = []
+        self.n = n
+
+    def add_edge(self, u, v, c):
+        self.adj[u].append((v, c))
+        self.adj[v].append((u, c))
+
+    def dfs(self, node, par, depth):
+        self.parent[node] = par
+        self.depth[node] = depth
+        for neighbor, char in self.adj[node]:
+            if neighbor != par:
+                self.path_char[neighbor] = char
+                self.dfs(neighbor, node, depth + 1)
+
+    def preprocess_lca(self):
+        self.lca_pre = [[-1] * self.n for _ in range(20)]
+        for i in range(self.n):
+            self.lca_pre[0][i] = self.parent[i]
+        for j in range(1, 20):
+            for i in range(self.n):
+                if self.lca_pre[j - 1][i] != -1:
+                    self.lca_pre[j][i] = self.lca_pre[j - 1][self.lca_pre[j - 1][i]]
+
+    def get_lca(self, u, v):
+        if self.depth[u] < self.depth[v]:
+            u, v = v, u
+        diff = self.depth[u] - self.depth[v]
+        for i in range(20):
+            if diff & (1 << i):
+                u = self.lca_pre[i][u]
+        if u == v:
+            return u
+        for i in range(19, -1, -1):
+            if self.lca_pre[i][u] != self.lca_pre[i][v]:
+                u = self.lca_pre[i][u]
+                v = self.lca_pre[i][v]
+        return self.parent[u]
+
+    def get_path_string(self, u, v):
+        lca = self.get_lca(u, v)
+        path = []
+        while u != lca:
+            path.append(self.path_char[u])
+            u = self.parent[u]
+        path = path[::-1]
+        while v != lca:
+            path.append(self.path_char[v])
+            v = self.parent[v]
+        return ''.join(path)
+
+# Main Solution
+def solve():
+    input = sys.stdin.read
+    data = input().split()
+    idx = 0
+
+    n, m, q = map(int, data[idx:idx+3])
+    idx += 3
+
+    tree = Tree(n)
+    for _ in range(n - 1):
+        u, v, c = data[idx:idx+3]
+        u, v = int(u) - 1, int(v) - 1
+        tree.add_edge(u, v, c)
+        idx += 3
+
+    strings = []
+    for _ in range(m):
+        strings.append(data[idx])
+        idx += 1
+
+    queries = []
+    for _ in range(q):
+        u, v, l, r = map(int, data[idx:idx+4])
+        queries.append((u - 1, v - 1, l - 1, r - 1))
+        idx += 4
+
+    # Preprocess tree
+    tree.dfs(0, -1, 0)
+    tree.preprocess_lca()
+
+    # Build suffix automaton
+    automaton = SuffixAutomaton()
+    for s in strings:
+        for c in s:
+            automaton.extend(c)
+
+    # Process queries
+    results = []
+    for u, v, l, r in queries:
+        path_string = tree.get_path_string(u, v)
+        count = 0
+        for i in range(l, r + 1):
+            count += automaton.count_occurrences(path_string)
+        results.append(count)
+
+    sys.stdout.write('\n'.join(map(str, results)) + '\n')

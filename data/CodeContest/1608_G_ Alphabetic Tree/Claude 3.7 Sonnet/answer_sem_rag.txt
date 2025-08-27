@@ -1,0 +1,111 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_map>
+#include <queue>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n, m, q;
+    cin >> n >> m >> q;
+    
+    // Build adjacency list
+    vector<vector<pair<int, char>>> adj(n + 1);
+    for (int i = 0; i < n - 1; ++i) {
+        int u, v;
+        char c;
+        cin >> u >> v >> c;
+        adj[u].push_back({v, c});
+        adj[v].push_back({u, c});
+    }
+    
+    // Read strings
+    vector<string> strings(m + 1);
+    for (int i = 1; i <= m; ++i) {
+        cin >> strings[i];
+    }
+    
+    // Compute all possible path strings using BFS
+    vector<vector<string>> path_strings(n + 1, vector<string>(n + 1));
+    
+    for (int src = 1; src <= n; ++src) {
+        vector<int> parent(n + 1, -1);
+        vector<char> edge_char(n + 1);
+        queue<int> q;
+        
+        q.push(src);
+        parent[src] = 0;
+        
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+            
+            for (auto& [next, c] : adj[node]) {
+                if (parent[next] == -1) {
+                    parent[next] = node;
+                    edge_char[next] = c;
+                    q.push(next);
+                }
+            }
+        }
+        
+        // Build path strings for all destinations
+        for (int dest = 1; dest <= n; ++dest) {
+            if (src == dest) continue;
+            
+            string path = "";
+            int curr = dest;
+            while (curr != src) {
+                path = edge_char[curr] + path;
+                curr = parent[curr];
+            }
+            
+            path_strings[src][dest] = path;
+        }
+    }
+    
+    // Precompute prefix sums for each possible path string
+    unordered_map<string, vector<int>> prefix_sums;
+    
+    for (int u = 1; u <= n; ++u) {
+        for (int v = 1; v <= n; ++v) {
+            if (u == v) continue;
+            
+            string path = path_strings[u][v];
+            
+            // If we haven't processed this path yet
+            if (prefix_sums.find(path) == prefix_sums.end()) {
+                prefix_sums[path] = vector<int>(m + 1, 0);
+                
+                // Count occurrences in each string
+                for (int i = 1; i <= m; ++i) {
+                    int count = 0;
+                    size_t pos = 0;
+                    while ((pos = strings[i].find(path, pos)) != string::npos) {
+                        count++;
+                        pos++;
+                    }
+                    
+                    // Build prefix sum
+                    prefix_sums[path][i] = prefix_sums[path][i-1] + count;
+                }
+            }
+        }
+    }
+    
+    // Answer queries
+    for (int i = 0; i < q; ++i) {
+        int u, v, l, r;
+        cin >> u >> v >> l >> r;
+        
+        string path = path_strings[u][v];
+        int result = prefix_sums[path][r] - prefix_sums[path][l-1];
+        
+        cout << result << endl;
+    }
+    
+    return 0;
+}

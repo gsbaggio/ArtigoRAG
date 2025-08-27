@@ -1,0 +1,100 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+// Function to find the path between two nodes in a tree
+// Uses BFS to find the path and stores the parent of each node
+vector<pair<int, char>> findPath(int start, int end, int n, const vector<vector<pair<int, char>>>& adj, vector<int>& parent) {
+    parent.assign(n + 1, 0);
+    vector<bool> visited(n + 1, false);
+    vector<int> q;
+    q.push_back(start);
+    visited[start] = true;
+    int head = 0;
+
+    while (head < q.size()) {
+        int u = q[head++];
+        if (u == end) break;
+
+        for (auto& edge : adj[u]) {
+            int v = edge.first;
+            if (!visited[v]) {
+                visited[v] = true;
+                q.push_back(v);
+                parent[v] = u;
+            }
+        }
+    }
+
+    vector<pair<int, char>> path;
+    int curr = end;
+    while (curr != start) {
+        int par = parent[curr];
+        char edgeChar = ' ';
+        for (auto& edge : adj[curr]) {
+            if (edge.first == par) {
+                edgeChar = edge.second;
+                break;
+            }
+        }
+        for (auto& edge : adj[par]) {
+            if (edge.first == curr) {
+                edgeChar = edge.second;
+                break;
+            }
+        }
+        path.push_back({curr, edgeChar});
+        curr = par;
+    }
+    reverse(path.begin(), path.end());
+    return path;
+}
+
+int main() {
+    int n, m, q;
+    cin >> n >> m >> q;
+
+    vector<vector<pair<int, char>>> adj(n + 1);
+    for (int i = 0; i < n - 1; ++i) {
+        int u, v;
+        char c;
+        cin >> u >> v >> c;
+        adj[u].push_back({v, c});
+        adj[v].push_back({u, c});
+    }
+
+    vector<string> strings(m);
+    for (int i = 0; i < m; ++i) {
+        cin >> strings[i];
+    }
+
+    for (int i = 0; i < q; ++i) {
+        int u, v, l, r;
+        cin >> u >> v >> l >> r;
+
+        vector<int> parent;
+        vector<pair<int, char>> path = findPath(u, v, n, adj, parent);
+
+        string pathStr = "";
+        for (auto& node : path) {
+            pathStr += node.second;
+        }
+
+        int totalOccurrences = 0;
+        for (int j = l - 1; j < r; ++j) {
+            string& str = strings[j];
+            size_t pos = 0;
+            while ((pos = str.find(pathStr, pos)) != string::npos) {
+                totalOccurrences++;
+                pos += 1; // Move to the next position to find overlapping occurrences
+            }
+        }
+
+        cout << totalOccurrences << endl;
+    }
+
+    return 0;
+}

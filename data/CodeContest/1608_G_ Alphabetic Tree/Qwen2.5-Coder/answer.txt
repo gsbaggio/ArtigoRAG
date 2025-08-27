@@ -1,0 +1,174 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1e5 + 5;
+const int MAXM = 1e5 + 5;
+const int MAXLOG = 20;
+
+vector<pair<int, char>> adj[MAXN];
+int depth[MAXN];
+int parent[MAXN][MAXLOG];
+
+// Preprocess the tree to compute depths and parents for LCA
+void preprocess(int node, int par, int d) {
+    depth[node] = d;
+    parent[node][0] = par;
+    for (int i = 1; i < MAXLOG; i++) {
+        if (parent[node][i - 1] == 0) break;
+        parent[node][i] = parent[parent[node][i - 1]][i - 1];
+    }
+    for (auto& [next_node, _] : adj[node]) {
+        if (next_node == par) continue;
+        preprocess(next_node, node, d + 1);
+    }
+}
+
+// Find the LCA of two nodes
+int lca(int u, int v) {
+    if (depth[u] < depth[v]) swap(u, v);
+    for (int i = MAXLOG - 1; i >= 0; i--) {
+        if (depth[u] - (1 << i) >= depth[v]) {
+            u = parent[u][i];
+        }
+    }
+    if (u == v) return u;
+    for (int i = MAXLOG - 1; i >= 0; i--) {
+        if (parent[u][i] != parent[v][i]) {
+            u = parent[u][i];
+            v = parent[v][i];
+        }
+    }
+    return parent[u][0];
+}
+
+// Construct the path string from root to node
+void construct_path(int node, string& path, vector<string>& paths) {
+    for (auto& [next_node, label] : adj[node]) {
+        if (next_node == parent[node][0]) continue;
+        path.push_back(label);
+        paths[next_node] = path;
+        construct_path(next_node, path, paths);
+        path.pop_back();
+    }
+}
+
+// Binary search to find the range of suffixes matching the pattern
+pair<int, int> find_range(const string& pattern, const vector<int>& suffix_array, const vector<int>& lcp) {
+    int left = 0, right = suffix_array.size() - 1;
+    while (left < right) {
+        int mid = (left + right) / 2;
+        if (pattern.compare(0, min((int)pattern.size(), suffix_array[mid] + (int)pattern.size()), suffix_array[mid] + pattern.size() - min((int)pattern.size(), suffix_array[mid] + (int)pattern.size())) <= 0) {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    int low = left;
+    right = suffix_array.size() - 1;
+    while (left < right) {
+        int mid = (left + right + 1) / 2;
+        if (pattern.compare(0, min((int)pattern.size(), suffix_array[mid] + (int)pattern.size()), suffix_array[mid] + pattern.size() - min((int)pattern.size(), suffix_array[mid] + (int)pattern.size())) >= 0) {
+            left = mid;
+        } else {
+            right = mid - 1;
+        }
+    }
+    int high = left;
+    if (high >= 0 && pattern.compare(0, min((int)pattern.size(), suffix_array[high] + (int)pattern.size()), suffix_array[high] + pattern.size() - min((int)pattern.size(), suffix_array[high] + (int)pattern.size())) != 0) {
+        return {-1, -1};
+    }
+    return {low, high};
+}
+
+// Build the suffix array and LCP array
+void build_suffix_array_lcp(const string& s, vector<int>& suffix_array, vector<int>& lcp) {
+    int n = s.size();
+    suffix_array.resize(n);
+    iota(suffix_array.begin(), suffix_array.end(), 0);
+    sort(suffix_array.begin(), suffix_array.end(), [&s](int a, int b) {
+        return s.substr(a) < s.substr(b);
+    });
+    lcp.resize(n);
+    for (int i = 0, h = 0; i < n; i++) {
+        if (suffix_array[i] > 0) {
+            int j = suffix_array[i - 1];
+            while (s[i + h] == s[j + h]) h++;
+            lcp[i] = h;
+            if (h > 0) h--;
+        }
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n, m, q;
+    cin >> n >> m >> q;
+    
+    // Read edges
+    for(int i = 0; i < n - 1; i++){
+        int u, v;
+        char c;
+        cin >> u >> v >> c;
+        adj[u].push_back({v, c});
+        adj[v].push_back({u, c});
+    }
+    
+    // Preprocess the tree
+    preprocess(1, 0, 0);
+    
+    // Construct path strings
+    vector<string> paths(n + 1);
+    string path;
+    construct_path(1, path, paths);
+    
+    // Concatenate all path strings with special separators
+    string combined;
+    vector<int> offsets(m + 1);
+    for(int i = 1; i <= n; i++){
+        if(paths[i].empty()) continue;
+        offsets[i] = combined.size();
+        combined += paths[i] + '#';
+    }
+    
+    // Build suffix array and LCP array
+    vector<int> suffix_array, lcp;
+    build_suffix_array_lcp(combined, suffix_array, lcp);
+    
+    // Read strings
+    vector<string> strings(m + 1);
+    for(int i = 1; i <= m; i++){
+        cin >> strings[i];
+    }
+    
+    // Answer queries
+    while(q--){
+        int u, v, l, r;
+        cin >> u >> v >> l >> r;
+        
+        // Find LCA of u and v
+        int anc = lca(u, v);
+        
+        // Construct str(u, v)
+        string str_uv = paths[u].substr(0, paths[u].size() - paths[anc].size()) + paths[v].substr(paths[anc].size());
+        
+        // Find the range of suffixes matching str_uv
+        auto [low, high] = find_range(str_uv, suffix_array, lcp);
+        if(low == -1){
+            cout << 0 << "\n";
+            continue;
+        }
+        
+        // Count occurrences within the range [l, r]
+        int count = 0;
+        for(int i = low; i <= high; i++){
+            int idx = suffix_array[i];
+            int str_idx = upper_bound(offsets.begin(), offsets.end(), idx) - offsets.begin() - 1;
+            if(str_idx >= l && str_idx <= r){
+                count++;
+            }
+        }
+        cout << count << "\n";
+    }
+}

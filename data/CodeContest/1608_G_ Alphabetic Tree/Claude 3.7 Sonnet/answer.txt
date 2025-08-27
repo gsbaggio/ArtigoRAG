@@ -1,0 +1,212 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <queue>
+#include <unordered_map>
+using namespace std;
+
+const int MAXN = 100005;
+const int LOG = 18; // log2(10^5)
+
+vector<pair<int, char>> adj[MAXN];
+int depth[MAXN];
+int parent[MAXN][LOG]; // For LCA calculation
+
+// Calculate the LCA efficiently
+void dfs(int node, int par, int d) {
+    depth[node] = d;
+    parent[node][0] = par;
+    
+    for (int i = 1; i < LOG; i++) {
+        if (parent[node][i-1] != -1) {
+            parent[node][i] = parent[parent[node][i-1]][i-1];
+        } else {
+            parent[node][i] = -1;
+        }
+    }
+    
+    for (auto& [child, _] : adj[node]) {
+        if (child != par) {
+            dfs(child, node, d+1);
+        }
+    }
+}
+
+// Find lowest common ancestor
+int lca(int u, int v) {
+    if (depth[u] < depth[v]) {
+        swap(u, v);
+    }
+    
+    // Make u and v at the same depth
+    int diff = depth[u] - depth[v];
+    for (int i = 0; i < LOG; i++) {
+        if ((diff >> i) & 1) {
+            u = parent[u][i];
+        }
+    }
+    
+    if (u == v) {
+        return u;
+    }
+    
+    // Find the LCA
+    for (int i = LOG-1; i >= 0; i--) {
+        if (parent[u][i] != parent[v][i]) {
+            u = parent[u][i];
+            v = parent[v][i];
+        }
+    }
+    
+    return parent[u][0];
+}
+
+// Compute the path string from u to v
+string getPathString(int u, int v) {
+    string result = "";
+    int ancestor = lca(u, v);
+    
+    // Path from u to ancestor (reversed)
+    vector<char> firstPart;
+    int current = u;
+    while (current != ancestor) {
+        for (auto& [next, c] : adj[current]) {
+            if (depth[next] < depth[current]) {
+                firstPart.push_back(c);
+                current = next;
+                break;
+            }
+        }
+    }
+    
+    // Add characters from ancestor to u (in reverse order)
+    for (int i = firstPart.size() - 1; i >= 0; i--) {
+        result += firstPart[i];
+    }
+    
+    // Path from ancestor to v
+    current = ancestor;
+    vector<pair<int, char>> path;
+    
+    function<bool(int, int, vector<pair<int, char>>&)> findPath = [&](int node, int target, vector<pair<int, char>>& p) -> bool {
+        if (node == target) return true;
+        
+        for (auto& [next, c] : adj[node]) {
+            if (next != parent[node][0] || node == ancestor) {
+                p.push_back({next, c});
+                if (findPath(next, target, p)) return true;
+                p.pop_back();
+            }
+        }
+        return false;
+    };
+    
+    findPath(ancestor, v, path);
+    
+    // Add characters from ancestor to v
+    for (auto& [_, c] : path) {
+        result += c;
+    }
+    
+    return result;
+}
+
+// Count occurrences of pattern in text using KMP algorithm
+int countOccurrences(const string& text, const string& pattern) {
+    if (pattern.empty()) return 0;
+    if (pattern.length() > text.length()) return 0;
+    
+    // Compute KMP failure function
+    vector<int> lps(pattern.length());
+    int len = 0;
+    lps[0] = 0;
+    
+    for (int i = 1; i < pattern.length(); ) {
+        if (pattern[i] == pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len != 0) {
+                len = lps[len-1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+    
+    // Count occurrences using KMP
+    int count = 0;
+    int i = 0, j = 0;
+    while (i < text.length()) {
+        if (pattern[j] == text[i]) {
+            i++;
+            j++;
+        }
+        
+        if (j == pattern.length()) {
+            count++;
+            j = lps[j-1];
+        } else if (i < text.length() && pattern[j] != text[i]) {
+            if (j != 0) {
+                j = lps[j-1];
+            } else {
+                i++;
+            }
+        }
+    }
+    
+    return count;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n, m, q;
+    cin >> n >> m >> q;
+    
+    // Initialize parent array
+    for (int i = 1; i <= n; i++) {
+        for (int j = 0; j < LOG; j++) {
+            parent[i][j] = -1;
+        }
+    }
+    
+    // Read edges
+    for (int i = 0; i < n-1; i++) {
+        int u, v;
+        char c;
+        cin >> u >> v >> c;
+        adj[u].push_back({v, c});
+        adj[v].push_back({u, c});
+    }
+    
+    // Precompute LCA
+    dfs(1, -1, 0);
+    
+    // Read strings
+    vector<string> strings(m+1);
+    for (int i = 1; i <= m; i++) {
+        cin >> strings[i];
+    }
+    
+    // Process queries
+    for (int i = 0; i < q; i++) {
+        int u, v, l, r;
+        cin >> u >> v >> l >> r;
+        
+        string pathString = getPathString(u, v);
+        int result = 0;
+        
+        for (int j = l; j <= r; j++) {
+            result += countOccurrences(strings[j], pathString);
+        }
+        
+        cout << result << endl;
+    }
+    
+    return 0;
+}

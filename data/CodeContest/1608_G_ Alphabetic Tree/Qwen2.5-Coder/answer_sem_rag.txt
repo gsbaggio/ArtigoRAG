@@ -1,0 +1,175 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1e5 + 5;
+const int LOGN = 20;
+
+int n, m, q;
+vector<pair<int, char>> adj[MAXN];
+int depth[MAXN], parent[LOGN][MAXN];
+
+// DFS to compute depth and parent
+void dfs(int node, int par, int d) {
+    depth[node] = d;
+    parent[0][node] = par;
+    for (auto &p : adj[node]) {
+        int next = p.first;
+        char c = p.second;
+        if (next != par) {
+            dfs(next, node, d + 1);
+        }
+    }
+}
+
+// Binary lifting for LCA
+void preprocess() {
+    for (int k = 1; k < LOGN; ++k) {
+        for (int i = 1; i <= n; ++i) {
+            if (parent[k - 1][i] == -1) {
+                parent[k][i] = -1;
+            } else {
+                parent[k][i] = parent[k - 1][parent[k - 1][i]];
+            }
+        }
+    }
+}
+
+int lca(int u, int v) {
+    if (depth[u] < depth[v]) swap(u, v);
+    int diff = depth[u] - depth[v];
+    for (int k = 0; k < LOGN; ++k) {
+        if (diff & (1 << k)) {
+            u = parent[k][u];
+        }
+    }
+    if (u == v) return u;
+    for (int k = LOGN - 1; k >= 0; --k) {
+        if (parent[k][u] != parent[k][v]) {
+            u = parent[k][u];
+            v = parent[k][v];
+        }
+    }
+    return parent[0][u];
+}
+
+struct SuffixAutomaton {
+    struct State {
+        int len, link;
+        map<char, int> next;
+    };
+    vector<State> states;
+    int last;
+
+    SuffixAutomaton() {
+        states.push_back({0, -1});
+        last = 0;
+    }
+
+    void extend(char c) {
+        int cur = states.size();
+        states.push_back({states[last].len + 1, -1});
+        int p = last;
+        while (p != -1 && !states[p].next.count(c)) {
+            states[p].next[c] = cur;
+            p = states[p].link;
+        }
+        if (p == -1) {
+            states[cur].link = 0;
+        } else {
+            int q = states[p].next[c];
+            if (states[p].len + 1 == states[q].len) {
+                states[cur].link = q;
+            } else {
+                int clone = states.size();
+                states.push_back(states[q]);
+                states[clone].len = states[p].len + 1;
+                while (p != -1 && states[p].next[c] == q) {
+                    states[p].next[c] = clone;
+                    p = states[p].link;
+                }
+                states[q].link = states[cur].link = clone;
+            }
+        }
+        last = cur;
+    }
+
+    // Count occurrences of s in the range [l, r]
+    int count_occurrences(const string &s, int l, int r) {
+        int pos = 0;
+        int cnt = 0;
+        for (char c : s) {
+            if (!states[pos].next.count(c)) return 0;
+            pos = states[pos].next[c];
+        }
+        // Now pos is the state representing the substring s
+        // We need to count how many times this substring appears in the range [l, r]
+        // This can be done by maintaining a frequency array for each state
+        // Here we assume we have precomputed the frequency array
+        return freq[pos][r] - (l > 0 ? freq[pos][l - 1] : 0);
+    }
+};
+
+SuffixAutomaton sa;
+int freq[MAXN * 2][MAXN]; // Frequency array for each state
+
+// Function to add a string to the suffix automaton and update frequency array
+void add_string(const string &s, int idx) {
+    sa.last = 0;
+    for (char c : s) {
+        sa.extend(c);
+        freq[sa.last][idx]++;
+    }
+    for (int i = 1; i < sa.states.size(); ++i) {
+        freq[i][idx] += freq[sa.states[i].link][idx];
+    }
+}
+
+// Function to extract the path from u to v
+string extract_path(int u, int v) {
+    string path;
+    while (u != v) {
+        for (auto &p : adj[u]) {
+            if (p.first == parent[0][u]) {
+                path += p.second;
+                u = p.first;
+                break;
+            }
+        }
+    }
+    reverse(path.begin(), path.end());
+    return path;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    cin >> n >> m >> q;
+    for(int i=0;i<n-1;i++){
+        int u, v;
+        char c;
+        cin >> u >> v >> c;
+        adj[u].push_back({v, c});
+        adj[v].push_back({u, c});
+    }
+    
+    memset(parent, -1, sizeof(parent));
+    dfs(1, -1, 0);
+    preprocess();
+    
+    // Add all strings to the suffix automaton
+    for(int i=0;i<m;i++){
+        string s;
+        cin >> s;
+        add_string(s, i);
+    }
+    
+    // Process each query
+    for(int i=0;i<q;i++){
+        int u, v, l, r;
+        cin >> u >> v >> l >> r;
+        int anc = lca(u, v);
+        string path_uv = extract_path(u, anc) + extract_path(v, anc);
+        cout << sa.count_occurrences(path_uv, l-1, r) << "\n";
+    }
+}
