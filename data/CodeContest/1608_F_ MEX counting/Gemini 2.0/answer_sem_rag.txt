@@ -1,0 +1,89 @@
+def solve():
+    n, k = map(int, input().split())
+    b = list(map(int, input().split()))
+    
+    MOD = 998244353
+    
+    dp = {}  # Memoization dictionary: (index, current_mex) -> count
+    
+    def calculate_mex(arr):
+        seen = set(arr)
+        mex = 0
+        while mex in seen:
+            mex += 1
+        return mex
+    
+    def count_arrays(index, current_mex):
+        if index == n:
+            return 1
+        
+        if (index, current_mex) in dp:
+            return dp[(index, current_mex)]
+        
+        count = 0
+        for a_i in range(n + 1):
+            new_arr = [a_i]
+            
+            temp_arr = []
+            
+            # Construct the array [a_1, a_2, ..., a_i]
+            for i in range(index + 1):
+                if i == index:
+                    temp_arr.append(a_i)
+                else:
+                    temp_arr.append(-1) # Placeholder, will be replaced later
+            
+            
+            # Calculate MEX([a_1, a_2, ..., a_index])
+            
+            
+            if index > 0:
+                
+                valid = True
+                
+                def inner_count_arrays(inner_index, inner_current_mex, inner_temp_arr):
+                    nonlocal count, valid
+                    
+                    if inner_index == index:
+                        
+                        mex_val = calculate_mex(inner_temp_arr)
+                        
+                        if abs(mex_val - b[index]) <= k:
+                            
+                            count = (count + count_arrays(index + 1, calculate_mex(temp_arr))) % MOD
+                        else:
+                            valid = False
+                        
+                        return
+                    
+                    for val in range(n + 1):
+                        
+                        inner_temp_arr[inner_index] = val
+                        
+                        mex_val = calculate_mex(inner_temp_arr[:inner_index+1])
+                        
+                        if abs(mex_val - b[inner_index]) <= k:
+                            inner_count_arrays(inner_index + 1, mex_val, inner_temp_arr)
+                        else:
+                            continue
+                    
+                inner_count_arrays(0, 0, [-1] * (index))
+                
+                if valid:
+                    pass
+                else:
+                    continue
+            else:
+                mex_val = calculate_mex([a_i])
+                if abs(mex_val - b[0]) <= k:
+                    count = (count + count_arrays(index + 1, mex_val)) % MOD
+                else:
+                    continue
+        
+        dp[(index, current_mex)] = count
+        return count
+    
+    result = count_arrays(0, 0)
+    print(result)
+
+solve()

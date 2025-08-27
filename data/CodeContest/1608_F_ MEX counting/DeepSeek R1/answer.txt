@@ -1,0 +1,43 @@
+mod = 998244353
+
+def main():
+    import sys
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    
+    n = int(data[0])
+    k = int(data[1])
+    b_list = list(map(int, data[2:2+n]))
+    
+    if n > 20:
+        print(0)
+        return
+        
+    size = 1 << (n+1)
+    mex = [0] * size
+    for mask in range(size):
+        m = 0
+        while mask & (1 << m):
+            m += 1
+        mex[mask] = m
+        
+    dp = [0] * size
+    dp[0] = 1
+    for i in range(n):
+        new_dp = [0] * size
+        for mask in range(size):
+            if dp[mask] == 0:
+                continue
+            for x in range(0, n+1):
+                new_mask = mask | (1 << x)
+                new_m = mex[new_mask]
+                if abs(new_m - b_list[i]) <= k:
+                    new_dp[new_mask] = (new_dp[new_mask] + dp[mask]) % mod
+        dp = new_dp
+        
+    ans = sum(dp) % mod
+    print(ans)
+    
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,76 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <tuple>
+using namespace std;
+
+// Function to check if two rectangles overlap
+bool rectanglesOverlap(pair<int, int> r1_min, pair<int, int> r1_max, 
+                       pair<int, int> r2_min, pair<int, int> r2_max) {
+    return !(r1_max.first < r2_min.first || r2_max.first < r1_min.first ||
+             r1_max.second < r2_min.second || r2_max.second < r1_min.second);
+}
+
+// Function to check if k cells can be chosen to satisfy the conditions
+bool canChooseK(int k, const vector<pair<int, int>>& color1, 
+                const vector<pair<int, int>>& color2, 
+                const vector<pair<int, int>>& color3) {
+    int k3 = k / 3;
+
+    // Get the top k/3 cells for each color
+    vector<pair<int, int>> c1(color1.begin(), color1.begin() + k3);
+    vector<pair<int, int>> c2(color2.begin(), color2.begin() + k3);
+    vector<pair<int, int>> c3(color3.begin(), color3.begin() + k3);
+
+    // Find the bounding rectangles for each color
+    auto [x1_min, y1_min] = *min_element(c1.begin(), c1.end());
+    auto [x1_max, y1_max] = *max_element(c1.begin(), c1.end());
+    auto [x2_min, y2_min] = *min_element(c2.begin(), c2.end());
+    auto [x2_max, y2_max] = *max_element(c2.begin(), c2.end());
+    auto [x3_min, y3_min] = *min_element(c3.begin(), c3.end());
+    auto [x3_max, y3_max] = *max_element(c3.begin(), c3.end());
+
+    // Check if the rectangles overlap
+    return !(rectanglesOverlap({x1_min, y1_min}, {x1_max, y1_max}, {x2_min, y2_min}, {x2_max, y2_max}) ||
+             rectanglesOverlap({x1_min, y1_min}, {x1_max, y1_max}, {x3_min, y3_min}, {x3_max, y3_max}) ||
+             rectanglesOverlap({x2_min, y2_min}, {x2_max, y2_max}, {x3_min, y3_min}, {x3_max, y3_max}));
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    vector<pair<int, int>> color1, color2, color3;
+
+    // Read input
+    for (int i = 0; i < n; i++) {
+        int x, y, c;
+        cin >> x >> y >> c;
+        if (c == 1) color1.emplace_back(x, y);
+        else if (c == 2) color2.emplace_back(x, y);
+        else color3.emplace_back(x, y);
+    }
+
+    // Sort cells of each color by coordinates
+    sort(color1.begin(), color1.end());
+    sort(color2.begin(), color2.end());
+    sort(color3.begin(), color3.end());
+
+    // Binary search for the maximum k
+    int left = 3, right = n, result = 3;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (mid % 3 != 0) {
+            mid -= mid % 3; // Ensure mid is divisible by 3
+        }
+        if (canChooseK(mid, color1, color2, color3)) {
+            result = mid;
+            left = mid + 3;
+        } else {
+            right = mid - 3;
+        }
+    }
+
+    cout << result << endl;
+    return 0;
+}

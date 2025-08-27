@@ -1,0 +1,38 @@
+def solve(n, k, b):
+    MOD = 998244353
+    
+    # dp[i][j] = number of arrays of length i with MEX=j
+    dp = [[0] * (n + 2) for _ in range(n + 1)]
+    dp[0][0] = 1  # Empty array has MEX 0
+    
+    for i in range(n):
+        for curr_mex in range(n + 2):
+            if dp[i][curr_mex] == 0:
+                continue
+                
+            if abs(curr_mex - b[i]) > k:
+                continue
+                
+            # Option 1: Add a number that's already in our set (0 to curr_mex-1)
+            # This doesn't change the MEX
+            dp[i+1][curr_mex] = (dp[i+1][curr_mex] + dp[i][curr_mex] * curr_mex) % MOD
+            
+            # Option 2: Add the MEX itself, which increases the MEX by 1
+            if curr_mex <= n:
+                next_mex = curr_mex + 1
+                if abs(next_mex - b[i]) <= k:
+                    dp[i+1][next_mex] = (dp[i+1][next_mex] + dp[i][curr_mex]) % MOD
+            
+            # Option 3: Add a number greater than curr_mex (curr_mex+1 to n)
+            # This doesn't change the MEX
+            dp[i+1][curr_mex] = (dp[i+1][curr_mex] + dp[i][curr_mex] * max(0, n - curr_mex)) % MOD
+    
+    result = 0
+    for mex in range(n + 2):
+        result = (result + dp[n][mex]) % MOD
+    return result
+
+# Read input and solve
+n, k = map(int, input().split())
+b = list(map(int, input().split()))
+print(solve(n, k, b))

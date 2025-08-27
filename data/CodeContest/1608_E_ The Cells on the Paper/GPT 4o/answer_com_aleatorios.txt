@@ -1,0 +1,87 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Cell {
+    int x, y, color;
+};
+
+bool canFormRectangles(vector<Cell>& cells, int k) {
+    int n = cells.size();
+    int required = k / 3;
+
+    // Separate cells by color
+    vector<Cell> color1, color2, color3;
+    for (auto& cell : cells) {
+        if (cell.color == 1) color1.push_back(cell);
+        else if (cell.color == 2) color2.push_back(cell);
+        else color3.push_back(cell);
+    }
+
+    // Check if we can select `required` cells for each color
+    if (color1.size() < required || color2.size() < required || color3.size() < required) {
+        return false;
+    }
+
+    // Get the bounding rectangles for the first `required` cells of each color
+    auto getBoundingBox = [&](vector<Cell>& colorCells) {
+        int minX = INT_MAX, maxX = INT_MIN;
+        int minY = INT_MAX, maxY = INT_MIN;
+        for (int i = 0; i < required; i++) {
+            minX = min(minX, colorCells[i].x);
+            maxX = max(maxX, colorCells[i].x);
+            minY = min(minY, colorCells[i].y);
+            maxY = max(maxY, colorCells[i].y);
+        }
+        return make_tuple(minX, maxX, minY, maxY);
+    };
+
+    sort(color1.begin(), color1.end(), [](Cell a, Cell b) { return a.x < b.x || (a.x == b.x && a.y < b.y); });
+    sort(color2.begin(), color2.end(), [](Cell a, Cell b) { return a.x < b.x || (a.x == b.x && a.y < b.y); });
+    sort(color3.begin(), color3.end(), [](Cell a, Cell b) { return a.x < b.x || (a.x == b.x && a.y < b.y); });
+
+    auto [x1_min, x1_max, y1_min, y1_max] = getBoundingBox(color1);
+    auto [x2_min, x2_max, y2_min, y2_max] = getBoundingBox(color2);
+    auto [x3_min, x3_max, y3_min, y3_max] = getBoundingBox(color3);
+
+    // Check if the rectangles overlap
+    auto overlap = [](int x1_min, int x1_max, int y1_min, int y1_max,
+                      int x2_min, int x2_max, int y2_min, int y2_max) {
+        return !(x1_max < x2_min || x2_max < x1_min || y1_max < y2_min || y2_max < y1_min);
+    };
+
+    if (overlap(x1_min, x1_max, y1_min, y1_max, x2_min, x2_max, y2_min, y2_max)) return false;
+    if (overlap(x1_min, x1_max, y1_min, y1_max, x3_min, x3_max, y3_min, y3_max)) return false;
+    if (overlap(x2_min, x2_max, y2_min, y2_max, x3_min, x3_max, y3_min, y3_max)) return false;
+
+    return true;
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    vector<Cell> cells(n);
+    for (int i = 0; i < n; i++) {
+        cin >> cells[i].x >> cells[i].y >> cells[i].color;
+    }
+
+    // Binary search for the largest k
+    int left = 3, right = n, result = 3;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (mid % 3 != 0) {
+            mid -= mid % 3; // Ensure mid is divisible by 3
+        }
+        if (mid < 3) break;
+
+        if (canFormRectangles(cells, mid)) {
+            result = mid;
+            left = mid + 3;
+        } else {
+            right = mid - 3;
+        }
+    }
+
+    cout << result << endl;
+    return 0;
+}

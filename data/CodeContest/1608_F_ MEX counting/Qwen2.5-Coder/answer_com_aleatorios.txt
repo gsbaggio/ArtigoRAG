@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n, k;
+    cin >> n >> k;
+    vector<int> b(n);
+    for(int &x : b) cin >> x;
+    
+    // dp[mask][j] -> number of ways to form array with elements represented by mask and MEX = j
+    vector<vector<int>> dp((1<<(n+1)), vector<int>(n+1, 0));
+    dp[0][0] = 1;
+    
+    for(int i=0; i<n; i++){
+        vector<vector<int>> new_dp((1<<(n+1)), vector<int>(n+1, 0));
+        for(int mask=0; mask<(1<<(n+1)); mask++){
+            for(int j=0; j<=n; j++){
+                if(dp[mask][j] == 0) continue;
+                
+                // Try adding each possible value a_{i+1}
+                for(int val=0; val<=n; val++){
+                    int new_mask = mask | (1<<val);
+                    int new_j = (val == j) ? j+1 : j;
+                    
+                    // Check if the new MEX satisfies the condition
+                    if(abs(new_j - b[i]) <= k){
+                        new_dp[new_mask][new_j] = (new_dp[new_mask][new_j] + dp[mask][j]) % MOD;
+                    }
+                }
+            }
+        }
+        dp = move(new_dp);
+    }
+    
+    // Sum up all valid states
+    int ans = 0;
+    for(int mask=0; mask<(1<<(n+1)); mask++){
+        for(int j=0; j<=n; j++){
+            ans = (ans + dp[mask][j]) % MOD;
+        }
+    }
+    
+    cout << ans;
+}

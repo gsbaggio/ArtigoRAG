@@ -1,0 +1,36 @@
+def solve():
+    n, k = map(int, input().split())
+    b = list(map(int, input().split()))
+    MOD = 998244353
+
+    dp = {}  # dp[(index, mex)] = number of arrays
+
+    def calculate_mex(arr):
+        seen = set(arr)
+        mex = 0
+        while mex in seen:
+            mex += 1
+        return mex
+
+    def count_arrays(index, mex_val):
+        if index == n:
+            return 1
+
+        if (index, mex_val) in dp:
+            return dp[(index, mex_val)]
+
+        count = 0
+        for a_i in range(n + 1):
+            if abs(mex_val - b[index]) <= k:
+                new_arr = arr_so_far + [a_i]
+                new_mex = calculate_mex(new_arr)
+                count = (count + count_arrays(index + 1, new_mex)) % MOD
+
+        dp[(index, mex_val)] = count
+        return count
+
+    arr_so_far = []
+    result = count_arrays(0, 0)
+    print(result)
+
+solve()

@@ -1,0 +1,30 @@
+from collections import defaultdict
+
+def largest_cells(n, cells):
+    colors = defaultdict(list)
+    
+    for x, y, c in cells:
+        colors[c].append((x, y))
+    
+    for c in colors:
+        colors[c].sort()
+    
+    k = n // 3  # Initial value for k
+    
+    while k > 0:
+        for x in colors[1][:k]:
+            for y in colors[2][:k]:
+                for z in colors[3][:k]:
+                    if x[0] != y[0] and x[0] != z[0] and y[0] != z[0] and x[1] != y[1] and x[1] != z[1] and y[1] != z[1]:
+                        return 3 * k  # Return the maximum number of cells that can be left
+        
+        k -= 1
+    
+    return 0
+
+# Input
+n = int(input())
+cells = [list(map(int, input().split())) for _ in range(n)]
+
+# Output
+print(largest_cells(n, cells))

@@ -1,0 +1,111 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Cell {
+    long long x, y;
+};
+
+bool compareX(const Cell& a, const Cell& b) {
+    return a.x < b.x || (a.x == b.x && a.y < b.y);
+}
+
+bool compareY(const Cell& a, const Cell& b) {
+    return a.y < b.y || (a.y == b.y && a.x < b.x);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    cin >> n;
+    
+    vector<Cell> cells[4];
+    for (int i = 0; i < n; i++) {
+        long long x, y;
+        int c;
+        cin >> x >> y >> c;
+        cells[c].push_back({x, y});
+    }
+    
+    for (int c = 1; c <= 3; c++) {
+        sort(cells[c].begin(), cells[c].end(), compareX);
+    }
+    
+    // Determine bounding boxes
+    long long minX[4], maxX[4], minY[4], maxY[4];
+    for (int c = 1; c <= 3; c++) {
+        minX[c] = cells[c][0].x;
+        maxX[c] = cells[c].back().x;
+        minY[c] = cells[c][0].y;
+        maxY[c] = cells[c].back().y;
+    }
+    
+    // Adjust bounding boxes to avoid intersection
+    // Try to move the bounding boxes as much as possible without losing cells
+    
+    // Sort by Y to check vertical intersections
+    for (int c = 1; c <= 3; c++) {
+        sort(cells[c].begin(), cells[c].end(), compareY);
+    }
+    
+    // Check and adjust bounding boxes
+    // We will try to move the bounding boxes vertically and horizontally
+    
+    // Vertical adjustment
+    for (int c1 = 1; c1 <= 3; c1++) {
+        for (int c2 = c1 + 1; c2 <= 3; c2++) {
+            if (minY[c1] < maxY[c2] && minY[c2] < maxY[c1]) {
+                // They intersect vertically
+                // Move one up and one down
+                if (cells[c1].size() > 1 && cells[c2].size() > 1) {
+                    long long midY1 = cells[c1][cells[c1].size() / 2].y;
+                    long long midY2 = cells[c2][cells[c2].size() / 2].y;
+                    
+                    if (midY1 < midY2) {
+                        minY[c2] = max(minY[c2], midY1 + 1);
+                        maxY[c1] = min(maxY[c1], midY2 - 1);
+                    } else {
+                        minY[c1] = max(minY[c1], midY2 + 1);
+                        maxY[c2] = min(maxY[c2], midY1 - 1);
+                    }
+                }
+            }
+        }
+    }
+    
+    // Horizontal adjustment
+    for (int c1 = 1; c1 <= 3; c1++) {
+        for (int c2 = c1 + 1; c2 <= 3; c2++) {
+            if (minX[c1] < maxX[c2] && minX[c2] < maxX[c1]) {
+                // They intersect horizontally
+                // Move one left and one right
+                if (cells[c1].size() > 1 && cells[c2].size() > 1) {
+                    long long midX1 = cells[c1][cells[c1].size() / 2].x;
+                    long long midX2 = cells[c2][cells[c2].size() / 2].x;
+                    
+                    if (midX1 < midX2) {
+                        minX[c2] = max(minX[c2], midX1 + 1);
+                        maxX[c1] = min(maxY[c1], midX2 - 1);
+                    } else {
+                        minX[c1] = max(minX[c1], midX2 + 1);
+                        maxX[c2] = min(maxX[c2], midX1 - 1);
+                    }
+                }
+            }
+        }
+    }
+    
+    // Count valid cells
+    int k = 0;
+    for (int c = 1; c <= 3; c++) {
+        for (const auto& cell : cells[c]) {
+            if (cell.x >= minX[c] && cell.x <= maxX[c] && cell.y >= minY[c] && cell.y <= maxY[c]) {
+                k++;
+            }
+        }
+    }
+    
+    cout << k;
+    return 0;
+}

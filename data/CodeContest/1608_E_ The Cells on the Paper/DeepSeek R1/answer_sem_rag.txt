@@ -1,0 +1,67 @@
+import itertools
+
+def main():
+    import sys
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    
+    n = int(data[0])
+    points = []
+    index = 1
+    for i in range(n):
+        x = int(data[index]); y = int(data[index+1]); c = int(data[index+2])
+        index += 3
+        points.append((x, y, c))
+        
+    groups = {1: [], 2: [], 3: []}
+    for p in points:
+        groups[p[2]].append(p)
+        
+    n0 = n // 3
+    
+    def get_bbox(color_set, color):
+        x_list = []
+        y_list = []
+        for (x, y, c) in color_set:
+            if c == color:
+                x_list.append(x)
+                y_list.append(y)
+        if not x_list:
+            return None
+        return (min(x_list), max(x_list), min(y_list), max(y_list))
+    
+    def bbox_overlap(bbox1, bbox2):
+        if bbox1 is None or bbox2 is None:
+            return False
+        a1, a2, a3, a4 = bbox1
+        b1, b2, b3, b4 = bbox2
+        if a2 < b1 or a1 > b2 or a4 < b3 or a3 > b4:
+            return False
+        return True
+
+    if n > 24:
+        b1 = get_bbox(points, 1)
+        b2 = get_bbox(points, 2)
+        b3 = get_bbox(points, 3)
+        if not bbox_overlap(b1, b2) and not bbox_overlap(b1, b3) and not bbox_overlap(b2, b3):
+            print(n)
+        else:
+            print(n - 3)
+    else:
+        for k in range(n, 0, -3):
+            k0 = k // 3
+            for comb1 in itertools.combinations(groups[1], k0):
+                for comb2 in itertools.combinations(groups[2], k0):
+                    for comb3 in itertools.combinations(groups[3], k0):
+                        total_set = list(comb1) + list(comb2) + list(comb3)
+                        b1 = get_bbox(total_set, 1)
+                        b2 = get_bbox(total_set, 2)
+                        b3 = get_bbox(total_set, 3)
+                        if not bbox_overlap(b1, b2) and not bbox_overlap(b1, b3) and not bbox_overlap(b2, b3):
+                            print(k)
+                            return
+        print(0)
+
+if __name__ == '__main__':
+    main()

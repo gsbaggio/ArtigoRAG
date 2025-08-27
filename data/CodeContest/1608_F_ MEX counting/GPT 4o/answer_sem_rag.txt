@@ -1,0 +1,31 @@
+MOD = 998244353
+
+def solve_mex_arrays(n, k, b):
+    # Initialize DP table
+    dp = [[0] * (n + 2) for _ in range(n + 1)]
+    dp[0][0] = 1  # Base case: empty array has MEX = 0
+
+    for i in range(1, n + 1):
+        # Prefix sum for optimization
+        prefix_sum = [0] * (n + 2)
+        for m in range(n + 1):
+            prefix_sum[m + 1] = (prefix_sum[m] + dp[i - 1][m]) % MOD
+
+        # Valid MEX range for this step
+        min_mex = max(0, b[i - 1] - k)
+        max_mex = min(n, b[i - 1] + k)
+
+        for m in range(n + 1):
+            if min_mex <= m <= max_mex:
+                # Add all valid transitions to dp[i][m]
+                dp[i][m] = prefix_sum[m + 1] - prefix_sum[m]
+                dp[i][m] %= MOD
+
+    # Sum up all valid MEX values for the full array
+    return sum(dp[n]) % MOD
+
+# Input reading
+if __name__ == "__main__":
+    n, k = map(int, input().split())
+    b = list(map(int, input().split()))
+    print(solve_mex_arrays(n, k, b))

@@ -1,0 +1,115 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to perform BFS and find augmenting paths
+bool bfs(vector<vector<int>>& adj, vector<int>& dist, vector<int>& matchL, vector<int>& matchR) {
+    queue<int> q;
+    for (int u = 0; u < adj.size(); ++u) {
+        if (matchL[u] == -1) {
+            dist[u] = 0;
+            q.push(u);
+        } else {
+            dist[u] = -1;
+        }
+    }
+    dist[-1] = -1;
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        if (dist[u] >= dist[-1]) continue;
+        for (int v : adj[u]) {
+            if (dist[matchR[v]] == -1) {
+                dist[matchR[v]] = dist[u] + 1;
+                if (matchR[v] != -1) {
+                    q.push(matchR[v]);
+                }
+            }
+        }
+    }
+    return dist[-1] != -1;
+}
+
+// Function to perform DFS and find augmenting paths
+bool dfs(vector<vector<int>>& adj, int u, vector<int>& dist, vector<int>& matchL, vector<int>& matchR) {
+    if (u == -1) return true;
+    for (int v : adj[u]) {
+        if (dist[matchR[v]] == dist[u] + 1) {
+            if (dfs(adj, matchR[v], dist, matchL, matchR)) {
+                matchL[u] = v;
+                matchR[v] = u;
+                return true;
+            }
+        }
+    }
+    dist[u] = -1;
+    return false;
+}
+
+// Function to find the maximum matching in a bipartite graph
+int hopcroftKarp(vector<vector<int>>& adj) {
+    int n = adj.size();
+    vector<int> matchL(n, -1);
+    vector<int> matchR(adj[0].size(), -1);
+    vector<int> dist(n + 1);
+    int matching = 0;
+    while (bfs(adj, dist, matchL, matchR)) {
+        for (int u = 0; u < n; ++u) {
+            if (matchL[u] == -1 && dfs(adj, u, dist, matchL, matchR)) {
+                matching++;
+            }
+        }
+    }
+    return matching;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    cin >> n;
+    vector<vector<pair<int, int>>> cellsByColor(3);
+    
+    // Read input and separate cells by color
+    for (int i = 0; i < n; ++i) {
+        int x, y, c;
+        cin >> x >> y >> c;
+        cellsByColor[c - 1].emplace_back(x, y);
+    }
+    
+    int totalMatching = 0;
+    
+    // Process each color separately
+    for (int color = 0; color < 3; ++color) {
+        auto& cells = cellsByColor[color];
+        if (cells.empty()) continue;
+        
+        // Map row and column coordinates to smaller indices
+        map<int, int> rowMap, colMap;
+        for (auto& [x, y] : cells) {
+            rowMap[x];
+            colMap[y];
+        }
+        
+        int rowIdx = 0, colIdx = 0;
+        for (auto& [x, _] : rowMap) {
+            rowMap[x] = rowIdx++;
+        }
+        for (auto& [_, y] : colMap) {
+            colMap[y] = colIdx++;
+        }
+        
+        // Create bipartite graph
+        vector<vector<int>> adj(rowIdx);
+        for (auto& [x, y] : cells) {
+            adj[rowMap[x]].push_back(colMap[y]);
+        }
+        
+        // Find maximum matching for this color
+        totalMatching += hopcroftKarp(adj);
+    }
+    
+    // Output the result
+    cout << totalMatching;
+    return 0;
+}

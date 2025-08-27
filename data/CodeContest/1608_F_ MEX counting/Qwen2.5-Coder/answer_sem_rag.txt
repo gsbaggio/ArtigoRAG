@@ -1,0 +1,58 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+    int n, k;
+    cin >> n >> k;
+    
+    vector<int> b(n);
+    for(int &x : b) cin >> x;
+    
+    // dp[i][j] = number of ways to form a valid array of length i with MEX j
+    vector<vector<int>> dp(n + 1, vector<int>(n + 1, 0));
+    dp[0][0] = 1; // Base case: empty array has MEX 0
+    
+    for(int i = 1; i <= n; ++i) {
+        for(int j = 0; j <= n; ++j) {
+            if(dp[i - 1][j] == 0) continue; // No ways to reach MEX j with i-1 elements
+            
+            // Case 1: a_i < j
+            for(int val = 0; val < j; ++val) {
+                dp[i][j] = (dp[i][j] + dp[i - 1][j]) % MOD;
+            }
+            
+            // Case 2: a_i = j
+            if(j < n) {
+                dp[i][j + 1] = (dp[i][j + 1] + dp[i - 1][j]) % MOD;
+            }
+            
+            // Case 3: a_i > j
+            for(int val = j + 1; val <= n; ++val) {
+                dp[i][j] = (dp[i][j] + dp[i - 1][j]) % MOD;
+            }
+        }
+        
+        // Remove invalid states where MEX is not in the range [b_i - k, b_i + k]
+        int lower_bound = max(0, b[i - 1] - k);
+        int upper_bound = min(n, b[i - 1] + k);
+        
+        for(int j = 0; j < lower_bound; ++j) {
+            dp[i][j] = 0;
+        }
+        for(int j = upper_bound + 1; j <= n; ++j) {
+            dp[i][j] = 0;
+        }
+    }
+    
+    // Sum up all valid ways to form an array of length n
+    int result = 0;
+    for(int j = 0; j <= n; ++j) {
+        result = (result + dp[n][j]) % MOD;
+    }
+    
+    cout << result;
+}

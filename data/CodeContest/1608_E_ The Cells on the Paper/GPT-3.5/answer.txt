@@ -1,0 +1,35 @@
+from collections import defaultdict
+
+def find_largest_cells(n, cells):
+    colors = defaultdict(list)
+    for x, y, c in cells:
+        colors[c].append((x, y))
+
+    # Sort the cells based on x and y coordinates
+    for color in colors:
+        colors[color].sort()
+
+    max_cells = 0
+    for c1 in range(len(colors[1]) + 1):
+        for c2 in range(len(colors[2]) + 1):
+            for c3 in range(len(colors[3]) + 1):
+                if c1 + c2 + c3 > n//3:
+                    continue
+
+                # Check if the corner cells of the rectangles form valid rectangles
+                x1, y1 = colors[1][c1-1] if c1 > 0 else (float('-inf'), float('-inf'))
+                x2, y2 = colors[2][c2-1] if c2 > 0 else (float('-inf'), float('-inf'))
+                x3, y3 = colors[3][c3-1] if c3 > 0 else (float('-inf'), float('-inf'))
+
+                area = (x2 - x1) * (y3 - y1)
+                max_cells = max(max_cells, area)
+
+    return max_cells
+
+# Input processing
+n = int(input())
+cells = [list(map(int, input().split())) for _ in range(n)]
+
+# Find the largest number of cells that can be left
+result = find_largest_cells(n, cells)
+print(result)

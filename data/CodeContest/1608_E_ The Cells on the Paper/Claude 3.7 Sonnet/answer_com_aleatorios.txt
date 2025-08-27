@@ -1,0 +1,174 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+typedef long long ll;
+
+// Structure to represent a rectangle
+struct Rectangle {
+    ll minX, maxX, minY, maxY;
+    
+    Rectangle() : minX(LLONG_MAX), maxX(LLONG_MIN), minY(LLONG_MAX), maxY(LLONG_MIN) {}
+    
+    void include(ll x, ll y) {
+        minX = min(minX, x);
+        maxX = max(maxX, x);
+        minY = min(minY, y);
+        maxY = max(maxY, y);
+    }
+    
+    bool intersects(const Rectangle& other) const {
+        return !(minX > other.maxX || maxX < other.minX || 
+                 minY > other.maxY || maxY < other.minY);
+    }
+    
+    bool contains(ll x, ll y) const {
+        return x >= minX && x <= maxX && y >= minY && y <= maxY;
+    }
+};
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<vector<pair<ll, ll>>> cells(3);
+    
+    for (int i = 0; i < n; i++) {
+        ll x, y, c;
+        cin >> x >> y >> c;
+        cells[c-1].push_back({x, y});
+    }
+    
+    // Try all possible combinations of rectangles
+    int best = 0;
+    
+    for (int i = 0; i < (1 << cells[0].size()); i++) {
+        Rectangle r1;
+        vector<int> selected1;
+        
+        for (int j = 0; j < cells[0].size(); j++) {
+            if (i & (1 << j)) {
+                r1.include(cells[0][j].first, cells[0][j].second);
+                selected1.push_back(j);
+            }
+        }
+        
+        for (int j = 0; j < (1 << cells[1].size()); j++) {
+            Rectangle r2;
+            vector<int> selected2;
+            
+            for (int k = 0; k < cells[1].size(); k++) {
+                if (j & (1 << k)) {
+                    r2.include(cells[1][k].first, cells[1][k].second);
+                    selected2.push_back(k);
+                }
+            }
+            
+            // Skip if rectangles intersect
+            if (!selected1.empty() && !selected2.empty() && r1.intersects(r2)) {
+                continue;
+            }
+            
+            for (int k = 0; k < (1 << cells[2].size()); k++) {
+                Rectangle r3;
+                vector<int> selected3;
+                
+                for (int l = 0; l < cells[2].size(); l++) {
+                    if (k & (1 << l)) {
+                        r3.include(cells[2][l].first, cells[2][l].second);
+                        selected3.push_back(l);
+                    }
+                }
+                
+                // Skip if rectangles intersect
+                if ((!selected1.empty() && !selected3.empty() && r1.intersects(r3)) ||
+                    (!selected2.empty() && !selected3.empty() && r2.intersects(r3))) {
+                    continue;
+                }
+                
+                // Check if the rectangles only contain cells of their respective colors
+                bool valid = true;
+                
+                // Check rectangle 1
+                if (!selected1.empty()) {
+                    for (int idx : selected1) {
+                        if (!r1.contains(cells[0][idx].first, cells[0][idx].second)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    
+                    for (const auto& p : cells[1]) {
+                        if (r1.contains(p.first, p.second)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    
+                    for (const auto& p : cells[2]) {
+                        if (r1.contains(p.first, p.second)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                }
+                
+                // Check rectangle 2
+                if (valid && !selected2.empty()) {
+                    for (int idx : selected2) {
+                        if (!r2.contains(cells[1][idx].first, cells[1][idx].second)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    
+                    for (const auto& p : cells[0]) {
+                        if (r2.contains(p.first, p.second)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    
+                    for (const auto& p : cells[2]) {
+                        if (r2.contains(p.first, p.second)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                }
+                
+                // Check rectangle 3
+                if (valid && !selected3.empty()) {
+                    for (int idx : selected3) {
+                        if (!r3.contains(cells[2][idx].first, cells[2][idx].second)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    
+                    for (const auto& p : cells[0]) {
+                        if (r3.contains(p.first, p.second)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    
+                    for (const auto& p : cells[1]) {
+                        if (r3.contains(p.first, p.second)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                }
+                
+                if (valid) {
+                    best = max(best, (int)(selected1.size() + selected2.size() + selected3.size()));
+                }
+            }
+        }
+    }
+    
+    cout << best << endl;
+    return 0;
+}

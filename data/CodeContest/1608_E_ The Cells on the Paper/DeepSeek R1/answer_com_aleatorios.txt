@@ -1,0 +1,382 @@
+import itertools
+import collections
+import sys
+
+class SegmentTree:
+    def __init__(self, n):
+        self.n = n
+        self.size = 1
+        while self.size < n:
+            self.size *= 2
+        self.data = [0] * (2 * self.size)
+        self.lazy = [0] * (2 * self.size)
+        
+    def build(self, arr):
+        for i in range(self.n):
+            self.data[self.size + i] = arr[i]
+        for i in range(self.n, self.size):
+            self.data[self.size + i] = -10**18
+        for i in range(self.size-1, 0, -1):
+            self.data[i] = max(self.data[2*i], self.data[2*i+1])
+            
+    def push(self, idx):
+        if self.lazy[idx] != 0:
+            self.data[2*idx] += self.lazy[idx]
+            self.data[2*idx+1] += self.lazy[idx]
+            self.lazy[2*idx] += self.lazy[idx]
+            self.lazy[2*idx+1] += self.lazy[idx]
+            self.lazy[idx] = 0
+            
+    def update_range(self, l, r, val):
+        self._update(l, r, val, 1, 0, self.size-1)
+        
+    def _update(self, l, r, val, idx, segL, segR):
+        if r < segL or l > segR:
+            return
+        if l <= segL and segR <= r:
+            self.data[idx] += val
+            self.lazy[idx] += val
+            return
+        self.push(idx)
+        mid = (segL + segR) // 2
+        self._update(l, r, val, 2*idx, segL, mid)
+        self._update(l, r, val, 2*idx+1, mid+1, segR)
+        self.data[idx] = max(self.data[2*idx], self.data[2*idx+1])
+        
+    def query_all(self):
+        return self.data[1]
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    
+    n = int(data[0])
+    points = []
+    points_by_color = [[] for _ in range(4)]
+    index = 1
+    for i in range(n):
+        x = int(data[index]); y = int(data[index+1]); c = int(data[index+2])
+        index += 3
+        points.append((x, y, c))
+        points_by_color[c].append((x, y))
+    
+    color_xs = []
+    color_ys = []
+    for i in range(1,4):
+        xs = sorted([p[0] for p in points_by_color[i]])
+        ys = sorted([p[1] for p in points_by_color[i]])
+        color_xs.append(xs)
+        color_ys.append(ys)
+        
+    ans = 0
+    
+    def compute_type1(left, middle, right):
+        left_pts = points_by_color[left]
+        middle_pts = points_by_color[middle]
+        right_pts = points_by_color[right]
+        total_right = len(right_pts)
+        all_x_set = set()
+        for p in left_pts:
+            all_x_set.add(p[0])
+        for p in middle_pts:
+            all_x_set.add(p[0])
+        for p in right_pts:
+            all_x_set.add(p[0])
+        all_x = sorted(all_x_set)
+        
+        left_xs = color_xs[left-1]
+        middle_xs = color_xs[middle-1]
+        right_xs = color_xs[right-1]
+        
+        left_cumulative = []
+        j = 0
+        for x in all_x:
+            while j < len(left_xs) and left_xs[j] <= x:
+                j += 1
+            left_cumulative.append(j)
+            
+        middle_cumulative = []
+        j = 0
+        for x in all_x:
+            while j < len(middle_xs) and middle_xs[j] <= x:
+                j += 1
+            middle_cumulative.append(j)
+            
+        right_cumulative = []
+        j = 0
+        for x in all_x:
+            while j < len(right_xs) and right_xs[j] <= x:
+                j += 1
+            right_cumulative.append(j)
+            
+        value_j = [middle_cumulative[i] - right_cumulative[i] for i in range(len(all_x))]
+        M = [0] * len(all_x)
+        M[-1] = value_j[-1]
+        for i in range(len(all_x)-2, -1, -1):
+            M[i] = max(value_j[i], M[i+1])
+            
+        best_val = 0
+        for i in range(len(all_x)):
+            term = left_cumulative[i] - middle_cumulative[i] + M[i] + total_right
+            if term > best_val:
+                best_val = term
+                
+        return best_val
+        
+    def compute_type2(bottom, middle, top):
+        bottom_pts = points_by_color[bottom]
+        middle_pts = points_by_color[middle]
+        top_pts = points_by_color[top]
+        total_top = len(top_pts)
+        all_y_set = set()
+        for p in bottom_pts:
+            all_y_set.add(p[1])
+        for p in middle_pts:
+            all_y_set.add(p[1])
+        for p in top_pts:
+            all_y_set.add(p[1])
+        all_y = sorted(all_y_set)
+        
+        bottom_ys = color_ys[bottom-1]
+        middle_ys = color_ys[middle-1]
+        top_ys = color_ys[top-1]
+        
+        bottom_cumulative = []
+        j = 0
+        for y in all_y:
+            while j < len(bottom_ys) and bottom_ys[j] <= y:
+                j += 1
+            bottom_cumulative.append(j)
+            
+        middle_cumulative = []
+        j = 0
+        for y in all_y:
+            while j < len(middle_ys) and middle_ys[j] <= y:
+                j += 1
+            middle_cumulative.append(j)
+            
+        top_cumulative = []
+        j = 0
+        for y in all_y:
+            while j < len(top_ys) and top_ys[j] <= y:
+                j += 1
+            top_cumulative.append(j)
+            
+        value_j = [middle_cumulative[i] - top_cumulative[i] for i in range(len(all_y))]
+        M = [0] * len(all_y)
+        M[-1] = value_j[-1]
+        for i in range(len(all_y)-2, -1, -1):
+            M[i] = max(value_j[i], M[i+1])
+            
+        best_val = 0
+        for i in range(len(all_y)):
+            term = bottom_cumulative[i] - middle_cumulative[i] + M[i] + total_top
+            if term > best_val:
+                best_val = term
+                
+        return best_val
+        
+    def compute_type3(left, top, bottom):
+        left_pts = points_by_color[left]
+        top_pts = points_by_color[top]
+        bottom_pts = points_by_color[bottom]
+        total_top = len(top_pts)
+        
+        all_x_set = set()
+        for p in left_pts:
+            all_x_set.add(p[0])
+        for p in top_pts:
+            all_x_set.add(p[0])
+        for p in bottom_pts:
+            all_x_set.add(p[0])
+        all_x = sorted(all_x_set)
+        
+        left_xs = color_xs[left-1]
+        left_cumulative = []
+        j = 0
+        for x in all_x:
+            while j < len(left_xs) and left_xs[j] <= x:
+                j += 1
+            left_cumulative.append(j)
+            
+        AB_pts = []
+        for p in top_pts:
+            AB_pts.append((p[0], p[1], 'top'))
+        for p in bottom_pts:
+            AB_pts.append((p[0], p[1], 'bottom'))
+        AB_pts.sort(key=lambda x: x[0])
+        
+        Y_set = set()
+        for p in AB_pts:
+            Y_set.add(p[1])
+        Y = sorted(Y_set)
+        nY = len(Y)
+        y_index_map = {}
+        for idx, y in enumerate(Y):
+            y_index_map[y] = idx
+            
+        top_ys = color_ys[top-1]
+        bottom_ys = color_ys[bottom-1]
+        
+        count_top = [0] * nY
+        j = 0
+        for i, y in enumerate(Y):
+            while j < len(top_ys) and top_ys[j] <= y:
+                j += 1
+            count_top[i] = j
+            
+        count_bottom = [0] * nY
+        j = 0
+        for i, y in enumerate(Y):
+            while j < len(bottom_ys) and bottom_ys[j] <= y:
+                j += 1
+            count_bottom[i] = j
+            
+        initial_g = [count_bottom[i] - count_top[i] for i in range(nY)]
+        
+        seg_tree = SegmentTree(nY)
+        seg_tree.build(initial_g)
+        
+        groups = collections.defaultdict(list)
+        for (x, y, typ) in AB_pts:
+            groups[x].append((y, typ))
+            
+        total_top_in_S = total_top
+        best_val = total_top + seg_tree.query_all()
+        
+        for i, x in enumerate(all_x):
+            if x in groups:
+                for (y, typ) in groups[x]:
+                    idx = y_index_map[y]
+                    if typ == 'top':
+                        total_top_in_S -= 1
+                        seg_tree.update_range(idx, nY-1, 1)
+                    else:
+                        seg_tree.update_range(idx, nY-1, -1)
+            count_left = left_cumulative[i]
+            current_max_g = seg_tree.query_all()
+            value_right = total_top_in_S + current_max_g
+            total_val = count_left + value_right
+            if total_val > best_val:
+                best_val = total_val
+                
+        return best_val
+        
+    def compute_type4(top, left, right):
+        top_pts = points_by_color[top]
+        left_pts = points_by_color[left]
+        right_pts = points_by_color[right]
+        total_top = len(top_pts)
+        
+        all_y_set = set()
+        for p in top_pts:
+            all_y_set.add(p[1])
+        for p in left_pts:
+            all_y_set.add(p[1])
+        for p in right_pts:
+            all_y_set.add(p[1])
+        all_y = sorted(all_y_set)
+        
+        top_ys = color_ys[top-1]
+        top_cumulative = []
+        j = 0
+        for y in all_y:
+            while j < len(top_ys) and top_ys[j] <= y:
+                j += 1
+            top_cumulative.append(j)
+            
+        AB_pts = []
+        for p in left_pts:
+            AB_pts.append((p[0], p[1], 'left'))
+        for p in right_pts:
+            AB_pts.append((p[0], p[1], 'right'))
+        AB_pts.sort(key=lambda x: x[1])
+        
+        X_set = set()
+        for p in AB_pts:
+            X_set.add(p[0])
+        X = sorted(X_set)
+        nX = len(X)
+        x_index_map = {}
+        for idx, x in enumerate(X):
+            x_index_map[x] = idx
+            
+        left_xs = color_xs[left-1]
+        right_xs = color_xs[right-1]
+        
+        count_left = [0] * nX
+        j = 0
+        for i, x in enumerate(X):
+            while j < len(left_xs) and left_xs[j] <= x:
+                j += 1
+            count_left[i] = j
+            
+        count_right = [0] * nX
+        j = 0
+        for i, x in enumerate(X):
+            while j < len(right_xs) and right_xs[j] <= x:
+                j += 1
+            count_right[i] = j
+            
+        initial_g = [count_left[i] - count_right[i] for i in range(nX)]
+        
+        seg_tree = SegmentTree(nX)
+        seg_tree.build(initial_g)
+        
+        groups = collections.defaultdict(list)
+        for (x, y, typ) in AB_pts:
+            groups[y].append((x, typ))
+            
+        total_right_in_S = len(right_pts)
+        best_val = total_right_in_S + seg_tree.query_all()
+        
+        for i, y in enumerate(all_y):
+            if y in groups:
+                for (x, typ) in groups[y]:
+                    idx = x_index_map[x]
+                    if typ == 'left':
+                        seg_tree.update_range(idx, nX-1, -1)
+                    else:
+                        total_right_in_S -= 1
+                        seg_tree.update_range(idx, nX-1, 1)
+            value_top = total_top - top_cumulative[i]
+            value_bottom = total_right_in_S + seg_tree.query_all()
+            total_val = value_top + value_bottom
+            if total_val > best_val:
+                best_val = total_val
+                
+        return best_val
+        
+    for perm in itertools.permutations([1,2,3]):
+        val = compute_type1(perm[0], perm[1], perm[2])
+        if val > ans:
+            ans = val
+            
+    for perm in itertools.permutations([1,2,3]):
+        val = compute_type2(perm[0], perm[1], perm[2])
+        if val > ans:
+            ans = val
+            
+    for left in [1,2,3]:
+        for top in [1,2,3]:
+            if left == top:
+                continue
+            bottom = 6 - left - top
+            val = compute_type3(left, top, bottom)
+            if val > ans:
+                ans = val
+                
+    for top in [1,2,3]:
+        for left in [1,2,3]:
+            if top == left:
+                continue
+            right = 6 - top - left
+            val = compute_type4(top, left, right)
+            if val > ans:
+                ans = val
+                
+    print(ans)
+    
+if __name__ == '__main__':
+    main()

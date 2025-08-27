@@ -1,0 +1,127 @@
+import itertools
+
+def main():
+    import sys
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    
+    n = int(data[0])
+    points = []
+    index = 1
+    for i in range(n):
+        x = int(data[index]); y = int(data[index+1]); c = int(data[index+2])
+        index += 3
+        points.append((x, y, c))
+        
+    def solve_coord(coord):
+        v_list = []
+        for p in points:
+            if coord == 'x':
+                v_list.append(p[0])
+            else:
+                v_list.append(p[1])
+        v_list = sorted(set(v_list))
+        if not v_list:
+            return 0
+        values = [v_list[0] - 1] + v_list + [v_list[-1] + 1]
+        n_val = len(values)
+        mapping = {}
+        for idx, val in enumerate(values):
+            mapping[val] = idx
+            
+        freq1 = [0] * n_val
+        freq2 = [0] * n_val
+        freq3 = [0] * n_val
+        
+        for p in points:
+            if coord == 'x':
+                v = p[0]
+            else:
+                v = p[1]
+            idx = mapping[v]
+            c = p[2]
+            if c == 1:
+                freq1[idx] += 1
+            elif c == 2:
+                freq2[idx] += 1
+            else:
+                freq3[idx] += 1
+                
+        def cumulative(freq):
+            n = len(freq)
+            cum = [0] * n
+            cum[0] = freq[0]
+            for i in range(1, n):
+                cum[i] = cum[i-1] + freq[i]
+            return cum
+            
+        cum1 = cumulative(freq1)
+        cum2 = cumulative(freq2)
+        cum3 = cumulative(freq3)
+        total1 = cum1[-1]
+        total2 = cum2[-1]
+        total3 = cum3[-1]
+        
+        best = 0
+        for perm in itertools.permutations([1,2,3]):
+            c1, c2, c3 = perm
+            if c1 == 1:
+                cum_c1 = cum1
+                total_c1 = total1
+            elif c1 == 2:
+                cum_c1 = cum2
+                total_c1 = total2
+            else:
+                cum_c1 = cum3
+                total_c1 = total3
+                
+            if c2 == 1:
+                cum_c2 = cum1
+                freq_c2 = freq1
+            elif c2 == 2:
+                cum_c2 = cum2
+                freq_c2 = freq2
+            else:
+                cum_c2 = cum3
+                freq_c2 = freq3
+                
+            if c3 == 1:
+                cum_c3 = cum1
+                freq_c3 = freq1
+            elif c3 == 2:
+                cum_c3 = cum2
+                freq_c3 = freq2
+            else:
+                cum_c3 = cum3
+                freq_c3 = freq3
+                
+            G = [0] * n_val
+            for j in range(n_val):
+                if j == 0:
+                    count_less = 0
+                else:
+                    count_less = cum_c2[j-1]
+                count_ge = total3 - cum_c3[j] + freq_c3[j]
+                G[j] = count_less + count_ge
+                
+            M = [0] * n_val
+            M[n_val-1] = G[n_val-1]
+            for i in range(n_val-2, -1, -1):
+                M[i] = max(G[i], M[i+1])
+                
+            for i in range(n_val-1):
+                count_c1_L = cum_c1[i]
+                count_c2_L = cum_c2[i]
+                candidate = count_c1_L + (M[i+1] - count_c2_L)
+                if candidate > best:
+                    best = candidate
+                    
+        return best
+        
+    best_x = solve_coord('x')
+    best_y = solve_coord('y')
+    print(max(best_x, best_y))
+    
+if __name__ == '__main__':
+    main()

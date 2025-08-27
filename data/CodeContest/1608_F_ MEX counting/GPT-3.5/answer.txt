@@ -1,0 +1,23 @@
+MOD = 998244353
+
+def count_arrays(n, k, b):
+    dp = [[0] * (2*k + 1) for _ in range(n+1)]
+    dp[0][k] = 1
+
+    for i in range(1, n+1):
+        for j in range(2*k + 1):
+            for x in range(max(0, j-k), min(2*k, j+k) + 1):
+                dp[i][j] = (dp[i][j] + dp[i-1][x]) % MOD
+
+    ans = 0
+    for j in range(max(0, k-b[0]), min(2*k, k+b[0]) + 1):
+        ans = (ans + dp[n][j]) % MOD
+
+    return ans
+
+# Input parsing
+n, k = map(int, input().split())
+b = list(map(int, input().split()))
+
+result = count_arrays(n, k, b)
+print(result)
