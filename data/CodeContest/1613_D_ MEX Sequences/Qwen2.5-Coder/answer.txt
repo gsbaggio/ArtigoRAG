@@ -1,0 +1,64 @@
+MOD = 998244353
+
+def main():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    index = 0
+    t = int(data[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        # Initialize dp array
+        dp = [0] * (n + 1)
+        dp[0] = 1  # One way to have MEX 0 (empty subsequence)
+        
+        # Count occurrences of each element
+        count = {}
+        for num in a:
+            if num in count:
+                count[num] += 1
+            else:
+                count[num] = 1
+        
+        # Current MEX
+        mex = 0
+        
+        # Process each element in the array
+        for num in a:
+            # Update MEX if necessary
+            while mex in count and count[mex] == 0:
+                mex += 1
+            
+            # Update dp table
+            if num == mex:
+                dp[mex] = (dp[mex] + dp[mex - 1]) % MOD
+                mex += 1
+            elif num == mex - 1:
+                dp[mex - 1] = (dp[mex - 1] + dp[mex - 2]) % MOD
+            elif num < mex:
+                dp[num] = (dp[num] + dp[num - 1]) % MOD
+            
+            # Decrease count of the current number
+            count[num] -= 1
+        
+        # Calculate the total number of MEX-correct subsequences
+        total_subsequences = sum(dp) % MOD
+        total_subsequences = (total_subsequences - 1) % MOD  # Exclude the empty subsequence
+        
+        results.append(total_subsequences)
+    
+    # Print all results
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

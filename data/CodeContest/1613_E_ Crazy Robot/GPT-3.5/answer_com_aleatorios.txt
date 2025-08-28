@@ -1,0 +1,33 @@
+def can_reach_lab(t, testcases):
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    for _ in range(t):
+        n, m = testcases[_][0], testcases[_][1]
+        grid = testcases[_][2:]
+
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == '.':
+                    reachable = False
+                    for dx, dy in directions:
+                        ni, nj = i + dx, j + dy
+                        if 0 <= ni < n and 0 <= nj < m and grid[ni][nj] == 'L':
+                            reachable = True
+                            break
+                    if reachable:
+                        grid[i] = grid[i][:j] + '+' + grid[i][j+1:]
+
+        for row in grid:
+            print(row)
+
+# Input parsing
+t = int(input())
+testcases = []
+for _ in range(t):
+    n, m = map(int, input().split())
+    testcase = []
+    for _ in range(n):
+        testcase.append(input())
+    testcases.append([n, m] + testcase)
+
+# Calling the function
+can_reach_lab(t, testcases)

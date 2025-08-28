@@ -1,0 +1,16 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    count = n // 2
+    pairs = []
+    
+    for i in range(count):
+        pairs.append((a[2*i+1], a[0]))
+
+    for x, y in pairs:
+        print(x, y)
+
+t = int(input())
+for _ in range(t):
+    solve()

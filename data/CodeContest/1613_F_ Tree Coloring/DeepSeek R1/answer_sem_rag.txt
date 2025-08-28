@@ -1,0 +1,136 @@
+import collections
+mod = 998244353
+
+def main():
+    import sys
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    graph = [[] for _ in range(n+1)]
+    index = 1
+    for i in range(n-1):
+        u = int(data[index]); v = int(data[index+1]); index += 2
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    # Precompute factorials
+    fact = [1] * (n+1)
+    for i in range(1, n+1):
+        fact[i] = fact[i-1] * i % mod
+        
+    # BFS to compute children_count
+    children_count = [0] * (n+1)
+    visited = [False] * (n+1)
+    q = collections.deque()
+    q.append(1)
+    visited[1] = True
+    while q:
+        u = q.popleft()
+        for v in graph[u]:
+            if not visited[v]:
+                visited[v] = True
+                children_count[u] += 1
+                q.append(v)
+                
+    # List L of children_count that are >0
+    L = []
+    for i in range(1, n+1):
+        if children_count[i] > 0:
+            L.append(children_count[i])
+    M = len(L)
+    
+    if M == 0:
+        # Then the product is [1]
+        P = [1]
+    else:
+        # Precompute roots and inv_roots for NTT
+        roots = [0] * 20
+        inv_roots = [0] * 20
+        for i in range(1, 20):
+            size = 1 << i
+            roots[i] = pow(3, (mod-1)//size, mod)
+            inv_roots[i] = pow(roots[i], mod-2, mod)
+            
+        # Define ntt function
+        def ntt(a, inv=False):
+            n = len(a)
+            j = 0
+            for i in range(1, n):
+                bit = n >> 1
+                while j >= bit:
+                    j -= bit
+                    bit >>= 1
+                j += bit
+                if i < j:
+                    a[i], a[j] = a[j], a[i]
+            step = 2
+            while step <= n:
+                idx = step.bit_length() - 1
+                wn = inv_roots[idx] if inv else roots[idx]
+                for i in range(0, n, step):
+                    w = 1
+                    for j in range(i, i+step//2):
+                        u = a[j]
+                        v = w * a[j+step//2] % mod
+                        a[j] = (u + v) % mod
+                        a[j+step//2] = (u - v) % mod
+                        w = w * wn % mod
+                step <<= 1
+            if inv:
+                inv_n = pow(n, mod-2, mod)
+                for i in range(n):
+                    a[i] = a[i] * inv_n % mod
+                    
+        # Define convolution function with threshold
+        def conv(a, b):
+            n1 = len(a)
+            n2 = len(b)
+            if n1 == 0 or n2 == 0:
+                return []
+            if n1 <= 50 or n2 <= 50:
+                c = [0] * (n1 + n2 - 1)
+                for i in range(n1):
+                    for j in range(n2):
+                        c[i+j] = (c[i+j] + a[i] * b[j]) % mod
+                return c
+            n = 1
+            while n < n1 + n2 - 1:
+                n <<= 1
+            a2 = a[:] + [0] * (n - n1)
+            b2 = b[:] + [0] * (n - n2)
+            ntt(a2, False)
+            ntt(b2, False)
+            c = [a2[i] * b2[i] % mod for i in range(n)]
+            ntt(c, True)
+            return c[:n1+n2-1]
+        
+        # Create initial list of polynomials
+        polynomials = []
+        for a in L:
+            polynomials.append([1, a])
+            
+        # Combine polynomials iteratively
+        while len(polynomials) > 1:
+            new_polynomials = []
+            for i in range(0, len(polynomials), 2):
+                if i+1 < len(polynomials):
+                    new_poly = conv(polynomials[i], polynomials[i+1])
+                    new_polynomials.append(new_poly)
+                else:
+                    new_polynomials.append(polynomials[i])
+            polynomials = new_polynomials
+        P = polynomials[0]
+        
+    # Compute the answer
+    ans = 0
+    for k in range(len(P)):
+        term = P[k] * fact[n - k] % mod
+        if k % 2 == 1:
+            term = (-term) % mod
+        ans = (ans + term) % mod
+        
+    print(ans % mod)
+    
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,60 @@
+def solve():
+    n, m, q = map(int, input().split())
+    edges = []
+    for _ in range(n - 1):
+        u, v, c = input().split()
+        edges.append((int(u), int(v), c))
+
+    strings = []
+    for _ in range(m):
+        strings.append(input())
+
+    queries = []
+    for _ in range(q):
+        u, v, l, r = map(int, input().split())
+        queries.append((u, v, l - 1, r - 1))  # Adjust l and r to be 0-indexed
+
+    def build_adjacency_list(n, edges):
+        adj = [[] for _ in range(n + 1)]
+        for u, v, c in edges:
+            adj[u].append((v, c))
+            adj[v].append((u, c))
+        return adj
+
+    def find_path(start, end, adj):
+        queue = [(start, [start], "")]  # (node, path_nodes, path_string)
+        visited = {start}
+
+        while queue:
+            node, path_nodes, path_string = queue.pop(0)
+
+            if node == end:
+                return path_string
+
+            for neighbor, char in adj[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append((neighbor, path_nodes + [neighbor], path_string + char))
+
+        return None  # Should not happen in a tree
+
+    def count_occurrences(text, pattern):
+        count = 0
+        for i in range(len(text) - len(pattern) + 1):
+            if text[i:i + len(pattern)] == pattern:
+                count += 1
+        return count
+
+    adj = build_adjacency_list(n, edges)
+    results = []
+    for u, v, l, r in queries:
+        path_string = find_path(u, v, adj)
+        total_occurrences = 0
+        for i in range(l, r + 1):
+            total_occurrences += count_occurrences(strings[i], path_string)
+        results.append(total_occurrences)
+
+    for result in results:
+        print(result)
+
+solve()

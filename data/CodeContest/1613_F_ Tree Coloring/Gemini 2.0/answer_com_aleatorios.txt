@@ -1,0 +1,42 @@
+def solve():
+    n = int(input())
+    edges = []
+    for _ in range(n - 1):
+        u, v = map(int, input().split())
+        edges.append((u, v))
+
+    adj = [[] for _ in range(n + 1)]
+    for u, v in edges:
+        adj[u].append(v)
+        adj[v].append(u)
+
+    parent = [0] * (n + 1)
+    
+    def dfs(node, par):
+        parent[node] = par
+        for neighbor in adj[node]:
+            if neighbor != par:
+                dfs(neighbor, node)
+
+    dfs(1, 0)
+
+    def is_beautiful(coloring):
+        for k in range(2, n + 1):
+            if coloring[k] == coloring[parent[k]] - 1:
+                return False
+        return True
+
+    import itertools
+    
+    count = 0
+    for coloring_permutation in itertools.permutations(range(1, n + 1)):
+        coloring = [0] * (n + 1)
+        for i in range(n):
+            coloring[i+1] = coloring_permutation[i]
+        
+        if is_beautiful(coloring):
+            count = (count + 1) % 998244353
+
+    print(count)
+
+solve()

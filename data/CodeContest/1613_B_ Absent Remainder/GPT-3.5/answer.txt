@@ -1,0 +1,43 @@
+def find_pairs(testcases):
+    result = []
+    for testcase in testcases:
+        n = testcase[0]
+        a = testcase[1]
+        
+        pairs = []
+        seen_mods = set()
+        
+        for i in range(n):
+            for j in range(i+1, n):
+                x = a[i]
+                y = a[j]
+                mod_val = x % y
+                
+                if mod_val not in seen_mods:
+                    pairs.append((x, y))
+                    seen_mods.add(mod_val)
+                    
+                    if len(pairs) == n//2:
+                        break
+            if len(pairs) == n//2:
+                break
+        
+        result.append(pairs)
+    
+    return result
+
+# Input reading
+t = int(input())
+testcases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    testcases.append((n, a))
+
+# Function call
+output = find_pairs(testcases)
+
+# Print output
+for pairs in output:
+    for pair in pairs:
+        print(pair[1], pair[0])

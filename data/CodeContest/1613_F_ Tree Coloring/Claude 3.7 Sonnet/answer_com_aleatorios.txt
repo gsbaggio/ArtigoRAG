@@ -1,0 +1,63 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MOD = 998244353;
+
+vector<vector<int>> tree;
+vector<vector<long long>> dp;
+
+// dp[node][color] = number of ways to color the subtree rooted at node
+// where node has color 'color'
+
+void dfs(int node, int parent) {
+    // For each possible color of the current node
+    for (int color = 1; color <= dp.size()-1; color++) {
+        dp[node][color] = 1; // Initialize with 1 (this node's coloring)
+        
+        // For each child
+        for (int child : tree[node]) {
+            if (child == parent) continue;
+            
+            long long ways = 0;
+            // Try each possible color for the child
+            for (int child_color = 1; child_color <= dp.size()-1; child_color++) {
+                // Skip invalid coloring (child is parent-1)
+                if (child_color == color - 1) continue;
+                
+                ways = (ways + dp[child][child_color]) % MOD;
+            }
+            
+            dp[node][color] = (dp[node][color] * ways) % MOD;
+        }
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n;
+    cin >> n;
+    
+    tree.resize(n+1);
+    dp.resize(n+1, vector<long long>(n+1, 0));
+    
+    for (int i = 0; i < n-1; i++) {
+        int x, y;
+        cin >> x >> y;
+        tree[x].push_back(y);
+        tree[y].push_back(x);
+    }
+    
+    dfs(1, 0);
+    
+    long long result = 0;
+    for (int color = 1; color <= n; color++) {
+        result = (result + dp[1][color]) % MOD;
+    }
+    
+    cout << result << endl;
+    
+    return 0;
+}

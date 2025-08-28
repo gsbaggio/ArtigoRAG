@@ -1,0 +1,15 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    n = int(input().strip())
+    arr = list(map(int, input().split()))
+    m = min(arr)
+    count = 0
+    pairs = []
+    for num in arr:
+        if num > m and count < n // 2:
+            pairs.append(f"{num} {m}")
+            count += 1
+    results.append("\n".join(pairs))
+
+print("\n".join(results))

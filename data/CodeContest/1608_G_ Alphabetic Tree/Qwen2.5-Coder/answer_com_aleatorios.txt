@@ -1,0 +1,73 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 100005;
+const int MAXM = 100005;
+
+vector<pair<int, char>> adj[MAXN];
+string strs[MAXM];
+
+// Function to perform DFS and find the path string from u to v
+string dfs(int u, int v, int parent) {
+    if (u == v) return "";
+    for (auto [next, c] : adj[u]) {
+        if (next != parent) {
+            string path = dfs(next, v, u);
+            if (!path.empty()) return c + path;
+        }
+    }
+    return "";
+}
+
+// Function to count occurrences of a substring in a string
+int count_occurrences(const string &haystack, const string &needle) {
+    int count = 0;
+    size_t pos = haystack.find(needle);
+    while (pos != string::npos) {
+        count++;
+        pos = haystack.find(needle, pos + 1);
+    }
+    return count;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n, m, q;
+    cin >> n >> m >> q;
+    
+    // Read the edges of the tree
+    for (int i = 0; i < n - 1; ++i) {
+        int u, v;
+        char c;
+        cin >> u >> v >> c;
+        adj[u].emplace_back(v, c);
+        adj[v].emplace_back(u, c);
+    }
+    
+    // Read the strings
+    for (int i = 0; i < m; ++i) {
+        cin >> strs[i];
+    }
+    
+    // Process each query
+    while (q--) {
+        int u, v, l, r;
+        cin >> u >> v >> l >> r;
+        
+        // Find the path string from u to v
+        string path = dfs(u, v, -1);
+        
+        // Count occurrences of the path string in the range [l, r]
+        int total_count = 0;
+        for (int i = l - 1; i < r; ++i) {
+            total_count += count_occurrences(strs[i], path);
+        }
+        
+        // Output the result for the current query
+        cout << total_count << "\n";
+    }
+    
+    return 0;
+}

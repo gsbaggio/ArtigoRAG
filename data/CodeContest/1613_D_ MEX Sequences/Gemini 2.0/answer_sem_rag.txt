@@ -1,0 +1,33 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+    
+    def mex(arr):
+        s = set(arr)
+        i = 0
+        while i in s:
+            i += 1
+        return i
+    
+    def is_mex_correct(subsequence):
+        for i in range(len(subsequence)):
+            current_mex = mex(subsequence[:i+1])
+            if abs(subsequence[i] - current_mex) > 1:
+                return False
+        return True
+
+    count = 0
+    for i in range(1, 1 << n):
+        subsequence = []
+        for j in range(n):
+            if (i >> j) & 1:
+                subsequence.append(a[j])
+        
+        if is_mex_correct(subsequence):
+            count += 1
+
+    print(count % 998244353)
+
+t = int(input())
+for _ in range(t):
+    solve()

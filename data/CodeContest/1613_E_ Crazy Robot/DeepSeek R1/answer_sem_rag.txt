@@ -1,0 +1,62 @@
+import collections
+import sys
+
+def main():
+    data = sys.stdin.read().splitlines()
+    t = int(data[0])
+    index = 1
+    directions = [(1,0), (-1,0), (0,1), (0,-1)]
+    output_lines = []
+    for _ in range(t):
+        n, m = map(int, data[index].split())
+        index += 1
+        grid = []
+        for i in range(n):
+            grid.append(list(data[index].strip()))
+            index += 1
+            
+        deg = [[0] * m for _ in range(n)]
+        lab_i, lab_j = -1, -1
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == '#':
+                    continue
+                if grid[i][j] == 'L':
+                    lab_i, lab_j = i, j
+                for dx, dy in directions:
+                    ni = i + dx
+                    nj = j + dy
+                    if 0 <= ni < n and 0 <= nj < m and grid[ni][nj] != '#':
+                        deg[i][j] += 1
+                        
+        visited = [[False] * m for _ in range(n)]
+        q = collections.deque()
+        visited[lab_i][lab_j] = True
+        q.append((lab_i, lab_j))
+        while q:
+            i, j = q.popleft()
+            for dx, dy in directions:
+                ni = i + dx
+                nj = j + dy
+                if ni < 0 or ni >= n or nj < 0 or nj >= m:
+                    continue
+                if grid[ni][nj] == '#' or visited[ni][nj]:
+                    continue
+                deg[ni][nj] -= 1
+                if deg[ni][nj] <= 1:
+                    visited[ni][nj] = True
+                    q.append((ni, nj))
+                    
+        for i in range(n):
+            line = []
+            for j in range(m):
+                if grid[i][j] == '.' and visited[i][j]:
+                    line.append('+')
+                else:
+                    line.append(grid[i][j])
+            output_lines.append(''.join(line))
+            
+    sys.stdout.write("\n".join(output_lines))
+
+if __name__ == "__main__":
+    main()

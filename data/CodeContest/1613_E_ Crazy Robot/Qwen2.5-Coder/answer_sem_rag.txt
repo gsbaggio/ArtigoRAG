@@ -1,0 +1,75 @@
+def can_reach_lab(grid, n, m):
+    # Directions for moving up, down, left, right
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    
+    # Find the position of the lab
+    lab_position = None
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 'L':
+                lab_position = (i, j)
+                break
+        if lab_position:
+            break
+    
+    # Initialize the queue with the lab position
+    from collections import deque
+    queue = deque([lab_position])
+    visited = set([lab_position])
+    
+    # Perform BFS from the lab position
+    while queue:
+        x, y = queue.popleft()
+        
+        # Check all four possible directions
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            
+            # Ensure the new position is within bounds and is a free cell
+            if 0 <= nx < n and 0 <= ny < m and grid[nx][ny] == '.' and (nx, ny) not in visited:
+                visited.add((nx, ny))
+                queue.append((nx, ny))
+    
+    # Replace reachable free cells with '+'
+    result_grid = []
+    for i in range(n):
+        row = []
+        for j in range(m):
+            if grid[i][j] == '.' and (i, j) in visited:
+                row.append('+')
+            else:
+                row.append(grid[i][j])
+        result_grid.append(''.join(row))
+    
+    return result_grid
+
+def main():
+    import sys
+    input = sys.stdin.read().splitlines()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    for _ in range(t):
+        n, m = map(int, input[index].split())
+        index += 1
+        
+        grid = []
+        for _ in range(n):
+            grid.append(input[index])
+            index += 1
+        
+        result = can_reach_lab(grid, n, m)
+        results.extend(result)
+        results.append("")  # Add a newline between testcases
+    
+    # Remove the last empty line
+    results.pop()
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

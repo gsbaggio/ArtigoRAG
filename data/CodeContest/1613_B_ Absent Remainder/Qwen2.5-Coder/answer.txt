@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for(int i=0;i<n;i++){
+            cin >> a[i];
+        }
+        
+        // Sort the sequence
+        sort(a.begin(), a.end());
+        
+        // Use a set for quick lookup
+        unordered_set<int> s(a.begin(), a.end());
+        
+        // Vector to store the pairs
+        vector<pair<int, int>> pairs;
+        
+        // Iterate through the sorted sequence
+        for(int i=1;i<n;i++){
+            int x = a[i];
+            int y = a[i-1];
+            
+            // Compute x mod y
+            int mod_val = x % y;
+            
+            // Check if x mod y is not in the sequence
+            if(s.find(mod_val) == s.end()){
+                pairs.push_back({x, y});
+            }
+            
+            // If we have found enough pairs, break
+            if(pairs.size() == n/2){
+                break;
+            }
+        }
+        
+        // Output the pairs
+        for(auto p : pairs){
+            cout << p.first << " " << p.second << "\n";
+        }
+    }
+}

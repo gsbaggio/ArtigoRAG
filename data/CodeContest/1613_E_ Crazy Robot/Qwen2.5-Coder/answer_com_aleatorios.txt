@@ -1,0 +1,86 @@
+def can_be_forced_to_lab(grid, n, m):
+    # Directions: right, down, left, up
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    
+    # Find the position of the lab
+    lab_pos = None
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 'L':
+                lab_pos = (i, j)
+                break
+        if lab_pos:
+            break
+    
+    # Initialize the BFS queue with the lab position
+    from collections import deque
+    queue = deque([lab_pos])
+    visited = set([lab_pos])
+    
+    # Perform BFS in reverse
+    while queue:
+        x, y = queue.popleft()
+        
+        # Check all four possible directions
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            
+            # Skip if out of bounds or blocked
+            if nx < 0 or nx >= n or ny < 0 or ny >= m or grid[nx][ny] == '#':
+                continue
+            
+            # Count free neighbors excluding the cell from which we came
+            free_neighbors = 0
+            for ddx, ddy in directions:
+                nnx, nny = nx + ddx, ny + ddy
+                if (nnx != x or nny != y) and 0 <= nnx < n and 0 <= nny < m and grid[nnx][nny] != '#':
+                    free_neighbors += 1
+            
+            # If there are at least two free neighbors, mark this cell as reachable
+            if free_neighbors >= 2 and (nx, ny) not in visited:
+                visited.add((nx, ny))
+                queue.append((nx, ny))
+    
+    # Replace reachable free cells with '+'
+    result_grid = []
+    for i in range(n):
+        row = []
+        for j in range(m):
+            if grid[i][j] == '.' and (i, j) in visited:
+                row.append('+')
+            else:
+                row.append(grid[i][j])
+        result_grid.append(''.join(row))
+    
+    return result_grid
+
+def main():
+    import sys
+    input = sys.stdin.read().splitlines()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    for _ in range(t):
+        n, m = map(int, input[index].split())
+        index += 1
+        
+        grid = []
+        for _ in range(n):
+            grid.append(list(input[index]))
+            index += 1
+        
+        result = can_be_forced_to_lab(grid, n, m)
+        results.extend(result)
+        results.append('')
+    
+    # Remove the last empty line added in the loop
+    results.pop()
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

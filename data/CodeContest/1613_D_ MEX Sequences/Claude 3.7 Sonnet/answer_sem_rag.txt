@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        
+        // dp[mex] = number of valid subsequences with MEX = mex
+        vector<long long> dp(n + 2, 0);
+        dp[0] = 1;  // Empty subsequence
+        
+        for (int i = 0; i < n; i++) {
+            vector<long long> new_dp = dp;
+            for (int mex = 0; mex <= n + 1; mex++) {
+                // If |a[i] - mex| <= 1, we can append a[i] to a subsequence with MEX = mex
+                if (abs(a[i] - mex) <= 1) {
+                    int next_mex = mex;
+                    if (a[i] == mex) {
+                        next_mex++;
+                    }
+                    new_dp[next_mex] = (new_dp[next_mex] + dp[mex]) % MOD;
+                }
+            }
+            dp = new_dp;
+        }
+        
+        long long result = 0;
+        for (int mex = 0; mex <= n + 1; mex++) {
+            result = (result + dp[mex]) % MOD;
+        }
+        
+        // Subtract empty subsequence
+        result = (result - 1 + MOD) % MOD;
+        
+        cout << result << '\n';
+    }
+    
+    return 0;
+}

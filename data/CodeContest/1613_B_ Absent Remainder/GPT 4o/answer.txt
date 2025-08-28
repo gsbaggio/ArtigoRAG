@@ -1,0 +1,40 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])  # Length of the sequence
+        index += 1
+        a = list(map(int, data[index:index + n]))
+        index += n
+        
+        # Sort the array
+        a.sort()
+        a_set = set(a)
+        
+        pairs = []
+        used = set()
+        
+        for x in a:
+            if len(pairs) == n // 2:
+                break
+            for y in a:
+                if x != y and (x, y) not in used and (x % y) not in a_set:
+                    pairs.append((x, y))
+                    used.add((x, y))
+                    used.add((y, x))
+                    break
+        
+        results.append(pairs)
+    
+    # Output results
+    output = []
+    for pairs in results:
+        for x, y in pairs:
+            output.append(f"{x} {y}")
+    sys.stdout.write("\n".join(output) + "\n")

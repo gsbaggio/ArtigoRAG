@@ -1,0 +1,72 @@
+MOD = 998244353
+
+def beautiful_colorings(n, edges):
+    from collections import defaultdict, deque
+
+    # Build adjacency list for the tree
+    tree = defaultdict(list)
+    for x, y in edges:
+        tree[x].append(y)
+        tree[y].append(x)
+
+    # BFS to calculate the number of beautiful colorings
+    def bfs_count():
+        dp = [0] * (n + 1)  # dp[i] stores the number of ways to color subtree rooted at i
+        size = [0] * (n + 1)  # size[i] stores the size of subtree rooted at i
+        order = []  # To store nodes in post-order traversal
+        parent = [-1] * (n + 1)  # To store parent of each node
+
+        # BFS to calculate post-order traversal and subtree sizes
+        queue = deque([1])
+        visited = [False] * (n + 1)
+        visited[1] = True
+
+        while queue:
+            node = queue.popleft()
+            order.append(node)
+            for neighbor in tree[node]:
+                if not visited[neighbor]:
+                    visited[neighbor] = True
+                    parent[neighbor] = node
+                    queue.append(neighbor)
+
+        # Reverse post-order traversal to calculate dp values
+        for node in reversed(order):
+            size[node] = 1  # Count the node itself
+            dp[node] = 1  # At least one way to color the node
+            child_count = 0
+
+            for neighbor in tree[node]:
+                if neighbor == parent[node]:
+                    continue
+                size[node] += size[neighbor]
+                dp[node] = dp[node] * dp[neighbor] % MOD
+                child_count += 1
+
+            # Multiply by the number of ways to assign colors to children
+            dp[node] = dp[node] * factorial(child_count) % MOD
+            dp[node] = dp[node] * (n - size[node]) % MOD
+
+        return dp[1]
+
+    # Helper function to calculate factorial modulo MOD
+    def factorial(x):
+        result = 1
+        for i in range(1, x + 1):
+            result = result * i % MOD
+        return result
+
+    return bfs_count()
+
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+
+    n = int(data[0])
+    edges = [tuple(map(int, line.split())) for line in data[1:]]
+
+    # Output the result
+    print(beautiful_colorings(n, edges))

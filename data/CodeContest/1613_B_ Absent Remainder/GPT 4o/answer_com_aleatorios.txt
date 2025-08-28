@@ -1,0 +1,38 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])  # Length of the sequence
+        idx += 1
+        a = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Sort the array
+        a.sort()
+        a_set = set(a)
+        pairs = []
+        
+        # Find ⌊n / 2⌋ pairs
+        for i in range(n):
+            for j in range(i + 1, n):
+                if len(pairs) == n // 2:
+                    break
+                x, y = a[j], a[i]
+                if x % y not in a_set:
+                    pairs.append((x, y))
+        
+        # Append results for this test case
+        results.append(pairs)
+    
+    # Print all results
+    output = []
+    for pairs in results:
+        for x, y in pairs:
+            output.append(f"{x} {y}")
+    sys.stdout.write("\n".join(output) + "\n")

@@ -1,0 +1,39 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])  # Length of the sequence
+        index += 1
+        a = list(map(int, data[index:index + n]))
+        index += n
+        
+        # Sort the sequence
+        a.sort()
+        a_set = set(a)
+        
+        pairs = []
+        for i in range(n):
+            for j in range(i + 1, n):
+                x, y = a[j], a[i]
+                if x % y not in a_set:
+                    pairs.append((x, y))
+                    if len(pairs) == n // 2:
+                        break
+            if len(pairs) == n // 2:
+                break
+        
+        # Append the result for this test case
+        results.append(pairs)
+    
+    # Print all results
+    output = []
+    for pairs in results:
+        for x, y in pairs:
+            output.append(f"{x} {y}")
+    sys.stdout.write("\n".join(output) + "\n")

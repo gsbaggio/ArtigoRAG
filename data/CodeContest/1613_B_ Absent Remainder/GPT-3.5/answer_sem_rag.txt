@@ -1,0 +1,25 @@
+def find_pairs(n, arr):
+    pairs = []
+    elements_set = set(arr)
+
+    found_pairs = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            x = arr[i]
+            y = arr[j]
+            mod_val = x % y
+
+            if mod_val not in elements_set:
+                pairs.append((y, x))
+                found_pairs += 1
+
+            if found_pairs == n // 2:
+                return pairs
+
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    pairs = find_pairs(n, arr)
+    for pair in pairs:
+        print(pair[0], pair[1])

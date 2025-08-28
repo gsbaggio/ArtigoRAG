@@ -1,0 +1,38 @@
+def is_valid_move(grid, i, j, di, dj):
+    n, m = len(grid), len(grid[0])
+    return 0 <= i + di < n and 0 <= j + dj < m and grid[i + di][j + dj] != '#'
+
+def solve_testcase(grid):
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
+    n, m = len(grid), len(grid[0])
+    
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == '.':  # Check if the cell is free
+                reachable = False
+                for di, dj in directions:
+                    if is_valid_move(grid, i, j, di, dj):
+                        for ddi, ddj in directions:
+                            if (ddi, ddj) != (-di, -dj) and is_valid_move(grid, i, j, ddi, ddj):
+                                reachable = True
+                                break
+                    if reachable:
+                        break
+                
+                if reachable:
+                    grid[i] = grid[i][:j] + '+' + grid[i][j+1:]
+    
+    return grid
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        n, m = map(int, input().split())
+        grid = [input() for _ in range(n)]
+        
+        modified_grid = solve_testcase(grid)
+        for row in modified_grid:
+            print(row)
+
+if __name__ == "__main__":
+    main()

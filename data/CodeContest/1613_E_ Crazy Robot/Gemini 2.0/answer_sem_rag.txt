@@ -1,0 +1,1032 @@
+def solve():
+    n, m = map(int, input().split())
+    grid = [list(input()) for _ in range(n)]
+    lab_row, lab_col = -1, -1
+    for r in range(n):
+        for c in range(m):
+            if grid[r][c] == 'L':
+                lab_row, lab_col = r, c
+                break
+        if lab_row != -1:
+            break
+
+    def is_valid(r, c):
+        return 0 <= r < n and 0 <= c < m and grid[r][c] != '#'
+
+    def neighbors(r, c):
+        neighbors_list = []
+        if is_valid(r - 1, c):
+            neighbors_list.append((r - 1, c))
+        if is_valid(r + 1, c):
+            neighbors_list.append((r + 1, c))
+        if is_valid(r, c - 1):
+            neighbors_list.append((r, c - 1))
+        if is_valid(r, c + 1):
+            neighbors_list.append((r, c + 1))
+        return neighbors_list
+
+    def can_reach_lab(start_row, start_col):
+        q = [(start_row, start_col)]
+        visited = set()
+        visited.add((start_row, start_col))
+
+        while q:
+            curr_row, curr_col = q.pop(0)
+
+            if curr_row == lab_row and curr_col == lab_col:
+                return True
+
+            forced = True
+            for move_row, move_col in neighbors(curr_row, curr_col):
+                
+                possible_moves = []
+                for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                    new_row, new_col = curr_row + dr, curr_col + dc
+                    if is_valid(new_row, new_col) and (new_row, new_col) != (move_row, move_col):
+                        possible_moves.append((new_row, new_col))
+                
+                if not possible_moves:
+                    continue
+                
+                forced_to_lab = False
+                for next_row, next_col in possible_moves:
+                    if (next_row, next_col) == (lab_row, lab_col):
+                        forced_to_lab = True
+                        break
+                if not forced_to_lab:
+                    forced = False
+                    break
+            
+            if forced:
+                return True
+            
+        return False
+
+    for r in range(n):
+        for c in range(m):
+            if grid[r][c] == '.':
+                
+                forced_reach = True
+                q = [(r, c)]
+                visited = set()
+                visited.add((r, c))
+                
+                while q:
+                    curr_row, curr_col = q.pop(0)
+                    
+                    if curr_row == lab_row and curr_col == lab_col:
+                        continue
+                    
+                    forced = False
+                    for move_row, move_col in neighbors(curr_row, curr_col):
+                        
+                        possible_moves = []
+                        for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                            new_row, new_col = curr_row + dr, curr_col + dc
+                            if is_valid(new_row, new_col) and (new_row, new_col) != (move_row, move_col):
+                                possible_moves.append((new_row, new_col))
+                        
+                        if not possible_moves:
+                            continue
+                        
+                        all_paths_to_lab = True
+                        for next_row, next_col in possible_moves:
+                            
+                            path_found = False
+                            q2 = [(next_row, next_col)]
+                            visited2 = set()
+                            visited2.add((next_row, next_col))
+                            
+                            while q2:
+                                curr_row2, curr_col2 = q2.pop(0)
+                                
+                                if curr_row2 == lab_row and curr_col2 == lab_col:
+                                    path_found = True
+                                    break
+                                
+                                forced2 = False
+                                for move_row2, move_col2 in neighbors(curr_row2, curr_col2):
+                                    
+                                    possible_moves2 = []
+                                    for dr2, dc2 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                        new_row2, new_col2 = curr_row2 + dr2, curr_col2 + dc2
+                                        if is_valid(new_row2, new_col2) and (new_row2, new_col2) != (move_row2, move_col2):
+                                            possible_moves2.append((new_row2, new_col2))
+                                    
+                                    if not possible_moves2:
+                                        continue
+                                    
+                                    all_paths_to_lab2 = True
+                                    for next_row2, next_col2 in possible_moves2:
+                                        
+                                        path_found2 = False
+                                        q3 = [(next_row2, next_col2)]
+                                        visited3 = set()
+                                        visited3.add((next_row2, next_col2))
+                                        
+                                        while q3:
+                                            curr_row3, curr_col3 = q3.pop(0)
+                                            
+                                            if curr_row3 == lab_row and curr_col3 == lab_col:
+                                                path_found2 = True
+                                                break
+                                            
+                                            forced3 = False
+                                            for move_row3, move_col3 in neighbors(curr_row3, curr_col3):
+                                                
+                                                possible_moves3 = []
+                                                for dr3, dc3 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                    new_row3, new_col3 = curr_row3 + dr3, curr_col3 + dc3
+                                                    if is_valid(new_row3, new_col3) and (new_row3, new_col3) != (move_row3, move_col3):
+                                                        possible_moves3.append((new_row3, new_col3))
+                                            
+                                            if not possible_moves3:
+                                                continue
+                                            
+                                            all_paths_to_lab3 = True
+                                            for next_row3, next_col3 in possible_moves3:
+                                                
+                                                path_found3 = False
+                                                q4 = [(next_row3, next_col3)]
+                                                visited4 = set()
+                                                visited4.add((next_row3, next_col3))
+                                                
+                                                while q4:
+                                                    curr_row4, curr_col4 = q4.pop(0)
+                                                    
+                                                    if curr_row4 == lab_row and curr_col4 == lab_col:
+                                                        path_found3 = True
+                                                        break
+                                                    
+                                                    forced4 = False
+                                                    for move_row4, move_col4 in neighbors(curr_row4, curr_col4):
+                                                        
+                                                        possible_moves4 = []
+                                                        for dr4, dc4 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                            new_row4, new_col4 = curr_row4 + dr4, curr_col4 + dc4
+                                                            if is_valid(new_row4, new_col4) and (new_row4, new_col4) != (move_row4, move_col4):
+                                                                possible_moves4.append((new_row4, new_col4))
+                                                    
+                                                    if not possible_moves4:
+                                                        continue
+                                                    
+                                                    all_paths_to_lab4 = True
+                                                    for next_row4, next_col4 in possible_moves4:
+                                                        
+                                                        path_found4 = False
+                                                        q5 = [(next_row4, next_col4)]
+                                                        visited5 = set()
+                                                        visited5.add((next_row4, next_col4))
+                                                        
+                                                        while q5:
+                                                            curr_row5, curr_col5 = q5.pop(0)
+                                                            
+                                                            if curr_row5 == lab_row and curr_col5 == lab_col:
+                                                                path_found4 = True
+                                                                break
+                                                            
+                                                            forced5 = False
+                                                            for move_row5, move_col5 in neighbors(curr_row5, curr_col5):
+                                                                
+                                                                possible_moves5 = []
+                                                                for dr5, dc5 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                    new_row5, new_col5 = curr_row5 + dr5, curr_col5 + dc5
+                                                                    if is_valid(new_row5, new_col5) and (new_row5, new_col5) != (move_row5, move_col5):
+                                                                        possible_moves5.append((new_row5, new_col5))
+                                                            
+                                                            if not possible_moves5:
+                                                                continue
+                                                            
+                                                            all_paths_to_lab5 = True
+                                                            for next_row5, next_col5 in possible_moves5:
+                                                                
+                                                                path_found5 = False
+                                                                q6 = [(next_row5, next_col5)]
+                                                                visited6 = set()
+                                                                visited6.add((next_row5, next_col5))
+                                                                
+                                                                while q6:
+                                                                    curr_row6, curr_col6 = q6.pop(0)
+                                                                    
+                                                                    if curr_row6 == lab_row and curr_col6 == lab_col:
+                                                                        path_found5 = True
+                                                                        break
+                                                                    
+                                                                    forced6 = False
+                                                                    for move_row6, move_col6 in neighbors(curr_row6, curr_col6):
+                                                                        
+                                                                        possible_moves6 = []
+                                                                        for dr6, dc6 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                            new_row6, new_col6 = curr_row6 + dr6, curr_col6 + dc6
+                                                                            if is_valid(new_row6, new_col6) and (new_row6, new_col6) != (move_row6, move_col6):
+                                                                                possible_moves6.append((new_row6, new_col6))
+                                                                    
+                                                                    if not possible_moves6:
+                                                                        continue
+                                                                    
+                                                                    all_paths_to_lab6 = True
+                                                                    for next_row6, next_col6 in possible_moves6:
+                                                                        
+                                                                        path_found6 = False
+                                                                        q7 = [(next_row6, next_col6)]
+                                                                        visited7 = set()
+                                                                        visited7.add((next_row6, next_col6))
+                                                                        
+                                                                        while q7:
+                                                                            curr_row7, curr_col7 = q7.pop(0)
+                                                                            
+                                                                            if curr_row7 == lab_row and curr_col7 == lab_col:
+                                                                                path_found6 = True
+                                                                                break
+                                                                            
+                                                                            forced7 = False
+                                                                            for move_row7, move_col7 in neighbors(curr_row7, curr_col7):
+                                                                                
+                                                                                possible_moves7 = []
+                                                                                for dr7, dc7 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                    new_row7, new_col7 = curr_row7 + dr7, curr_col7 + dc7
+                                                                                    if is_valid(new_row7, new_col7) and (new_row7, new_col7) != (move_row7, move_col7):
+                                                                                        possible_moves7.append((new_row7, new_col7))
+                                                                            
+                                                                            if not possible_moves7:
+                                                                                continue
+                                                                            
+                                                                            all_paths_to_lab7 = True
+                                                                            for next_row7, next_col7 in possible_moves7:
+                                                                                
+                                                                                path_found7 = False
+                                                                                q8 = [(next_row7, next_col7)]
+                                                                                visited8 = set()
+                                                                                visited8.add((next_row7, next_col7))
+                                                                                
+                                                                                while q8:
+                                                                                    curr_row8, curr_col8 = q8.pop(0)
+                                                                                    
+                                                                                    if curr_row8 == lab_row and curr_col8 == lab_col:
+                                                                                        path_found7 = True
+                                                                                        break
+                                                                                    
+                                                                                    forced8 = False
+                                                                                    for move_row8, move_col8 in neighbors(curr_row8, curr_col8):
+                                                                                        
+                                                                                        possible_moves8 = []
+                                                                                        for dr8, dc8 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                            new_row8, new_col8 = curr_row8 + dr8, curr_col8 + dc8
+                                                                                            if is_valid(new_row8, new_col8) and (new_row8, new_col8) != (move_row8, move_col8):
+                                                                                                possible_moves8.append((new_row8, new_col8))
+                                                                                    
+                                                                                    if not possible_moves8:
+                                                                                        continue
+                                                                                    
+                                                                                    all_paths_to_lab8 = True
+                                                                                    for next_row8, next_col8 in possible_moves8:
+                                                                                        
+                                                                                        path_found8 = False
+                                                                                        q9 = [(next_row8, next_col8)]
+                                                                                        visited9 = set()
+                                                                                        visited9.add((next_row8, next_col8))
+                                                                                        
+                                                                                        while q9:
+                                                                                            curr_row9, curr_col9 = q9.pop(0)
+                                                                                            
+                                                                                            if curr_row9 == lab_row and curr_col9 == lab_col:
+                                                                                                path_found8 = True
+                                                                                                break
+                                                                                            
+                                                                                            forced9 = False
+                                                                                            for move_row9, move_col9 in neighbors(curr_row9, curr_col9):
+                                                                                                
+                                                                                                possible_moves9 = []
+                                                                                                for dr9, dc9 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                    new_row9, new_col9 = curr_row9 + dr9, curr_col9 + dc9
+                                                                                                    if is_valid(new_row9, new_col9) and (new_row9, new_col9) != (move_row9, move_col9):
+                                                                                                        possible_moves9.append((new_row9, new_col9))
+                                                                                            
+                                                                                            if not possible_moves9:
+                                                                                                continue
+                                                                                            
+                                                                                            all_paths_to_lab9 = True
+                                                                                            for next_row9, next_col9 in possible_moves9:
+                                                                                                
+                                                                                                path_found9 = False
+                                                                                                q10 = [(next_row9, next_col9)]
+                                                                                                visited10 = set()
+                                                                                                visited10.add((next_row9, next_col9))
+                                                                                                
+                                                                                                while q10:
+                                                                                                    curr_row10, curr_col10 = q10.pop(0)
+                                                                                                    
+                                                                                                    if curr_row10 == lab_row and curr_col10 == lab_col:
+                                                                                                        path_found9 = True
+                                                                                                        break
+                                                                                                    
+                                                                                                    forced10 = False
+                                                                                                    for move_row10, move_col10 in neighbors(curr_row10, curr_col10):
+                                                                                                        
+                                                                                                        possible_moves10 = []
+                                                                                                        for dr10, dc10 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                            new_row10, new_col10 = curr_row10 + dr10, curr_col10 + dc10
+                                                                                                            if is_valid(new_row10, new_col10) and (new_row10, new_col10) != (move_row10, move_col10):
+                                                                                                                possible_moves10.append((new_row10, new_col10))
+                                                                                                    
+                                                                                                    if not possible_moves10:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab10 = True
+                                                                                                    for next_row10, next_col10 in possible_moves10:
+                                                                                                        
+                                                                                                        path_found10 = False
+                                                                                                        q11 = [(next_row10, next_col10)]
+                                                                                                        visited11 = set()
+                                                                                                        visited11.add((next_row10, next_col10))
+                                                                                                        
+                                                                                                        while q11:
+                                                                                                            curr_row11, curr_col11 = q11.pop(0)
+                                                                                                            
+                                                                                                            if curr_row11 == lab_row and curr_col11 == lab_col:
+                                                                                                                path_found10 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced11 = False
+                                                                                                            for move_row11, move_col11 in neighbors(curr_row11, curr_col11):
+                                                                                                                
+                                                                                                                possible_moves11 = []
+                                                                                                                for dr11, dc11 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row11, new_col11 = curr_row11 + dr11, curr_col11 + dc11
+                                                                                                                    if is_valid(new_row11, new_col11) and (new_row11, new_col11) != (move_row11, move_col11):
+                                                                                                                        possible_moves11.append((new_row11, new_col11))
+                                                                                                    
+                                                                                                    if not possible_moves11:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab11 = True
+                                                                                                    for next_row11, next_col11 in possible_moves11:
+                                                                                                        
+                                                                                                        path_found11 = False
+                                                                                                        q12 = [(next_row11, next_col11)]
+                                                                                                        visited12 = set()
+                                                                                                        visited12.add((next_row11, next_col11))
+                                                                                                        
+                                                                                                        while q12:
+                                                                                                            curr_row12, curr_col12 = q12.pop(0)
+                                                                                                            
+                                                                                                            if curr_row12 == lab_row and curr_col12 == lab_col:
+                                                                                                                path_found11 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced12 = False
+                                                                                                            for move_row12, move_col12 in neighbors(curr_row12, curr_col12):
+                                                                                                                
+                                                                                                                possible_moves12 = []
+                                                                                                                for dr12, dc12 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row12, new_col12 = curr_row12 + dr12, curr_col12 + dc12
+                                                                                                                    if is_valid(new_row12, new_col12) and (new_row12, new_col12) != (move_row12, move_col12):
+                                                                                                                        possible_moves12.append((new_row12, new_col12))
+                                                                                                    
+                                                                                                    if not possible_moves12:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab12 = True
+                                                                                                    for next_row12, next_col12 in possible_moves12:
+                                                                                                        
+                                                                                                        path_found12 = False
+                                                                                                        q13 = [(next_row12, next_col12)]
+                                                                                                        visited13 = set()
+                                                                                                        visited13.add((next_row12, next_col12))
+                                                                                                        
+                                                                                                        while q13:
+                                                                                                            curr_row13, curr_col13 = q13.pop(0)
+                                                                                                            
+                                                                                                            if curr_row13 == lab_row and curr_col13 == lab_col:
+                                                                                                                path_found12 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced13 = False
+                                                                                                            for move_row13, move_col13 in neighbors(curr_row13, curr_col13):
+                                                                                                                
+                                                                                                                possible_moves13 = []
+                                                                                                                for dr13, dc13 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row13, new_col13 = curr_row13 + dr13, curr_col13 + dc13
+                                                                                                                    if is_valid(new_row13, new_col13) and (new_row13, new_col13) != (move_row13, move_col13):
+                                                                                                                        possible_moves13.append((new_row13, new_col13))
+                                                                                                    
+                                                                                                    if not possible_moves13:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab13 = True
+                                                                                                    for next_row13, next_col13 in possible_moves13:
+                                                                                                        
+                                                                                                        path_found13 = False
+                                                                                                        q14 = [(next_row13, next_col13)]
+                                                                                                        visited14 = set()
+                                                                                                        visited14.add((next_row13, next_col13))
+                                                                                                        
+                                                                                                        while q14:
+                                                                                                            curr_row14, curr_col14 = q14.pop(0)
+                                                                                                            
+                                                                                                            if curr_row14 == lab_row and curr_col14 == lab_col:
+                                                                                                                path_found13 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced14 = False
+                                                                                                            for move_row14, move_col14 in neighbors(curr_row14, curr_col14):
+                                                                                                                
+                                                                                                                possible_moves14 = []
+                                                                                                                for dr14, dc14 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row14, new_col14 = curr_row14 + dr14, curr_col14 + dc14
+                                                                                                                    if is_valid(new_row14, new_col14) and (new_row14, new_col14) != (move_row14, move_col14):
+                                                                                                                        possible_moves14.append((new_row14, new_col14))
+                                                                                                    
+                                                                                                    if not possible_moves14:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab14 = True
+                                                                                                    for next_row14, next_col14 in possible_moves14:
+                                                                                                        
+                                                                                                        path_found14 = False
+                                                                                                        q15 = [(next_row14, next_col14)]
+                                                                                                        visited15 = set()
+                                                                                                        visited15.add((next_row14, next_col14))
+                                                                                                        
+                                                                                                        while q15:
+                                                                                                            curr_row15, curr_col15 = q15.pop(0)
+                                                                                                            
+                                                                                                            if curr_row15 == lab_row and curr_col15 == lab_col:
+                                                                                                                path_found14 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced15 = False
+                                                                                                            for move_row15, move_col15 in neighbors(curr_row15, curr_col15):
+                                                                                                                
+                                                                                                                possible_moves15 = []
+                                                                                                                for dr15, dc15 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row15, new_col15 = curr_row15 + dr15, curr_col15 + dc15
+                                                                                                                    if is_valid(new_row15, new_col15) and (new_row15, new_col15) != (move_row15, move_col15):
+                                                                                                                        possible_moves15.append((new_row15, new_col15))
+                                                                                                    
+                                                                                                    if not possible_moves15:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab15 = True
+                                                                                                    for next_row15, next_col15 in possible_moves15:
+                                                                                                        
+                                                                                                        path_found15 = False
+                                                                                                        q16 = [(next_row15, next_col15)]
+                                                                                                        visited16 = set()
+                                                                                                        visited16.add((next_row15, next_col15))
+                                                                                                        
+                                                                                                        while q16:
+                                                                                                            curr_row16, curr_col16 = q16.pop(0)
+                                                                                                            
+                                                                                                            if curr_row16 == lab_row and curr_col16 == lab_col:
+                                                                                                                path_found15 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced16 = False
+                                                                                                            for move_row16, move_col16 in neighbors(curr_row16, curr_col16):
+                                                                                                                
+                                                                                                                possible_moves16 = []
+                                                                                                                for dr16, dc16 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row16, new_col16 = curr_row16 + dr16, curr_col16 + dc16
+                                                                                                                    if is_valid(new_row16, new_col16) and (new_row16, new_col16) != (move_row16, move_col16):
+                                                                                                                        possible_moves16.append((new_row16, new_col16))
+                                                                                                    
+                                                                                                    if not possible_moves16:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab16 = True
+                                                                                                    for next_row16, next_col16 in possible_moves16:
+                                                                                                        
+                                                                                                        path_found16 = False
+                                                                                                        q17 = [(next_row16, next_col16)]
+                                                                                                        visited17 = set()
+                                                                                                        visited17.add((next_row16, next_col16))
+                                                                                                        
+                                                                                                        while q17:
+                                                                                                            curr_row17, curr_col17 = q17.pop(0)
+                                                                                                            
+                                                                                                            if curr_row17 == lab_row and curr_col17 == lab_col:
+                                                                                                                path_found16 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced17 = False
+                                                                                                            for move_row17, move_col17 in neighbors(curr_row17, curr_col17):
+                                                                                                                
+                                                                                                                possible_moves17 = []
+                                                                                                                for dr17, dc17 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row17, new_col17 = curr_row17 + dr17, curr_col17 + dc17
+                                                                                                                    if is_valid(new_row17, new_col17) and (new_row17, new_col17) != (move_row17, move_col17):
+                                                                                                                        possible_moves17.append((new_row17, new_col17))
+                                                                                                    
+                                                                                                    if not possible_moves17:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab17 = True
+                                                                                                    for next_row17, next_col17 in possible_moves17:
+                                                                                                        
+                                                                                                        path_found17 = False
+                                                                                                        q18 = [(next_row17, next_col17)]
+                                                                                                        visited18 = set()
+                                                                                                        visited18.add((next_row17, next_col17))
+                                                                                                        
+                                                                                                        while q18:
+                                                                                                            curr_row18, curr_col18 = q18.pop(0)
+                                                                                                            
+                                                                                                            if curr_row18 == lab_row and curr_col18 == lab_col:
+                                                                                                                path_found17 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced18 = False
+                                                                                                            for move_row18, move_col18 in neighbors(curr_row18, curr_col18):
+                                                                                                                
+                                                                                                                possible_moves18 = []
+                                                                                                                for dr18, dc18 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row18, new_col18 = curr_row18 + dr18, curr_col18 + dc18
+                                                                                                                    if is_valid(new_row18, new_col18) and (new_row18, new_col18) != (move_row18, move_col18):
+                                                                                                                        possible_moves18.append((new_row18, new_col18))
+                                                                                                    
+                                                                                                    if not possible_moves18:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab18 = True
+                                                                                                    for next_row18, next_col18 in possible_moves18:
+                                                                                                        
+                                                                                                        path_found18 = False
+                                                                                                        q19 = [(next_row18, next_col18)]
+                                                                                                        visited19 = set()
+                                                                                                        visited19.add((next_row18, next_col18))
+                                                                                                        
+                                                                                                        while q19:
+                                                                                                            curr_row19, curr_col19 = q19.pop(0)
+                                                                                                            
+                                                                                                            if curr_row19 == lab_row and curr_col19 == lab_col:
+                                                                                                                path_found18 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced19 = False
+                                                                                                            for move_row19, move_col19 in neighbors(curr_row19, curr_col19):
+                                                                                                                
+                                                                                                                possible_moves19 = []
+                                                                                                                for dr19, dc19 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row19, new_col19 = curr_row19 + dr19, curr_col19 + dc19
+                                                                                                                    if is_valid(new_row19, new_col19) and (new_row19, new_col19) != (move_row19, move_col19):
+                                                                                                                        possible_moves19.append((new_row19, new_col19))
+                                                                                                    
+                                                                                                    if not possible_moves19:
+                                                                                                        def solve():
+    n, m = map(int, input().split())
+    grid = [list(input()) for _ in range(n)]
+    lab_row, lab_col = -1, -1
+    for r in range(n):
+        for c in range(m):
+            if grid[r][c] == 'L':
+                lab_row, lab_col = r, c
+                break
+        if lab_row != -1:
+            break
+
+    def is_valid(r, c):
+        return 0 <= r < n and 0 <= c < m and grid[r][c] != '#'
+
+    def neighbors(r, c):
+        neighbors_list = []
+        if is_valid(r - 1, c):
+            neighbors_list.append((r - 1, c))
+        if is_valid(r + 1, c):
+            neighbors_list.append((r + 1, c))
+        if is_valid(r, c - 1):
+            neighbors_list.append((r, c - 1))
+        if is_valid(r, c + 1):
+            neighbors_list.append((r, c + 1))
+        return neighbors_list
+
+    def can_reach_lab(start_row, start_col):
+        q = [(start_row, start_col)]
+        visited = set()
+        visited.add((start_row, start_col))
+
+        while q:
+            curr_row, curr_col = q.pop(0)
+
+            if curr_row == lab_row and curr_col == lab_col:
+                return True
+
+            forced = True
+            for move_row, move_col in neighbors(curr_row, curr_col):
+                
+                possible_moves = []
+                for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                    new_row, new_col = curr_row + dr, curr_col + dc
+                    if is_valid(new_row, new_col) and (new_row, new_col) != (move_row, move_col):
+                        possible_moves.append((new_row, new_col))
+                
+                if not possible_moves:
+                    continue
+                
+                forced_to_lab = False
+                for next_row, next_col in possible_moves:
+                    if (next_row, next_col) == (lab_row, lab_col):
+                        forced_to_lab = True
+                        break
+                if not forced_to_lab:
+                    forced = False
+                    break
+            
+            if forced:
+                return True
+            
+        return False
+
+    for r in range(n):
+        for c in range(m):
+            if grid[r][c] == '.':
+                
+                forced_reach = True
+                q = [(r, c)]
+                visited = set()
+                visited.add((r, c))
+                
+                while q:
+                    curr_row, curr_col = q.pop(0)
+                    
+                    if curr_row == lab_row and curr_col == lab_col:
+                        continue
+                    
+                    forced = False
+                    for move_row, move_col in neighbors(curr_row, curr_col):
+                        
+                        possible_moves = []
+                        for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                            new_row, new_col = curr_row + dr, curr_col + dc
+                            if is_valid(new_row, new_col) and (new_row, new_col) != (move_row, move_col):
+                                possible_moves.append((new_row, new_col))
+                        
+                        if not possible_moves:
+                            continue
+                        
+                        all_paths_to_lab = True
+                        for next_row, next_col in possible_moves:
+                            
+                            path_found = False
+                            q2 = [(next_row, next_col)]
+                            visited2 = set()
+                            visited2.add((next_row, next_col))
+                            
+                            while q2:
+                                curr_row2, curr_col2 = q2.pop(0)
+                                
+                                if curr_row2 == lab_row and curr_col2 == lab_col:
+                                    path_found = True
+                                    break
+                                
+                                forced2 = False
+                                for move_row2, move_col2 in neighbors(curr_row2, curr_col2):
+                                    
+                                    possible_moves2 = []
+                                    for dr2, dc2 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                        new_row2, new_col2 = curr_row2 + dr2, curr_col2 + dc2
+                                        if is_valid(new_row2, new_col2) and (new_row2, new_col2) != (move_row2, move_col2):
+                                            possible_moves2.append((new_row2, new_col2))
+                                    
+                                    if not possible_moves2:
+                                        continue
+                                    
+                                    all_paths_to_lab2 = True
+                                    for next_row2, next_col2 in possible_moves2:
+                                        
+                                        path_found2 = False
+                                        q3 = [(next_row2, next_col2)]
+                                        visited3 = set()
+                                        visited3.add((next_row2, next_col2))
+                                        
+                                        while q3:
+                                            curr_row3, curr_col3 = q3.pop(0)
+                                            
+                                            if curr_row3 == lab_row and curr_col3 == lab_col:
+                                                path_found2 = True
+                                                break
+                                            
+                                            forced3 = False
+                                            for move_row3, move_col3 in neighbors(curr_row3, curr_col3):
+                                                
+                                                possible_moves3 = []
+                                                for dr3, dc3 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                    new_row3, new_col3 = curr_row3 + dr3, curr_col3 + dc3
+                                                    if is_valid(new_row3, new_col3) and (new_row3, new_col3) != (move_row3, move_col3):
+                                                        possible_moves3.append((new_row3, new_col3))
+                                            
+                                            if not possible_moves3:
+                                                continue
+                                            
+                                            all_paths_to_lab3 = True
+                                            for next_row3, next_col3 in possible_moves3:
+                                                
+                                                path_found3 = False
+                                                q4 = [(next_row3, next_col3)]
+                                                visited4 = set()
+                                                visited4.add((next_row3, next_col3))
+                                                
+                                                while q4:
+                                                    curr_row4, curr_col4 = q4.pop(0)
+                                                    
+                                                    if curr_row4 == lab_row and curr_col4 == lab_col:
+                                                        path_found3 = True
+                                                        break
+                                                    
+                                                    forced4 = False
+                                                    for move_row4, move_col4 in neighbors(curr_row4, curr_col4):
+                                                        
+                                                        possible_moves4 = []
+                                                        for dr4, dc4 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                            new_row4, new_col4 = curr_row4 + dr4, curr_col4 + dc4
+                                                            if is_valid(new_row4, new_col4) and (new_row4, new_col4) != (move_row4, move_col4):
+                                                                possible_moves4.append((new_row4, new_col4))
+                                                    
+                                                    if not possible_moves4:
+                                                        continue
+                                                    
+                                                    all_paths_to_lab4 = True
+                                                    for next_row4, next_col4 in possible_moves4:
+                                                        
+                                                        path_found4 = False
+                                                        q5 = [(next_row4, next_col4)]
+                                                        visited5 = set()
+                                                        visited5.add((next_row4, next_col4))
+                                                        
+                                                        while q5:
+                                                            curr_row5, curr_col5 = q5.pop(0)
+                                                            
+                                                            if curr_row5 == lab_row and curr_col5 == lab_col:
+                                                                path_found4 = True
+                                                                break
+                                                            
+                                                            forced5 = False
+                                                            for move_row5, move_col5 in neighbors(curr_row5, curr_col5):
+                                                                
+                                                                possible_moves5 = []
+                                                                for dr5, dc5 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                    new_row5, new_col5 = curr_row5 + dr5, curr_col5 + dc5
+                                                                    if is_valid(new_row5, new_col5) and (new_row5, new_col5) != (move_row5, move_col5):
+                                                                        possible_moves5.append((new_row5, new_col5))
+                                                            
+                                                            if not possible_moves5:
+                                                                continue
+                                                            
+                                                            all_paths_to_lab5 = True
+                                                            for next_row5, next_col5 in possible_moves5:
+                                                                
+                                                                path_found5 = False
+                                                                q6 = [(next_row5, next_col5)]
+                                                                visited6 = set()
+                                                                visited6.add((next_row5, next_col5))
+                                                                
+                                                                while q6:
+                                                                    curr_row6, curr_col6 = q6.pop(0)
+                                                                    
+                                                                    if curr_row6 == lab_row and curr_col6 == lab_col:
+                                                                        path_found5 = True
+                                                                        break
+                                                                    
+                                                                    forced6 = False
+                                                                    for move_row6, move_col6 in neighbors(curr_row6, curr_col6):
+                                                                        
+                                                                        possible_moves6 = []
+                                                                        for dr6, dc6 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                            new_row6, new_col6 = curr_row6 + dr6, curr_col6 + dc6
+                                                                            if is_valid(new_row6, new_col6) and (new_row6, new_col6) != (move_row6, move_col6):
+                                                                                possible_moves6.append((new_row6, new_col6))
+                                                                    
+                                                                    if not possible_moves6:
+                                                                        continue
+                                                                    
+                                                                    all_paths_to_lab6 = True
+                                                                    for next_row6, next_col6 in possible_moves6:
+                                                                        
+                                                                        path_found6 = False
+                                                                        q7 = [(next_row6, next_col6)]
+                                                                        visited7 = set()
+                                                                        visited7.add((next_row6, next_col6))
+                                                                        
+                                                                        while q7:
+                                                                            curr_row7, curr_col7 = q7.pop(0)
+                                                                            
+                                                                            if curr_row7 == lab_row and curr_col7 == lab_col:
+                                                                                path_found6 = True
+                                                                                break
+                                                                            
+                                                                            forced7 = False
+                                                                            for move_row7, move_col7 in neighbors(curr_row7, curr_col7):
+                                                                                
+                                                                                possible_moves7 = []
+                                                                                for dr7, dc7 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                    new_row7, new_col7 = curr_row7 + dr7, curr_col7 + dc7
+                                                                                    if is_valid(new_row7, new_col7) and (new_row7, new_col7) != (move_row7, move_col7):
+                                                                                        possible_moves7.append((new_row7, new_col7))
+                                                                            
+                                                                            if not possible_moves7:
+                                                                                continue
+                                                                            
+                                                                            all_paths_to_lab7 = True
+                                                                            for next_row7, next_col7 in possible_moves7:
+                                                                                
+                                                                                path_found7 = False
+                                                                                q8 = [(next_row7, next_col7)]
+                                                                                visited8 = set()
+                                                                                visited8.add((next_row7, next_col7))
+                                                                                
+                                                                                while q8:
+                                                                                    curr_row8, curr_col8 = q8.pop(0)
+                                                                                    
+                                                                                    if curr_row8 == lab_row and curr_col8 == lab_col:
+                                                                                        path_found7 = True
+                                                                                        break
+                                                                                    
+                                                                                    forced8 = False
+                                                                                    for move_row8, move_col8 in neighbors(curr_row8, curr_col8):
+                                                                                        
+                                                                                        possible_moves8 = []
+                                                                                        for dr8, dc8 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                            new_row8, new_col8 = curr_row8 + dr8, curr_col8 + dc8
+                                                                                            if is_valid(new_row8, new_col8) and (new_row8, new_col8) != (move_row8, move_col8):
+                                                                                                possible_moves8.append((new_row8, new_col8))
+                                                                                    
+                                                                                    if not possible_moves8:
+                                                                                        continue
+                                                                                    
+                                                                                    all_paths_to_lab8 = True
+                                                                                    for next_row8, next_col8 in possible_moves8:
+                                                                                        
+                                                                                        path_found8 = False
+                                                                                        q9 = [(next_row8, next_col8)]
+                                                                                        visited9 = set()
+                                                                                        visited9.add((next_row8, next_col8))
+                                                                                        
+                                                                                        while q9:
+                                                                                            curr_row9, curr_col9 = q9.pop(0)
+                                                                                            
+                                                                                            if curr_row9 == lab_row and curr_col9 == lab_col:
+                                                                                                path_found8 = True
+                                                                                                break
+                                                                                            
+                                                                                            forced9 = False
+                                                                                            for move_row9, move_col9 in neighbors(curr_row9, curr_col9):
+                                                                                                
+                                                                                                possible_moves9 = []
+                                                                                                for dr9, dc9 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                    new_row9, new_col9 = curr_row9 + dr9, curr_col9 + dc9
+                                                                                                    if is_valid(new_row9, new_col9) and (new_row9, new_col9) != (move_row9, move_col9):
+                                                                                                        possible_moves9.append((new_row9, new_col9))
+                                                                                            
+                                                                                            if not possible_moves9:
+                                                                                                continue
+                                                                                            
+                                                                                            all_paths_to_lab9 = True
+                                                                                            for next_row9, next_col9 in possible_moves9:
+                                                                                                
+                                                                                                path_found9 = False
+                                                                                                q10 = [(next_row9, next_col9)]
+                                                                                                visited10 = set()
+                                                                                                visited10.add((next_row9, next_col9))
+                                                                                                
+                                                                                                while q10:
+                                                                                                    curr_row10, curr_col10 = q10.pop(0)
+                                                                                                    
+                                                                                                    if curr_row10 == lab_row and curr_col10 == lab_col:
+                                                                                                        path_found9 = True
+                                                                                                        break
+                                                                                                    
+                                                                                                    forced10 = False
+                                                                                                    for move_row10, move_col10 in neighbors(curr_row10, curr_col10):
+                                                                                                        
+                                                                                                        possible_moves10 = []
+                                                                                                        for dr10, dc10 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                            new_row10, new_col10 = curr_row10 + dr10, curr_col10 + dc10
+                                                                                                            if is_valid(new_row10, new_col10) and (new_row10, new_col10) != (move_row10, move_col10):
+                                                                                                                possible_moves10.append((new_row10, new_col10))
+                                                                                                    
+                                                                                                    if not possible_moves10:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab10 = True
+                                                                                                    for next_row10, next_col10 in possible_moves10:
+                                                                                                        
+                                                                                                        path_found10 = False
+                                                                                                        q11 = [(next_row10, next_col10)]
+                                                                                                        visited11 = set()
+                                                                                                        visited11.add((next_row10, next_col10))
+                                                                                                        
+                                                                                                        while q11:
+                                                                                                            curr_row11, curr_col11 = q11.pop(0)
+                                                                                                            
+                                                                                                            if curr_row11 == lab_row and curr_col11 == lab_col:
+                                                                                                                path_found10 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced11 = False
+                                                                                                            for move_row11, move_col11 in neighbors(curr_row11, curr_col11):
+                                                                                                                
+                                                                                                                possible_moves11 = []
+                                                                                                                for dr11, dc11 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row11, new_col11 = curr_row11 + dr11, curr_col11 + dc11
+                                                                                                                    if is_valid(new_row11, new_col11) and (new_row11, new_col11) != (move_row11, move_col11):
+                                                                                                                        possible_moves11.append((new_row11, new_col11))
+                                                                                                    
+                                                                                                    if not possible_moves11:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab11 = True
+                                                                                                    for next_row11, next_col11 in possible_moves11:
+                                                                                                        
+                                                                                                        path_found11 = False
+                                                                                                        q12 = [(next_row11, next_col11)]
+                                                                                                        visited12 = set()
+                                                                                                        visited12.add((next_row11, next_col11))
+                                                                                                        
+                                                                                                        while q12:
+                                                                                                            curr_row12, curr_col12 = q12.pop(0)
+                                                                                                            
+                                                                                                            if curr_row12 == lab_row and curr_col12 == lab_col:
+                                                                                                                path_found11 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced12 = False
+                                                                                                            for move_row12, move_col12 in neighbors(curr_row12, curr_col12):
+                                                                                                                
+                                                                                                                possible_moves12 = []
+                                                                                                                for dr12, dc12 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row12, new_col12 = curr_row12 + dr12, curr_col12 + dc12
+                                                                                                                    if is_valid(new_row12, new_col12) and (new_row12, new_col12) != (move_row12, move_col12):
+                                                                                                                        possible_moves12.append((new_row12, new_col12))
+                                                                                                    
+                                                                                                    if not possible_moves12:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab12 = True
+                                                                                                    for next_row12, next_col12 in possible_moves12:
+                                                                                                        
+                                                                                                        path_found12 = False
+                                                                                                        q13 = [(next_row12, next_col12)]
+                                                                                                        visited13 = set()
+                                                                                                        visited13.add((next_row12, next_col12))
+                                                                                                        
+                                                                                                        while q13:
+                                                                                                            curr_row13, curr_col13 = q13.pop(0)
+                                                                                                            
+                                                                                                            if curr_row13 == lab_row and curr_col13 == lab_col:
+                                                                                                                path_found12 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced13 = False
+                                                                                                            for move_row13, move_col13 in neighbors(curr_row13, curr_col13):
+                                                                                                                
+                                                                                                                possible_moves13 = []
+                                                                                                                for dr13, dc13 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row13, new_col13 = curr_row13 + dr13, curr_col13 + dc13
+                                                                                                                    if is_valid(new_row13, new_col13) and (new_row13, new_col13) != (move_row13, move_col13):
+                                                                                                                        possible_moves13.append((new_row13, new_col13))
+                                                                                                    
+                                                                                                    if not possible_moves13:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab13 = True
+                                                                                                    for next_row13, next_col13 in possible_moves13:
+                                                                                                        
+                                                                                                        path_found13 = False
+                                                                                                        q14 = [(next_row13, next_col13)]
+                                                                                                        visited14 = set()
+                                                                                                        visited14.add((next_row13, next_col13))
+                                                                                                        
+                                                                                                        while q14:
+                                                                                                            curr_row14, curr_col14 = q14.pop(0)
+                                                                                                            
+                                                                                                            if curr_row14 == lab_row and curr_col14 == lab_col:
+                                                                                                                path_found13 = True
+                                                                                                                break
+                                                                                                            
+                                                                                                            forced14 = False
+                                                                                                            for move_row14, move_col14 in neighbors(curr_row14, curr_col14):
+                                                                                                                
+                                                                                                                possible_moves14 = []
+                                                                                                                for dr14, dc14 in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                                                                                                                    new_row14, new_col14 = curr_row14 + dr14, curr_col14 + dc14
+                                                                                                                    if is_valid(new_row14, new_col14) and (new_row14, new_col14) != (move_row14, move_col14):
+                                                                                                                        possible_moves14.append((new_row14, new_col14))
+                                                                                                    
+                                                                                                    if not possible_moves14:
+                                                                                                        continue
+                                                                                                    
+                                                                                                    all_paths_to_lab14 = True
+                                                                                                    for next_row14, next_col14 in possible_moves14:
+                                                                                                        
+                                                                                                        path_found14 = False
+                                                                                                        q15 = [(next_row14, next_col14)]
+                                                                                                        visited15 = set()
+                                                                                                        visited15.add((next_row14, next_col14))
+                                                                                                        
+                                                                                                        while q15:
+                                                                                                            curr_row15, curr_col15 = q15.pop(0)
+                                                                                                            
+                                                                                                            if curr_row15 == lab_row and curr_col15 == lab_col:
+                                                                                                                path_found14 = True
+                                                                                                                break
+                                                                                                  …

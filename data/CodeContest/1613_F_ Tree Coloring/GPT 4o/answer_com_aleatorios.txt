@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+const int MAXN = 250000;
+
+vector<int> tree[MAXN + 1];
+long long dp[MAXN + 1];
+int n;
+
+// DFS to calculate the number of valid colorings for each subtree
+void dfs(int u, int parent) {
+    dp[u] = n; // Initially, u can be any of the n colors
+    long long child_product = 1;
+
+    for (int v : tree[u]) {
+        if (v == parent) continue; // Skip the parent
+        dfs(v, u);
+        child_product = (child_product * dp[v]) % MOD;
+    }
+
+    // Multiply by the number of valid colors for u
+    dp[u] = (dp[u] * child_product) % MOD;
+
+    // Adjust for the restriction: u cannot have the same color as parent - 1
+    if (parent != -1) {
+        dp[u] = (dp[u] * (n - 1)) % MOD;
+    }
+}
+
+int main() {
+    cin >> n;
+
+    // Read the tree edges
+    for (int i = 0; i < n - 1; i++) {
+        int x, y;
+        cin >> x >> y;
+        tree[x].push_back(y);
+        tree[y].push_back(x);
+    }
+
+    // Start DFS from the root (vertex 1)
+    dfs(1, -1);
+
+    // Output the result
+    cout << dp[1] << endl;
+
+    return 0;
+}

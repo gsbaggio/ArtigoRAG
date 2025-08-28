@@ -1,0 +1,83 @@
+import collections
+
+def main():
+    import sys
+    data = sys.stdin.read().splitlines()
+    t = int(data[0].strip())
+    index = 1
+    dx = [0, 0, 1, -1]
+    dy = [1, -1, 0, 0]
+    output_lines = []
+    
+    for _ in range(t):
+        n_m = data[index].split()
+        index += 1
+        n = int(n_m[0])
+        m = int(n_m[1])
+        grid = []
+        for i in range(n):
+            grid.append(data[index].strip())
+            index += 1
+            
+        lab_i, lab_j = -1, -1
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == 'L':
+                    lab_i, lab_j = i, j
+                    
+        total_cells = n * m
+        deg = [0] * total_cells
+        good = [False] * total_cells
+        count_good = [0] * total_cells
+        
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == '#':
+                    continue
+                idx = i * m + j
+                for d in range(4):
+                    ni = i + dx[d]
+                    nj = j + dy[d]
+                    if ni >= 0 and ni < n and nj >= 0 and nj < m and grid[ni][nj] != '#':
+                        deg[idx] += 1
+                        
+        q = collections.deque()
+        lab_idx = lab_i * m + lab_j
+        good[lab_idx] = True
+        q.append((lab_i, lab_j))
+        
+        while q:
+            i, j = q.popleft()
+            for d in range(4):
+                ni = i + dx[d]
+                nj = j + dy[d]
+                if ni < 0 or ni >= n or nj < 0 or nj >= m:
+                    continue
+                if grid[ni][nj] == '#':
+                    continue
+                nidx = ni * m + nj
+                count_good[nidx] += 1
+                if not good[nidx] and count_good[nidx] >= deg[nidx] - 1 and deg[nidx] > 0:
+                    good[nidx] = True
+                    q.append((ni, nj))
+                    
+        for i in range(n):
+            s_list = []
+            for j in range(m):
+                ch = grid[i][j]
+                if ch == 'L':
+                    s_list.append('L')
+                elif ch == '#':
+                    s_list.append('#')
+                else:
+                    if good[i * m + j]:
+                        s_list.append('+')
+                    else:
+                        s_list.append('.')
+            output_lines.append(''.join(s_list))
+            
+    for line in output_lines:
+        print(line)
+        
+if __name__ == "__main__":
+    main()

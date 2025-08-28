@@ -1,0 +1,63 @@
+from collections import deque
+
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n, m = map(int, data[index].split())
+        index += 1
+        grid = [list(data[index + i]) for i in range(n)]
+        index += n
+        
+        # Find the lab position
+        lab_pos = None
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == 'L':
+                    lab_pos = (i, j)
+                    break
+            if lab_pos:
+                break
+        
+        # BFS from the lab
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        visited = [[False] * m for _ in range(n)]
+        queue = deque([lab_pos])
+        visited[lab_pos[0]][lab_pos[1]] = True
+        
+        while queue:
+            x, y = queue.popleft()
+            
+            # Count free neighbors
+            free_neighbors = 0
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < n and 0 <= ny < m and grid[nx][ny] == '.':
+                    free_neighbors += 1
+            
+            # If a free cell has only one free neighbor, it can be forced
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < n and 0 <= ny < m and grid[nx][ny] == '.' and not visited[nx][ny]:
+                    if free_neighbors <= 1:
+                        visited[nx][ny] = True
+                        grid[nx][ny] = '+'
+                        queue.append((nx, ny))
+        
+        # Replace all remaining free cells with '.'
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == '.' and not visited[i][j]:
+                    grid[i][j] = '.'
+        
+        # Append the result for this test case
+        results.append('\n'.join(''.join(row) for row in grid))
+    
+    # Print all results
+    sys.stdout.write('\n\n'.join(results) + '\n')

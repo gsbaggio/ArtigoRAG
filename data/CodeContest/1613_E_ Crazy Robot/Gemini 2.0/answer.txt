@@ -1,0 +1,74 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n, m = map(int, input().split())
+        grid = []
+        lab_row, lab_col = -1, -1
+        for i in range(n):
+            row = list(input())
+            for j in range(m):
+                if row[j] == 'L':
+                    lab_row, lab_col = i, j
+            grid.append(row)
+
+        def is_valid(r, c):
+            return 0 <= r < n and 0 <= c < m
+
+        def can_reach_lab(start_row, start_col):
+            q = [(start_row, start_col)]
+            visited = set()
+            visited.add((start_row, start_col))
+
+            while q:
+                curr_row, curr_col = q.pop(0)
+
+                if curr_row == lab_row and curr_col == lab_col:
+                    return True
+
+                # Try all four directions
+                directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # Right, Left, Down, Up
+
+                forced = True
+                for move_row, move_col in directions:
+                    new_row, new_col = curr_row + move_row, curr_col + move_col
+                    
+                    # Check if the move is valid
+                    if not is_valid(new_row, new_col) or grid[new_row][new_col] == '#':
+                        continue
+                    
+                    # Check if there is an alternative move
+                    alternative_move = False
+                    for alt_move_row, alt_move_col in directions:
+                        if (alt_move_row, alt_move_col) == (-move_row, -move_col):
+                            continue
+                        
+                        alt_row, alt_col = curr_row + alt_move_row, curr_col + alt_move_col
+                        if is_valid(alt_row, alt_col) and grid[alt_row][alt_col] != '#':
+                            alternative_move = True
+                            break
+                    
+                    if alternative_move:
+                        forced = False
+                        break
+                
+                if forced:
+                    # If the robot is forced to move in a specific direction, move it
+                    for move_row, move_col in directions:
+                        new_row, new_col = curr_row + move_row, curr_col + move_col
+                        if is_valid(new_row, new_col) and grid[new_row][new_col] != '#':
+                            if (new_row, new_col) not in visited:
+                                q.append((new_row, new_col))
+                                visited.add((new_row, new_col))
+                            break
+            return False
+
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == '.':
+                    if can_reach_lab(i, j):
+                        grid[i][j] = '+'
+
+        for row in grid:
+            print("".join(row))
+
+solve()

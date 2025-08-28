@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+const int MAX_N = 500000;
+
+// Precompute powers of 2 modulo MOD
+vector<long long> power_of_two(MAX_N + 1);
+
+void precompute_powers() {
+    power_of_two[0] = 1;
+    for (int i = 1; i <= MAX_N; i++) {
+        power_of_two[i] = (power_of_two[i - 1] * 2) % MOD;
+    }
+}
+
+void solve() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n;
+        cin >> n;
+
+        vector<int> a(n);
+        vector<int> count(n + 1, 0);
+
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+            if (a[i] <= n) {
+                count[a[i]]++;
+            }
+        }
+
+        long long result = 1; // Start with 1 for the empty subsequence
+        for (int mex = 0; mex <= n; mex++) {
+            if (count[mex] == 0) {
+                break; // If a number is missing, we can't extend the MEX
+            }
+            result = (result * power_of_two[count[mex]]) % MOD;
+        }
+
+        cout << result << "\n";
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    precompute_powers();
+    solve();
+
+    return 0;
+}

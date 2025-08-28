@@ -1,0 +1,51 @@
+def solve():
+    MOD = 998244353
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        # dp[(mex, present)] = count of subsequences with this state
+        # where present is a tuple of presence of numbers 0 to n
+        dp = {}
+        answer = 0
+        
+        for i in range(n):
+            new_dp = {}
+            
+            # Start a new subsequence with just a[i]
+            if abs(a[i] - 0) <= 1:  # Initial MEX is 0
+                present = [False] * (n + 1)
+                present[a[i]] = True
+                
+                mex = 0
+                while mex <= n and present[mex]:
+                    mex += 1
+                
+                state = (mex, tuple(present))
+                new_dp[state] = new_dp.get(state, 0) + 1
+                answer = (answer + 1) % MOD
+            
+            # Extend existing subsequences
+            for (mex, present), count in dp.items():
+                if abs(a[i] - mex) <= 1:
+                    new_present = list(present)
+                    if a[i] <= n:
+                        new_present[a[i]] = True
+                    
+                    new_mex = mex
+                    if a[i] == mex:
+                        new_mex += 1
+                        while new_mex <= n and new_present[new_mex]:
+                            new_mex += 1
+                    
+                    state = (new_mex, tuple(new_present))
+                    new_dp[state] = (new_dp.get(state, 0) + count) % MOD
+                    answer = (answer + count) % MOD
+            
+            dp = new_dp
+        
+        print(answer)
+
+solve()

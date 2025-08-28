@@ -1,0 +1,70 @@
+from collections import deque
+
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n, m = map(int, input().split())
+        grid = [list(input()) for _ in range(n)]
+        
+        # Find the lab position
+        lab_x, lab_y = -1, -1
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == 'L':
+                    lab_x, lab_y = i, j
+                    break
+            if lab_x != -1:
+                break
+        
+        # BFS from the lab
+        queue = deque([(lab_x, lab_y)])
+        can_force = [[False for _ in range(m)] for _ in range(n)]
+        can_force[lab_x][lab_y] = True
+        
+        # Define directions: right, down, left, up
+        dx = [0, 1, 0, -1]
+        dy = [1, 0, -1, 0]
+        
+        while queue:
+            x, y = queue.popleft()
+            
+            # Try all possible cells from which the robot can be forced to move to (x, y)
+            for dir_from in range(4):
+                nx, ny = x + dx[dir_from], y + dy[dir_from]
+                
+                # Check if position is valid
+                if 0 <= nx < n and 0 <= ny < m and (grid[nx][ny] == '.' or grid[nx][ny] == 'L'):
+                    # Check if we can force the robot to move from (nx, ny) to (x, y)
+                    can_move_to_xy = True
+                    
+                    # The robot will move in any direction except the one we command
+                    # We want to command it to move in the opposite direction of where we want it to go
+                    opposite_dir = (dir_from + 2) % 4
+                    
+                    # Check if robot has other valid moves besides moving to (x, y)
+                    for dir_to in range(4):
+                        if dir_to != opposite_dir:  # If this isn't the direction we command
+                            tx, ty = nx + dx[dir_to], ny + dy[dir_to]
+                            if 0 <= tx < n and 0 <= ty < m and (grid[tx][ty] == '.' or grid[tx][ty] == 'L'):
+                                # If robot can move here and it's not already a cell we can force the robot to reach the lab from
+                                if not can_force[tx][ty]:
+                                    can_move_to_xy = False
+                                    break
+                    
+                    # If we can force the robot to move to (x, y) from (nx, ny) and haven't processed (nx, ny) yet
+                    if can_move_to_xy and not can_force[nx][ny]:
+                        can_force[nx][ny] = True
+                        queue.append((nx, ny))
+        
+        # Mark all cells that can be forced to reach the lab
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == '.' and can_force[i][j]:
+                    grid[i][j] = '+'
+        
+        # Print the result
+        for row in grid:
+            print(''.join(row))
+
+solve()

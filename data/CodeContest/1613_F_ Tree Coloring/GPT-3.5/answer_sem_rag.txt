@@ -1,0 +1,38 @@
+MOD = 998244353
+
+def dfs(node, parent, color, dp, adj_list):
+    ways = 1
+    for child in adj_list[node]:
+        if child == parent:
+            continue
+        ways_child = 0
+        for next_color in range(1, len(adj_list) + 1):
+            if next_color != color - 1:
+                ways_child += dfs(child, node, next_color, dp, adj_list)
+                ways_child %= MOD
+        ways *= ways_child
+        ways %= MOD
+    dp[node][color] = ways
+    return ways
+
+def beautiful_colorings(n, edges):
+    adj_list = [[] for _ in range(n + 1)]
+    for edge in edges:
+        u, v = edge
+        adj_list[u].append(v)
+        adj_list[v].append(u)
+
+    dp = [[-1] * (n + 1) for _ in range(n + 1)]
+    total_ways = 0
+    for color in range(1, n + 1):
+        total_ways += dfs(1, 0, color, dp, adj_list)
+        total_ways %= MOD
+
+    return total_ways
+
+# Input parsing
+n = int(input())
+edges = [list(map(int, input().split())) for _ in range(n - 1)]
+
+result = beautiful_colorings(n, edges)
+print(result)

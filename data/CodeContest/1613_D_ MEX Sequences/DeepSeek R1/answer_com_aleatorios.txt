@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int mod = 998244353;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+        }
+        
+        int M = 0;
+        vector<bool> present(n+2, false);
+        for (int x : a) {
+            if (x <= n+1) {
+                present[x] = true;
+            }
+        }
+        while (present[M]) {
+            M++;
+        }
+        
+        vector<vector<int>> dp(M+1, vector<int>(2, 0));
+        dp[0][0] = 1;
+        
+        for (int x : a) {
+            int v10 = 0, v11 = 0;
+            if (x-1 >= 0 && x-1 <= M) {
+                v10 = dp[x-1][0];
+                v11 = dp[x-1][1];
+            }
+            int v20 = 0, v21 = 0;
+            if (x <= M) {
+                v20 = dp[x][0];
+                v21 = dp[x][1];
+            }
+            int v30 = 0, v31 = 0;
+            if (x+1 <= M) {
+                v30 = dp[x+1][0];
+                v31 = dp[x+1][1];
+            }
+            
+            if (x-1 >= 0 && x-1 <= M) {
+                dp[x-1][1] = (dp[x-1][1] + v10 + v11) % mod;
+            }
+            if (x <= M) {
+                dp[x+1][0] = (dp[x+1][0] + v20) % mod;
+            }
+            if (x+1 <= M) {
+                dp[x+1][0] = (dp[x+1][0] + v30) % mod;
+                dp[x+1][1] = (dp[x+1][1] + v31) % mod;
+            }
+        }
+        
+        long long ans = 0;
+        for (int m = 0; m <= M; m++) {
+            if (m > 0) {
+                ans = (ans + dp[m][0]) % mod;
+            }
+            ans = (ans + dp[m][1]) % mod;
+        }
+        cout << ans << '\n';
+    }
+}

@@ -1,0 +1,25 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+
+        count = 0
+        result = []
+        for i in range(n):
+            if count == n // 2:
+                break
+            for j in range(n):
+                if i != j:
+                    x = a[i]
+                    y = a[j]
+                    mod_result = x % y
+                    if mod_result not in a:
+                        result.append((x, y))
+                        count += 1
+                        break
+
+        for x, y in result:
+            print(x, y)
+
+solve()

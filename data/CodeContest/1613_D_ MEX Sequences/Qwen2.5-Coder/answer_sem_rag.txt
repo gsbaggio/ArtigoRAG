@@ -1,0 +1,57 @@
+MOD = 998244353
+
+def mex_correct_subsequences(t, test_cases):
+    results = []
+    for n, a in test_cases:
+        # Step 1: Track the indices of elements
+        indices = [[] for _ in range(n + 1)]
+        for i, val in enumerate(a):
+            indices[val].append(i)
+        
+        # Step 2: Initialize DP array
+        dp = [0] * (n + 1)
+        dp[0] = 1  # Empty subsequence
+        
+        # Step 3: Iterate over possible MEX values
+        for mex in range(n + 1):
+            if mex == 0:
+                continue
+            
+            # Count of subsequences ending with MEX-1
+            dp[mex] = dp[mex - 1]
+            
+            # Add subsequences formed by elements equal to MEX
+            if indices[mex]:
+                dp[mex] += (1 << len(indices[mex - 1])) - 1
+                dp[mex] %= MOD
+            
+            # Add subsequences formed by elements equal to MEX-1
+            if indices[mex - 1]:
+                dp[mex] += (1 << len(indices[mex - 1])) - 1
+                dp[mex] %= MOD
+        
+        # Step 4: Sum up all valid non-empty subsequences
+        result = sum(dp[1:]) % MOD
+        results.append(result)
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+t = int(input[0])
+index = 1
+test_cases = []
+for _ in range(t):
+    n = int(input[index])
+    index += 1
+    a = list(map(int, input[index:index + n]))
+    index += n
+    test_cases.append((n, a))
+
+# Get results
+results = mex_correct_subsequences(t, test_cases)
+
+# Print results
+for result in results:
+    print(result)

@@ -1,0 +1,154 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <string>
+#include <cmath>
+using namespace std;
+
+const int N = 100000;
+const int LOG = 20;
+
+int n, m, q;
+vector<pair<int, char>> g[N+1];
+int parent[N+1], depth[N+1];
+char letter[N+1];
+int up[N+1][LOG];
+string s[N+1];
+
+void bfs() {
+    queue<int> q;
+    q.push(1);
+    parent[1] = 0;
+    depth[1] = 0;
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        for (auto [v, c] : g[u]) {
+            if (v == parent[u]) continue;
+            parent[v] = u;
+            letter[v] = c;
+            depth[v] = depth[u] + 1;
+            q.push(v);
+        }
+    }
+}
+
+void precompute_lca() {
+    for (int i=1; i<=n; i++) up[i][0] = parent[i];
+    for (int j=1; j<LOG; j++) {
+        for (int i=1; i<=n; i++) {
+            if (up[i][j-1] != 0)
+                up[i][j] = up[ up[i][j-1] ][j-1];
+            else
+                up[i][j] = 0;
+        }
+    }
+}
+
+int lca(int u, int v) {
+    if (depth[u] < depth[v]) swap(u, v);
+    int diff = depth[u] - depth[v];
+    for (int j=0; j<LOG; j++) {
+        if (diff & (1<<j)) {
+            u = up[u][j];
+        }
+    }
+    if (u == v) return u;
+    for (int j=LOG-1; j>=0; j--) {
+        if (up[u][j] != up[v][j]) {
+            u = up[u][j];
+            v = up[v][j];
+        }
+    }
+    return parent[u];
+}
+
+string get_string(int u, int v) {
+    int w = lca(u, v);
+    string s1, s2;
+    int a = u;
+    while (a != w) {
+        s1 += letter[a];
+        a = parent[a];
+    }
+    a = v;
+    while (a != w) {
+        s2 += letter[a];
+        a = parent[a];
+    }
+    reverse(s2.begin(), s2.end());
+    return s1 + s2;
+}
+
+int count_occurrences(const string &text, const string &pattern) {
+    int n = text.size();
+    int m = pattern.size();
+    if (m == 0) return 0;
+    vector<int> next(m+1);
+    next[0] = -1;
+    int i = 0, j = -1;
+    while (i < m) {
+        if (j == -1 || pattern[i] == pattern[j]) {
+            i++;
+            j++;
+            next[i] = j;
+        } else {
+            j = next[j];
+        }
+    }
+
+    i = 0; j = 0;
+    int count = 0;
+    while (i < n) {
+        if (j == -1 || text[i] == pattern[j]) {
+            i++;
+            j++;
+        } else {
+            j = next[j];
+        }
+        if (j == m) {
+            count++;
+            j = next[j];
+        }
+    }
+    return count;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    cin >> n >> m >> q;
+    for (int i=0; i<n-1; i++) {
+        int u, v;
+        char c;
+        cin >> u >> v >> c;
+        g[u].emplace_back(v, c);
+        g[v].emplace_back(u, c);
+    }
+
+    bfs();
+    precompute_lca();
+
+    for (int i=1; i<=m; i++) {
+        cin >> s[i];
+    }
+
+    while (q--) {
+        int u, v, l, r;
+        cin >> u >> v >> l >> r;
+        string p = get_string(u, v);
+        if (p.size() > 100) {
+            cout << 0 << '\n';
+            continue;
+        }
+        int ans = 0;
+        for (int i=l; i<=r; i++) {
+            if (s[i].size() < p.size()) continue;
+            ans += count_occurrences(s[i], p);
+        }
+        cout << ans << '\n';
+    }
+
+    return 0;
+}

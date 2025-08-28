@@ -1,0 +1,77 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+const int MOD = 998244353;
+
+// Function to add two numbers under modulo
+ll add(ll a, ll b) {
+    return (a + b) % MOD;
+}
+
+// Function to multiply two numbers under modulo
+ll mul(ll a, ll b) {
+    return (a * b) % MOD;
+}
+
+// Function to subtract two numbers under modulo
+ll sub(ll a, ll b) {
+    return (a - b + MOD) % MOD;
+}
+
+// Function to perform DFS and compute DP values
+void dfs(int v, int p, vector<vector<int>>& adj, vector<vector<ll>>& dp) {
+    // Initialize dp[v][c] to 1 for all colors c
+    for (int c = 1; c <= adj.size(); ++c) {
+        dp[v][c] = 1;
+    }
+
+    // Traverse all children of vertex v
+    for (int u : adj[v]) {
+        if (u == p) continue; // Skip the parent vertex
+        dfs(u, v, adj, dp); // Recursively compute dp for the child subtree
+
+        // Update dp[v][c] by considering all valid colorings of the child subtree
+        for (int c = 1; c <= adj.size(); ++c) {
+            ll sum = 0;
+            for (int x = 1; x <= adj.size(); ++x) {
+                if (x != c - 1) {
+                    sum = add(sum, dp[u][x]);
+                }
+            }
+            dp[v][c] = mul(dp[v][c], sum);
+        }
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    int n;
+    cin >> n;
+
+    // Adjacency list to store the tree
+    vector<vector<int>> adj(n+1);
+    for(int i=0;i<n-1;++i){
+        int x, y;
+        cin >> x >> y;
+        adj[x].push_back(y);
+        adj[y].push_back(x);
+    }
+
+    // DP table to store the number of ways to color subtrees
+    vector<vector<ll>> dp(n+1, vector<ll>(n+1, 0));
+
+    // Perform DFS starting from the root vertex 1
+    dfs(1, -1, adj, dp);
+
+    // Calculate the total number of beautiful colorings
+    ll result = 0;
+    for(int c=1;c<=n;++c){
+        result = add(result, dp[1][c]);
+    }
+
+    // Print the result modulo 998244353
+    cout << result;
+}

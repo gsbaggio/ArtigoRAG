@@ -1,0 +1,56 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<int> a(n);
+        unordered_set<int> elements;
+        
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+            elements.insert(a[i]);
+        }
+        
+        int pairs_needed = n / 2;
+        vector<pair<int, int>> result;
+        set<pair<int, int>> used_pairs;
+        
+        for (int i = 0; i < n && result.size() < pairs_needed; i++) {
+            for (int j = 0; j < n && result.size() < pairs_needed; j++) {
+                if (i == j) continue;
+                
+                int x = a[i];
+                int y = a[j];
+                
+                // Skip if we've already used this pair
+                if (used_pairs.count({x, y}) > 0) continue;
+                
+                int mod_result = x % y;
+                
+                if (elements.find(mod_result) == elements.end()) {
+                    result.push_back({x, y});
+                    used_pairs.insert({x, y});
+                }
+            }
+        }
+        
+        for (auto& pair : result) {
+            cout << pair.first << " " << pair.second << endl;
+        }
+    }
+    
+    return 0;
+}

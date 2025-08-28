@@ -1,0 +1,82 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to check if a cell is within bounds and free
+bool isValid(int x, int y, int n, int m, vector<string>& grid) {
+    return x >= 0 && x < n && y >= 0 && y < m && grid[x][y] == '.';
+}
+
+void solve() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+
+        vector<string> grid(n);
+        queue<pair<int, int>> q;
+        vector<vector<bool>> visited(n, vector<bool>(m, false));
+
+        // Read the grid and locate the lab
+        for (int i = 0; i < n; i++) {
+            cin >> grid[i];
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 'L') {
+                    q.push({i, j});
+                    visited[i][j] = true;
+                }
+            }
+        }
+
+        // Directions for moving up, down, left, right
+        vector<pair<int, int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        // BFS to mark reachable cells
+        while (!q.empty()) {
+            auto [x, y] = q.front();
+            q.pop();
+
+            for (auto [dx, dy] : directions) {
+                int nx = x + dx, ny = y + dy;
+
+                if (isValid(nx, ny, n, m, grid) && !visited[nx][ny]) {
+                    // Count free neighbors
+                    int freeNeighbors = 0;
+                    for (auto [ddx, ddy] : directions) {
+                        int nnx = nx + ddx, nny = ny + ddy;
+                        if (isValid(nnx, nny, n, m, grid)) {
+                            freeNeighbors++;
+                        }
+                    }
+
+                    // If the cell has at most one free neighbor, mark it reachable
+                    if (freeNeighbors <= 1) {
+                        visited[nx][ny] = true;
+                        q.push({nx, ny});
+                    }
+                }
+            }
+        }
+
+        // Update the grid with '+' for reachable cells
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == '.' && visited[i][j]) {
+                    grid[i][j] = '+';
+                }
+            }
+        }
+
+        // Output the modified grid
+        for (int i = 0; i < n; i++) {
+            cout << grid[i] << '\n';
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}

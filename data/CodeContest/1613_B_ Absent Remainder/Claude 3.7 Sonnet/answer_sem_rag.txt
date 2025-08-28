@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+#include <unordered_set>
+#include <set>
+
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<int> a(n);
+        unordered_set<int> values;
+        
+        for (int i = 0; i < n; i++) {
+            cin >> a[i];
+            values.insert(a[i]);
+        }
+        
+        int pairsNeeded = n / 2;
+        vector<pair<int, int>> result;
+        set<pair<int, int>> usedPairs;
+        
+        for (int i = 0; i < n && result.size() < pairsNeeded; i++) {
+            for (int j = 0; j < n && result.size() < pairsNeeded; j++) {
+                if (i == j) continue;  // Skip same indices
+                
+                int x = a[i];
+                int y = a[j];
+                
+                // Skip if this pair was already used
+                pair<int, int> currentPair = {x, y};
+                if (usedPairs.count(currentPair) > 0) continue;
+                
+                int mod = x % y;
+                
+                // Check if x mod y is not in the array
+                if (values.find(mod) == values.end()) {
+                    result.push_back(currentPair);
+                    usedPairs.insert(currentPair);
+                    break;
+                }
+            }
+        }
+        
+        // Output the results
+        for (const auto& pair : result) {
+            cout << pair.first << " " << pair.second << endl;
+        }
+    }
+    
+    return 0;
+}

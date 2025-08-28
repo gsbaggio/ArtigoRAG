@@ -1,0 +1,67 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+    int n;
+    cin >> n;
+
+    vector<vector<int>> adj(n + 1);
+    for (int i = 0; i < n - 1; ++i) {
+        int x, y;
+        cin >> x >> y;
+        adj[x].push_back(y);
+        adj[y].push_back(x);
+    }
+
+    long long count = 0;
+    vector<int> colors(n + 1);
+    vector<bool> used(n + 1, false);
+
+    function<void(int)> solve = [&](int u) {
+        if (u == n + 1) {
+            // Check if the coloring is beautiful
+            for (int k = 2; k <= n; ++k) {
+                int parent = -1;
+                function<void(int, int, int)> find_parent = 
+                    [&](int curr, int par, int target) {
+                    if (curr == target) {
+                        parent = par;
+                        return;
+                    }
+                    for (int neighbor : adj[curr]) {
+                        if (neighbor != par) {
+                            find_parent(neighbor, curr, target);
+                        }
+                    }
+                };
+                find_parent(1, 0, k);
+                
+                if (colors[k] == colors[parent] - 1) {
+                    return;
+                }
+            }
+            count = (count + 1) % MOD;
+            return;
+        }
+
+        for (int c = 1; c <= n; ++c) {
+            if (!used[c]) {
+                colors[u] = c;
+                used[c] = true;
+                solve(u + 1);
+                used[c] = false;
+            }
+        }
+    };
+
+    solve(1);
+
+    cout << count << endl;
+
+    return 0;
+}

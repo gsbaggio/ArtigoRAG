@@ -1,0 +1,46 @@
+from collections import defaultdict
+
+def find_valid_pairs(t, testcases):
+    def get_remainder(x, y):
+        return x % y
+
+    def has_invalid_remainder(x, y, remainders):
+        return remainders[0] == 0 or remainders[get_remainder(x, y)]
+
+    results = []
+    for _ in range(t):
+        n = testcases[_][0]
+        arr = testcases[_][1]
+
+        remainders = defaultdict(int)
+        valid_pairs = []
+
+        for i in range(n):
+            for j in range(i+1, n):
+                remainders[get_remainder(arr[i], arr[j])] = 1
+
+        for i in range(n):
+            for j in range(i+1, n):
+                if not has_invalid_remainder(arr[i], arr[j], remainders):
+                    valid_pairs.append((arr[i], arr[j]))
+
+        results.append(valid_pairs)
+
+    return results
+
+# Example Input
+t = 4
+testcases = [
+    (2, [1, 4]),
+    (4, [2, 8, 3, 4]),
+    (5, [3, 8, 5, 9, 7]),
+    (6, [2, 7, 5, 3, 4, 8])
+]
+
+# Get the valid pairs
+results = find_valid_pairs(t, testcases)
+
+# Print the results
+for pairs in results:
+    for pair in pairs:
+        print(pair[1], pair[0])  # Ensure x is printed before y

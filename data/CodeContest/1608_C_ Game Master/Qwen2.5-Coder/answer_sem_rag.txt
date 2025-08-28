@@ -33,21 +33,6 @@ def can_win_tournament():
     for result in results:
         print(result)
 
-# Uncomment the following line to run the function when using standard input/output
-# can_win_tournament()
 
-# Example usage with predefined input
-if __name__ == "__main__":
-    input_data = """3
-4
-1 2 3 4
-1 2 3 4
-4
-11 12 20 21
-44 22 11 30
-1
-1000000000
-1000000000"""
-    import io
-    sys.stdin = io.StringIO(input_data)
-    can_win_tournament()
+can_win_tournament()
+

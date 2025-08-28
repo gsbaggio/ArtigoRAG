@@ -1,0 +1,44 @@
+mod = 998244353
+
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        dp0 = [0] * (n+5)
+        dp1 = [0] * (n+5)
+        dp0[0] = 1
+        
+        for x in a:
+            o0 = dp0[x]
+            o0_minus = dp0[x-1] if x-1 >= 0 else 0
+            o1_minus = dp1[x-1] if x-1 >= 0 else 0
+            o0_plus = dp0[x+1]
+            o1_plus = dp1[x+1]
+            
+            if x-1 >= 0:
+                dp1[x-1] = (dp1[x-1] + o0_minus + o1_minus) % mod
+                
+            dp0[x+1] = (dp0[x+1] + o0) % mod
+            dp0[x+1] = (dp0[x+1] + o0_plus) % mod
+            dp1[x+1] = (dp1[x+1] + o1_plus) % mod
+            
+        total = 0
+        for i in range(n+3):
+            total = (total + dp0[i] + dp1[i]) % mod
+        total = (total - 1) % mod
+        if total < 0:
+            total += mod
+        results.append(str(total))
+        
+    sys.stdout.write("\n".join(results))
+    
+if __name__ == "__main__":
+    main()

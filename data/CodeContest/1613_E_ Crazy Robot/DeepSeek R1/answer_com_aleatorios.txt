@@ -1,0 +1,87 @@
+import collections
+import sys
+
+def main():
+    data = sys.stdin.read().splitlines()
+    t = int(data[0])
+    index = 1
+    for _ in range(t):
+        n, m = map(int, data[index].split())
+        index += 1
+        grid = []
+        for i in range(n):
+            grid.append(data[index].strip())
+            index += 1
+            
+        # Find the lab
+        lab_i, lab_j = -1, -1
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == 'L':
+                    lab_i, lab_j = i, j
+                    break
+            if lab_i != -1:
+                break
+                
+        # Initialize arrays
+        deg = [[0] * m for _ in range(n)]
+        good = [[False] * m for _ in range(n)]
+        good_count = [[0] * m for _ in range(n)]
+        
+        # Precompute deg for each cell that is not blocked
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == '#':
+                    continue
+                count = 0
+                for dx, dy in [(0,1), (0,-1), (1,0), (-1,0)]:
+                    ni = i + dx
+                    nj = j + dy
+                    if 0 <= ni < n and 0 <= nj < m and grid[ni][nj] != '#':
+                        count += 1
+                deg[i][j] = count
+                
+        # Mark the lab as good
+        good[lab_i][lab_j] = True
+        q = collections.deque()
+        
+        # Process neighbors of the lab
+        for dx, dy in [(0,1), (0,-1), (1,0), (-1,0)]:
+            ni = lab_i + dx
+            nj = lab_j + dy
+            if 0 <= ni < n and 0 <= nj < m and grid[ni][nj] != '#':
+                good_count[ni][nj] += 1
+                if good_count[ni][nj] >= deg[ni][nj] - 1 and not good[ni][nj]:
+                    good[ni][nj] = True
+                    q.append((ni, nj))
+                    
+        # BFS from the queue
+        while q:
+            i, j = q.popleft()
+            for dx, dy in [(0,1), (0,-1), (1,0), (-1,0)]:
+                ni = i + dx
+                nj = j + dy
+                if 0 <= ni < n and 0 <= nj < m and grid[ni][nj] != '#':
+                    if not good[ni][nj]:
+                        good_count[ni][nj] += 1
+                        if good_count[ni][nj] >= deg[ni][nj] - 1:
+                            good[ni][nj] = True
+                            q.append((ni, nj))
+                            
+        # Output the grid
+        for i in range(n):
+            line = []
+            for j in range(m):
+                if grid[i][j] == 'L':
+                    line.append('L')
+                elif grid[i][j] == '.':
+                    if good[i][j]:
+                        line.append('+')
+                    else:
+                        line.append('.')
+                else:
+                    line.append('#')
+            print(''.join(line))
+            
+if __name__ == "__main__":
+    main()

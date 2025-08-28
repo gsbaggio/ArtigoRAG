@@ -1,0 +1,49 @@
+def solve():
+    import sys
+    input = sys.stdin.read().split()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        a = list(map(int, input[index:index + n]))
+        index += n
+        
+        # Sort the array
+        a.sort()
+        
+        # Initialize pointers
+        left = 0
+        right = n - 1
+        
+        # List to store the pairs
+        pairs = []
+        
+        # Form pairs
+        while len(pairs) < n // 2:
+            x = a[right]
+            y = a[left]
+            
+            # Check if x % y is not in the array
+            if x % y not in a:
+                pairs.append((x, y))
+            
+            # Move the pointers
+            left += 1
+            right -= 1
+        
+        # Store the result for this test case
+        results.append(pairs)
+    
+    # Print the results
+    for pairs in results:
+        for x, y in pairs:
+            print(x, y)
+
+# Call the solve function
+solve()

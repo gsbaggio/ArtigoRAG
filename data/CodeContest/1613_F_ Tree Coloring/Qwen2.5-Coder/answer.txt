@@ -1,0 +1,82 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+const int MAXN = 250005;
+
+vector<int> adj[MAXN];
+int dp[MAXN][MAXN];
+
+// Function to perform DFS and compute the number of beautiful colorings
+void dfs(int node, int parent) {
+    // Initialize dp[node][color] to 1 for all colors for leaf nodes
+    if (adj[node].size() == 1 && node != 1) {
+        for (int color = 1; color <= node; ++color) {
+            dp[node][color] = 1;
+        }
+        return;
+    }
+
+    // Initialize dp[node][color] to 0 for all colors
+    for (int color = 1; color <= node; ++color) {
+        dp[node][color] = 0;
+    }
+
+    // Compute dp[node][color] based on the colorings of its children
+    for (int child : adj[node]) {
+        if (child == parent) continue;
+        dfs(child, node);
+    }
+
+    // Compute the product of the number of valid colorings for all children
+    vector<int> child_dp(node + 1, 1);
+    for (int child : adj[node]) {
+        if (child == parent) continue;
+        for (int color = 1; color <= node; ++color) {
+            child_dp[color] = (1LL * child_dp[color] * (dp[child][color] + dp[child][color - 1])) % MOD;
+        }
+    }
+
+    // Assign colors to the current node ensuring the condition c_k != c_{p_k} - 1
+    for (int color = 1; color <= node; ++color) {
+        dp[node][color] = child_dp[color];
+        if (color > 1) {
+            dp[node][color] = (dp[node][color] - child_dp[color - 1] + MOD) % MOD;
+        }
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    cin >> n;
+    
+    // Read the edges of the tree
+    for(int i = 0; i < n - 1; ++i){
+        int x, y;
+        cin >> x >> y;
+        adj[x].push_back(y);
+        adj[y].push_back(x);
+    }
+    
+    // Initialize dp array for the root
+    for(int color = 1; color <= n; ++color){
+        dp[1][color] = 1;
+    }
+    
+    // Perform DFS starting from the root (vertex 1)
+    dfs(1, -1);
+    
+    // Calculate the total number of beautiful colorings
+    int total_colorings = 0;
+    for(int color = 1; color <= n; ++color){
+        total_colorings = (total_colorings + dp[1][color]) % MOD;
+    }
+    
+    // Output the result
+    cout << total_colorings;
+    
+    return 0;
+}

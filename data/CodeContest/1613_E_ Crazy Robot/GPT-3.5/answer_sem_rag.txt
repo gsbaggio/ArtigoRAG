@@ -1,0 +1,41 @@
+def can_reach_lab(grid):
+    n = len(grid)
+    m = len(grid[0])
+    
+    # Helper function to check if a cell is within the grid boundaries
+    def is_valid(x, y):
+        return 0 <= x < n and 0 <= y < m
+
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == '.':
+                # Check if the current cell can reach the lab by forcing the robot
+                can_reach = False
+                for dx, dy in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
+                    new_x, new_y = i + dx, j + dy
+                    if is_valid(new_x, new_y) and grid[new_x][new_y] == 'L':
+                        can_reach = True
+                        break
+                
+                # Update the cell in the grid accordingly
+                if can_reach:
+                    grid[i] = grid[i][:j] + '+' + grid[i][j+1:]
+    
+    return grid
+
+
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n, m = map(int, input().split())
+        grid = [input() for _ in range(n)]
+        
+        updated_grid = can_reach_lab(grid)
+        
+        for row in updated_grid:
+            print(row)
+
+
+# Run the solution
+solve()

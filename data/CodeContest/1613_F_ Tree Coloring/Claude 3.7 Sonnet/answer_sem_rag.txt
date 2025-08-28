@@ -1,0 +1,67 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n;
+    cin >> n;
+    
+    vector<vector<int>> adj(n + 1);
+    for (int i = 0; i < n - 1; i++) {
+        int x, y;
+        cin >> x >> y;
+        adj[x].push_back(y);
+        adj[y].push_back(x);
+    }
+    
+    // dp[node][color] = number of ways to color the subtree rooted at node
+    // if node has color 'color'
+    vector<vector<long long>> dp(n + 1, vector<long long>(n + 1, 0));
+    
+    function<void(int, int)> dfs = [&](int node, int parent) {
+        // Initially, every color is valid for this node
+        for (int c = 1; c <= n; c++) {
+            dp[node][c] = 1;
+        }
+        
+        // Process children
+        for (int child : adj[node]) {
+            if (child == parent) continue;
+            
+            // Recursively process the child subtree
+            dfs(child, node);
+            
+            // For each possible color of the current node
+            for (int node_color = 1; node_color <= n; node_color++) {
+                long long sum = 0;
+                
+                // Sum up all valid colorings of the child
+                for (int child_color = 1; child_color <= n; child_color++) {
+                    if (child_color != node_color && child_color != node_color - 1) {
+                        sum = (sum + dp[child][child_color]) % MOD;
+                    }
+                }
+                
+                // Multiply by the number of ways for this color
+                dp[node][node_color] = (dp[node][node_color] * sum) % MOD;
+            }
+        }
+    };
+    
+    dfs(1, 0);
+    
+    // Sum up all possible colorings for the root
+    long long ans = 0;
+    for (int c = 1; c <= n; c++) {
+        ans = (ans + dp[1][c]) % MOD;
+    }
+    
+    cout << ans << endl;
+    
+    return 0;
+}

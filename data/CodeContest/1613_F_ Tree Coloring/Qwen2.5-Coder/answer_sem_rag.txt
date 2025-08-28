@@ -1,0 +1,72 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    cin >> n;
+    
+    vector<vector<int>> adj(n+1);
+    for(int i=0;i<n-1;i++){
+        int x, y;
+        cin >> x >> y;
+        adj[x].push_back(y);
+        adj[y].push_back(x);
+    }
+    
+    // dp[v][c] : number of ways to color subtree rooted at v with color c on v
+    vector<vector<long long>> dp(n+1, vector<long long>(n+1, 0));
+    
+    // DFS function
+    function<void(int, int)> dfs = [&](int v, int p){
+        // Base case: leaf node
+        if(adj[v].size() == 1 && v != 1){
+            for(int c=1;c<=n;c++){
+                dp[v][c] = 1;
+            }
+            return;
+        }
+        
+        // Initialize dp[v][c] for non-leaf nodes
+        for(int c=1;c<=n;c++){
+            dp[v][c] = 1;
+        }
+        
+        // Traverse children
+        for(auto u : adj[v]){
+            if(u == p) continue;
+            dfs(u, v);
+            
+            // Calculate the sum of dp[u][c'] for all c' except c-1
+            long long sum = 0;
+            for(int c=1;c<=n;c++){
+                sum += dp[u][c];
+                if(sum >= MOD) sum -= MOD;
+            }
+            
+            // Update dp[v][c]
+            for(int c=1;c<=n;c++){
+                long long prev = dp[v][c];
+                dp[v][c] *= (sum - (c > 1 ? dp[u][c-1] : 0));
+                if(dp[v][c] >= MOD) dp[v][c] -= MOD;
+                dp[v][c] += prev;
+                if(dp[v][c] >= MOD) dp[v][c] -= MOD;
+            }
+        }
+    };
+    
+    dfs(1, -1);
+    
+    // Sum up dp[1][c] for all colors c
+    long long ans = 0;
+    for(int c=1;c<=n;c++){
+        ans += dp[1][c];
+        if(ans >= MOD) ans -= MOD;
+    }
+    
+    cout << ans;
+}

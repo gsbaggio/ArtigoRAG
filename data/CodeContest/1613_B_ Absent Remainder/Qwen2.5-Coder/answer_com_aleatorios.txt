@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to perform binary search to check if a value is in the array
+bool binarySearch(vector<int>& arr, int val) {
+    int left = 0, right = arr.size() - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == val) return true;
+        if (arr[mid] < val) left = mid + 1;
+        else right = mid - 1;
+    }
+    return false;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for(int i = 0; i < n; i++){
+            cin >> a[i];
+        }
+        
+        // Sort the array
+        sort(a.begin(), a.end());
+        
+        // Set to store unique pairs
+        set<pair<int, int>> pairs;
+        
+        // Try to form pairs from the largest to the smallest
+        for(int i = n - 1; i >= 0 && pairs.size() < n / 2; i--){
+            for(int j = i - 1; j >= 0 && pairs.size() < n / 2; j--){
+                int x = a[i];
+                int y = a[j];
+                int mod_val = x % y;
+                
+                // Check if the mod value is not in the array
+                if(!binarySearch(a, mod_val)){
+                    pairs.insert({x, y});
+                }
+            }
+        }
+        
+        // Output the pairs
+        for(auto& p : pairs){
+            cout << p.first << " " << p.second << "\n";
+        }
+    }
+    return 0;
+}

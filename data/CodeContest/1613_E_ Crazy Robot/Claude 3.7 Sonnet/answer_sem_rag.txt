@@ -1,0 +1,107 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+// Direction vectors - right, down, left, up
+const int dx[] = {0, 1, 0, -1};
+const int dy[] = {1, 0, -1, 0};
+
+void solve() {
+    int n, m;
+    cin >> n >> m;
+    
+    vector<string> grid(n);
+    for (int i = 0; i < n; i++) {
+        cin >> grid[i];
+    }
+    
+    // Find the lab
+    int labX = -1, labY = -1;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (grid[i][j] == 'L') {
+                labX = i;
+                labY = j;
+                break;
+            }
+        }
+        if (labX != -1) break;
+    }
+    
+    // BFS from the lab
+    vector<vector<bool>> canForce(n, vector<bool>(m, false));
+    queue<pair<int, int>> q;
+    
+    // Mark the lab cell
+    canForce[labX][labY] = true;
+    q.push({labX, labY});
+    
+    while (!q.empty()) {
+        int x = q.front().first;
+        int y = q.front().second;
+        q.pop();
+        
+        // Check all 4 neighboring cells
+        for (int dir = 0; dir < 4; dir++) {
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
+            
+            // Skip if out of bounds or already processed or blocked
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m || grid[nx][ny] == '#' || canForce[nx][ny]) {
+                continue;
+            }
+            
+            // Check if we can force the robot from (nx, ny) to (x, y)
+            bool canMoveHere = true;
+            
+            // The command we would give is the opposite direction of (x, y) -> (nx, ny)
+            int oppositeDir = (dir + 2) % 4;
+            
+            // Check if robot has any other valid directions besides (x, y)
+            for (int robotDir = 0; robotDir < 4; robotDir++) {
+                // Skip the opposite direction (what we commanded) and the direction to (x, y)
+                if (robotDir == oppositeDir || robotDir == dir) continue;
+                
+                int rx = nx + dx[robotDir];
+                int ry = ny + dy[robotDir];
+                
+                // If this direction is valid (not blocked), robot can escape
+                if (rx >= 0 && rx < n && ry >= 0 && ry < m && grid[rx][ry] != '#') {
+                    canMoveHere = false;
+                    break;
+                }
+            }
+            
+            if (canMoveHere) {
+                canForce[nx][ny] = true;
+                q.push({nx, ny});
+            }
+        }
+    }
+    
+    // Create and print the output grid
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (grid[i][j] == '.' && canForce[i][j]) {
+                cout << '+';
+            } else {
+                cout << grid[i][j];
+            }
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    
+    return 0;
+}

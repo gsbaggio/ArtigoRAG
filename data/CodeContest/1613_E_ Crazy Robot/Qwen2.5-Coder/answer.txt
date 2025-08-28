@@ -1,0 +1,90 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+        
+        vector<string> grid(n);
+        for (int i = 0; i < n; i++) {
+            cin >> grid[i];
+        }
+        
+        // Directions: right, down, left, up
+        int dx[] = {0, 1, 0, -1};
+        int dy[] = {1, 0, -1, 0};
+        
+        // Find the lab cell
+        int lab_x = -1, lab_y = -1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 'L') {
+                    lab_x = i;
+                    lab_y = j;
+                    break;
+                }
+            }
+            if (lab_x != -1) break;
+        }
+        
+        // BFS to find all reachable cells
+        queue<pair<int, int>> q;
+        q.push({lab_x, lab_y});
+        vector<vector<bool>> visited(n, vector<bool>(m, false));
+        visited[lab_x][lab_y] = true;
+        
+        while (!q.empty()) {
+            int x = q.front().first;
+            int y = q.front().second;
+            q.pop();
+            
+            // Check all possible directions the robot could have come from
+            for (int dir = 0; dir < 4; dir++) {
+                int nx = x + dx[dir];
+                int ny = y + dy[dir];
+                
+                // Ensure the new cell is within bounds and free
+                if (nx >= 0 && nx < n && ny >= 0 && ny < m && grid[nx][ny] == '.') {
+                    // Check the opposite direction to see if it's blocked
+                    bool can_move = true;
+                    for (int opp_dir = 0; opp_dir < 4; opp_dir++) {
+                        if (opp_dir == (dir + 2) % 4) continue; // Skip the opposite direction
+                        int nnx = nx + dx[opp_dir];
+                        int nny = ny + dy[opp_dir];
+                        if (nnx >= 0 && nnx < n && nny >= 0 && nny < m && grid[nnx][nny] != '#') {
+                            can_move = false;
+                            break;
+                        }
+                    }
+                    
+                    if (can_move) {
+                        visited[nx][ny] = true;
+                        q.push({nx, ny});
+                    }
+                }
+            }
+        }
+        
+        // Replace reachable free cells with '+'
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == '.' && visited[i][j]) {
+                    grid[i][j] = '+';
+                }
+            }
+        }
+        
+        // Output the modified grid
+        for (int i = 0; i < n; i++) {
+            cout << grid[i] << "\n";
+        }
+    }
+    
+    return 0;
+}

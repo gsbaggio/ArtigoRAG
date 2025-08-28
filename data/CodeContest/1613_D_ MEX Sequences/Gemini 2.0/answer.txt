@@ -1,0 +1,25 @@
+def solve():
+    MOD = 998244353
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    max_a = max(a) if a else 0
+    dp = [0] * (max_a + 2)  # dp[i] stores count of MEX-correct subsequences with mex i
+
+    for x in a:
+        new_dp = dp[:]  # Create a copy
+        
+        # Extend existing subsequences
+        for mex in range(len(dp)):
+            if abs(x - mex) <= 1:
+                new_dp[x] = (new_dp[x] + dp[mex]) % MOD
+        
+        # Start a new subsequence
+        new_dp[x] = (new_dp[x] + 1) % MOD
+        
+        dp = new_dp
+
+    ans = sum(dp) % MOD
+    print(ans)
+
+solve()

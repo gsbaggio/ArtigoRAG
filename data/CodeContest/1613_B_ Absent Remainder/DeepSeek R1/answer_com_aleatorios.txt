@@ -1,0 +1,13 @@
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    m = min(arr)
+    pairs_needed = n // 2
+    count = 0
+    for num in arr:
+        if num > m:
+            print(num, m)
+            count += 1
+            if count == pairs_needed:
+                break

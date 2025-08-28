@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 998244353;
+const int MAXN = 250001;
+
+vector<int> tree[MAXN];
+long long fact[MAXN], inv_fact[MAXN];
+
+// Function to compute modular exponentiation
+long long mod_exp(long long base, long long exp, long long mod) {
+    long long result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1) result = (result * base) % mod;
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return result;
+}
+
+// Precompute factorials and modular inverses
+void precompute_factorials(int n) {
+    fact[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        fact[i] = (fact[i - 1] * i) % MOD;
+    }
+    for (int i = 0; i <= n; i++) {
+        inv_fact[i] = mod_exp(fact[i], MOD - 2, MOD);
+    }
+}
+
+// DFS to calculate the number of beautiful colorings
+long long dfs(int node, int parent) {
+    long long result = fact[tree[node].size()]; // Ways to assign colors to children
+    for (int child : tree[node]) {
+        if (child != parent) {
+            result = (result * dfs(child, node)) % MOD;
+        }
+    }
+    if (parent != -1) {
+        result = (result * (tree.size() - 1)) % MOD; // Exclude parent's color - 1
+    }
+    return result;
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    // Read the tree edges
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        tree[u].push_back(v);
+        tree[v].push_back(u);
+    }
+
+    // Precompute factorials and modular inverses
+    precompute_factorials(n);
+
+    // Start DFS from the root (node 1)
+    long long result = (n * dfs(1, -1)) % MOD;
+
+    cout << result << endl;
+    return 0;
+}
