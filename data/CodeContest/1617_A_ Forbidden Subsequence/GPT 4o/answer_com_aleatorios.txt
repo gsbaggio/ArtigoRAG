@@ -1,0 +1,43 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    
+    t = int(data[0])  # Number of test cases
+    results = []
+    
+    for i in range(t):
+        S = data[2 * i + 1]
+        T = data[2 * i + 2]
+        
+        # Sort S lexicographically
+        sorted_S = sorted(S)
+        
+        # Count occurrences of 'a', 'b', 'c'
+        count_a = sorted_S.count('a')
+        count_b = sorted_S.count('b')
+        count_c = sorted_S.count('c')
+        
+        # Construct the result
+        if T == "abc" and count_a > 0 and count_b > 0 and count_c > 0:
+            # Rearrange 'a', 'b', 'c' to avoid "abc" as a subsequence
+            result = ['a'] * count_a + ['c'] * count_c + ['b'] * count_b
+        else:
+            # Keep the sorted order
+            result = []
+        
+        # Add the remaining characters
+        for char in sorted_S:
+            if char not in "abc":
+                result.append(char)
+        
+        # Append the rearranged 'a', 'b', 'c'
+        if T == "abc" and count_a > 0 and count_b > 0 and count_c > 0:
+            result = ['a'] * count_a + ['c'] * count_c + ['b'] * count_b
+        else:
+            result += ['a'] * count_a + ['b'] * count_b + ['c'] * count_c
+        
+        results.append("".join(result))
+    
+    # Print all results
+    sys.stdout.write("\n".join(results) + "\n")

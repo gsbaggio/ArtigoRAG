@@ -1,0 +1,30 @@
+def get_smallest_permutation(S, T):
+    pos = {'a': -1, 'b': -1, 'c': -1}
+    for i, ch in enumerate(T):
+        pos[ch] = i
+
+    a_ptr, b_ptr, c_ptr = 0, 0, 0
+    S_prime = ""
+    
+    for ch in S:
+        if ch == 'a' and a_ptr <= pos['a']:
+            S_prime += 'a'
+            a_ptr += 1
+        elif ch == 'b' and b_ptr <= pos['b']:
+            S_prime += 'b'
+            b_ptr += 1
+        elif ch == 'c' and c_ptr <= pos['c']:
+            S_prime += 'c'
+            c_ptr += 1
+
+    S_prime += 'a' * (len(S) - len(S_prime))
+    
+    return S_prime
+
+# Reading input
+t = int(input())
+for _ in range(t):
+    S = input().strip()
+    T = input().strip()
+    result = get_smallest_permutation(S, T)
+    print(result)

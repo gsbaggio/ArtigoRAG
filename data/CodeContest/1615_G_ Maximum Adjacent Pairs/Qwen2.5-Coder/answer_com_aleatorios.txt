@@ -1,0 +1,90 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    vector<int> zeros;
+    
+    // Read the array and identify positions of zeros
+    for(int i=0;i<n;i++){
+        cin >> a[i];
+        if(a[i] == 0){
+            zeros.push_back(i);
+        }
+    }
+    
+    // If there are no zeros, the array is already valid
+    if(zeros.empty()){
+        for(int i=0;i<n;i++){
+            cout << a[i] << " ";
+        }
+        cout << "\n";
+        return 0;
+    }
+    
+    // Initialize a set to keep track of used numbers
+    set<int> used;
+    int current_number = 1;
+    
+    // Replace zeros with numbers from 1 to n
+    for(int i=0;i<zeros.size();i++){
+        // Find the next unused number
+        while(used.find(current_number) != used.end()){
+            current_number++;
+        }
+        
+        // Place the number in the zero position
+        a[zeros[i]] = current_number;
+        used.insert(current_number);
+        
+        // Move to the next number
+        current_number++;
+    }
+    
+    // Ensure that all numbers from 1 to n appear at least once
+    // and that adjacent elements are different
+    current_number = 1;
+    for(int i=0;i<n;i++){
+        if(a[i] == 0){
+            // Find the next unused number
+            while(used.find(current_number) != used.end()){
+                current_number++;
+            }
+            
+            // Place the number in the zero position
+            a[i] = current_number;
+            used.insert(current_number);
+            
+            // Move to the next number
+            current_number++;
+        }
+        
+        // Ensure that adjacent elements are different
+        if(i > 0 && a[i] == a[i-1]){
+            // Find the next number that is not equal to a[i-1]
+            while(used.find(current_number) != used.end() || current_number == a[i-1]){
+                current_number++;
+            }
+            
+            // Place the number in the current position
+            a[i] = current_number;
+            used.insert(current_number);
+            
+            // Move to the next number
+            current_number++;
+        }
+    }
+    
+    // Output the modified array
+    for(int i=0;i<n;i++){
+        cout << a[i] << " ";
+    }
+    cout << "\n";
+    
+    return 0;
+}

@@ -1,0 +1,35 @@
+    import sys
+
+def count_numbers_with_bit(n, i):
+    period = 1 << (i + 1)
+    half = 1 << i
+    full_cycles = n // period
+    remainder = n % period
+    count = full_cycles * half
+    if remainder >= half:
+        count += min(remainder - half + 1, half)
+    return count
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        l = int(data[index])
+        r = int(data[index + 1])
+        index += 2
+        n = r - l + 1
+        max_count = 0
+        for i in range(0, 18):
+            cnt_r = count_numbers_with_bit(r, i)
+            cnt_l_minus = count_numbers_with_bit(l - 1, i)
+            cnt = cnt_r - cnt_l_minus
+            if cnt > max_count:
+                max_count = cnt
+        results.append(str(n - max_count))
+    
+    sys.stdout.write("\n".join(results))
+
+if __name__ == "__main__":
+    main()

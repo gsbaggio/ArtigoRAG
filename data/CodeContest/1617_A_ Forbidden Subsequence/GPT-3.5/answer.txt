@@ -1,0 +1,28 @@
+import heapq
+
+def smallest_permutation(S, T):
+    count = [0] * 26
+    for char in S:
+        count[ord(char) - ord('a')] += 1
+    
+    pq = []
+    for char in S:
+        if char not in T:
+            heapq.heappush(pq, char)
+    
+    result = []
+    while pq:
+        char = heapq.heappop(pq)
+        result.append(char)
+        count[ord(char) - ord('a')] -= 1
+        if count[ord(char) - ord('a')] > 0:
+            heapq.heappush(pq, char)
+    
+    return ''.join(result)
+
+# Read input
+t = int(input())
+for _ in range(t):
+    S = input().strip()
+    T = input().strip()
+    print(smallest_permutation(S, T))

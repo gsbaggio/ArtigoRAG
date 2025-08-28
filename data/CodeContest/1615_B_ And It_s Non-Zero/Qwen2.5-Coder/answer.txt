@@ -1,0 +1,37 @@
+def min_deletions_to_non_zero_and(l, r):
+    # Find the highest power of 2 less than or equal to r
+    k = 0
+    while (1 << k) <= r:
+        k += 1
+    k -= 1
+    
+    # The highest power of 2 less than or equal to r
+    highest_power_of_2 = 1 << k
+    
+    # If l is greater than or equal to the highest power of 2, no deletions are needed
+    if l >= highest_power_of_2:
+        return 0
+    
+    # Otherwise, we need to delete all numbers less than the highest power of 2
+    return highest_power_of_2 - l
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+# Number of test cases
+t = int(data[0])
+
+# Process each test case
+results = []
+index = 1
+for _ in range(t):
+    l = int(data[index])
+    r = int(data[index + 1])
+    index += 2
+    results.append(min_deletions_to_non_zero_and(l, r))
+
+# Print results
+for result in results:
+    print(result)

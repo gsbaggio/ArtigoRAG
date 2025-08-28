@@ -1,0 +1,24 @@
+def min_deletions(l, r):
+    # If only one element, its AND is itself (non-zero)
+    if l == r:
+        return 0
+    
+    # Find the largest power of 2 less than or equal to r
+    msb_position = r.bit_length() - 1
+    largest_power = 1 << msb_position
+    
+    # If l is greater than largest_power, all numbers share MSB
+    if l > largest_power:
+        return 0
+    
+    # We need to delete numbers that don't share the highest bit
+    # That is, numbers from l to largest_power-1
+    return largest_power - l
+
+def solve():
+    t = int(input())
+    for _ in range(t):
+        l, r = map(int, input().split())
+        print(min_deletions(l, r))
+
+solve()

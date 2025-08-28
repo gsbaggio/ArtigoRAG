@@ -1,0 +1,110 @@
+def lexicographically_smallest_permutation(S, T):
+    # Count occurrences of each character in S
+    count = [0] * 26
+    for char in S:
+        count[ord(char) - ord('a')] += 1
+    
+    # Create a list of characters based on their counts
+    chars = []
+    for i in range(26):
+        if count[i] > 0:
+            chars.extend([chr(i + ord('a'))] * count[i])
+    
+    # Sort characters lexicographically
+    chars.sort()
+    
+    # Indices for characters in T
+    a_idx = ord(T[0]) - ord('a')
+    b_idx = ord(T[1]) - ord('a')
+    c_idx = ord(T[2]) - ord('a')
+    
+    # Initialize pointers for characters in T
+    a_count = count[a_idx]
+    b_count = count[b_idx]
+    c_count = count[c_idx]
+    
+    # Resultant string
+    result = []
+    
+    # Pointers to track the usage of characters
+    a_ptr = 0
+    b_ptr = 0
+    c_ptr = 0
+    
+    # Construct the permutation
+    while len(result) < len(S):
+        # Try to add 'a'
+        if a_ptr < a_count:
+            result.append(chr(a_idx + ord('a')))
+            a_ptr += 1
+            # Check if we can form 'ab' or 'ac'
+            if len(result) >= 2 and result[-2] == chr(b_idx + ord('a')):
+                if c_ptr < c_count:
+                    result.append(chr(c_idx + ord('a')))
+                    c_ptr += 1
+                else:
+                    result.append(chr(a_idx + ord('a')))
+                    a_ptr += 1
+            elif len(result) >= 2 and result[-2] == chr(c_idx + ord('a')):
+                if b_ptr < b_count:
+                    result.append(chr(b_idx + ord('a')))
+                    b_ptr += 1
+                else:
+                    result.append(chr(a_idx + ord('a')))
+                    a_ptr += 1
+        # Try to add 'b'
+        elif b_ptr < b_count:
+            result.append(chr(b_idx + ord('a')))
+            b_ptr += 1
+            # Check if we can form 'ba' or 'bc'
+            if len(result) >= 2 and result[-2] == chr(a_idx + ord('a')):
+                if c_ptr < c_count:
+                    result.append(chr(c_idx + ord('a')))
+                    c_ptr += 1
+                else:
+                    result.append(chr(b_idx + ord('a')))
+                    b_ptr += 1
+            elif len(result) >= 2 and result[-2] == chr(c_idx + ord('a')):
+                if a_ptr < a_count:
+                    result.append(chr(a_idx + ord('a')))
+                    a_ptr += 1
+                else:
+                    result.append(chr(b_idx + ord('a')))
+                    b_ptr += 1
+        # Try to add 'c'
+        elif c_ptr < c_count:
+            result.append(chr(c_idx + ord('a')))
+            c_ptr += 1
+            # Check if we can form 'ca' or 'cb'
+            if len(result) >= 2 and result[-2] == chr(a_idx + ord('a')):
+                if b_ptr < b_count:
+                    result.append(chr(b_idx + ord('a')))
+                    b_ptr += 1
+                else:
+                    result.append(chr(c_idx + ord('a')))
+                    c_ptr += 1
+            elif len(result) >= 2 and result[-2] == chr(b_idx + ord('a')):
+                if a_ptr < a_count:
+                    result.append(chr(a_idx + ord('a')))
+                    a_ptr += 1
+                else:
+                    result.append(chr(c_idx + ord('a')))
+                    c_ptr += 1
+    
+    return ''.join(result)
+
+# Read input
+import sys
+input = sys.stdin.read().splitlines()
+
+t = int(input[0])
+results = []
+
+for i in range(1, 2 * t, 2):
+    S = input[i]
+    T = input[i + 1]
+    results.append(lexicographically_smallest_permutation(S, T))
+
+# Print results
+for result in results:
+    print(result)

@@ -1,0 +1,36 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        l = int(data[index])
+        r = int(data[index+1])
+        index += 2
+        n = r - l + 1
+        max_keep = 0
+        for i in range(0, 21):
+            period = 1 << (i+1)
+            half = 1 << i
+            count_r = (r + 1) // period * half
+            rem_r = (r + 1) % period
+            if rem_r > half:
+                count_r += rem_r - half
+                
+            count_l = l // period * half
+            rem_l = l % period
+            if rem_l > half:
+                count_l += rem_l - half
+                
+            cnt = count_r - count_l
+            if cnt > max_keep:
+                max_keep = cnt
+                
+        results.append(str(n - max_keep))
+        
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,72 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    zeros = []
+    used = [False] * (n + 1)
+    
+    for x in a:
+        if x != 0:
+            used[x] = True
+            
+    for i in range(n):
+        if a[i] == 0:
+            zeros.append(i)
+
+    available = []
+    for i in range(1, n + 1):
+        if not used[i]:
+            available.append(i)
+
+    
+    if not zeros:
+        print(*a)
+        return
+
+    if len(available) == 0:
+        
+        counts = {}
+        for x in a:
+            counts[x] = counts.get(x, 0) + 1
+        
+        
+        print(*a)
+        return
+    
+    if len(available) == 1:
+        val = available[0]
+        for i in zeros:
+            a[i] = val
+        
+        print(*a)
+        return
+
+    
+    for i in range(len(zeros)):
+        
+        idx = zeros[i]
+        
+        best_val = -1
+        
+        for val in available:
+            
+            valid = True
+            if idx > 0 and a[idx-1] == val:
+                valid = False
+            if idx < n - 1 and a[idx+1] != 0 and a[idx+1] == val:
+                valid = False
+                
+            if valid:
+                best_val = val
+                break
+        
+        if best_val != -1:
+            a[idx] = best_val
+            available.remove(best_val)
+        else:
+            a[idx] = available[0]
+            available.remove(available[0])
+
+    print(*a)
+
+solve()

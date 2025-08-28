@@ -1,0 +1,29 @@
+# Function to find the minimum number of elements to delete to make the bitwise AND non-zero
+def min_elements_to_delete(t, test_cases):
+    results = []
+    
+    for l, r in test_cases:
+        msb_l = len(bin(l)) - 2
+        msb_r = len(bin(r)) - 2
+        
+        if msb_l != msb_r:
+            results.append(r)
+        else:
+            mask = 1 << msb_r
+            if l & mask != 0:
+                results.append(r)
+            else:
+                results.append(mask - 1)
+    
+    return results
+
+# Input
+t = int(input())
+test_cases = [list(map(int, input().split())) for _ in range(t)]
+
+# Get the minimum number of elements to delete for each test case
+output = min_elements_to_delete(t, test_cases)
+
+# Output
+for result in output:
+    print(result)

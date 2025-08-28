@@ -1,0 +1,31 @@
+def solve():
+    s = input()
+    t = input()
+    
+    counts = {}
+    for char in s:
+        counts[char] = counts.get(char, 0) + 1
+    
+    if t == "abc" and 'a' in counts and 'b' in counts and 'c' in counts:
+        a_count = counts['a']
+        b_count = counts['b']
+        c_count = counts['c']
+        
+        del counts['a']
+        del counts['b']
+        del counts['c']
+        
+        result = 'a' * a_count + 'c' * c_count + 'b' * b_count
+        
+        sorted_remaining = sorted(counts.keys())
+        for char in sorted_remaining:
+            result += char * counts[char]
+        
+        print(result)
+    else:
+        sorted_s = sorted(s)
+        print("".join(sorted_s))
+
+t = int(input())
+for _ in range(t):
+    solve()

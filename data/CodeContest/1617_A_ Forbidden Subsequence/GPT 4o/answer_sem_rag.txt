@@ -1,0 +1,44 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    results = []
+    index = 1
+    
+    for _ in range(t):
+        S = data[index]
+        T = data[index + 1]
+        index += 2
+        
+        # Count the frequency of each character in S
+        freq = {}
+        for char in S:
+            if char not in freq:
+                freq[char] = 0
+            freq[char] += 1
+        
+        # Sort the characters of S lexicographically
+        sorted_chars = sorted(S)
+        
+        # If T is "abc", we need to handle it specially
+        if T == "abc" and all(c in freq for c in "abc"):
+            # Place all 'a's first, then all 'c's, then all 'b's, then the rest
+            result = []
+            result.extend(['a'] * freq.get('a', 0))
+            result.extend(['c'] * freq.get('c', 0))
+            result.extend(['b'] * freq.get('b', 0))
+            
+            # Add the rest of the characters in sorted order
+            for char in sorted_chars:
+                if char not in "abc":
+                    result.append(char)
+            
+            results.append("".join(result))
+        else:
+            # If T is not "abc", just return the sorted string
+            results.append("".join(sorted_chars))
+    
+    # Print all results
+    sys.stdout.write("\n".join(results) + "\n")

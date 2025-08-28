@@ -1,0 +1,39 @@
+def construct_smallest_string(S, T):
+    freq = {'a': 0, 'b': 0, 'c': 0}
+    for char in S:
+        freq[char] += 1
+
+    result = []
+    ptr_a, ptr_b, ptr_c = 0, 0, 0
+
+    for char in T:
+        if char == 'a':
+            while freq['a'] > 0:
+                result.append('a')
+                freq['a'] -= 1
+            ptr_a = len(result)
+        elif char == 'b':
+            while freq['b'] > 0 and ptr_b <= ptr_a:
+                result.append('b')
+                freq['b'] -= 1
+            ptr_b = len(result)
+        elif char == 'c':
+            while freq['c'] > 0 and ptr_c <= ptr_b:
+                result.append('c')
+                freq['c'] -= 1
+            ptr_c = len(result)
+
+    for char, count in freq.items():
+        while count > 0:
+            result.append(char)
+            count -= 1
+
+    return ''.join(result)
+
+# Input reading
+t = int(input())
+for _ in range(t):
+    S = input().strip()
+    T = input().strip()
+    result = construct_smallest_string(S, T)
+    print(result)

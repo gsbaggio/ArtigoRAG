@@ -1,0 +1,46 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+    
+    # Step 1: Check for existing pairs
+    has_pair = set()
+    for i in range(n-1):
+        if a[i] != 0 and a[i] == a[i+1]:
+            has_pair.add(a[i])
+    
+    # Step 2: Fill zeros strategically
+    next_value = 1
+    i = 0
+    while i < n:
+        if a[i] == 0:
+            # Case 1: Check if we can make a pair with adjacent zeros
+            if i < n-1 and a[i+1] == 0:
+                # Find a value that doesn't have a pair yet
+                while next_value <= n and next_value in has_pair:
+                    next_value += 1
+                
+                # If all values already have pairs, use any value
+                if next_value > n:
+                    next_value = 1
+                
+                # Create a new pair
+                a[i] = a[i+1] = next_value
+                has_pair.add(next_value)
+                next_value += 1
+                i += 2  # Skip next position
+                continue
+            
+            # Case 2: Try to create a pair with existing values
+            elif i > 0 and a[i-1] != 0:
+                a[i] = a[i-1]
+            elif i < n-1 and a[i+1] != 0:
+                a[i] = a[i+1]
+            else:
+                # Case 3: Can't create a pair, just use value 1
+                a[i] = 1
+        
+        i += 1
+    
+    print(*a)
+
+solve()

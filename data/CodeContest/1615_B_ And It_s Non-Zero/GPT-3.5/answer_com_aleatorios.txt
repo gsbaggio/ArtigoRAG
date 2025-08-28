@@ -1,0 +1,25 @@
+def min_elements_to_delete(t, test_cases):
+    results = []
+    
+    for l, r in test_cases:
+        if (r & (r - 1)) == 0:
+            results.append(0)
+        else:
+            msb_r = 1 << (r.bit_length() - 1)
+            if msb_r > l:
+                results.append(msb_r - 1)
+            else:
+                results.append((msb_r >> 1) - 1)
+    
+    return results
+
+# Input
+t = int(input())
+test_cases = [tuple(map(int, input().split())) for _ in range(t)]
+
+# Get the results
+output = min_elements_to_delete(t, test_cases)
+
+# Output
+for result in output:
+    print(result)

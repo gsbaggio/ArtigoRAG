@@ -1,0 +1,56 @@
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int solve(long long l, long long r) {
+    int total_elements = r - l + 1;
+    
+    // For each bit position
+    int min_deletions = total_elements;
+    for (int bit = 0; bit <= 30; bit++) {
+        long long bit_mask = 1LL << bit;
+        
+        // Calculate how many numbers in the range have this bit set
+        long long numbers_with_bit_set = 0;
+        
+        // For each group of 2*bit_mask consecutive numbers,
+        // exactly bit_mask of them have this bit set
+        long long full_groups = (r / (2 * bit_mask)) - ((l - 1) / (2 * bit_mask));
+        numbers_with_bit_set = full_groups * bit_mask;
+        
+        // Handle remainders at the beginning
+        long long start_remainder = (l - 1) % (2 * bit_mask);
+        if (start_remainder >= bit_mask) {
+            numbers_with_bit_set -= (start_remainder - bit_mask + 1);
+        }
+        
+        // Handle remainders at the end
+        long long end_remainder = r % (2 * bit_mask);
+        if (end_remainder >= bit_mask) {
+            numbers_with_bit_set += (end_remainder - bit_mask + 1);
+        }
+        
+        // We need to delete all numbers that don't have this bit set
+        int deletions = total_elements - numbers_with_bit_set;
+        min_deletions = min(min_deletions, deletions);
+    }
+    
+    return min_deletions;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        long long l, r;
+        cin >> l >> r;
+        cout << solve(l, r) << endl;
+    }
+    
+    return 0;
+}

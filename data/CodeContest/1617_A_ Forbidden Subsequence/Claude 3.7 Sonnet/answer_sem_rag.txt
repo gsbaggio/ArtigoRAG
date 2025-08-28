@@ -1,0 +1,46 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        s = input().strip()
+        t = input().strip()
+        
+        # Count occurrences of each character in S
+        chars = {}
+        for c in s:
+            chars[c] = chars.get(c, 0) + 1
+        
+        # If any character from T is missing, we can just sort S
+        if 'a' not in chars or 'b' not in chars or 'c' not in chars:
+            print(''.join(sorted(s)))
+            continue
+        
+        # For different patterns of T, rearrange a, b, c differently
+        if t == "abc":
+            order = "cab"  # Place c first, then a, then b
+        elif t == "acb":
+            order = "bac"  # Place b first, then a, then c
+        elif t == "bac":
+            order = "cab"  # Place c first, then a, then b
+        elif t == "bca":
+            order = "abc"  # Place a first, then b, then c
+        elif t == "cab":
+            order = "bca"  # Place b first, then c, then a
+        elif t == "cba":
+            order = "acb"  # Place a first, then c, then b
+        
+        # Construct result
+        result = []
+        
+        # Add all non-a,b,c characters first (sorted)
+        for char in sorted(chars.keys()):
+            if char not in "abc":
+                result.append(char * chars[char])
+        
+        # Add a, b, c in the determined order
+        for char in order:
+            if char in chars:
+                result.append(char * chars[char])
+                
+        print(''.join(result))
+
+solve()

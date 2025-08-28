@@ -1,0 +1,84 @@
+def solve(s, t):
+    # Sort characters for lexicographical ordering
+    chars = sorted(s)
+    
+    # Try placing smallest characters first, but ensuring T isn't a subsequence
+    # For T = "abc", we want to avoid having 'a' before 'b' before 'c'
+    # For T = "acb", we want to avoid having 'a' before 'c' before 'b'
+    # And so on...
+    
+    # Count characters
+    char_count = {}
+    for char in s:
+        char_count[char] = char_count.get(char, 0) + 1
+    
+    # Key insight: To block T as subsequence, we need to make sure
+    # at least one character doesn't appear in the right order
+    
+    # Let's try 3 different arrangements and pick the lexicographically smallest
+    result = None
+    
+    # Strategy 1: Put all occurrences of t[1] before t[0]
+    if t[1] in char_count and t[0] in char_count:
+        attempt = []
+        # Add all t[1] characters first
+        attempt.extend([t[1]] * char_count[t[1]])
+        
+        # Add all other characters in sorted order
+        for char in sorted(char_count.keys()):
+            if char != t[1]:
+                attempt.extend([char] * char_count[char])
+                
+        if not is_subsequence(t, attempt):
+            result = ''.join(attempt)
+    
+    # Strategy 2: Put all occurrences of t[2] before t[1]
+    if result is None and t[2] in char_count and t[1] in char_count:
+        attempt = []
+        # Add all t[2] characters first
+        attempt.extend([t[2]] * char_count[t[2]])
+        
+        # Add all other characters in sorted order
+        for char in sorted(char_count.keys()):
+            if char != t[2]:
+                attempt.extend([char] * char_count[char])
+                
+        if not is_subsequence(t, attempt):
+            result = ''.join(attempt)
+    
+    # Strategy 3: Put all occurrences of t[2] before t[0]
+    if result is None and t[2] in char_count and t[0] in char_count:
+        attempt = []
+        # Add all t[2] characters first
+        attempt.extend([t[2]] * char_count[t[2]])
+        
+        # Add all other characters in sorted order
+        for char in sorted(char_count.keys()):
+            if char != t[2]:
+                attempt.extend([char] * char_count[char])
+                
+        if not is_subsequence(t, attempt):
+            result = ''.join(attempt)
+    
+    # If all strategies failed, we need a fallback (shouldn't happen given constraints)
+    if result is None:
+        result = ''.join(chars)
+        
+    return result
+
+def is_subsequence(t, s):
+    t_idx = 0
+    for char in s:
+        if t_idx < len(t) and char == t[t_idx]:
+            t_idx += 1
+    return t_idx == len(t)
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        s = input().strip()
+        t = input().strip()
+        print(solve(s, t))
+
+if __name__ == "__main__":
+    main()

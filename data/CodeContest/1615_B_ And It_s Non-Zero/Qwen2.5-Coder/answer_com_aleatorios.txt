@@ -1,0 +1,38 @@
+def min_deletions_to_non_zero_and(l, r):
+    max_count = 0
+    
+    # Iterate over each bit position from 0 to 18
+    for bit in range(19):
+        count = 0
+        # Calculate the mask for the current bit position
+        mask = 1 << bit
+        
+        # Count how many numbers in the range [l, r] have this bit set to 1
+        for num in range(l, r + 1):
+            if num & mask:
+                count += 1
+                
+        # Update the maximum count
+        max_count = max(max_count, count)
+        
+    # The minimum number of deletions required
+    return r - l + 1 - max_count
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+t = int(data[0])
+index = 1
+results = []
+
+for _ in range(t):
+    l = int(data[index])
+    r = int(data[index + 1])
+    index += 2
+    results.append(min_deletions_to_non_zero_and(l, r))
+
+# Print results
+for result in results:
+    print(result)

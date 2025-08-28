@@ -1,0 +1,45 @@
+def avoid_subsequence(S, T):
+    from collections import Counter
+    
+    # Count the occurrences of each character in S
+    count = Counter(S)
+    
+    # Characters in T
+    chars_in_T = set(T)
+    
+    # If S does not contain all characters in T, return the sorted version of S
+    if not all(char in count for char in chars_in_T):
+        return ''.join(sorted(S))
+    
+    # Create a list of tuples (character, count) and sort by count
+    sorted_chars = sorted(count.items(), key=lambda x: x[1])
+    
+    # Extract characters and their counts
+    chars = [char for char, cnt in sorted_chars]
+    counts = [cnt for char, cnt in sorted_chars]
+    
+    # Initialize the result list
+    result = []
+    
+    # Function to check if adding a character would form the subsequence T
+    def would_form_subsequence(result, char):
+        if len(result) < 2:
+            return False
+        return ''.join(result[-2:] + [char]) == T or ''.join(result[-2:] + [char]) == T[::-1]
+    
+    # Construct the result string
+    while any(counts):
+        for i in range(3):
+            if counts[i] > 0 and not would_form_subsequence(result, chars[i]):
+                result.append(chars[i])
+                counts[i] -= 1
+                break
+    
+    return ''.join(result)
+
+# Read input
+t = int(input())
+for _ in range(t):
+    S = input().strip()
+    T = input().strip()
+    print(avoid_subsequence(S, T))

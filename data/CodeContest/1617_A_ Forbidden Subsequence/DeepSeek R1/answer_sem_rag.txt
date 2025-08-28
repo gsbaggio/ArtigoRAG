@@ -1,0 +1,32 @@
+import sys
+
+def main():
+    data = sys.stdin.read().splitlines()
+    t = int(data[0])
+    index = 1
+    for _ in range(t):
+        S = data[index].strip()
+        index += 1
+        T = data[index].strip()
+        index += 1
+        if T != "abc":
+            sorted_S = ''.join(sorted(S))
+            print(sorted_S)
+        else:
+            if 'a' in S and 'b' in S and 'c' in S:
+                count_a = S.count('a')
+                count_b = S.count('b')
+                count_c = S.count('c')
+                others = []
+                for char in S:
+                    if char not in 'abc':
+                        others.append(char)
+                others.sort()
+                result = 'a' * count_a + 'c' * count_c + 'b' * count_b + ''.join(others)
+                print(result)
+            else:
+                sorted_S = ''.join(sorted(S))
+                print(sorted_S)
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,36 @@
+def solve_testcase(l, r):
+    # If there's only one number, AND is already non-zero
+    if l == r:
+        return 0
+    
+    # Find the position of the most significant bit where l and r differ
+    xor = l ^ r
+    msb = 0
+    while xor:
+        msb += 1
+        xor >>= 1
+    
+    # Calculate the number of elements we need to keep
+    # We keep the largest power of 2 range we can find within [l, r]
+    power_of_2 = 1 << (msb - 1)
+    
+    # The number of elements in the array
+    total_elements = r - l + 1
+    
+    # The maximum number of elements we can keep (with the same bit set)
+    # is the number of elements divisible by power_of_2 in our range
+    elements_to_keep = r // power_of_2 - (l - 1) // power_of_2
+    
+    return total_elements - elements_to_keep
+
+def solve():
+    t = int(input())
+    results = []
+    
+    for _ in range(t):
+        l, r = map(int, input().split())
+        results.append(str(solve_testcase(l, r)))
+    
+    return '\n'.join(results)
+
+print(solve())

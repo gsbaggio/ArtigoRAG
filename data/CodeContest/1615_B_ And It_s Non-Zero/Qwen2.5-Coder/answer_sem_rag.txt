@@ -1,0 +1,46 @@
+def count_set_bits_in_range(l, r, bit_position):
+    # Count how many numbers in the range [l, r] have the bit at bit_position set to 1
+    mask = 1 << bit_position
+    count = 0
+    
+    for num in range(l, r + 1):
+        if num & mask:
+            count += 1
+            
+    return count
+
+def min_deletions_to_non_zero_and(l, r):
+    if l == r:
+        return 0
+    
+    max_count = 0
+    
+    # Iterate over each bit position from 0 to 31
+    for bit_position in range(32):
+        count = count_set_bits_in_range(l, r, bit_position)
+        max_count = max(max_count, count)
+        
+    # The minimum deletions required is the total number of elements minus the max count of set bits
+    return (r - l + 1) - max_count
+
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    
+    t = int(input[0])
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        l = int(input[index])
+        r = int(input[index + 1])
+        index += 2
+        
+        result = min_deletions_to_non_zero_and(l, r)
+        results.append(result)
+        
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

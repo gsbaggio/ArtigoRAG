@@ -1,0 +1,119 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    a = list(map(int, data[1:1+n]))
+    
+    res = a[:]
+    has_pair = set()
+    for i in range(n-1):
+        if a[i] != 0 and a[i] == a[i+1]:
+            has_pair.add(a[i])
+            
+    appear = set()
+    for x in a:
+        if x != 0:
+            appear.add(x)
+            
+    need_list = []
+    for k in appear:
+        if k not in has_pair:
+            need_list.append(k)
+            
+    occurrences = {}
+    for k in need_list:
+        occurrences[k] = []
+    for i in range(n):
+        if a[i] in need_list:
+            occurrences[a[i]].append(i)
+            
+    candidate_count = {}
+    for k in need_list:
+        count = 0
+        for i in occurrences[k]:
+            if i > 0 and a[i-1] == 0:
+                count += 1
+            if i < n-1 and a[i+1] == 0:
+                count += 1
+        candidate_count[k] = count
+        
+    need_list_sorted = sorted(need_list, key=lambda k: candidate_count[k])
+    
+    assigned_zero = set()
+    for k in need_list_sorted:
+        assigned = False
+        if k not in occurrences:
+            continue
+        for i in occurrences[k]:
+            if i > 0 and a[i-1] == 0 and (i-1) not in assigned_zero:
+                res[i-1] = k
+                assigned_zero.add(i-1)
+                assigned = True
+                break
+            if i < n-1 and a[i+1] == 0 and (i+1) not in assigned_zero:
+                res[i+1] = k
+                assigned_zero.add(i+1)
+                assigned = True
+                break
+        if assigned:
+            continue
+            
+    segments = []
+    i = 0
+    while i < n:
+        if res[i] == 0:
+            start = i
+            while i < n and res[i] == 0:
+                i += 1
+            end = i - 1
+            segments.append((start, end))
+        else:
+            i += 1
+            
+    used_k = set()
+    for x in res:
+        if x != 0:
+            used_k.add(x)
+            
+    new_id_list = []
+    for k in range(1, n+1):
+        if k not in used_k:
+            new_id_list.append(k)
+            
+    new_id_list.sort()
+    next_new = 0
+    for seg in segments:
+        start, end = seg
+        L = end - start + 1
+        i = 0
+        while i < L:
+            if i + 1 < L:
+                if next_new < len(new_id_list):
+                    id_val = new_id_list[next_new]
+                    next_new += 1
+                else:
+                    id_val = new_id_list[-1] if new_id_list else 1
+                res[start + i] = id_val
+                res[start + i + 1] = id_val
+                i += 2
+            else:
+                if start + i > 0 and res[start + i - 1] != 0:
+                    res[start + i] = res[start + i - 1]
+                elif start + i < n - 1 and res[start + i + 1] != 0:
+                    res[start + i] = res[start + i + 1]
+                else:
+                    if next_new < len(new_id_list):
+                        id_val = new_id_list[next_new]
+                        next_new += 1
+                    else:
+                        id_val = new_id_list[-1] if new_id_list else 1
+                    res[start + i] = id_val
+                i += 1
+                
+    print(" ".join(map(str, res)))
+    
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,136 @@
+import sys
+from collections import defaultdict
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    a = list(map(int, data[1:1+n]))
+    
+    # Precompute F: numbers that already have adjacent pairs
+    F = set()
+    for i in range(n-1):
+        if a[i] != 0 and a[i] == a[i+1]:
+            F.add(a[i])
+            
+    # Precompute T: numbers that appear but don't have a pair
+    T = set()
+    for x in a:
+        if x != 0 and x not in F:
+            T.add(x)
+            
+    res = a[:]   # result array
+    
+    # Precompute list of indices where there are zeros
+    zeros = [i for i in range(n) if a[i] == 0]
+    
+    # Precompute isEnd for each index that is zero in the original array
+    isEnd = [False] * n
+    for i in range(n):
+        if a[i] == 0:
+            if i-1 < 0 or a[i-1] != 0:
+                isEnd[i] = True
+            elif i+1 >= n or a[i+1] != 0:
+                isEnd[i] = True
+            else:
+                isEnd[i] = False
+                
+    # Initialize dictionaries for endZeros and middleZeros for each k in T
+    endZeros = defaultdict(set)
+    middleZeros = defaultdict(set)
+    for k in T:
+        endZeros[k] = set()
+        middleZeros[k] = set()
+        
+    # Fill the dictionaries
+    for i in zeros:
+        if i-1 >= 0 and a[i-1] != 0 and a[i-1] in T:
+            k = a[i-1]
+            if isEnd[i]:
+                endZeros[k].add(i)
+            else:
+                middleZeros[k].add(i)
+        if i+1 < n and a[i+1] != 0 and a[i+1] in T:
+            k = a[i+1]
+            if isEnd[i]:
+                endZeros[k].add(i)
+            else:
+                middleZeros[k].add(i)
+                
+    # Sort T by the total number of zeros available
+    T_list = sorted(T, key=lambda k: len(endZeros[k]) + len(middleZeros[k]))
+    
+    assigned_zero_indices = set()
+    assigned_numbers = set()
+    
+    # Assign zeros to numbers in T
+    for k in T_list:
+        found = None
+        for idx in endZeros[k]:
+            if idx not in assigned_zero_indices:
+                found = idx
+                break
+        if found is None:
+            for idx in middleZeros[k]:
+                if idx not in assigned_zero_indices:
+                    found = idx
+                    break
+        if found is not None:
+            assigned_zero_indices.add(found)
+            res[found] = k
+            assigned_numbers.add(k)
+            
+    # Form the set of numbers that have pairs
+    S_set = F | assigned_numbers
+    
+    # Generator for numbers not in S_set
+    def available_numbers(S_set, n):
+        for i in range(1, n+1):
+            if i not in S_set:
+                yield i
+                
+    avail_gen = available_numbers(S_set, n)
+    
+    # Get the remaining zeros that were not assigned to T
+    remaining_zeros = [i for i in zeros if i not in assigned_zero_indices]
+    
+    # Group remaining zeros into consecutive segments
+    segments = []
+    if remaining_zeros:
+        current_segment = [remaining_zeros[0]]
+        for i in range(1, len(remaining_zeros)):
+            if remaining_zeros[i] == remaining_zeros[i-1] + 1:
+                current_segment.append(remaining_zeros[i])
+            else:
+                segments.append(current_segment)
+                current_segment = [remaining_zeros[i]]
+        segments.append(current_segment)
+        
+    # Assign values to the segments
+    for seg in segments:
+        L = len(seg)
+        num_pairs = L // 2
+        last_num = None
+        for i in range(num_pairs):
+            num = next(avail_gen)
+            last_num = num
+            res[seg[2*i]] = num
+            res[seg[2*i+1]] = num
+        if L % 2 == 1:
+            if num_pairs > 0:
+                res[seg[-1]] = last_num
+            else:
+                if S_set:
+                    # Pick any number from S_set
+                    num0 = next(iter(S_set))
+                    res[seg[-1]] = num0
+                else:
+                    num0 = next(avail_gen)
+                    res[seg[-1]] = num0
+                    
+    # Output the result
+    print(" ".join(map(str, res)))
+    
+if __name__ == "__main__":
+    main()

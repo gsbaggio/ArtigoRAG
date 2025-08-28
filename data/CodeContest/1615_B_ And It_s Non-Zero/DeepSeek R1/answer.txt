@@ -1,0 +1,27 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        l = int(data[index])
+        r = int(data[index+1])
+        index += 2
+        n = r - l + 1
+        best = 0
+        for k in range(0, 21):
+            cycle = 1 << (k+1)
+            half = 1 << k
+            cnt_r = (r + 1) // cycle * half + max(0, (r + 1) % cycle - half)
+            cnt_l = l // cycle * half + max(0, l % cycle - half)
+            count = cnt_r - cnt_l
+            if count > best:
+                best = count
+        results.append(str(n - best))
+    
+    sys.stdout.write("\n".join(results))
+
+if __name__ == "__main__":
+    main()

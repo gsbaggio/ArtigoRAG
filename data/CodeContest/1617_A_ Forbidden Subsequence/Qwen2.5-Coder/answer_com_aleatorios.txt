@@ -1,0 +1,62 @@
+def construct_smallest_permutation(S, T):
+    # Step 1: Count the occurrences of 'a', 'b', 'c'
+    count = [0] * 26
+    for char in S:
+        count[ord(char) - ord('a')] += 1
+    
+    a_count = count[ord('a') - ord('a')]
+    b_count = count[ord('b') - ord('a')]
+    c_count = count[ord('c') - ord('a')]
+    
+    # Step 2: Collect and sort the other characters
+    other_chars = [char for char in S if char not in 'abc']
+    other_chars.sort()
+    
+    # Step 3: Construct the result string
+    result = []
+    result.extend(other_chars)
+    
+    # Step 4: Distribute 'a', 'b', 'c' to avoid T as a subsequence
+    # We need to distribute 'a', 'b', 'c' in a way that no three consecutive characters form T
+    # One simple way is to interleave them as much as possible
+    
+    # Create a list of tuples (char, count) for 'a', 'b', 'c'
+    chars_to_distribute = [('a', a_count), ('b', b_count), ('c', c_count)]
+    
+    # Sort the list based on the character to ensure lexicographical order
+    chars_to_distribute.sort()
+    
+    # Distribute the characters
+    while any(count for _, count in chars_to_distribute):
+        # Find the character with the highest count that can be placed
+        for i in range(len(chars_to_distribute)):
+            char, count = chars_to_distribute[i]
+            if count > 0:
+                result.append(char)
+                chars_to_distribute[i] = (char, count - 1)
+                break
+    
+    # Convert the result list to a string
+    return ''.join(result)
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+t = int(data[0])
+index = 1
+results = []
+
+for _ in range(t):
+    S = data[index]
+    T = data[index + 1]
+    index += 2
+    
+    # Construct the smallest permutation
+    S_prime = construct_smallest_permutation(S, T)
+    results.append(S_prime)
+
+# Print results
+for result in results:
+    print(result)

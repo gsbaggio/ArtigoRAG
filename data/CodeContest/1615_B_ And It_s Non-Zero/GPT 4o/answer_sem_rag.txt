@@ -1,0 +1,28 @@
+def min_deletions_to_nonzero_and(t, test_cases):
+    results = []
+    
+    for l, r in test_cases:
+        n = r - l + 1  # Size of the range
+        max_common_bits = 0
+        
+        # Check each bit position (0 to 19)
+        for bit in range(20):  # 20 bits are sufficient for numbers up to 2 * 10^5
+            count = 0
+            for x in range(l, r + 1):
+                if x & (1 << bit):  # Check if the bit is set
+                    count += 1
+            max_common_bits = max(max_common_bits, count)
+        
+        # Minimum deletions = total size - max_common_bits
+        results.append(n - max_common_bits)
+    
+    return results
+
+
+# Input reading
+t = int(input())
+test_cases = [tuple(map(int, input().split())) for _ in range(t)]
+
+# Solve and output results
+results = min_deletions_to_nonzero_and(t, test_cases)
+print("\n".join(map(str, results)))

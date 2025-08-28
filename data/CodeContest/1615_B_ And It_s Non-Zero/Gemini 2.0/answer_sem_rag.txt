@@ -1,0 +1,22 @@
+def solve():
+    l, r = map(int, input().split())
+    
+    if l == r:
+        print(0)
+        return
+
+    n = r - l + 1
+    ans = n
+    
+    for bit in range(18):
+        count = 0
+        for i in range(l, r + 1):
+            if (i >> bit) & 1:
+                count += 1
+        ans = min(ans, n - count)
+    
+    print(ans)
+
+t = int(input())
+for _ in range(t):
+    solve()

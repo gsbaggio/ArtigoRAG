@@ -1,0 +1,15 @@
+t = int(input().strip())
+for _ in range(t):
+    S = input().strip()
+    T = input().strip()
+    if T == "abc" and S.count('a') > 0 and S.count('b') > 0 and S.count('c') > 0:
+        a_count = S.count('a')
+        b_count = S.count('b')
+        c_count = S.count('c')
+        others = [char for char in S if char not in ['a', 'b', 'c']]
+        others.sort()
+        result = 'a' * a_count + 'c' * c_count + 'b' * b_count + ''.join(others)
+        print(result)
+    else:
+        sorted_S = sorted(S)
+        print(''.join(sorted_S))

@@ -1,0 +1,37 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    queries = data[1:]
+    
+    MAX_R = 200000
+    MAX_BITS = 18  # Since 2^17 < 200000 < 2^18
+    
+    # Precompute bit frequencies for all numbers from 1 to MAX_R
+    bit_count = [[0] * (MAX_R + 1) for _ in range(MAX_BITS)]
+    
+    for i in range(1, MAX_R + 1):
+        for b in range(MAX_BITS):
+            bit_count[b][i] = bit_count[b][i - 1] + ((i >> b) & 1)
+    
+    # Process each test case
+    result = []
+    idx = 0
+    for _ in range(t):
+        l = int(queries[idx])
+        r = int(queries[idx + 1])
+        idx += 2
+        
+        # Find the minimum deletions required
+        min_deletions = float('inf')
+        for b in range(MAX_BITS):
+            ones = bit_count[b][r] - bit_count[b][l - 1]
+            zeros = (r - l + 1) - ones
+            min_deletions = min(min_deletions, zeros)
+        
+        result.append(min_deletions)
+    
+    # Print all results
+    sys.stdout.write("\n".join(map(str, result)) + "\n")

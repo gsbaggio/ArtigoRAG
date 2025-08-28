@@ -1,0 +1,45 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        s = input()
+        pattern = input()
+        
+        # First try with sorted order (lexicographically smallest)
+        sorted_s = sorted(s)
+        if not is_subsequence(pattern, ''.join(sorted_s)):
+            print(''.join(sorted_s))
+            continue
+        
+        # Try moving each character from pattern to the end
+        best_result = None
+        
+        for i in range(len(pattern)):
+            char_to_move = pattern[i]
+            
+            # Create a permutation by moving char_to_move to the end
+            without_char = [c for c in s if c != char_to_move]
+            with_char = [c for c in s if c == char_to_move]
+            
+            # Sort the characters to get lexicographically smallest
+            without_char.sort()
+            
+            # Create the permutation
+            permutation = without_char + with_char
+            
+            # Check if pattern is not a subsequence
+            if not is_subsequence(pattern, ''.join(permutation)):
+                candidate = ''.join(permutation)
+                if best_result is None or candidate < best_result:
+                    best_result = candidate
+        
+        print(best_result)
+
+def is_subsequence(pattern, s):
+    j = 0
+    for char in s:
+        if j < len(pattern) and char == pattern[j]:
+            j += 1
+    return j == len(pattern)
+
+solve()

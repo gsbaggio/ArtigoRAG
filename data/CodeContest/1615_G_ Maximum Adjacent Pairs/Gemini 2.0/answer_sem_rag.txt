@@ -1,0 +1,84 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    zeros = []
+    present = [False] * (n + 1)
+    for i in range(n):
+        if a[i] != 0:
+            present[a[i]] = True
+        else:
+            zeros.append(i)
+
+    available = []
+    for i in range(1, n + 1):
+        if not present[i]:
+            available.append(i)
+
+    available.sort(reverse=True)
+    
+    for i in range(len(zeros)):
+        if not available:
+            break
+        
+        idx = zeros[i]
+        
+        if idx > 0 and idx < n:
+            
+            if available[-1] != a[idx-1] and available[-1] != a[idx+1]:
+                a[idx] = available.pop()
+            elif len(available) > 1:
+                
+                
+                temp = available.pop()
+                
+                
+                if available[-1] != a[idx-1] and available[-1] != a[idx+1]:
+                    a[idx] = available.pop()
+                    available.append(temp)
+                    available.sort(reverse=True)
+                else:
+                    a[idx] = temp
+            else:
+                
+                if a[idx-1] == a[idx+1]:
+                    a[idx] = available.pop()
+                elif a[idx-1] == 0 and a[idx+1] == 0:
+                    a[idx] = available.pop()
+                elif a[idx-1] == 0:
+                    a[idx] = available.pop()
+                elif a[idx+1] == 0:
+                    a[idx] = available.pop()
+                else:
+                    a[idx] = available.pop()
+        elif idx > 0:
+            if available[-1] != a[idx-1]:
+                a[idx] = available.pop()
+            elif len(available) > 1:
+                temp = available.pop()
+                a[idx] = available.pop()
+                available.append(temp)
+                available.sort(reverse=True)
+            else:
+                a[idx] = available.pop()
+        elif idx < n:
+            if available[-1] != a[idx+1]:
+                a[idx] = available.pop()
+            elif len(available) > 1:
+                temp = available.pop()
+                a[idx] = available.pop()
+                available.append(temp)
+                available.sort(reverse=True)
+            else:
+                a[idx] = available.pop()
+        else:
+            a[idx] = available.pop()
+
+    
+    for i in range(len(zeros)):
+        if a[zeros[i]] == 0:
+            a[zeros[i]] = 1
+            
+    print(*a)
+
+solve()

@@ -1,0 +1,25 @@
+t = int(input().strip())
+for _ in range(t):
+    S = input().strip()
+    T = input().strip()
+    
+    if T != "abc":
+        # Simply sort and output S
+        sorted_S = ''.join(sorted(S))
+        print(sorted_S)
+    else:
+        count_a = S.count('a')
+        count_b = S.count('b')
+        count_c = S.count('c')
+        if count_a > 0 and count_b > 0 and count_c > 0:
+            # Collect other characters
+            other_chars = []
+            for char in S:
+                if char not in 'abc':
+                    other_chars.append(char)
+            other_chars.sort()
+            result = 'a' * count_a + 'c' * count_c + 'b' * count_b + ''.join(other_chars)
+            print(result)
+        else:
+            sorted_S = ''.join(sorted(S))
+            print(sorted_S)

@@ -1,0 +1,26 @@
+def maximize_array_value(n, a):
+    max_val = max(a.count(0), 1)  # Maximum number of zeros in the array
+    current_val = 1
+
+    for i in range(n):
+        if a[i] == 0:
+            if max_val > 1:
+                a[i] = current_val
+                current_val += 1
+            else:
+                a[i] = current_val
+
+        if i > 0 and a[i] == a[i - 1]:
+            current_val = (current_val % n) + 1
+
+    return a
+
+# Input parsing
+n = int(input())
+a = list(map(int, input().split()))
+
+# Obtaining the array with the maximum possible value
+result = maximize_array_value(n, a)
+
+# Output
+print(*result)

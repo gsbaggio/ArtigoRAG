@@ -1,0 +1,30 @@
+def solve():
+    s = input()
+    t = input()
+    n = len(s)
+    
+    counts = {}
+    for char in s:
+        counts[char] = counts.get(char, 0) + 1
+    
+    if t == "abc" and counts.get('a', 0) > 0 and counts.get('b', 0) > 0 and counts.get('c', 0) > 0:
+        a_count = counts['a']
+        b_count = counts['b']
+        c_count = counts['c']
+        
+        result = 'a' * a_count + 'c' * c_count + 'b' * b_count
+        
+        remaining_chars = []
+        for char in sorted(counts.keys()):
+            if char not in ['a', 'b', 'c']:
+                remaining_chars.extend([char] * counts[char])
+        
+        result += ''.join(remaining_chars)
+        print(result)
+    else:
+        sorted_chars = sorted(s)
+        print("".join(sorted_chars))
+
+t = int(input())
+for _ in range(t):
+    solve()

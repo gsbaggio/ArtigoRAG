@@ -1,0 +1,35 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        S = data[index]
+        T = data[index + 1]
+        index += 2
+        
+        # Count the frequency of each character in S
+        freq = {ch: 0 for ch in 'abcdefghijklmnopqrstuvwxyz'}
+        for ch in S:
+            freq[ch] += 1
+        
+        # If T is "abc", handle the special case
+        if T == "abc" and all(ch in freq for ch in "abc"):
+            # Construct the result string
+            result = []
+            result.extend(['a'] * freq['a'])
+            result.extend(['c'] * freq['c'])
+            result.extend(['b'] * freq['b'])
+            for ch in 'defghijklmnopqrstuvwxyz':
+                result.extend([ch] * freq[ch])
+            results.append(''.join(result))
+        else:
+            # Otherwise, just sort S
+            results.append(''.join(sorted(S)))
+    
+    # Print all results
+    sys.stdout.write("\n".join(results) + "\n")

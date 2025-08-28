@@ -1,0 +1,22 @@
+# Read the number of test cases
+t = int(input())
+
+# Function to calculate the minimum number of elements to delete
+def min_elements_to_delete(l, r):
+    # Find the leftmost bit where l and r differ
+    bit = 0
+    while l | (1 << bit) <= r:
+        bit += 1
+
+    # Calculate the number that has all bits set up to the leftmost differing bit
+    num = (1 << bit) - 1
+
+    # Calculate the result based on the leftmost differing bit
+    result = min(num ^ l, num ^ r)
+
+    return result
+
+# Process each test case
+for _ in range(t):
+    l, r = map(int, input().split())
+    print(min_elements_to_delete(l, r))
