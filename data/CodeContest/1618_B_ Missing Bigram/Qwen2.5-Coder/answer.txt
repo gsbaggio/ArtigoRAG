@@ -1,0 +1,31 @@
+def reconstruct_word(n, bigrams):
+    # Initialize the word with the first bigram
+    word = bigrams[0]
+    
+    # Iterate through the remaining bigrams
+    for i in range(1, len(bigrams)):
+        bigram = bigrams[i]
+        # Check if the first character of the bigram matches the last character of the word
+        if bigram[0] == word[-1]:
+            word += bigram[1]
+        else:
+            # Insert the appropriate character to make the bigram match
+            word += bigram[0]
+            word += bigram[1]
+    
+    # Return the reconstructed word
+    return word
+
+# Read the number of test cases
+t = int(input())
+
+# Process each test case
+for _ in range(t):
+    # Read the length of the word
+    n = int(input())
+    # Read the bigrams
+    bigrams = input().split()
+    # Reconstruct the word
+    word = reconstruct_word(n, bigrams)
+    # Print the word
+    print(word)

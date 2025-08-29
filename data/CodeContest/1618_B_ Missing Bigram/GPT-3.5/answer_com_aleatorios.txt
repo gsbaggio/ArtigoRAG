@@ -1,0 +1,26 @@
+def find_word(n, bigrams):
+    chars = set("ab")
+    bigram_set = set(bigrams)
+    
+    # Find the missing bigram
+    missing_bigram = ''.join(filter(lambda x: x not in bigram_set, [f"{a}{b}" for a in chars for b in chars]))
+    
+    # Construct the word by inserting the missing bigram in the appropriate position
+    word = []
+    for i in range(n - 1):
+        if f"{bigrams[i]}{bigrams[i+1]}" == missing_bigram:
+            word.append(bigrams[i][0])
+        else:
+            word.extend(bigrams[i])
+    word.append(bigrams[-1][-1])
+    
+    return ''.join(word)
+
+# Input
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    bigrams = input().split()
+    
+    # Output
+    print(find_word(n, bigrams))

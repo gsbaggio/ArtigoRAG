@@ -1,0 +1,29 @@
+def restore_array(t, test_cases):
+    results = []
+    for b in test_cases:
+        # Extract a[0], a[1], and a[2] from the sorted array b
+        a0 = b[0]
+        a1 = b[1]
+        a2 = b[6] - a0 - a1  # a[2] = total_sum - a[0] - a[1]
+        results.append((a0, a1, a2))
+    return results
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    test_cases = []
+    index = 1
+    for _ in range(t):
+        test_cases.append(list(map(int, data[index:index + 7])))
+        index += 7
+    
+    # Solve the problem
+    results = restore_array(t, test_cases)
+    
+    # Output the results
+    for res in results:
+        print(*res)

@@ -1,0 +1,18 @@
+def can_transform(x, y):
+    while y >= x:
+        if y == x:
+            return "YES"
+        if y % 2 == 0:
+            y //= 2
+        else:
+            if y % 10 == 1:
+                y //= 10
+            else:
+                return "NO"
+    return "NO"
+
+# Input
+x, y = map(int, input().split())
+
+# Output
+print(can_transform(x, y))

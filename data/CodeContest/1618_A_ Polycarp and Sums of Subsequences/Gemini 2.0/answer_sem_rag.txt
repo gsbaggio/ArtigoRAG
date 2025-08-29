@@ -1,0 +1,10 @@
+def solve():
+    b = list(map(int, input().split()))
+    a1 = b[0]
+    a2 = b[1]
+    a3 = b[-1] - a1 - a2
+    print(a1, a2, a3)
+
+t = int(input())
+for _ in range(t):
+    solve()

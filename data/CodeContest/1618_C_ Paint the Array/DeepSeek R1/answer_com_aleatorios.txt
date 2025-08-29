@@ -1,0 +1,51 @@
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    
+    # Check if any adjacent elements are equal
+    adjacent_equal = False
+    for i in range(n-1):
+        if a[i] == a[i+1]:
+            adjacent_equal = True
+            break
+            
+    if adjacent_equal:
+        print(0)
+    else:
+        # Option 1: d divides all odd-indexed elements (0-based) and divides no even-indexed elements
+        odd_list = a[0::2]
+        g_odd = odd_list[0]
+        for num in odd_list[1:]:
+            g_odd = gcd(g_odd, num)
+            
+        valid1 = True
+        for i in range(1, n, 2):
+            if a[i] % g_odd == 0:
+                valid1 = False
+                break
+                
+        if valid1:
+            print(g_odd)
+        else:
+            # Option 2: d divides all even-indexed elements and divides no odd-indexed elements
+            even_list = a[1::2]
+            g_even = even_list[0]
+            for num in even_list[1:]:
+                g_even = gcd(g_even, num)
+                
+            valid2 = True
+            for i in range(0, n, 2):
+                if a[i] % g_even == 0:
+                    valid2 = False
+                    break
+                    
+            if valid2:
+                print(g_even)
+            else:
+                print(0)

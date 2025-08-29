@@ -1,0 +1,54 @@
+import java.util.*;
+import java.io.*;
+
+public class MinimumScore {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int t = sc.nextInt();
+        
+        for (int tc = 0; tc < t; tc++) {
+            int n = sc.nextInt();
+            int k = sc.nextInt();
+            
+            int[] a = new int[n];
+            for (int i = 0; i < n; i++) {
+                a[i] = sc.nextInt();
+            }
+            
+            // Sort the array
+            Arrays.sort(a);
+            
+            // If k is 0, just sum all elements
+            if (k == 0) {
+                long sum = 0;
+                for (int num : a) {
+                    sum += num;
+                }
+                System.out.println(sum);
+                continue;
+            }
+            
+            // Perform k operations optimally
+            // Always choose the smallest element as numerator and largest as denominator
+            // We don't need to actually modify the array - just keep track of used elements
+            int left = 0;       // index of the smallest unused element
+            int right = n - 1;  // index of the largest unused element
+            long score = 0;
+            
+            for (int i = 0; i < k; i++) {
+                // Add floor(smallest/largest) to score (likely 0)
+                score += a[left] / a[right];
+                left++;
+                right--;
+            }
+            
+            // Add remaining elements to score
+            for (int i = left; i <= right; i++) {
+                score += a[i];
+            }
+            
+            System.out.println(score);
+        }
+        sc.close();
+    }
+}

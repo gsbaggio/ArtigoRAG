@@ -1,0 +1,44 @@
+def solve():
+    x, y = map(int, input().split())
+
+    if x == y:
+        print("YES")
+        return
+
+    q = [x]
+    visited = {x}
+
+    while q:
+        curr = q.pop(0)
+
+        # Option 1: Append 0, reverse
+        binary_curr = bin(curr)[2:]
+        binary_next_0 = binary_curr + '0'
+        binary_next_0_reversed = binary_next_0[::-1]
+        next_0 = int(binary_next_0_reversed, 2)
+
+        if next_0 == y:
+            print("YES")
+            return
+
+        if next_0 <= y * 2 and next_0 not in visited:
+            q.append(next_0)
+            visited.add(next_0)
+
+        # Option 2: Append 1, reverse
+        binary_curr = bin(curr)[2:]
+        binary_next_1 = binary_curr + '1'
+        binary_next_1_reversed = binary_next_1[::-1]
+        next_1 = int(binary_next_1_reversed, 2)
+
+        if next_1 == y:
+            print("YES")
+            return
+
+        if next_1 <= y * 2 and next_1 not in visited:
+            q.append(next_1)
+            visited.add(next_1)
+
+    print("NO")
+
+solve()

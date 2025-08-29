@@ -1,0 +1,61 @@
+import sys
+
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        # Check for adjacent duplicates
+        found_dup = False
+        for i in range(n-1):
+            if a[i] == a[i+1]:
+                found_dup = True
+                break
+                
+        if found_dup:
+            results.append("0")
+            continue
+            
+        gcd_even = 0
+        for i in range(0, n, 2):
+            gcd_even = gcd(gcd_even, a[i])
+            
+        valid1 = True
+        for i in range(1, n, 2):
+            if a[i] % gcd_even == 0:
+                valid1 = False
+                break
+                
+        if valid1:
+            results.append(str(gcd_even))
+            continue
+            
+        gcd_odd = 0
+        for i in range(1, n, 2):
+            gcd_odd = gcd(gcd_odd, a[i])
+            
+        valid2 = True
+        for i in range(0, n, 2):
+            if a[i] % gcd_odd == 0:
+                valid2 = False
+                break
+                
+        if valid2:
+            results.append(str(gcd_odd))
+        else:
+            results.append("0")
+            
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

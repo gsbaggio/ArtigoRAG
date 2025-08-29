@@ -1,0 +1,28 @@
+def can_transform(x, y):
+    # Convert x and y to binary strings without the '0b' prefix
+    bin_x = bin(x)[2:]
+    bin_y = bin(y)[2:]
+    
+    # Reverse the binary representation of y
+    reversed_bin_y = bin_y[::-1]
+    
+    # Check if reversed_bin_y is a prefix of bin_x with some additional '0's or '1's appended
+    # We need to check if there exists a k such that bin_x starts with reversed_bin_y + '0'*k or reversed_bin_y + '1'*k
+    len_reversed_bin_y = len(reversed_bin_y)
+    
+    # Check if bin_x starts with reversed_bin_y followed by any number of '0's
+    if bin_x.startswith(reversed_bin_y):
+        return "YES"
+    
+    # Check if bin_x starts with reversed_bin_y followed by any number of '1's
+    for i in range(1, len(bin_x) - len_reversed_bin_y + 1):
+        if bin_x.startswith(reversed_bin_y + '1' * i):
+            return "YES"
+    
+    return "NO"
+
+# Read input
+x, y = map(int, input().split())
+
+# Output result
+print(can_transform(x, y))

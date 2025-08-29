@@ -1,0 +1,18 @@
+def find_missing_word(n, bigrams):
+    if bigrams[0][0] == bigrams[-1][1]:
+        return bigrams[0][0] + ''.join(bigram[1] for bigram in bigrams)
+    else:
+        return ''.join(bigram[0] for bigram in bigrams) + bigrams[-1][1]
+
+def main():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        bigrams = input().split()
+        
+        missing_word = find_missing_word(n, bigigrams)
+        print(missing_word)
+
+if __name__ == "__main__":
+    main()

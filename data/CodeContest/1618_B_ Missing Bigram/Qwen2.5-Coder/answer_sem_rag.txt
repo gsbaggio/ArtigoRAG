@@ -1,0 +1,47 @@
+def find_missing_bigram_word(n, bigrams):
+    # Start with the first bigram
+    word = bigrams[0]
+    
+    # Build the word using the remaining bigrams
+    for i in range(1, len(bigrams)):
+        if bigrams[i][0] == word[-1]:
+            word += bigrams[i][1]
+        else:
+            # If the bigram doesn't match, it means the missing bigram is here
+            # Try inserting all possible bigrams and check
+            possible_bigrams = ['aa', 'ab', 'ba', 'bb']
+            for bg in possible_bigrams:
+                if bg[0] == word[-1] and bg[1] == bigrams[i][0]:
+                    word += bg[1]
+                    break
+    
+    # Now we have a candidate word, let's verify it
+    # Generate all bigrams of the candidate word
+    candidate_bigrams = [word[i:i+2] for i in range(len(word) - 1)]
+    
+    # Check if removing any one bigram from candidate_bigrams results in the input bigrams
+    for i in range(len(candidate_bigrams)):
+        if candidate_bigrams[:i] + candidate_bigrams[i+1:] == bigrams:
+            return word
+    
+    # If no valid word found, return None (though the problem guarantees an answer)
+    return None
+
+# Read input
+import sys
+input = sys.stdin.read().splitlines()
+
+t = int(input[0])
+index = 1
+results = []
+
+for _ in range(t):
+    n = int(input[index])
+    bigrams = input[index + 1].split()
+    index += 2
+    word = find_missing_bigram_word(n, bigrams)
+    results.append(word)
+
+# Print results
+for result in results:
+    print(result)

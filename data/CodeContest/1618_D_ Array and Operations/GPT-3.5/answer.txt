@@ -1,0 +1,28 @@
+import heapq
+
+def min_score(t, test_cases):
+    for _ in range(t):
+        n, k, nums = test_cases[_]
+        nums = [-num for num in nums]  # Using negative values to simulate a max heap
+        heapq.heapify(nums)
+        
+        score = 0
+        for _ in range(k):
+            a = -heapq.heappop(nums)
+            b = -heapq.heappop(nums)
+            div = a // b
+            heapq.heappush(nums, -b)
+            score += div
+
+        score += sum([-num for num in nums])  # Add remaining elements to the score
+        print(score)
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n, k = map(int, input().split())
+    nums = list(map(int, input().split()))
+    test_cases.append((n, k, nums))
+
+min_score(t, test_cases)

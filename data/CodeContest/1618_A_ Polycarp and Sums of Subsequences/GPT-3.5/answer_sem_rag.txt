@@ -1,0 +1,11 @@
+def restore_array(b):
+    a = [b[0], 0, b[6]]
+    a[1] = b[1] - a[0]
+    a[2] = b[6] - b[1]
+    return a
+
+t = int(input())
+for _ in range(t):
+    b = list(map(int, input().split()))
+    a = restore_array(b)
+    print(*a)

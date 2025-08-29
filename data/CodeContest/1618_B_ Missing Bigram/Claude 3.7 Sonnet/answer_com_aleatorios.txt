@@ -1,0 +1,47 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+string solveMissingBigram(vector<string>& bigrams, int n) {
+    string result = bigrams[0]; // Start with the first bigram
+    
+    for (int i = 1; i < bigrams.size(); i++) {
+        // Check if the current bigram connects with our string so far
+        if (result.back() != bigrams[i][0]) {
+            // We found the gap where a bigram was deleted
+            // Add both characters
+            result += bigrams[i];
+        } else {
+            // Normal case - just add the second character
+            result += bigrams[i][1];
+        }
+    }
+    
+    // If we never found a gap, the last bigram was deleted
+    // In this case, our string will be one character short
+    if (result.length() < n) {
+        result += 'a'; // Either 'a' or 'b' works since it's the last character
+    }
+    
+    return result;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<string> bigrams(n-2);
+        for (int i = 0; i < n-2; i++) {
+            cin >> bigrams[i];
+        }
+        
+        cout << solveMissingBigram(bigrams, n) << endl;
+    }
+    
+    return 0;
+}

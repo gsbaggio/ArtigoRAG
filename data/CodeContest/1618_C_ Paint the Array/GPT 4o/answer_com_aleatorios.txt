@@ -1,0 +1,30 @@
+from math import gcd
+from functools import reduce
+
+def find_beautiful_coloring(t, test_cases):
+    results = []
+    for case in test_cases:
+        n, a = case
+        # Compute the GCD of all differences between adjacent elements
+        differences = [abs(a[i+1] - a[i]) for i in range(n-1)]
+        d = reduce(gcd, differences)
+        
+        # If GCD is greater than 1, we can use it as d
+        if d > 1:
+            results.append(d)
+        else:
+            results.append(0)
+    return results
+
+# Input reading
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    test_cases.append((n, a))
+
+# Solve and output results
+results = find_beautiful_coloring(t, test_cases)
+for res in results:
+    print(res)

@@ -1,0 +1,27 @@
+def minimize_score(test_cases):
+    results = []
+    for t in range(test_cases):
+        n, k = map(int, input().split())
+        a = list(map(int, input().split()))
+        
+        # Sort the array
+        a.sort()
+        
+        # Perform k operations
+        score = 0
+        for i in range(k):
+            score += a[i] // a[2 * k - 1 - i]
+        
+        # Add the remaining elements
+        score += sum(a[2 * k:])
+        
+        results.append(score)
+    
+    # Output all results
+    for result in results:
+        print(result)
+
+# Input reading
+if __name__ == "__main__":
+    t = int(input())
+    minimize_score(t)

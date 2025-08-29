@@ -1,0 +1,16 @@
+def can_transform(x, y):
+    # While y is greater than or equal to x
+    while y >= x:
+        if x == y:
+            return "YES"
+        # Convert y to binary, reverse it, and remove the last bit
+        binary_y = bin(y)[2:][::-1]  # Binary representation reversed
+        binary_y = binary_y[:-1]  # Remove the last bit
+        if not binary_y:  # If binary_y becomes empty, break
+            break
+        y = int(binary_y[::-1], 2)  # Convert back to decimal after reversing again
+    return "NO"
+
+# Input reading
+x, y = map(int, input().split())
+print(can_transform(x, y))

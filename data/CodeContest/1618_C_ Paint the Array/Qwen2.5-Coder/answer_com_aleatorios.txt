@@ -1,0 +1,31 @@
+def find_beautiful_d(a):
+    n = len(a)
+    for i in range(n - 1):
+        diff = abs(a[i] - a[i + 1])
+        if diff != 0:
+            return diff
+    return 0
+
+def main():
+    import sys
+    input = sys.stdin.read().splitlines()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        a = list(map(int, input[index].split()))
+        index += 1
+        
+        d = find_beautiful_d(a)
+        results.append(d)
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

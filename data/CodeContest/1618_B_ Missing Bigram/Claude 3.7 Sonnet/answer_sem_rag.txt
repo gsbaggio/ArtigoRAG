@@ -1,0 +1,27 @@
+def solve_missing_bigram():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        bigrams = input().split()
+        
+        # Start with the first bigram
+        word = bigrams[0]
+        
+        # Add one character at a time from each subsequent bigram
+        for i in range(1, len(bigrams)):
+            # If the current bigram's first character doesn't match the last character
+            # of our current word, it means we've found the missing link
+            if len(word) >= 1 and word[-1] != bigrams[i][0]:
+                word += bigrams[i]
+            else:
+                word += bigrams[i][1]
+        
+        # Check if the word is long enough
+        if len(word) < n:
+            # If we're still short by one character, add any valid letter ('a' or 'b')
+            word += 'a'
+            
+        print(word)
+
+solve_missing_bigram()

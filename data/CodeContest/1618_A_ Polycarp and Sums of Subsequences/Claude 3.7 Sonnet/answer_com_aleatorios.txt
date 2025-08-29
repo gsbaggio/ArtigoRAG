@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        vector<long long> b(7);
+        for (int i = 0; i < 7; i++) {
+            cin >> b[i];
+        }
+        
+        // The smallest element of a must be b[0]
+        long long a1 = b[0];
+        
+        // The largest value in b is the sum of all three elements
+        long long sum = b[6];
+        
+        // Find the other two elements
+        for (int i = 1; i < 6; i++) {
+            for (int j = i + 1; j < 6; j++) {
+                // Check if current pair of elements from b can be our a2 and a3
+                long long a2 = b[i];
+                long long a3 = b[j];
+                
+                // Test if this combination works
+                if (a1 + a2 + a3 == sum) {
+                    // Verify by checking all 7 sums
+                    vector<long long> sums = {a1, a2, a3, a1 + a2, a1 + a3, a2 + a3, a1 + a2 + a3};
+                    sort(sums.begin(), sums.end());
+                    
+                    bool valid = true;
+                    for (int k = 0; k < 7; k++) {
+                        if (sums[k] != b[k]) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    
+                    if (valid) {
+                        cout << a1 << " " << a2 << " " << a3 << endl;
+                        goto nextCase;
+                    }
+                }
+            }
+        }
+        nextCase:;
+    }
+    
+    return 0;
+}

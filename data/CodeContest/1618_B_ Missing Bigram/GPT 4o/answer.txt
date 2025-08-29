@@ -1,0 +1,34 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])  # Length of the word
+        index += 1
+        bigrams = data[index:index + n - 2]
+        index += n - 2
+        
+        # Start constructing the word
+        word = bigrams[0]  # Start with the first bigram
+        
+        for i in range(1, len(bigrams)):
+            if word[-1] == bigrams[i][0]:
+                # If the last character of the word matches the first of the bigram, append the second character
+                word += bigrams[i][1]
+            else:
+                # If not, append the entire bigram (this handles the missing bigram case)
+                word += bigrams[i]
+        
+        # Ensure the word length matches n (add 'a' if needed)
+        if len(word) < n:
+            word += 'a'
+        
+        results.append(word)
+    
+    # Print all results
+    sys.stdout.write("\n".join(results) + "\n")

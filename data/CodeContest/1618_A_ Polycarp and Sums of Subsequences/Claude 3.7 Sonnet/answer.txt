@@ -1,0 +1,41 @@
+#include <iostream>
+
+using namespace std;
+
+void solve() {
+    long long b[7];
+    for (int i = 0; i < 7; i++) {
+        cin >> b[i];
+    }
+    
+    // Key insight: 
+    // If we represent the elements as a, b, c, then:
+    // b[0] is the smallest element (let's call it a)
+    // b[6] is the sum a+b+c
+    // We can find b and c by checking which elements form correct sums
+    
+    long long a = b[0];
+    long long sum = b[6]; // a+b+c
+    
+    // Try to find b and c
+    for (int i = 1; i < 6; i++) {
+        for (int j = i + 1; j < 6; j++) {
+            if (b[i] + b[j] == sum - a) {
+                cout << a << " " << b[i] << " " << b[j] << endl;
+                return;
+            }
+        }
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    return 0;
+}

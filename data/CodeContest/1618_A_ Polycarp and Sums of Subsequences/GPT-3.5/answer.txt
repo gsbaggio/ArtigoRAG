@@ -1,0 +1,16 @@
+def restore_array(t, test_cases):
+    for _ in range(t):
+        b = test_cases[_]
+        a = [b[0], b[-1]]
+        for i in range(1, 3):
+            a.insert(i, b[i] - b[i-1])
+        print(*a)
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    b = list(map(int, input().split()))
+    test_cases.append(b)
+
+restore_array(t, test_cases)

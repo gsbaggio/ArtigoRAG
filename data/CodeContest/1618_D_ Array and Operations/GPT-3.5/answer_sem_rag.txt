@@ -1,0 +1,24 @@
+def calculate_score(n, k, a):
+    # Sort the array
+    a.sort()
+
+    score_gains = []
+    for i in range(n):
+        for j in range(i+1, n):
+            score_gains.append(a[j] // a[i])
+
+    score_gains.sort(reverse=True)
+
+    total_score = sum(a)  # Add the remaining elements to the total score
+
+    for i in range(k):
+        total_score += score_gains[i]
+
+    return total_score
+
+# Input reading and processing
+t = int(input())
+for _ in range(t):
+    n, k = map(int, input().split())
+    a = list(map(int, input().split()))
+    print(calculate_score(n, k, a))

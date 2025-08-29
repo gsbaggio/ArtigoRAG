@@ -1,0 +1,60 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    def check(d):
+        colors = []
+        for x in a:
+            if x % d == 0:
+                colors.append(0)  # Red
+            else:
+                colors.append(1)  # Blue
+
+        for i in range(n - 1):
+            if colors[i] == colors[i+1]:
+                return False
+        return True
+
+    import math
+
+    def gcd(a, b):
+        if b == 0:
+            return a
+        return gcd(b, a % b)
+
+    # Find GCD of elements at even indices and odd indices separately
+    gcd_even = 0
+    for i in range(0, n, 2):
+        gcd_even = gcd(gcd_even, a[i])
+
+    gcd_odd = 0
+    for i in range(1, n, 2):
+        gcd_odd = gcd(gcd_odd, a[i])
+    
+    # Check if gcd_even is a valid d
+    valid_even = True
+    for i in range(1, n, 2):
+        if a[i] % gcd_even == 0:
+            valid_even = False
+            break
+    
+    if valid_even and gcd_even != 1:
+        print(gcd_even)
+        return
+    
+    # Check if gcd_odd is a valid d
+    valid_odd = True
+    for i in range(0, n, 2):
+        if a[i] % gcd_odd == 0:
+            valid_odd = False
+            break
+            
+    if valid_odd and gcd_odd != 1:
+        print(gcd_odd)
+        return
+    
+    print(0)
+
+t = int(input())
+for _ in range(t):
+    solve()

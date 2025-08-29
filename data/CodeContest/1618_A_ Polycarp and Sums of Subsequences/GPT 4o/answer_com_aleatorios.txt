@@ -1,0 +1,25 @@
+def restore_array(t, test_cases):
+    results = []
+    for b in test_cases:
+        # Extract a1, a2, and a3
+        a1 = b[0]
+        a2 = b[1]
+        a3 = b[6] - a1 - a2
+        results.append((a1, a2, a3))
+    return results
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    
+    t = int(data[0])  # Number of test cases
+    test_cases = [list(map(int, line.split())) for line in data[1:]]
+    
+    # Solve the problem
+    results = restore_array(t, test_cases)
+    
+    # Output results
+    for res in results:
+        print(*res)

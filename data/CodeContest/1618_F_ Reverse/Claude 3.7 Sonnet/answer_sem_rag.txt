@@ -1,0 +1,52 @@
+def can_transform(x, y):
+    # If x and y are equal, no operations needed
+    if x == y:
+        return True
+    
+    # If y is less than x, we can't reach y from x
+    # because our operations always maintain or increase the number
+    if y < x:
+        return False
+    
+    # Create a set to track visited numbers to avoid cycles
+    visited = set()
+    
+    # Start with y and try to reach x
+    while y not in visited:
+        visited.add(y)
+        
+        # If we reach x, return True
+        if y == x:
+            return True
+        
+        # Convert y to binary without '0b' prefix
+        binary = bin(y)[2:]
+        
+        # If the binary has only 1 digit, we can't go further back
+        if len(binary) <= 1:
+            return False
+        
+        # Remove the leftmost bit (can be 0 or 1)
+        binary = binary[1:]
+        
+        # Reverse the binary
+        binary = binary[::-1]
+        
+        # Convert back to decimal
+        y = int(binary, 2)
+        
+        # If y is now equal to x, we found a path
+        if y == x:
+            return True
+    
+    # If we enter a cycle and don't find x, return False
+    return False
+
+# Read input
+x, y = map(int, input().split())
+
+# Print output
+if can_transform(x, y):
+    print("YES")
+else:
+    print("NO")

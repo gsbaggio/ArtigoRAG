@@ -1,0 +1,29 @@
+def min_possible_score(n, k, arr):
+    # Sort the array
+    arr.sort()
+    
+    score = 0
+    
+    # Perform k operations
+    for i in range(k):
+        # Take the smallest element and divide by the largest
+        # This will often result in a score of 0 if smallest << largest
+        a_i = arr[i]
+        a_j = arr[n - 1 - i]
+        score += a_i // a_j
+    
+    # Add remaining elements to the score
+    # The remaining elements are those not used in operations
+    remaining_elements = arr[k:n-k]
+    score += sum(remaining_elements)
+    
+    return score
+
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n, k = map(int, input().split())
+        arr = list(map(int, input().split()))
+        print(min_possible_score(n, k, arr))
+
+solve()

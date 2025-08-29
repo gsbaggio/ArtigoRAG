@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+string reconstructWord(int n, vector<string>& bigrams) {
+    // Start with the first bigram
+    string word = bigrams[0];
+    
+    // Iterate through the rest of the bigrams
+    for (int i = 1; i < bigrams.size(); ++i) {
+        if (word.back() == bigrams[i][0]) {
+            // Append the second letter of the bigram to the word
+            word += bigrams[i][1];
+        } else {
+            // Mismatch found, try inserting each possible bigram at the gap
+            for (const string& candidate : {"aa", "ab", "ba", "bb"}) {
+                if (word.back() == candidate[0] && bigrams[i][0] == candidate[1]) {
+                    // Insert the candidate bigram at the gap
+                    word += candidate[1];
+                    break;
+                }
+            }
+        }
+    }
+    
+    // Ensure the word has the correct length
+    if (word.length() != n) {
+        // Handle edge cases where the missing bigram is at the end
+        for (const string& candidate : {"aa", "ab", "ba", "bb"}) {
+            if (word.back() == candidate[0]) {
+                word += candidate[1];
+                break;
+            }
+        }
+    }
+    
+    return word;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        
+        vector<string> bigrams(n-2);
+        for(auto &bigram : bigrams){
+            cin >> bigram;
+        }
+        
+        string result = reconstructWord(n, bigrams);
+        cout << result << "\n";
+    }
+}

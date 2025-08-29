@@ -1,0 +1,30 @@
+def find_beautiful_divisor(a):
+    # Check for at least one pair of adjacent elements where one is even and the other is odd
+    for i in range(len(a) - 1):
+        if (a[i] % 2 == 0 and a[i + 1] % 2 != 0) or (a[i] % 2 != 0 and a[i + 1] % 2 == 0):
+            return 2
+    return 0
+
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        a = list(map(int, input[index:index + n]))
+        index += n
+        
+        result = find_beautiful_divisor(a)
+        results.append(result)
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

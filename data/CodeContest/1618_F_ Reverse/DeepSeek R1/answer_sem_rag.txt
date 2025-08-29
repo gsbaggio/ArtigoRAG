@@ -1,0 +1,69 @@
+import collections
+
+def reverse_bits(a, L):
+    s = bin(a)[2:]
+    s = s.zfill(L)
+    return int(s[::-1], 2)
+
+def main():
+    data = input().split()
+    x = int(data[0])
+    y = int(data[1])
+    
+    if y % 2 == 0:
+        if x == y:
+            print("YES")
+        else:
+            print("NO")
+        return
+            
+    if x == y:
+        print("YES")
+        return
+        
+    candidates = []
+    if x % 2 == 0:
+        temp = x
+        trailing_zeros = 0
+        while temp % 2 == 0:
+            trailing_zeros += 1
+            temp //= 2
+        x_odd = temp
+        n_x = x.bit_length()
+        n_odd = x_odd.bit_length()
+        base = reverse_bits(x_odd, n_odd)
+        candidate1 = base
+        candidate2 = (1 << n_x) + base
+        candidates = [candidate1, candidate2]
+    else:
+        candidates = [x]
+        
+    visited = set()
+    queue = collections.deque()
+    queue.append(y)
+    visited.add(y)
+    
+    while queue:
+        z = queue.popleft()
+        if z in candidates:
+            print("YES")
+            return
+            
+        n = z.bit_length()
+        base0 = reverse_bits(z, n)
+        if base0 not in visited:
+            visited.add(base0)
+            queue.append(base0)
+            
+        if n > 1:
+            a = z - (1 << (n-1))
+            if a > 0:
+                base1 = reverse_bits(a, n-1)
+                if base1 not in visited:
+                    visited.add(base1)
+                    queue.append(base1)
+                    
+    print("NO")
+    
+if __name__ == '__main__':
+    main()

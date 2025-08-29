@@ -1,0 +1,51 @@
+import math
+
+t = int(input().strip())
+results = []
+
+for _ in range(t):
+    n = int(input().strip())
+    arr = list(map(int, input().split()))
+    
+    odd_list = []
+    even_list = []
+    for i in range(n):
+        if i % 2 == 0:
+            odd_list.append(arr[i])
+        else:
+            even_list.append(arr[i])
+            
+    g_odd = 0
+    for num in odd_list:
+        g_odd = math.gcd(g_odd, num)
+        
+    found = False
+    if g_odd > 1:
+        valid = True
+        for num in even_list:
+            if num % g_odd == 0:
+                valid = False
+                break
+        if valid:
+            results.append(str(g_odd))
+            found = True
+            
+    if not found:
+        g_even = 0
+        for num in even_list:
+            g_even = math.gcd(g_even, num)
+            
+        if g_even > 1:
+            valid = True
+            for num in odd_list:
+                if num % g_even == 0:
+                    valid = False
+                    break
+            if valid:
+                results.append(str(g_even))
+                found = True
+                
+        if not found:
+            results.append("0")
+            
+print("\n".join(results))

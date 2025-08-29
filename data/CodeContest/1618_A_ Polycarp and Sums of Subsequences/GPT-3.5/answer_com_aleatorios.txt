@@ -1,0 +1,14 @@
+t = int(input())
+
+for _ in range(t):
+    b = list(map(int, input().split()))
+
+    # Let's denote the elements of a as x, y, z
+    # Since the array a has 3 elements, we can express the sums in terms of x, y, z
+    # Sums: x, y, z, x+y, x+z, y+z, x+y+z
+    # Given the sorted array b, we can deduce:
+    # x = b[0]
+    # y = b[1] - x
+    # z = b[2] - x
+    # Now we have x, y, and z, we can print them out
+    print(b[0], b[1] - b[0], b[2] - b[0])

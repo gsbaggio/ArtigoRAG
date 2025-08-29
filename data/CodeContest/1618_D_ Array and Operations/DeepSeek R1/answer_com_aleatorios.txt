@@ -1,0 +1,17 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    data = input().split()
+    n = int(data[0])
+    k = int(data[1])
+    arr = list(map(int, input().split()))
+    arr.sort()
+    left = n - 2 * k
+    total = sum(arr[:left])
+    for i in range(k):
+        if arr[left + i] == arr[left + i + k]:
+            total += 1
+    results.append(total)
+
+for res in results:
+    print(res)

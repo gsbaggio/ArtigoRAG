@@ -1,0 +1,35 @@
+def restore_array(b):
+    # The smallest element in b is x
+    x = b[0]
+    # The second smallest element in b is y
+    y = b[1]
+    # The third smallest element in b is z
+    z = b[2]
+    
+    # Verify the sums
+    if b[3] == x + y and b[4] == x + z and b[5] == y + z and b[6] == x + y + z:
+        return x, y, z
+    else:
+        # If the verification fails, it means our assumption was wrong.
+        # However, the problem guarantees that there is at least one valid array,
+        # so this situation should not occur.
+        raise ValueError("Invalid input according to the problem constraints")
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+
+# Number of test cases
+t = int(input[0])
+
+# Process each test case
+index = 1
+results = []
+for _ in range(t):
+    b = list(map(int, input[index:index+7]))
+    index += 7
+    results.append(restore_array(b))
+
+# Print results
+for result in results:
+    print(result[0], result[1], result[2])

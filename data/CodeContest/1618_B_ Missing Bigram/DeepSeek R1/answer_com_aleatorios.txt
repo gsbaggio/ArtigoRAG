@@ -1,0 +1,13 @@
+t = int(input().strip())
+for _ in range(t):
+    n = int(input().strip())
+    bigrams = input().split()
+    s = bigrams[0]
+    for i in range(1, len(bigrams)):
+        if s[-1] == bigrams[i][0]:
+            s += bigrams[i][1]
+        else:
+            s += bigrams[i]
+    if len(s) < n:
+        s += 'a' * (n - len(s))
+    print(s)

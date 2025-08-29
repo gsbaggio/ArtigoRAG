@@ -1,0 +1,30 @@
+from math import gcd
+from functools import reduce
+
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])  # Number of elements in the array
+        idx += 1
+        a = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Compute the GCD of all adjacent differences
+        diffs = [abs(a[i] - a[i - 1]) for i in range(1, n)]
+        overall_gcd = reduce(gcd, diffs)
+        
+        # If the GCD of differences is 1, we can find a valid d
+        if overall_gcd == 1:
+            results.append(a[0])  # Any number in the array can be used as d
+        else:
+            results.append(0)  # No valid d exists
+    
+    # Print all results
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

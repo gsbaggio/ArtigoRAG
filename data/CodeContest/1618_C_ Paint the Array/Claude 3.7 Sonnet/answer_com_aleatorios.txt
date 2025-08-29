@@ -1,0 +1,31 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        # For a beautiful coloring, we need alternating divisibility
+        # First, check if array can be divided into two groups with different divisibility
+        
+        # Try specific values that often work
+        candidates = [2, 3, 5, a[0]]
+        found = False
+        
+        for d in candidates:
+            valid = True
+            for i in range(1, n):
+                if (a[i] % d == 0) == (a[i-1] % d == 0):
+                    valid = False
+                    break
+            
+            if valid:
+                print(d)
+                found = True
+                break
+        
+        # If no solution found
+        if not found:
+            print(0)
+
+solve()

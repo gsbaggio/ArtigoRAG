@@ -1,0 +1,20 @@
+t = int(input().strip())
+results = []
+
+for _ in range(t):
+    data = input().split()
+    n = int(data[0])
+    k = int(data[1])
+    arr = list(map(int, input().split()))
+    arr.sort()
+    total = 0
+    # Add the first n-2k elements
+    for i in range(n - 2 * k):
+        total += arr[i]
+    # For the next 2k elements, pair the first k with the last k in this segment
+    for i in range(k):
+        total += arr[n - 2 * k + i] // arr[n - k + i]
+    results.append(total)
+
+for res in results:
+    print(res)

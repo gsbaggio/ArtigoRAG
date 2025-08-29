@@ -1,0 +1,59 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        # For a beautiful coloring, elements at even indices should all be divisible 
+        # by d or all not divisible by d, and the opposite for odd indices
+        
+        # Find GCD of elements that should be divisible by d (pattern 1)
+        gcd1 = 0
+        for i in range(0, n, 2):  # Even indices
+            if gcd1 == 0:
+                gcd1 = a[i]
+            else:
+                # Calculate GCD
+                def gcd(a, b):
+                    while b:
+                        a, b = b, a % b
+                    return a
+                gcd1 = gcd(gcd1, a[i])
+        
+        # Check if elements that shouldn't be divisible are indeed not divisible
+        pattern1_valid = True
+        for i in range(1, n, 2):  # Odd indices
+            if a[i] % gcd1 == 0:
+                pattern1_valid = False
+                break
+        
+        if pattern1_valid:
+            print(gcd1)
+            continue
+        
+        # Try pattern 2: odd indices divisible, even indices not divisible
+        gcd2 = 0
+        for i in range(1, n, 2):  # Odd indices
+            if gcd2 == 0:
+                gcd2 = a[i]
+            else:
+                def gcd(a, b):
+                    while b:
+                        a, b = b, a % b
+                    return a
+                gcd2 = gcd(gcd2, a[i])
+        
+        # Check if elements that shouldn't be divisible are indeed not divisible
+        pattern2_valid = True
+        for i in range(0, n, 2):  # Even indices
+            if a[i] % gcd2 == 0:
+                pattern2_valid = False
+                break
+        
+        if pattern2_valid:
+            print(gcd2)
+        else:
+            print(0)
+
+solve()

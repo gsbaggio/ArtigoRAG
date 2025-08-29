@@ -1,0 +1,25 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        b = sorted(list(map(int, input().split())))
+        
+        # The key observation is that:
+        # b[0] is definitely a single element from array a
+        # Then we just need to identify the other two elements
+        
+        # We know that: a1 + a2 + a3 = b[6]
+        # And one of the elements is b[0]
+        # So we need to find the other two elements such that their sum = b[6] - b[0]
+        
+        a1 = b[0]  # Smallest element
+        
+        # For the other two elements, we use the fact that their sum must be b[6] - b[0]
+        # And their individual values must be among the subsequence sums
+        # b[1] could be the second element
+        a2 = b[1]
+        a3 = b[6] - a1 - a2
+        
+        print(f"{a1} {a2} {a3}")
+
+solve()

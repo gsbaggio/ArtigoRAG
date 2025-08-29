@@ -1,0 +1,32 @@
+from math import gcd
+from functools import reduce
+
+def find_beautiful_coloring(t, test_cases):
+    results = []
+    
+    for n, a in test_cases:
+        # Compute GCD of all adjacent differences
+        d = 0
+        for i in range(n - 1):
+            d = gcd(d, abs(a[i+1] - a[i]))
+        
+        # If d > 1, it's a valid divisor
+        if d > 1:
+            results.append(d)
+        else:
+            results.append(0)
+    
+    return results
+
+# Input reading
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    a = list(map(int, input().split()))
+    test_cases.append((n, a))
+
+# Solve and output results
+results = find_beautiful_coloring(t, test_cases)
+for res in results:
+    print(res)

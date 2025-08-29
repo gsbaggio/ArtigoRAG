@@ -1,0 +1,22 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n, k = map(int, input().split())
+        a = list(map(int, input().split()))
+        
+        # Sort the array in ascending order
+        a.sort()
+        
+        # Perform operations to minimize score
+        for i in range(k):
+            # Remove the largest element and a smallest element
+            # The floor division of smallest/largest will be 0
+            # This gives us the minimum score increment
+            a.pop()  # Remove largest
+            a.pop(0) # Remove smallest
+        
+        # The final score is the sum of remaining elements
+        print(sum(a))
+
+solve()

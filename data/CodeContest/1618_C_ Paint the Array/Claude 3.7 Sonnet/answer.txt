@@ -1,0 +1,49 @@
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+def solve(arr, n):
+    # Try even indices as red (divisible by d)
+    gcd_even = 0
+    for i in range(0, n, 2):
+        gcd_even = gcd(gcd_even, arr[i]) if gcd_even != 0 else arr[i]
+    
+    # Check if valid
+    valid_even = gcd_even != 0
+    for i in range(n):
+        if i % 2 == 0 and arr[i] % gcd_even != 0:
+            valid_even = False
+            break
+        if i % 2 == 1 and arr[i] % gcd_even == 0:
+            valid_even = False
+            break
+    
+    if valid_even:
+        return gcd_even
+    
+    # Try odd indices as red (divisible by d)
+    gcd_odd = 0
+    for i in range(1, n, 2):
+        gcd_odd = gcd(gcd_odd, arr[i]) if gcd_odd != 0 else arr[i]
+    
+    # Check if valid
+    valid_odd = gcd_odd != 0
+    for i in range(n):
+        if i % 2 == 1 and arr[i] % gcd_odd != 0:
+            valid_odd = False
+            break
+        if i % 2 == 0 and arr[i] % gcd_odd == 0:
+            valid_odd = False
+            break
+    
+    if valid_odd:
+        return gcd_odd
+    
+    return 0  # No solution
+
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    print(solve(arr, n))

@@ -1,0 +1,14 @@
+def find_missing_word(n, bigrams):
+    unique_bis = set(bigrams)
+    
+    for i in range(97, 97 + 26):  # ASCII values for 'a' to 'z'
+        for j in range(97, 97 + 26):
+            bigram = chr(i) + chr(j)
+            if bigram not in unique_bis:
+                return bigram + ''.join([big for big in bigrams])
+
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    bigrams = input().split()
+    print(find_missing_word(n, bigrams))

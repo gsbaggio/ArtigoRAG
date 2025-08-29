@@ -1,0 +1,18 @@
+def restore_array(t, test_cases):
+    results = []
+    for b in test_cases:
+        # Extract a[0], a[1], and a[2]
+        a1 = b[0]
+        a2 = b[1]
+        a3 = b[6] - a1 - a2
+        results.append((a1, a2, a3))
+    return results
+
+# Input reading
+t = int(input())
+test_cases = [list(map(int, input().split())) for _ in range(t)]
+
+# Solve and output results
+results = restore_array(t, test_cases)
+for res in results:
+    print(*res)

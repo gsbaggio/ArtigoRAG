@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        long long b[7];
+        for(int i=0;i<7;i++){
+            cin >> b[i];
+        }
+        
+        // Sort the array b to ensure the order
+        sort(b, b+7);
+        
+        // Identify a1, a2, a3
+        long long a1 = b[0];
+        long long a2 = b[1];
+        long long a3 = b[2];
+        
+        // If a3 is equal to a1 + a2, then a3 should be the next distinct element
+        if(a3 == a1 + a2){
+            a3 = b[3];
+        }
+        
+        // Verify the solution
+        long long sums[7] = {a1, a2, a3, a1+a2, a1+a3, a2+a3, a1+a2+a3};
+        sort(sums, sums+7);
+        
+        bool valid = true;
+        for(int i=0;i<7;i++){
+            if(sums[i] != b[i]){
+                valid = false;
+                break;
+            }
+        }
+        
+        // If the verification fails, we need to handle it
+        // However, based on the problem statement, we assume that there is always a valid solution
+        if(valid){
+            cout << a1 << " " << a2 << " " << a3 << "\n";
+        }
+    }
+    return 0;
+}

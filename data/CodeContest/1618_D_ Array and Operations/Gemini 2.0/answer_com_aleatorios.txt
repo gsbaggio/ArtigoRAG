@@ -1,0 +1,17 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n, k = map(int, input().split())
+        a = list(map(int, input().split()))
+        a.sort()
+        
+        score = 0
+        for i in range(k):
+            score += a[i] // a[2*k - 1 - i]
+        
+        for i in range(2*k, n):
+            score += a[i]
+        
+        print(score)
+
+solve()
