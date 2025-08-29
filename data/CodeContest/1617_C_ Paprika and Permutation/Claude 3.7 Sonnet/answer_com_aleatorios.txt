@@ -1,0 +1,75 @@
+import java.util.*;
+
+public class Solution {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int t = sc.nextInt();
+        
+        while (t-- > 0) {
+            int n = sc.nextInt();
+            int[] arr = new int[n];
+            
+            for (int i = 0; i < n; i++) {
+                arr[i] = sc.nextInt();
+            }
+            
+            System.out.println(solve(arr, n));
+        }
+    }
+    
+    static int solve(int[] arr, int n) {
+        // For each position, calculate what values are possible
+        boolean[][] canBe = new boolean[n][n+1];
+        
+        for (int i = 0; i < n; i++) {
+            // If value is already in range 1..n
+            if (arr[i] >= 1 && arr[i] <= n) {
+                canBe[i][arr[i]] = true;
+            }
+            
+            // Check all possible mod operations
+            for (int x = 2; x <= Math.min(arr[i], 2*n); x++) {
+                int modValue = arr[i] % x;
+                if (modValue >= 1 && modValue <= n) {
+                    canBe[i][modValue] = true;
+                }
+            }
+        }
+        
+        // Use maximum bipartite matching to assign values
+        int[] match = new int[n+1]; // value -> position
+        Arrays.fill(match, -1);
+        
+        for (int i = 0; i < n; i++) {
+            boolean[] visited = new boolean[n+1];
+            if (!dfs(i, canBe, match, visited)) {
+                return -1; // Impossible
+            }
+        }
+        
+        // Count operations
+        int operations = 0;
+        for (int i = 1; i <= n; i++) {
+            int pos = match[i];
+            if (arr[pos] != i) {
+                operations++;
+            }
+        }
+        
+        return operations;
+    }
+    
+    static boolean dfs(int pos, boolean[][] canBe, int[] match, boolean[] visited) {
+        for (int val = 1; val <= canBe[pos].length-1; val++) {
+            if (canBe[pos][val] && !visited[val]) {
+                visited[val] = true;
+                
+                if (match[val] == -1 || dfs(match[val], canBe, match, visited)) {
+                    match[val] = pos;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}

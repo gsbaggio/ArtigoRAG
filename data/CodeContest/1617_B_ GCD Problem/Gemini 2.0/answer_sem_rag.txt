@@ -1,0 +1,49 @@
+def solve():
+    n = int(input())
+    
+    if n % 2 == 0:
+        a = n // 2
+        if a % 2 == 0:
+            a += 1
+            b = n // 2 - 1
+        else:
+            a -= 1
+            b = n // 2 + 1
+        c = n - a - b
+        
+        if a != b and a > 0 and b > 0 and c > 0 and gcd(a, b) == c and a != c and b != c:
+            print(a, b, c)
+        else:
+            a = n // 2 - 2
+            b = n // 2 + 2
+            c = n - a - b
+            while a <= 0 or b <= 0 or c <= 0 or a == b or a == c or b == c or gcd(a,b) != c:
+                a -= 1
+                b += 1
+                c = n - a - b
+            print(a,b,c)
+    else:
+        a = (n - 1) // 2
+        b = (n - 1) // 2 - 1
+        c = 1
+        
+        if a != b and a > 0 and b > 0 and c > 0 and gcd(a, b) == c and a != c and b != c:
+            print(a, b, c)
+        else:
+            a = (n - 1) // 2 - 2
+            b = (n - 1) // 2 + 1
+            c = 2
+            while a <= 0 or b <= 0 or c <= 0 or a == b or a == c or b == c or gcd(a,b) != c:
+                a -= 1
+                b += 1
+                c = n - a - b
+            print(a,b,c)
+
+def gcd(a, b):
+    if b == 0:
+        return a
+    return gcd(b, a % b)
+
+t = int(input())
+for _ in range(t):
+    solve()

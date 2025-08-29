@@ -1,0 +1,22 @@
+import math
+
+def is_prime(num):
+    if num < 2:
+        return False
+    for i in range(2, int(math.sqrt(num)) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+def find_prime(n):
+    for i in range(n // 3, 0, -1):
+        if is_prime(i):
+            return i
+
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    c = find_prime(n)
+    a = c
+    b = 2 * c
+    print(a, b, n - a - b)

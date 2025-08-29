@@ -1,0 +1,44 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])  # Size of the array
+        idx += 1
+        a = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Frequency array to check for duplicates
+        freq = [0] * (n + 1)
+        operations = 0
+        
+        for i in range(n):
+            # Reduce a[i] to a value within [1, n]
+            while a[i] > n:
+                a[i] %= n
+                operations += 1
+            
+            # If the value is still greater than n or less than 1, it's invalid
+            if a[i] < 1 or a[i] > n:
+                results.append(-1)
+                break
+            
+            # Check for duplicates
+            freq[a[i]] += 1
+            if freq[a[i]] > 1:
+                results.append(-1)
+                break
+        else:
+            # If we exit the loop without breaking, check if it's a valid permutation
+            if all(freq[i] == 1 for i in range(1, n + 1)):
+                results.append(operations)
+            else:
+                results.append(-1)
+    
+    # Print all results
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

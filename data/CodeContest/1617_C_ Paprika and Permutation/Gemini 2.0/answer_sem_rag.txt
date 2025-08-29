@@ -1,0 +1,42 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    used = [False] * (n + 1)
+    count = 0
+    
+    for x in a:
+        if 1 <= x <= n and not used[x]:
+            used[x] = True
+
+    missing = []
+    for i in range(1, n + 1):
+        if not used[i]:
+            missing.append(i)
+
+    missing.sort()
+    
+    extra = []
+    for x in a:
+        if x > n or used[x]:
+            extra.append(x)
+
+    extra.sort()
+
+    if len(missing) > len(extra):
+        print("-1")
+        return
+
+    ops = 0
+    for i in range(len(missing)):
+        if extra[i] > missing[i]:
+            ops += 1
+        else:
+            print("-1")
+            return
+
+    print(ops)
+
+t = int(input())
+for _ in range(t):
+    solve()

@@ -1,0 +1,16 @@
+import math
+
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    if n % 2 == 0:
+        print(2, n - 3, 1)
+    else:
+        k = n - 1
+        a = 3
+        while True:
+            b = k - a
+            if math.gcd(a, b) == 1:
+                print(a, b, 1)
+                break
+            a += 2

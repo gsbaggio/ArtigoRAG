@@ -1,0 +1,25 @@
+def solve_optimized(n):
+    if n % 2 == 1:  # n is odd
+        c = 1
+        a = (n - 1) // 2
+        b = (n + 1) // 2
+    else:  # n is even
+        c = 2
+        a = n // 2
+        b = n // 2 - 2
+        if b <= 0 or a == b or b == c:  # Edge case
+            c = 3
+            a = 6
+            b = n - a - c
+    
+    return a, b, c
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        a, b, c = solve_optimized(n)
+        print(f"{a} {b} {c}")
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,74 @@
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+def solve():
+    n = int(input())
+    
+    if n % 2 == 0:
+        a = n // 2
+        if a % 2 == 0:
+            a += 1
+        b = n // 2 - 1
+        c = 1
+        
+        if gcd(a, b) == c and a > 0 and b > 0 and c > 0 and a != b and a != c and b != c and a + b + c == n:
+            print(a, b, c)
+            return
+        
+        a = n // 2 - 1
+        b = n // 2 
+        c = 1
+        
+        if gcd(a, b) == c and a > 0 and b > 0 and c > 0 and a != b and a != c and b != c and a + b + c == n:
+            print(a, b, c)
+            return
+        
+        a = n // 2 - 2
+        b = n // 2 + 1
+        c = 3
+        
+        if gcd(a, b) == c and a > 0 and b > 0 and c > 0 and a != b and a != c and b != c and a + b + c == n:
+            print(a, b, c)
+            return
+        
+        a = n // 2 - 3
+        b = n // 2 + 1
+        c = 2
+        
+        if gcd(a, b) == c and a > 0 and b > 0 and c > 0 and a != b and a != c and b != c and a + b + c == n:
+            print(a, b, c)
+            return
+        
+        a = n // 2 - 1
+        b = n // 2 - 2
+        c = 3
+        
+        if gcd(a, b) == c and a > 0 and b > 0 and c > 0 and a != b and a != c and b != c and a + b + c == n:
+            print(a, b, c)
+            return
+        
+        print(n // 2, n // 2 - 1, 1)
+    else:
+        a = n // 2
+        b = n // 2 + 1
+        c = 1
+        
+        if gcd(a, b) == c and a > 0 and b > 0 and c > 0 and a != b and a != c and b != c and a + b + c == n:
+            print(a, b, c)
+            return
+        
+        a = n // 2 - 1
+        b = n // 2 + 2
+        c = 1
+        
+        if gcd(a, b) == c and a > 0 and b > 0 and c > 0 and a != b and a != c and b != c and a + b + c == n:
+            print(a, b, c)
+            return
+        
+        print(n // 2, n // 2 + 1, 1)
+
+t = int(input())
+for _ in range(t):
+    solve()

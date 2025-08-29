@@ -1,0 +1,50 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        freq = [0] * (n + 1)
+        L = []
+        for num in a:
+            if num <= n:
+                freq[num] += 1
+            else:
+                L.append(num)
+                
+        for num in range(1, n + 1):
+            count = freq[num]
+            if count > 1:
+                L.extend([num] * (count - 1))
+                
+        M = []
+        for num in range(1, n + 1):
+            if freq[num] == 0:
+                M.append(num)
+                
+        if len(L) != len(M):
+            results.append(str(-1))
+        else:
+            L.sort(reverse=True)
+            M.sort(reverse=True)
+            valid = True
+            for i in range(len(L)):
+                if L[i] <= 2 * M[i]:
+                    valid = False
+                    break
+            if valid:
+                results.append(str(len(L)))
+            else:
+                results.append(str(-1))
+                
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

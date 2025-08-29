@@ -1,0 +1,55 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])  # Size of the array
+        idx += 1
+        a = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Frequency array to count occurrences of numbers in range [1, n]
+        freq = [0] * (n + 1)
+        extra = []  # To store values that are out of range or duplicates
+        
+        for num in a:
+            if 1 <= num <= n and freq[num] == 0:
+                freq[num] += 1
+            else:
+                extra.append(num)
+        
+        # Sort the extra values in ascending order
+        extra.sort()
+        
+        # Try to fill missing values in the range [1, n]
+        operations = 0
+        missing = []
+        
+        for i in range(1, n + 1):
+            if freq[i] == 0:
+                missing.append(i)
+        
+        # Match extra values to missing values
+        possible = True
+        for miss in missing:
+            if not extra:
+                possible = False
+                break
+            candidate = extra.pop(0)
+            # Check if we can reduce candidate to miss
+            if candidate // 2 < miss:
+                possible = False
+                break
+            operations += 1
+        
+        if possible:
+            results.append(operations)
+        else:
+            results.append(-1)
+    
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

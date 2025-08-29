@@ -1,0 +1,44 @@
+def solve_gcd_sum(n):
+    # For n ≥ 10, we can always find a solution
+    
+    # Strategy 1: Use c = 1
+    a = (n - 1) // 2
+    b = n - a - 1
+    
+    # Ensure a, b, c are distinct
+    if a != b and a != 1 and b != 1:
+        return a, b, 1
+    
+    # Strategy 2: Use c = 2
+    a = 2 * (n // 6)
+    b = 2 * ((n - 2) // 4)
+    c = 2
+    
+    # Ensure a, b, c are distinct
+    if a != b and a != c and b != c and a + b + c == n:
+        return a, b, c
+    
+    # Strategy 3: Use c = 3
+    a = 3 * 2  # 6
+    b = 3 * ((n - 9) // 3)
+    c = 3
+    
+    if a > 0 and b > 0 and a != b and a != c and b != c and a + b + c == n:
+        return a, b, c
+    
+    # Strategy 4: General case
+    c = max(1, n // 6)
+    a = c * 2
+    b = n - a - c
+    
+    return a, b, c
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        a, b, c = solve_gcd_sum(n)
+        print(f"{a} {b} {c}")
+
+if __name__ == "__main__":
+    main()

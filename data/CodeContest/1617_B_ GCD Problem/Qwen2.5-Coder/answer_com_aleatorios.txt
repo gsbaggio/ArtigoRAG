@@ -1,0 +1,35 @@
+#include <iostream>
+
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    
+    while(t--){
+        long long n;
+        cin >> n;
+        
+        long long a, b, c;
+        
+        if(n % 2 == 0){
+            // Even n
+            c = 2;
+            a = 4;
+            b = n - 6;
+        }
+        else{
+            // Odd n
+            c = 1;
+            a = 2;
+            b = n - 3;
+        }
+        
+        cout << a << " " << b << " " << c << "\n";
+    }
+    
+    return 0;
+}

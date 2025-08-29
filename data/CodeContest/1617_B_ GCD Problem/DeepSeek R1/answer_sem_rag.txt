@@ -1,0 +1,22 @@
+import math
+
+t = int(input().strip())
+results = []
+
+for _ in range(t):
+    n = int(input().strip())
+    if n % 2 == 0:
+        a = 2
+        b = n - 3
+        c = 1
+        results.append(f"{a} {b} {c}")
+    else:
+        k = n - 1
+        a = 3
+        while math.gcd(a, k) != 1:
+            a += 2
+        b = k - a
+        results.append(f"{a} {b} 1")
+
+for res in results:
+    print(res)

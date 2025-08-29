@@ -1,0 +1,33 @@
+def find_gcd_triplet(n):
+    # Start with the largest possible c that is a divisor of n and less than or equal to n // 5
+    for c in range(n // 5, 0, -1):
+        if n % c == 0:
+            a = c
+            b = 3 * c
+            remaining = n - (a + b + c)
+            if remaining > 0:
+                a += remaining
+                return a, b, c
+            else:
+                # If remaining is not positive, try the next smaller divisor
+                continue
+    # If no valid triplet is found, return a default valid triplet
+    return 2, 3, 1
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+t = int(data[0])
+results = []
+
+index = 1
+for _ in range(t):
+    n = int(data[index])
+    index += 1
+    a, b, c = find_gcd_triplet(n)
+    results.append(f"{a} {b} {c}")
+
+# Print results
+print("\n".join(results))

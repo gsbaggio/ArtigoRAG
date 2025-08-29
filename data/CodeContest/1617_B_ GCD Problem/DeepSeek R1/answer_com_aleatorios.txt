@@ -1,0 +1,28 @@
+#include <iostream>
+using namespace std;
+
+long long gcd(long long a, long long b) {
+    if (b == 0) return a;
+    return gcd(b, a % b);
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        long long n;
+        cin >> n;
+        if (n % 2 == 0) {
+            cout << "2 " << n - 3 << " 1" << endl;
+        } else {
+            long long S = n - 1;
+            long long a = 3;
+            while (gcd(a, S) != 1) {
+                a += 2;
+            }
+            long long b = S - a;
+            cout << a << " " << b << " 1" << endl;
+        }
+    }
+    return 0;
+}

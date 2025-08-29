@@ -1,0 +1,18 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    results = []
+    
+    for i in range(1, t + 1):
+        n = int(data[i])
+        # Choose a = 2, b = n - 3, c = 1
+        a = 2
+        b = n - 3
+        c = 1
+        results.append(f"{a} {b} {c}")
+    
+    # Print all results at once for efficiency
+    sys.stdout.write("\n".join(results) + "\n")

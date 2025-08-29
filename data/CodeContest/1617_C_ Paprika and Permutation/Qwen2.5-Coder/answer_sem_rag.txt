@@ -1,0 +1,59 @@
+def min_operations_to_permutation(t, test_cases):
+    results = []
+    
+    for n, arr in test_cases:
+        # Step 1: Count frequencies of elements in the array
+        freq = [0] * (n + 1)
+        for num in arr:
+            if num <= n:
+                freq[num] += 1
+        
+        # Step 2: Identify missing numbers
+        missing_numbers = []
+        for i in range(1, n + 1):
+            if freq[i] == 0:
+                missing_numbers.append(i)
+        
+        # Step 3: Check if we can generate the missing numbers
+        if not missing_numbers:
+            results.append(0)
+            continue
+        
+        # Step 4: Try to generate each missing number
+        operations_needed = 0
+        for k in missing_numbers:
+            found = False
+            for num in arr:
+                if num % k == 0 and num != k:
+                    found = True
+                    break
+            if not found:
+                results.append(-1)
+                break
+            else:
+                operations_needed += 1
+        
+        if operations_needed != -1:
+            results.append(operations_needed)
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read().splitlines()
+
+t = int(input[0])
+test_cases = []
+index = 1
+for _ in range(t):
+    n = int(input[index])
+    arr = list(map(int, input[index + 1].split()))
+    test_cases.append((n, arr))
+    index += 2
+
+# Get results
+results = min_operations_to_permutation(t, test_cases)
+
+# Print results
+for result in results:
+    print(result)

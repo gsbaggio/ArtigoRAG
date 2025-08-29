@@ -1,0 +1,52 @@
+def min_operations_to_permutation(t, test_cases):
+    results = []
+    
+    for n, a in test_cases:
+        freq = [0] * (n + 1)
+        for num in a:
+            if num <= n:
+                freq[num] += 1
+        
+        operations = 0
+        for i in range(n, 0, -1):
+            if freq[i] > 1:
+                excess = freq[i] - 1
+                x = i
+                while excess > 0:
+                    x -= 1
+                    if x == 0:
+                        break
+                    if freq[x] == 0:
+                        freq[x] = 1
+                        freq[i] -= 1
+                        excess -= 1
+                        operations += 1
+        
+        if freq.count(0) == 1:
+            results.append(operations)
+        else:
+            results.append(-1)
+    
+    return results
+
+# Reading input
+import sys
+input = sys.stdin.read().split()
+index = 0
+t = int(input[index])
+index += 1
+test_cases = []
+
+for _ in range(t):
+    n = int(input[index])
+    index += 1
+    a = list(map(int, input[index:index+n]))
+    index += n
+    test_cases.append((n, a))
+
+# Getting results
+results = min_operations_to_permutation(t, test_cases)
+
+# Printing results
+for result in results:
+    print(result)

@@ -1,0 +1,37 @@
+def gcd(a, b):
+    """
+    Calculates the greatest common divisor (GCD) of two integers using the Euclidean algorithm.
+
+    Args:
+        a (int): The first integer.
+        b (int): The second integer.
+
+    Returns:
+        int: The greatest common divisor of a and b.
+    """
+    while b:
+        a, b = b, a % b
+    return a
+
+def solve():
+    """
+    Finds three distinct positive integers a, b, c such that a + b + c = n and gcd(a, b) = c.
+    """
+    n = int(input())
+
+    if n % 3 == 0:
+        c = n // 3
+        if c > 1:
+            print(c - 1, c + 1, 1)
+        else:
+            print(n // 2 - 1, n // 2 + 1, 1)
+    elif n % 3 == 1:
+        c = n // 3
+        print(c - 1, c + 1, 2)
+    else:
+        c = n // 3
+        print(c - 2, c + 2, 1)
+
+t = int(input())
+for _ in range(t):
+    solve()

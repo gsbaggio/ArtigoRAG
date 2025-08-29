@@ -1,0 +1,46 @@
+def find_gcd_triplet(n):
+    # Adjust c based on the remainder of n when divided by 6
+    remainder = n % 6
+    if remainder == 0:
+        c = n // 6
+        a = 2 * c
+        b = 3 * c
+    elif remainder == 1:
+        c = (n - 1) // 6
+        a = 2 * c + 1
+        b = 3 * c
+    elif remainder == 2:
+        c = (n - 2) // 6
+        a = 2 * c + 2
+        b = 3 * c
+    elif remainder == 3:
+        c = (n - 3) // 6
+        a = 2 * c + 1
+        b = 3 * c + 1
+    elif remainder == 4:
+        c = (n - 4) // 6
+        a = 2 * c + 2
+        b = 3 * c + 1
+    elif remainder == 5:
+        c = (n - 5) // 6
+        a = 2 * c + 1
+        b = 3 * c + 2
+    
+    return a, b, c
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+t = int(input[0])
+results = []
+
+# Process each test case
+index = 1
+for _ in range(t):
+    n = int(input[index])
+    a, b, c = find_gcd_triplet(n)
+    results.append(f"{a} {b} {c}")
+    index += 1
+
+# Print results
+print("\n".join(results))

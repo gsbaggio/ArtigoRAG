@@ -1,0 +1,48 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        freq = [0] * (n+1)
+        candidates = []
+        for num in a:
+            if num <= n:
+                if freq[num] == 0:
+                    freq[num] = 1
+                else:
+                    candidates.append(num)
+            else:
+                candidates.append(num)
+                
+        missing = []
+        for i in range(1, n+1):
+            if freq[i] == 0:
+                missing.append(i)
+                
+        candidates.sort()
+        missing.sort()
+        j = 0
+        possible = True
+        for v in missing:
+            while j < len(candidates) and candidates[j] < 2*v + 1:
+                j += 1
+            if j >= len(candidates):
+                results.append(str(-1))
+                possible = False
+                break
+            j += 1
+            
+        if possible:
+            results.append(str(len(missing)))
+            
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

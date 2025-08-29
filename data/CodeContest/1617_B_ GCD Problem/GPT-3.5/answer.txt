@@ -1,0 +1,11 @@
+def find_triplet(n):
+    c = n // 3
+    a = c
+    b = 2 * c
+    return a, b, c
+
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    a, b, c = find_triplet(n)
+    print(a, b, c)

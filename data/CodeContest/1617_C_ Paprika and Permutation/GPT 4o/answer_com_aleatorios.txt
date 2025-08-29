@@ -1,0 +1,37 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])  # Size of the array
+        idx += 1
+        a = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Frequency array to track counts of numbers in range [1, n]
+        freq = [0] * (n + 1)
+        operations = 0
+        
+        for num in a:
+            # Reduce num to a value in range [1, n]
+            while num > n:
+                num %= n
+                if num == 0:
+                    num = n
+                operations += 1
+            
+            freq[num] += 1
+        
+        # Check if it's possible to form a permutation
+        if any(count > 1 for count in freq[1:]):
+            results.append("-1")
+        else:
+            results.append(str(operations))
+    
+    # Print all results
+    sys.stdout.write("\n".join(results) + "\n")

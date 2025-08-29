@@ -1,0 +1,8 @@
+t = int(input())
+
+for _ in range(t):
+    n = int(input())
+    a = n // 3
+    b = n // 3
+    c = n - 2 * (n // 3)
+    print(a, b, c)
