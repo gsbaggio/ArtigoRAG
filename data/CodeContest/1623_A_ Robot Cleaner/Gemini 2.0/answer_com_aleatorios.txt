@@ -1,0 +1,41 @@
+def solve():
+    n, m, rb, cb, rd, cd = map(int, input().split())
+
+    if rb == rd or cb == cd:
+        print(0)
+        return
+
+    dr = 1
+    dc = 1
+    r = rb
+    c = cb
+    time = 0
+
+    while r != rd and c != cd:
+        time += 1
+        new_r = r + dr
+        new_c = c + dc
+
+        if new_r > n:
+            dr = -1
+            new_r = r + dr
+        elif new_r < 1:
+            dr = 1
+            new_r = r + dr
+
+        if new_c > m:
+            dc = -1
+            new_c = c + dc
+        elif new_c < 1:
+            dc = 1
+            new_c = c + dc
+            
+        r = new_r
+        c = new_c
+
+    print(time)
+
+
+t = int(input())
+for _ in range(t):
+    solve()

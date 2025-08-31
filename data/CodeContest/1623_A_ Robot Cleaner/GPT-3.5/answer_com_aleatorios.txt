@@ -1,0 +1,40 @@
+def clean_time(n, m, rb, cb, rd, cd):
+    dr = 1
+    dc = 1
+    time = 0
+
+    while rb != rd or cb != cd:
+        if rb != rd:
+            if rb < rd:
+                if rb + dr <= n:
+                    rb += dr
+                else:
+                    dr = -dr
+            else:
+                if rb + dr >= 1:
+                    rb += dr
+                else:
+                    dr = -dr
+
+        if cb != cd:
+            if cb < cd:
+                if cb + dc <= m:
+                    cb += dc
+                else:
+                    dc = -dc
+            else:
+                if cb + dc >= 1:
+                    cb += dc
+                else:
+                    dc = -dc
+
+        time += 1
+
+    return time
+
+# Read the number of test cases
+t = int(input())
+
+for _ in range(t):
+    n, m, rb, cb, rd, cd = map(int, input().split())
+    print(clean_time(n, m, rb, cb, rd, cd))

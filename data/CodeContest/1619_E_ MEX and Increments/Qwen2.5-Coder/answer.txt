@@ -1,0 +1,52 @@
+import sys
+input = sys.stdin.readline
+
+def solve():
+    t = int(input())
+    results = []
+    
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        # Frequency array to count occurrences of each element
+        freq = [0] * (n + 1)
+        for num in a:
+            if num <= n:
+                freq[num] += 1
+        
+        # Calculate the minimum operations for each MEX value from 0 to n
+        min_operations = [0] * (n + 1)
+        missing_count = 0
+        
+        for i in range(n + 1):
+            if freq[i] == 0:
+                # If i is missing, we need to increment some element to i
+                min_operations[i] += missing_count + 1
+                missing_count += 1
+            else:
+                # If i is present, we just need to account for the missing elements before i
+                min_operations[i] += missing_count
+        
+        # Check if we can achieve MEX i
+        for i in range(n + 1):
+            if freq[i] == 0:
+                min_operations[i] = -1
+                break
+        
+        # Adjust the operations for MEX values greater than the current MEX
+        current_mex = 0
+        for i in range(n + 1):
+            if freq[i] == 0:
+                current_mex = i
+                break
+        
+        for i in range(current_mex + 1, n + 1):
+            min_operations[i] = -1
+        
+        results.append(' '.join(map(str, min_operations)))
+    
+    for result in results:
+        print(result)
+
+solve()

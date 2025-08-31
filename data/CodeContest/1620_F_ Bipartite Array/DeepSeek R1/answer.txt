@@ -1,0 +1,55 @@
+import collections
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    output_lines = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        p = list(map(int, data[index:index+n]))
+        index += n
+        if n > 10:
+            output_lines.append("NO")
+        else:
+            found = False
+            for bitmask in range(0, 1 << n):
+                a = []
+                for i in range(n):
+                    if bitmask & (1 << i):
+                        a.append(p[i])
+                    else:
+                        a.append(-p[i])
+                graph = [[] for _ in range(n)]
+                for i in range(n):
+                    for j in range(i+1, n):
+                        if a[i] > a[j]:
+                            graph[i].append(j)
+                            graph[j].append(i)
+                color = [-1] * n
+                is_bipartite = True
+                for i in range(n):
+                    if color[i] == -1:
+                        color[i] = 0
+                        queue = collections.deque([i])
+                        while queue and is_bipartite:
+                            u = queue.popleft()
+                            for v in graph[u]:
+                                if color[v] == -1:
+                                    color[v] = 1 - color[u]
+                                    queue.append(v)
+                                elif color[v] == color[u]:
+                                    is_bipartite = False
+                                    break
+                if is_bipartite:
+                    output_lines.append("YES")
+                    output_lines.append(" ".join(map(str, a)))
+                    found = True
+                    break
+            if not found:
+                output_lines.append("NO")
+    sys.stdout.write("\n".join(output_lines))
+
+if __name__ == "__main__":
+    main()

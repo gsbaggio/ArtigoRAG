@@ -1,0 +1,26 @@
+def can_form_rectangle(t, test_cases):
+    results = []
+    for case in test_cases:
+        l1, l2, l3 = sorted(case)  # Sort the sticks for easier comparison
+        # Check if any of the conditions for forming a rectangle are met
+        if l1 == l2 and l3 % 2 == 0:  # Two equal sticks, third can be split into two equal parts
+            results.append("YES")
+        elif l2 == l3 and l1 % 2 == 0:  # Two equal sticks, first can be split into two equal parts
+            results.append("YES")
+        elif l1 + l2 == l3:  # One stick equals the sum of the other two
+            results.append("YES")
+        else:
+            results.append("NO")
+    return results
+
+# Input reading and output
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    
+    t = int(data[0])  # Number of test cases
+    test_cases = [tuple(map(int, line.split())) for line in data[1:]]
+    
+    results = can_form_rectangle(t, test_cases)
+    sys.stdout.write("\n".join(results) + "\n")

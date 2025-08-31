@@ -1,0 +1,86 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+void solve() {
+    int n;
+    cin >> n;
+    
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
+    
+    for (int mex = 0; mex <= n; ++mex) {
+        // Check if all numbers from 0 to mex-1 exist
+        vector<bool> exists(n + 1, false);
+        for (int i = 0; i < n; ++i) {
+            if (a[i] <= n) {
+                exists[a[i]] = true;
+            }
+        }
+        
+        // Count missing numbers less than mex
+        vector<int> missing;
+        for (int i = 0; i < mex; ++i) {
+            if (!exists[i]) {
+                missing.push_back(i);
+            }
+        }
+        
+        // Check if mex exists in the array
+        if (exists[mex]) {
+            cout << "-1 ";
+            continue;
+        }
+        
+        // If no numbers are missing below mex, then mex is already the MEX
+        if (missing.empty()) {
+            cout << "0 ";
+            continue;
+        }
+        
+        // Find elements greater than mex that we can convert
+        vector<int> greater;
+        for (int i = 0; i < n; ++i) {
+            if (a[i] > mex) {
+                greater.push_back(a[i]);
+            }
+        }
+        
+        // Sort to use smallest values first
+        sort(greater.begin(), greater.end());
+        
+        // Check if we have enough values to convert
+        if (greater.size() < missing.size()) {
+            cout << "-1 ";
+            continue;
+        }
+        
+        // Calculate minimum operations
+        long long ops = 0;
+        for (int i = 0; i < missing.size(); ++i) {
+            ops += greater[i] - missing[i];
+        }
+        
+        cout << ops << " ";
+    }
+    
+    cout << endl;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        solve();
+    }
+    
+    return 0;
+}

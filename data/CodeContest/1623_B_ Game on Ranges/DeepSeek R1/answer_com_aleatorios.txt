@@ -1,0 +1,38 @@
+t = int(input().strip())
+for _ in range(t):
+    n = int(input().strip())
+    ranges = []
+    for i in range(n):
+        l, r = map(int, input().split())
+        ranges.append((l, r))
+    
+    results = []
+    for i in range(n):
+        l, r = ranges[i]
+        if l == r:
+            results.append((l, r, l))
+        else:
+            left_max = -1
+            right_min = 10**9
+            for j in range(n):
+                if i == j:
+                    continue
+                l2, r2 = ranges[j]
+                if l2 == l and r2 < r:
+                    if r2 > left_max:
+                        left_max = r2
+                if r2 == r and l2 > l:
+                    if l2 < right_min:
+                        right_min = l2
+            if left_max != -1 and right_min != 10**9:
+                d = left_max + 1
+            elif left_max != -1:
+                d = left_max + 1
+            elif right_min != 10**9:
+                d = right_min - 1
+            else:
+                d = l  # Fallback, but should not occur
+            results.append((l, r, d))
+            
+    for res in results:
+        print(f"{res[0]} {res[1]} {res[2]}")

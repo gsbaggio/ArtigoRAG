@@ -1,0 +1,127 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n, q;
+    cin >> n >> q;
+    
+    vector<int> p(n+1);
+    for(int i=1;i<=n;i++){
+        cin >> p[i];
+    }
+    
+    // Step 1: Initial cycle decomposition
+    vector<vector<int>> cycles;
+    vector<bool> visited(n+1, false);
+    vector<int> pos_in_cycle(n+1, -1); // pos_in_cycle[i] = index of i in its cycle
+    
+    for(int i=1;i<=n;i++){
+        if(!visited[i]){
+            vector<int> cycle;
+            int curr = i;
+            while(!visited[curr]){
+                visited[curr] = true;
+                cycle.push_back(curr);
+                pos_in_cycle[curr] = cycle.size()-1;
+                curr = p[curr];
+            }
+            cycles.push_back(cycle);
+        }
+    }
+    
+    // Step 2: Process queries
+    while(q--){
+        int t, x, y;
+        cin >> t >> x >> y;
+        
+        if(t == 1){
+            // Find cycles containing x and y
+            int cx = -1, cy = -1;
+            for(int i=0;i<cycles.size();i++){
+                if(pos_in_cycle[x] != -1 && cycles[i][pos_in_cycle[x]] == x){
+                    cx = i;
+                }
+                if(pos_in_cycle[y] != -1 && cycles[i][pos_in_cycle[y]] == y){
+                    cy = i;
+                }
+            }
+            
+            if(cx == cy){
+                // Same cycle, merge by removing elements between x and y
+                int len = cycles[cx].size();
+                int px = pos_in_cycle[x];
+                int py = pos_in_cycle[y];
+                
+                if(px > py){
+                    swap(px, py);
+                }
+                
+                vector<int> new_cycle;
+                for(int i=px;i<=py;i++){
+                    new_cycle.push_back(cycles[cx][i]);
+                }
+                for(int i=py+1;i<len;i++){
+                    new_cycle.push_back(cycles[cx][i]);
+                }
+                for(int i=0;i<px;i++){
+                    new_cycle.push_back(cycles[cx][i]);
+                }
+                
+                // Update positions
+                for(int i=0;i<new_cycle.size();i++){
+                    pos_in_cycle[new_cycle[i]] = i;
+                }
+                cycles[cx] = new_cycle;
+            }
+            else if(cx != -1 && cy != -1){
+                // Different cycles, merge them
+                int lenx = cycles[cx].size();
+                int leny = cycles[cy].size();
+                
+                vector<int> new_cycle = cycles[cx];
+                for(int i=0;i<leny;i++){
+                    new_cycle.push_back(cycles[cy][i]);
+                }
+                
+                // Update positions
+                for(int i=lenx;i<lenx+leny;i++){
+                    pos_in_cycle[new_cycle[i]] = i;
+                }
+                cycles.erase(cycles.begin() + cy);
+                cycles[cx] = new_cycle;
+            }
+            else{
+                // Neither x nor y is in a cycle, create a new cycle
+                cycles.push_back({x, y});
+                pos_in_cycle[x] = 0;
+                pos_in_cycle[y] = 1;
+            }
+            
+            // Swap p[x] and p[y]
+            swap(p[x], p[y]);
+        }
+        else{
+            // Find the cycle containing x
+            int c = -1;
+            for(int i=0;i<cycles.size();i++){
+                if(pos_in_cycle[x] != -1 && cycles[i][pos_in_cycle[x]] == x){
+                    c = i;
+                    break;
+                }
+            }
+            
+            // Compute the effective number of applications
+            int len = cycles[c].size();
+            int px = pos_in_cycle[x];
+            int new_pos = (px + y) % len;
+            
+            // Output the new position
+            cout << cycles[c][new_pos] << "\n";
+        }
+    }
+    
+    return 0;
+}

@@ -1,0 +1,38 @@
+def min_coins_needed(price):
+    # Calculate minimum coins needed for a single price
+    coins_3 = price // 3
+    remainder = price % 3
+    
+    if remainder == 0:
+        return coins_3
+    elif remainder == 1:
+        if coins_3 >= 1:
+            # Use (coins_3-1) 3-burle coins and two 2-burle coins
+            # Because 3 + 1 = 2 + 2
+            return (coins_3 - 1) + 2
+        else:
+            # Just one 1-burle coin
+            return 1
+    else:  # remainder == 2
+        # Use coins_3 3-burle coins and one 2-burle coin
+        return coins_3 + 1
+
+def solve():
+    t = int(input())
+    results = []
+    
+    for _ in range(t):
+        n = int(input())
+        prices = list(map(int, input().split()))
+        
+        # Calculate the minimum coins needed for each price
+        min_coins_per_price = [min_coins_needed(price) for price in prices]
+        
+        # Take the maximum as we need to be prepared for any flavor
+        results.append(max(min_coins_per_price))
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    solve()

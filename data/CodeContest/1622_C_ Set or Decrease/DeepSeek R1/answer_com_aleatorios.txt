@@ -1,0 +1,48 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        k = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        total_sum = sum(a)
+        if total_sum <= k:
+            results.append("0")
+            continue
+            
+        a.sort()
+        pre = [0] * (n+1)
+        for i in range(1, n+1):
+            pre[i] = pre[i-1] + a[i-1]
+            
+        ans = float('inf')
+        for t_val in range(0, n):
+            if n - t_val - 1 < 0:
+                x = min(a[0], k // n)
+                steps = (a[0] - x) + t_val
+            else:
+                L = n - t_val - 1
+                total = pre[L+1] - a[0]
+                if total > k:
+                    # Then (k - total) is negative
+                    x = (k - total) // (t_val + 1)
+                    # But we need to ensure that the division is floor division, which it is in Python.
+                else:
+                    x = (k - total) // (t_val + 1)
+                x = min(a[0], x)
+                steps = (a[0] - x) + t_val
+            if steps < ans:
+                ans = steps
+                
+        results.append(str(ans))
+        
+    sys.stdout.write("\n".join(results))
+    
+if __name__ == "__main__":
+    main()

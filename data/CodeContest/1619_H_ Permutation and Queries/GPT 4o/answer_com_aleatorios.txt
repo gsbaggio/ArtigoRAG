@@ -1,0 +1,30 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n, q = int(data[0]), int(data[1])
+    p = list(map(int, data[2:n+2]))
+    queries = data[n+2:]
+    
+    result = []
+    idx = 0
+    
+    for _ in range(q):
+        t = int(queries[idx])
+        if t == 1:
+            x, y = int(queries[idx+1]), int(queries[idx+2])
+            # Swap p[x-1] and p[y-1]
+            p[x-1], p[y-1] = p[y-1], p[x-1]
+            idx += 3
+        elif t == 2:
+            i, k = int(queries[idx+1]), int(queries[idx+2])
+            # Follow the permutation k times
+            current = i - 1
+            for _ in range(k):
+                current = p[current] - 1
+            result.append(p[current])
+            idx += 3
+    
+    # Print all results for type-2 queries
+    sys.stdout.write("\n".join(map(str, result)) + "\n")

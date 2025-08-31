@@ -1,0 +1,44 @@
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+def lcm(a, b):
+    return abs(a * b) // gcd(a, b)
+
+def time_to_clean(n, m, r_b, c_b, r_d, c_d):
+    # Calculate effective distances
+    row_distance = abs(r_b - r_d)
+    col_distance = abs(c_b - c_d)
+    
+    # If the robot is already in the same row or column as the dirty cell
+    if row_distance == 0 or col_distance == 0:
+        return 0
+    
+    # Calculate the time using LCM
+    return lcm(row_distance, col_distance)
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+
+# Number of test cases
+t = int(input[0])
+
+# Process each test case
+results = []
+index = 1
+for _ in range(t):
+    n = int(input[index])
+    m = int(input[index + 1])
+    r_b = int(input[index + 2])
+    c_b = int(input[index + 3])
+    r_d = int(input[index + 4])
+    c_d = int(input[index + 5])
+    index += 6
+    
+    results.append(time_to_clean(n, m, r_b, c_b, r_d, c_d))
+
+# Print results
+for result in results:
+    print(result)

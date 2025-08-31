@@ -1,0 +1,44 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        for(auto &x : a){
+            cin >> x;
+        }
+        vector<int> freq(n+1, 0);
+        for(auto &x : a){
+            if(x <= n){
+                freq[x]++;
+            }
+        }
+        vector<long long> mex_operations(n+1, 0);
+        long long operations = 0;
+        for(int i = 0; i <= n; i++){
+            if(freq[i] == 0){
+                mex_operations[i] = operations + 1;
+            }
+            else{
+                mex_operations[i] = operations;
+                operations += freq[i];
+            }
+        }
+        for(int i = 0; i <= n; i++){
+            if(mex_operations[i] > n){
+                mex_operations[i] = -1;
+            }
+        }
+        for(int i = 0; i <= n; i++){
+            cout << mex_operations[i] << " ";
+        }
+        cout << "\n";
+    }
+    return 0;
+}

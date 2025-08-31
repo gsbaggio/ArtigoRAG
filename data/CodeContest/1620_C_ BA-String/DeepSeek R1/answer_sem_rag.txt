@@ -1,0 +1,78 @@
+import sys
+
+def main():
+    data = sys.stdin.read().splitlines()
+    t = int(data[0])
+    index = 1
+    output_lines = []
+    for _ in range(t):
+        nkx = data[index].split()
+        index += 1
+        n = int(nkx[0])
+        k = int(nkx[1])
+        x = int(nkx[2])
+        s = data[index].strip()
+        index += 1
+        
+        if k == 0:
+            output_lines.append(s.replace('*', ''))
+            continue
+            
+        groups = []
+        i = 0
+        while i < len(s):
+            if s[i] == '*':
+                count = 0
+                j = i
+                while j < len(s) and s[j] == '*':
+                    count += 1
+                    j += 1
+                groups.append(count)
+                i = j
+            else:
+                i += 1
+                
+        if not groups:
+            output_lines.append(s)
+            continue
+            
+        bases = [g * k + 1 for g in groups]
+        x0 = x - 1
+        num_groups = len(groups)
+        R = [0] * num_groups
+        P = 1
+        for i in range(num_groups-1, -1, -1):
+            R[i] = P
+            if P > x0:
+                P = x0 + 1
+            else:
+                P = P * bases[i]
+                if P > x0:
+                    P = x0 + 1
+                    
+        digits = []
+        for i in range(num_groups):
+            d = x0 // R[i]
+            digits.append(d)
+            x0 %= R[i]
+            
+        res_list = []
+        group_idx = 0
+        i = 0
+        while i < len(s):
+            if s[i] == 'a':
+                res_list.append('a')
+                i += 1
+            else:
+                d = digits[group_idx]
+                res_list.append('b' * d)
+                group_idx += 1
+                while i < len(s) and s[i] == '*':
+                    i += 1
+                    
+        output_lines.append(''.join(res_list))
+        
+    sys.stdout.write("\n".join(output_lines))
+    
+if __name__ == "__main__":
+    main()

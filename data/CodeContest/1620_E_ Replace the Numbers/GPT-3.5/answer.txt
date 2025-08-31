@@ -1,0 +1,28 @@
+from collections import defaultdict
+
+def process_queries(q, queries):
+    array = defaultdict(int)
+    result = []
+    
+    for query in queries:
+        query_type, *values = query
+        if query_type == 1:
+            x = values[0]
+            array[x] += 1
+        elif query_type == 2:
+            x, y = values
+            for key in list(array.keys()):
+                if array[key] == x:
+                    array[key] = y
+        result.append([key for key, value in array.items() for _ in range(value)])
+    
+    return result
+
+# Input parsing
+q = int(input())
+queries = [list(map(int, input().split())) for _ in range(q)]
+
+# Process queries and print the resulting array
+result = process_queries(q, queries)
+for res in result:
+    print(*res)

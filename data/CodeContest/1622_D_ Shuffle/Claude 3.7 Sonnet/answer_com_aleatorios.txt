@@ -1,0 +1,46 @@
+def solve():
+    MOD = 998244353
+    n, k = map(int, input().split())
+    s = input().strip()
+    
+    # Store unique resulting strings
+    result = set([s])  # Include original string
+    
+    # For each possible substring
+    for start in range(n):
+        ones = 0
+        for end in range(start, n):
+            if s[end] == '1':
+                ones += 1
+                
+            if ones == k:
+                # Get the prefix and suffix
+                prefix = s[:start]
+                suffix = s[end+1:]
+                
+                # We have a substring with exactly k ones
+                # When we shuffle, we can place these ones in any of the positions
+                # Get the substring
+                substring = s[start:end+1]
+                zeros = len(substring) - k
+                
+                # Try all possible arrangements by placing k ones in len(substring) positions
+                from itertools import combinations
+                
+                for ones_positions in combinations(range(len(substring)), k):
+                    # Create a new substring with ones at the chosen positions
+                    new_substring = ['0'] * len(substring)
+                    for pos in ones_positions:
+                        new_substring[pos] = '1'
+                    
+                    # Build the full string
+                    new_s = prefix + ''.join(new_substring) + suffix
+                    result.add(new_s)
+            
+            # If we exceed k ones, this substring won't work
+            if ones > k:
+                break
+    
+    return len(result) % MOD
+
+print(solve())

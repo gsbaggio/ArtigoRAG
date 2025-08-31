@@ -1,0 +1,16 @@
+import math
+
+# Function to count the number of integers Polycarp likes up to n
+def count_polycarp_likes(n):
+    squares = int(math.sqrt(n))  # Count of squares up to n
+    cubes = int(n ** (1/3))      # Count of cubes up to n
+    both = sum(1 for i in range(1, cubes + 1) if i**2 <= n)  # Count of numbers that are both squares and cubes
+
+    return squares + cubes - both
+
+# Input reading and processing
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    result = count_polycarp_likes(n)
+    print(result)

@@ -1,0 +1,16 @@
+# Read the number of test cases
+t = int(input())
+
+# Iterate through each test case
+for _ in range(t):
+    l1, l2, l3 = map(int, input().split())
+    
+    # Sort the lengths of sticks
+    sticks = [l1, l2, l3]
+    sticks.sort()
+    
+    # Check if we can form a rectangle
+    if sticks[0] + sticks[1] == sticks[2]:
+        print("YES")
+    else:
+        print("NO")

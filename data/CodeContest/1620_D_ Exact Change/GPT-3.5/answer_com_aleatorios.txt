@@ -1,0 +1,26 @@
+def min_coins_needed(t, test_cases):
+    results = []
+    
+    for test_case in test_cases:
+        n = test_case[0]
+        flavors = test_case[1]
+
+        min_coin = min(flavors)  # Minimum cost flavor
+        coins_needed = min_coin - 1  # Initialize with coins for minimum cost flavor
+
+        results.append(coins_needed)
+    
+    return results
+
+# Input
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    flavors = list(map(int, input().split()))
+    test_cases.append((n, flavors))
+
+# Output
+results = min_coins_needed(t, test_cases)
+for result in results:
+    print(result)

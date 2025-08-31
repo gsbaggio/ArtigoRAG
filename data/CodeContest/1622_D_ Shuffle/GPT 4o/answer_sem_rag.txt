@@ -1,0 +1,55 @@
+MOD = 998244353
+
+def factorial_mod(n, mod):
+    """Compute n! % mod efficiently."""
+    fact = [1] * (n + 1)
+    for i in range(2, n + 1):
+        fact[i] = fact[i - 1] * i % mod
+    return fact
+
+def mod_inverse(x, mod):
+    """Compute modular inverse of x under modulo mod."""
+    return pow(x, mod - 2, mod)
+
+def count_distinct_strings(n, k, s):
+    if k == 0:
+        return 1  # No substring with k=0 ones can be shuffled
+    
+    # Precompute factorials and modular inverses
+    fact = factorial_mod(n, MOD)
+    inv_fact = [mod_inverse(fact[i], MOD) for i in range(n + 1)]
+    
+    # Helper function to compute nCk % MOD
+    def nCk(n, k):
+        if k > n or k < 0:
+            return 0
+        return fact[n] * inv_fact[k] % MOD * inv_fact[n - k] % MOD
+    
+    # Prefix sum to count ones
+    prefix_ones = [0] * (n + 1)
+    for i in range(n):
+        prefix_ones[i + 1] = prefix_ones[i] + (1 if s[i] == '1' else 0)
+    
+    # Count distinct strings
+    distinct_strings = set()
+    for i in range(n):
+        for j in range(i, n):
+            # Count ones in substring s[i:j+1]
+            ones_count = prefix_ones[j + 1] - prefix_ones[i]
+            if ones_count == k:
+                # Generate the substring and sort it
+                substring = s[i:j + 1]
+                zeros = substring.count('0')
+                ones = substring.count('1')
+                # Calculate permutations of the substring
+                permutations = nCk(zeros + ones, ones)
+                distinct_strings.add(permutations)
+    
+    return len(distinct_strings) % MOD
+
+# Input reading
+n, k = map(int, input().split())
+s = input().strip()
+
+# Output the result
+print(count_distinct_strings(n, k, s))

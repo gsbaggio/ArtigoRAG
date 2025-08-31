@@ -1,0 +1,20 @@
+# Read the number of test cases
+t = int(input())
+
+# Iterate through each test case
+for _ in range(t):
+    # Read the lengths of the sticks
+    l1, l2, l3 = map(int, input().split())
+    
+    # Sort the lengths to make calculations easier
+    lengths = [l1, l2, l3]
+    lengths.sort()
+    
+    # Check if it's possible to form a rectangle
+    if lengths[0] == lengths[1]:
+        # If two sticks are of the same length, a rectangle can be formed
+        # by using the shorter stick as the sides and the longer stick as the length
+        print("YES")
+    else:
+        # If the sticks are different lengths, a rectangle cannot be formed
+        print("NO")

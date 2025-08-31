@@ -1,0 +1,40 @@
+def is_consistent(s):
+    n = len(s)
+    # Initialize color array with -1 (unassigned)
+    color = [-1] * n
+    
+    # Try to assign color 0 to the first node
+    color[0] = 0
+    
+    # Try to propagate the color based on the constraints
+    for i in range(n):
+        next_i = (i + 1) % n
+        if s[i] == 'E':
+            # If the current node and the next node should be equal
+            if color[next_i] == -1:
+                color[next_i] = color[i]
+            elif color[next_i] != color[i]:
+                return "NO"
+        else:
+            # If the current node and the next node should be not equal
+            if color[next_i] == -1:
+                color[next_i] = 1 - color[i]
+            elif color[next_i] == color[i]:
+                return "NO"
+    
+    return "YES"
+
+# Read input
+import sys
+input = sys.stdin.read().splitlines()
+t = int(input[0])
+results = []
+
+# Process each test case
+for i in range(1, t + 1):
+    s = input[i]
+    results.append(is_consistent(s))
+
+# Print results
+for result in results:
+    print(result)

@@ -1,0 +1,36 @@
+def solve():
+    n, k = map(int, input().split())
+    a = list(map(int, input().split()))
+
+    a.sort()
+    
+    total_sum = sum(a)
+    
+    if total_sum <= k:
+        print(0)
+        return
+    
+    ans = float('inf')
+    
+    for i in range(n):
+        current_sum = total_sum
+        
+        # Make the first i elements equal to a[i]
+        current_sum -= sum(a[:i])
+        current_sum += i * a[0]
+        
+        # Calculate the number of steps needed to make the sum <= k
+        diff = current_sum - k
+        
+        if diff > 0:
+            steps = i + (diff + i) // (i + 1)
+        else:
+            steps = i
+        
+        ans = min(ans, steps)
+        
+    print(ans)
+
+t = int(input())
+for _ in range(t):
+    solve()

@@ -1,0 +1,45 @@
+def solve_ba_strings():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n, k, x = map(int, data[idx:idx+3])
+        s = data[idx+3]
+        idx += 4
+        
+        x -= 1  # Convert x to 0-based index
+        result = []
+        multiplier = 1
+        segments = []
+        
+        # Traverse the string in reverse to calculate segment multipliers
+        for char in reversed(s):
+            if char == '*':
+                multiplier *= (k + 1)
+                segments.append(multiplier)
+            else:
+                segments.append(0)
+        
+        segments.reverse()
+        multiplier = 1
+        
+        # Traverse the string to construct the result
+        for i, char in enumerate(s):
+            if char == 'a':
+                result.append('a')
+            elif char == '*':
+                # Determine how many 'b's to add
+                segment_count = segments[i] // (k + 1)
+                b_count = x // segment_count
+                result.append('b' * b_count)
+                x %= segment_count
+        
+        results.append(''.join(result))
+    
+    # Print all results
+    sys.stdout.write('\n'.join(results) + '\n')

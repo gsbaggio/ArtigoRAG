@@ -1,0 +1,58 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        l1, l2, l3 = map(int, input().split())
+        
+        if can_form_rectangle(l1, l2, l3):
+            print("YES")
+        else:
+            print("NO")
+
+def can_form_rectangle(l1, l2, l3):
+    # For a rectangle, we need two pairs of equal sides after breaking one stick
+    
+    # Break l1 into (x, l1-x) and check if we can form a rectangle
+    # Case 1: x = l2 and (l1-x) = l3
+    if l1 > l2 and l1 - l2 == l3:
+        return True
+    
+    # Case 2: x = l3 and (l1-x) = l2
+    if l1 > l3 and l1 - l3 == l2:
+        return True
+    
+    # Break l2 into (x, l2-x)
+    # Case 3: x = l1 and (l2-x) = l3
+    if l2 > l1 and l2 - l1 == l3:
+        return True
+    
+    # Case 4: x = l3 and (l2-x) = l1
+    if l2 > l3 and l2 - l3 == l1:
+        return True
+    
+    # Break l3 into (x, l3-x)
+    # Case 5: x = l1 and (l3-x) = l2
+    if l3 > l1 and l3 - l1 == l2:
+        return True
+    
+    # Case 6: x = l2 and (l3-x) = l1
+    if l3 > l2 and l3 - l2 == l1:
+        return True
+    
+    # Special cases - create a stick of equal length to make a pair
+    # If we break l1 in half, can we pair with l2 and l3?
+    if l1 % 2 == 0 and l2 == l3:
+        return True
+    
+    # If we break l2 in half, can we pair with l1 and l3?
+    if l2 % 2 == 0 and l1 == l3:
+        return True
+    
+    # If we break l3 in half, can we pair with l1 and l2?
+    if l3 % 2 == 0 and l1 == l2:
+        return True
+    
+    return False
+
+if __name__ == "__main__":
+    solve()

@@ -1,0 +1,48 @@
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+bool solve() {
+    int l1, l2, l3;
+    cin >> l1 >> l2 >> l3;
+
+    int arr[3] = {l1, l2, l3};
+
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 1; j < arr[i]; ++j) {
+            int a = j;
+            int b = arr[i] - j;
+            int sticks[4];
+            int idx = 0;
+            for(int k = 0; k < 3; ++k){
+                if(k != i){
+                    sticks[idx++] = arr[k];
+                }
+            }
+            sticks[idx++] = a;
+            sticks[idx++] = b;
+
+            sort(sticks, sticks + 4);
+
+            if (sticks[0] == sticks[1] && sticks[2] == sticks[3]) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        if (solve()) {
+            cout << "YES" << endl;
+        } else {
+            cout << "NO" << endl;
+        }
+    }
+    return 0;
+}

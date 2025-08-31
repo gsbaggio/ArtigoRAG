@@ -1,0 +1,41 @@
+def can_transform(x, y):
+    # If x and y are already equal
+    if x == y:
+        return True
+    
+    # Use a BFS with more aggressive pruning
+    visited = set([x])
+    queue = [x]
+    
+    # Limit the number of iterations to avoid excessive computation
+    iterations = 0
+    max_iterations = 100000  # Reasonable limit
+    
+    while queue and iterations < max_iterations:
+        iterations += 1
+        current = queue.pop(0)
+        
+        # Convert to binary, append 0 or 1, reverse, and convert back
+        binary = bin(current)[2:]
+        
+        for bit in ['0', '1']:
+            new_binary = binary + bit
+            reversed_binary = new_binary[::-1].lstrip('0') or '0'
+            new_number = int(reversed_binary, 2)
+            
+            if new_number == y:
+                return True
+            
+            # Only add to queue if not visited and within a reasonable size
+            if new_number not in visited and new_number <= 10**18:
+                visited.add(new_number)
+                queue.append(new_number)
+    
+    return False
+
+# Read input and process
+x, y = map(int, input().split())
+if can_transform(x, y):
+    print("YES")
+else:
+    print("NO")

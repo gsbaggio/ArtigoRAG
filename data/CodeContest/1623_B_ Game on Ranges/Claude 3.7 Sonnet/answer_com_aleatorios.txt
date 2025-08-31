@@ -1,0 +1,51 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        
+        # Read all ranges
+        ranges = set()
+        for _ in range(n):
+            l, r = map(int, input().split())
+            ranges.add((l, r))
+        
+        # Store the original ranges for output
+        original_ranges = list(ranges)
+        
+        # For each range, find the number Bob picked
+        bob_choices = {}
+        
+        # Process ranges repeatedly until all are resolved
+        while ranges:
+            for l, r in list(ranges):  # Create a copy to avoid modifying during iteration
+                # If range is a singleton, Bob must pick that number
+                if l == r:
+                    bob_choices[(l, r)] = l
+                    ranges.remove((l, r))
+                    continue
+                
+                # Check if we can determine Bob's choice uniquely
+                valid_choices = []
+                for d in range(l, r + 1):
+                    # Check if splitting with d creates valid ranges
+                    left_range = (l, d - 1) if l <= d - 1 else None
+                    right_range = (d + 1, r) if d + 1 <= r else None
+                    
+                    # Both resulting ranges must either be in our set or not needed (empty)
+                    left_valid = left_range is None or left_range in ranges or left_range in bob_choices
+                    right_valid = right_range is None or right_range in ranges or right_range in bob_choices
+                    
+                    if left_valid and right_valid:
+                        valid_choices.append(d)
+                
+                # If only one valid choice, we've found Bob's pick
+                if len(valid_choices) == 1:
+                    bob_choices[(l, r)] = valid_choices[0]
+                    ranges.remove((l, r))
+        
+        # Output results in the original order
+        for l, r in original_ranges:
+            print(l, r, bob_choices[(l, r)])
+
+if __name__ == "__main__":
+    solve()

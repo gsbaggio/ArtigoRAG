@@ -1,0 +1,39 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    
+    q = int(data[0])
+    queries = []
+    index = 1
+    for i in range(q):
+        if data[index] == '1':
+            x = int(data[index+1])
+            queries.append(('1', x))
+            index += 2
+        else:
+            x = int(data[index+1])
+            y = int(data[index+2])
+            queries.append(('2', x, y))
+            index += 3
+            
+    MAX = 500001
+    f = list(range(MAX))
+    ans = []
+    
+    for i in range(len(queries)-1, -1, -1):
+        op = queries[i][0]
+        if op == '1':
+            x = queries[i][1]
+            ans.append(f[x])
+        else:
+            x = queries[i][1]
+            y = queries[i][2]
+            f[x] = f[y]
+            
+    print(' '.join(str(x) for x in reversed(ans)))
+
+if __name__ == "__main__":
+    main()

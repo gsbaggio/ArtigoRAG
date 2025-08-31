@@ -1,0 +1,61 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_VAL = 500000;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int q;
+    cin >> q;
+
+    vector<int> arr; // Dynamic array to store the elements
+    unordered_map<int, int> replace_map; // Map to handle replacements efficiently
+
+    while (q--) {
+        int type;
+        cin >> type;
+
+        if (type == 1) {
+            int x;
+            cin >> x;
+
+            // Apply all replacements to x before adding
+            if (replace_map.count(x)) {
+                x = replace_map[x];
+            }
+            arr.push_back(x);
+        } else if (type == 2) {
+            int x, y;
+            cin >> x >> y;
+
+            // Update the replacement map
+            if (x != y) {
+                replace_map[x] = y;
+
+                // Propagate replacements to avoid chains
+                for (auto& [key, value] : replace_map) {
+                    if (value == x) {
+                        value = y;
+                    }
+                }
+            }
+        }
+    }
+
+    // Apply all replacements to the final array
+    for (int& num : arr) {
+        if (replace_map.count(num)) {
+            num = replace_map[num];
+        }
+    }
+
+    // Output the resulting array
+    for (int num : arr) {
+        cout << num << " ";
+    }
+    cout << "\n";
+
+    return 0;
+}

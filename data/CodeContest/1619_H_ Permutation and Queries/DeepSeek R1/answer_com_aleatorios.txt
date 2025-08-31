@@ -1,0 +1,77 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int S = 50;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n, q;
+    cin >> n >> q;
+    vector<int> p(n+1);
+    vector<int> inv(n+1);
+    vector<int> nxt(n+1);
+    
+    for (int i = 1; i <= n; i++) {
+        cin >> p[i];
+    }
+    
+    for (int i = 1; i <= n; i++) {
+        inv[p[i]] = i;
+    }
+    
+    for (int i = 1; i <= n; i++) {
+        int cur = i;
+        for (int j = 0; j < S; j++) {
+            cur = p[cur];
+        }
+        nxt[i] = cur;
+    }
+    
+    while (q--) {
+        int type;
+        cin >> type;
+        if (type == 1) {
+            int x, y;
+            cin >> x >> y;
+            int a = p[x], b = p[y];
+            swap(p[x], p[y]);
+            inv[a] = y;
+            inv[b] = x;
+            
+            set<int> to_update;
+            int cur = x;
+            for (int i = 0; i < S; i++) {
+                to_update.insert(cur);
+                cur = inv[cur];
+            }
+            cur = y;
+            for (int i = 0; i < S; i++) {
+                to_update.insert(cur);
+                cur = inv[cur];
+            }
+            
+            for (int i : to_update) {
+                cur = i;
+                for (int j = 0; j < S; j++) {
+                    cur = p[cur];
+                }
+                nxt[i] = cur;
+            }
+        } else {
+            int i, k;
+            cin >> i >> k;
+            while (k >= S) {
+                i = nxt[i];
+                k -= S;
+            }
+            for (int j = 0; j < k; j++) {
+                i = p[i];
+            }
+            cout << i << '\n';
+        }
+    }
+    
+    return 0;
+}

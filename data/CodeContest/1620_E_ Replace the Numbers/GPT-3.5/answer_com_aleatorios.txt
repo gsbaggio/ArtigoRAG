@@ -1,0 +1,36 @@
+from collections import defaultdict
+
+def process_queries(q, queries):
+    result = []
+    array = []
+    occurrences = defaultdict(int)
+    
+    for query in queries:
+        q_type = query[0]
+        
+        if q_type == 1:
+            x = query[1]
+            array.append(x)
+            occurrences[x] += 1
+        elif q_type == 2:
+            x, y = query[1], query[2]
+            for i in range(len(array)):
+                if array[i] == x:
+                    array[i] = y
+            occurrences[y] += occurrences[x]
+            occurrences[x] = 0
+    
+    for elem in array:
+        if occurrences[elem] > 0:
+            result.append(elem)
+            occurrences[elem] -= 1
+    
+    return result
+
+# Input parsing
+q = int(input())
+queries = [list(map(int, input().split())) for _ in range(q)]
+
+# Process queries and print the resulting array
+result_array = process_queries(q, queries)
+print(' '.join(map(str, result_array)))

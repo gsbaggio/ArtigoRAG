@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <algorithm>
+using namespace std;
+
+// Struct to represent a range
+struct Range {
+    int l, r, index;
+};
+
+// Comparator to sort ranges by length in descending order
+bool compareByLength(const Range &a, const Range &b) {
+    return (a.r - a.l) > (b.r - b.l);
+}
+
+int main() {
+    int t;
+    cin >> t; // Number of test cases
+
+    while (t--) {
+        int n;
+        cin >> n; // Number of ranges
+
+        vector<Range> ranges(n);
+        for (int i = 0; i < n; i++) {
+            cin >> ranges[i].l >> ranges[i].r;
+            ranges[i].index = i; // Store the original index
+        }
+
+        // Sort ranges by length in descending order
+        sort(ranges.begin(), ranges.end(), compareByLength);
+
+        set<int> pickedNumbers; // Set to track numbers Bob has picked
+        vector<int> result(n); // To store the result for each range
+
+        for (const auto &range : ranges) {
+            // Find the smallest number in [l, r] that has not been picked
+            for (int d = range.l; d <= range.r; d++) {
+                if (pickedNumbers.find(d) == pickedNumbers.end()) {
+                    result[range.index] = d; // Store the result
+                    pickedNumbers.insert(d); // Mark the number as picked
+                    break;
+                }
+            }
+        }
+
+        // Output the results for this test case
+        for (int i = 0; i < n; i++) {
+            cout << ranges[i].l << " " << ranges[i].r << " " << result[i] << "\n";
+        }
+    }
+
+    return 0;
+}

@@ -1,0 +1,101 @@
+def find_cycle(p, start, visited):
+    cycle = []
+    current = start
+    while not visited[current]:
+        visited[current] = True
+        cycle.append(current)
+        current = p[current] - 1  # Convert to 0-based index
+    return cycle
+
+def build_cycles(p):
+    n = len(p)
+    visited = [False] * n
+    cycles = []
+    for i in range(n):
+        if not visited[i]:
+            cycle = find_cycle(p, i, visited)
+            cycles.append(cycle)
+    return cycles
+
+def update_cycles(cycles, x, y):
+    new_cycles = []
+    for cycle in cycles:
+        if x in cycle and y in cycle:
+            # Merge the cycle into two parts
+            part1 = []
+            part2 = []
+            found_x = False
+            for elem in cycle:
+                if elem == x or elem == y:
+                    found_x = not found_x
+                if found_x:
+                    part1.append(elem)
+                else:
+                    part2.append(elem)
+            if part1:
+                new_cycles.append(part1)
+            if part2:
+                new_cycles.append(part2)
+        elif x in cycle:
+            # Swap x with y in the cycle
+            cycle[cycle.index(x)] = y
+            new_cycles.append(cycle)
+        elif y in cycle:
+            # Swap y with x in the cycle
+            cycle[cycle.index(y)] = x
+            new_cycles.append(cycle)
+        else:
+            new_cycles.append(cycle)
+    return new_cycles
+
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    
+    idx = 0
+    n = int(input[idx])
+    q = int(input[idx + 1])
+    idx += 2
+    
+    p = list(map(int, input[idx:idx + n]))
+    idx += n
+    
+    cycles = build_cycles(p)
+    cycle_map = {elem: (cycle_idx, pos) for cycle_idx, cycle in enumerate(cycles) for pos, elem in enumerate(cycle)}
+    
+    results = []
+    for _ in range(q):
+        t = int(input[idx])
+        if t == 1:
+            x = int(input[idx + 1]) - 1  # Convert to 0-based index
+            y = int(input[idx + 2]) - 1  # Convert to 0-based index
+            idx += 3
+            
+            # Perform the swap
+            p[x], p[y] = p[y], p[x]
+            
+            # Update the cycles
+            cycles = update_cycles(cycles, x, y)
+            cycle_map = {elem: (cycle_idx, pos) for cycle_idx, cycle in enumerate(cycles) for pos, elem in enumerate(cycle)}
+        elif t == 2:
+            i = int(input[idx + 1]) - 1  # Convert to 0-based index
+            k = int(input[idx + 2])
+            idx += 3
+            
+            # Find the cycle and position of i
+            cycle_idx, pos = cycle_map[i]
+            cycle = cycles[cycle_idx]
+            cycle_length = len(cycle)
+            
+            # Calculate the effective number of iterations
+            effective_k = k % cycle_length
+            
+            # Find the element at the calculated position
+            result = cycle[(pos + effective_k) % cycle_length] + 1  # Convert back to 1-based index
+            results.append(result)
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

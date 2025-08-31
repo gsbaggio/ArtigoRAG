@@ -1,0 +1,48 @@
+def convert_to_base_k_plus_1(x, k):
+    """Convert x to a base-(k+1) number represented as a list of digits."""
+    base = k + 1
+    digits = []
+    while x > 0:
+        digits.append(x % base)
+        x //= base
+    return digits[::-1]  # Reverse to get the correct order
+
+def generate_xth_ba_string(n, k, x, s):
+    """Generate the x-th lexicographically smallest BA-string."""
+    # Convert x-1 to base-(k+1)
+    digits = convert_to_base_k_plus_1(x - 1, k)
+    
+    # Initialize the result string
+    result = []
+    digit_index = 0
+    
+    # Traverse the original string and replace '*' with 'b's based on digits
+    for char in s:
+        if char == '*':
+            if digit_index < len(digits):
+                num_b = digits[digit_index]
+                digit_index += 1
+            else:
+                num_b = 0  # If no more digits, pad with 0
+            result.extend(['b'] * num_b)
+        else:
+            result.append(char)
+    
+    return ''.join(result)
+
+def main():
+    import sys
+    input = sys.stdin.read().splitlines()
+    t = int(input[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n, k, x = map(int, input[index].split())
+        s = input[index + 1]
+        results.append(generate_xth_ba_string(n, k, x, s))
+        index += 2
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

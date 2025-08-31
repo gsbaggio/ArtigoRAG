@@ -1,0 +1,37 @@
+def solve():
+    n, m, rb, cb, rd, cd = map(int, input().split())
+
+    if rb == rd or cb == cd:
+        print(0)
+        return
+
+    dr = 1
+    dc = 1
+    r = rb
+    c = cb
+    time = 0
+
+    while r != rd and c != cd:
+        r += dr
+        c += dc
+        time += 1
+
+        if r > n:
+            dr = -1
+            r = n - 1 if n > 1 else 1 # Correct the position after reflection
+        elif r < 1:
+            dr = 1
+            r = 2 if n > 1 else 1 # Correct the position after reflection
+
+        if c > m:
+            dc = -1
+            c = m - 1 if m > 1 else 1 # Correct the position after reflection
+        elif c < 1:
+            dc = 1
+            c = 2 if m > 1 else 1 # Correct the position after reflection
+
+    print(time)
+
+t = int(input())
+for _ in range(t):
+    solve()

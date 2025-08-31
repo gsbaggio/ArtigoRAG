@@ -1,0 +1,40 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])  # Length of the array
+        idx += 1
+        a = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Frequency array
+        freq = [0] * (n + 1)
+        for num in a:
+            if num <= n:
+                freq[num] += 1
+        
+        # Result for this test case
+        result = []
+        operations = 0
+        excess = 0
+        
+        for i in range(n + 1):
+            if freq[i] == 0 and excess == 0:
+                result.append(-1)
+            else:
+                result.append(operations)
+                if freq[i] == 0:
+                    excess -= 1
+                else:
+                    excess += freq[i] - 1
+                operations += 1
+        
+        results.append(" ".join(map(str, result)))
+    
+    sys.stdout.write("\n".join(results) + "\n")

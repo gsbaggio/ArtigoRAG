@@ -1,0 +1,24 @@
+from collections import defaultdict
+
+def find_bob_numbers(test_cases):
+    for n, ranges in test_cases:
+        ranges_dict = defaultdict(int)
+        
+        for l, r in ranges:
+            d = (l + r) // 2
+            ranges_dict[(l, r)] = d
+        
+        for l, r in ranges_dict:
+            print(l, r, ranges_dict[(l, r)])
+
+# Read input
+test_cases = []
+t = int(input())
+
+for _ in range(t):
+    n = int(input())
+    ranges = [list(map(int, input().split())) for _ in range(n)]
+    test_cases.append((n, ranges))
+
+# Find Bob's numbers and print output
+find_bob_numbers(test_cases)

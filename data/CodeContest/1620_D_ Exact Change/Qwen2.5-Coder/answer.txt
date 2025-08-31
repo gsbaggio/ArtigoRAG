@@ -1,0 +1,35 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n;
+        cin >> n;
+        
+        vector<long long> a(n);
+        for (int i = 0; i < n; ++i) {
+            cin >> a[i];
+        }
+        
+        long long max_coins = 0;
+        for (long long cost : a) {
+            long long coins = cost / 3;
+            if (cost % 3 == 1) {
+                coins += 1; // Add one 1-burle coin
+            } else if (cost % 3 == 2) {
+                coins += 1; // Add one 2-burle coin
+            }
+            max_coins = max(max_coins, coins);
+        }
+        
+        cout << max_coins << "\n";
+    }
+    
+    return 0;
+}

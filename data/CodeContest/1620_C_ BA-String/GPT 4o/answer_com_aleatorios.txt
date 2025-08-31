@@ -1,0 +1,56 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+// Function to solve each test case
+string solveTestCase(int n, int k, long long x, const string &s) {
+    vector<long long> contributions;
+    string result = "";
+    long long currentMultiplier = 1;
+
+    // Calculate contributions for each '*' from right to left
+    for (int i = n - 1; i >= 0; --i) {
+        if (s[i] == '*') {
+            contributions.push_back(currentMultiplier);
+            if (currentMultiplier > 1e18 / (k + 1)) {
+                currentMultiplier = 1e18 + 1; // Prevent overflow
+            } else {
+                currentMultiplier *= (k + 1);
+            }
+        }
+    }
+    reverse(contributions.begin(), contributions.end());
+
+    // Generate the result string
+    int starIndex = 0;
+    for (int i = 0; i < n; ++i) {
+        if (s[i] == 'a') {
+            result += 'a';
+        } else if (s[i] == '*') {
+            long long count = (x - 1) / contributions[starIndex];
+            result += string(count, 'b');
+            x -= count * contributions[starIndex];
+            starIndex++;
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n, k;
+        long long x;
+        string s;
+        cin >> n >> k >> x >> s;
+
+        cout << solveTestCase(n, k, x, s) << endl;
+    }
+
+    return 0;
+}

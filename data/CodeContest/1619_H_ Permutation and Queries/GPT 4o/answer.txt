@@ -1,0 +1,52 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n, q = int(data[0]), int(data[1])
+    p = list(map(int, data[2:n+2]))
+    queries = data[n+2:]
+    
+    # Convert 1-based permutation to 0-based for easier indexing
+    p = [x - 1 for x in p]
+    
+    # Cycle decomposition
+    def find_cycles(p):
+        visited = [False] * n
+        cycles = {}
+        for i in range(n):
+            if not visited[i]:
+                cycle = []
+                x = i
+                while not visited[x]:
+                    visited[x] = True
+                    cycle.append(x)
+                    x = p[x]
+                for idx in cycle:
+                    cycles[idx] = (cycle, len(cycle))
+        return cycles
+    
+    cycles = find_cycles(p)
+    
+    output = []
+    idx = 0
+    while idx < len(queries):
+        t = int(queries[idx])
+        if t == 1:
+            # Swap query
+            x, y = int(queries[idx+1]) - 1, int(queries[idx+2]) - 1
+            p[x], p[y] = p[y], p[x]
+            # Update cycles for affected elements
+            cycles = find_cycles(p)
+            idx += 3
+        elif t == 2:
+            # Iterative query
+            i, k = int(queries[idx+1]) - 1, int(queries[idx+2])
+            cycle, length = cycles[i]
+            pos_in_cycle = cycle.index(i)
+            result = cycle[(pos_in_cycle + k % length) % length]
+            output.append(result + 1)  # Convert back to 1-based
+            idx += 3
+    
+    # Print all results for type-2 queries
+    sys.stdout.write("\n".join(map(str, output)) + "\n")

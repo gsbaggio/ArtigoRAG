@@ -1,0 +1,40 @@
+from collections import deque
+
+def can_transform(x, y):
+    # Base case: if x equals y, no transformation needed
+    if x == y:
+        return "YES"
+    
+    visited = set([x])
+    queue = deque([x])
+    
+    while queue:
+        current = queue.popleft()
+        
+        # Get binary representation without leading zeros
+        binary = bin(current)[2:]
+        
+        # Try both operations: adding 0 and adding 1
+        for digit in ['0', '1']:
+            new_binary = binary + digit
+            # Reverse and convert back to decimal
+            reversed_binary = new_binary[::-1]
+            new_number = int(reversed_binary, 2)
+            
+            # Check if we've reached the target
+            if new_number == y:
+                return "YES"
+            
+            # Pruning: only add to queue if:
+            # 1. Not visited before
+            # 2. Binary length doesn't exceed target's length
+            if (new_number not in visited and 
+                len(bin(new_number)[2:]) <= len(bin(y)[2:])):
+                visited.add(new_number)
+                queue.append(new_number)
+    
+    return "NO"
+
+# Read input and print result
+x, y = map(int, input().split())
+print(can_transform(x, y))

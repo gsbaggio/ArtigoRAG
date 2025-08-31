@@ -1,0 +1,24 @@
+import math
+
+def count_liked_numbers(t, test_cases):
+    results = []
+    for n in test_cases:
+        # Count perfect squares
+        squares = int(math.sqrt(n))
+        # Count perfect cubes
+        cubes = int(n ** (1/3))
+        # Count numbers that are both squares and cubes (sixth powers)
+        sixth_powers = int(n ** (1/6))
+        # Apply inclusion-exclusion principle
+        liked_numbers = squares + cubes - sixth_powers
+        results.append(liked_numbers)
+    return results
+
+# Input reading
+t = int(input())
+test_cases = [int(input()) for _ in range(t)]
+
+# Solve and output results
+results = count_liked_numbers(t, test_cases)
+for res in results:
+    print(res)

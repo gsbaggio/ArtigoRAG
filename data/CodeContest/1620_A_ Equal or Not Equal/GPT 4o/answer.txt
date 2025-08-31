@@ -1,0 +1,57 @@
+def find(parent, x):
+    # Find the root of x with path compression
+    if parent[x] != x:
+        parent[x] = find(parent, parent[x])
+    return parent[x]
+
+def union(parent, rank, x, y):
+    # Union by rank
+    root_x = find(parent, x)
+    root_y = find(parent, y)
+    if root_x != root_y:
+        if rank[root_x] > rank[root_y]:
+            parent[root_y] = root_x
+        elif rank[root_x] < rank[root_y]:
+            parent[root_x] = root_y
+        else:
+            parent[root_y] = root_x
+            rank[root_x] += 1
+
+def is_consistent(s):
+    n = len(s)
+    parent = list(range(n))
+    rank = [0] * n
+
+    # Process equality constraints
+    for i in range(n):
+        if s[i] == 'E':
+            union(parent, rank, i, (i + 1) % n)
+
+    # Process inequality constraints
+    for i in range(n):
+        if s[i] == 'N':
+            if find(parent, i) == find(parent, (i + 1) % n):
+                return "NO"
+    
+    return "YES"
+
+def solve():
+    t = int(input())
+    results = []
+    for _ in range(t):
+        s = input().strip()
+        results.append(is_consistent(s))
+    print("\n".join(results))
+
+# Example usage:
+# Input:
+# 4
+# EEE
+# EN
+# ENNEENE
+# NENN
+# Output:
+# YES
+# NO
+# YES
+# YES

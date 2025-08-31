@@ -1,0 +1,62 @@
+import heapq
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    output_lines = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        freq = [0] * (n+1)
+        for num in a:
+            if num <= n:
+                freq[num] += 1
+                
+        present = [False] * (n+1)
+        extra = []
+        for num in a:
+            if num <= n:
+                if not present[num]:
+                    present[num] = True
+                else:
+                    extra.append(num)
+        extra.sort()
+        
+        heap = []
+        j = 0
+        cost = 0
+        dp = [-1] * (n+2)
+        dp[0] = 0
+        
+        for i in range(1, n+2):
+            if i-1 <= n and not present[i-1]:
+                if not heap:
+                    for k in range(i, n+2):
+                        dp[k] = -1
+                    break
+                else:
+                    largest = -heapq.heappop(heap)
+                    cost += (i-1 - largest)
+            dp[i] = cost
+            
+            while j < len(extra) and extra[j] < i:
+                heapq.heappush(heap, -extra[j])
+                j += 1
+                
+        res_list = []
+        for i in range(0, n+1):
+            if dp[i] == -1:
+                res_list.append(-1)
+            else:
+                res_list.append(dp[i] + freq[i])
+                
+        output_lines.append(" ".join(map(str, res_list)))
+        
+    print("\n".join(output_lines))
+
+if __name__ == "__main__":
+    main()

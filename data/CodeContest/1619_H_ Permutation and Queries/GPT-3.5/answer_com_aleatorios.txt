@@ -1,0 +1,30 @@
+class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        self.parent[self.find(x)] = self.find(y)
+
+def process_queries(n, p, queries):
+    dsu = DSU(n)
+    for query in queries:
+        if query[0] == 1:
+            dsu.union(query[1] - 1, query[2] - 1)
+        else:
+            i, k = query[1], query[2]
+            for _ in range(k):
+                i = dsu.find(i - 1) + 1
+            print(i)
+
+# Input parsing
+n, q = map(int, input().split())
+p = list(map(int, input().split()))
+queries = [list(map(int, input().split())) for _ in range(q)]
+
+# Process queries
+process_queries(n, p, queries)

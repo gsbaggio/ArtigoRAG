@@ -1,0 +1,27 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        l1, l2, l3 = map(int, input().split())
+        sticks = [l1, l2, l3]
+        
+        possible = False
+        for i in range(3):
+            # Try breaking stick i
+            for j in range(1, sticks[i]):
+                # Break stick i into j and sticks[i] - j
+                new_sticks = sticks[:i] + [j, sticks[i] - j] + sticks[i+1:]
+                
+                # Check if we can form a rectangle
+                new_sticks.sort()
+                if new_sticks[0] == new_sticks[1] and new_sticks[2] == new_sticks[3]:
+                    possible = True
+                    break
+            if possible:
+                break
+        
+        if possible:
+            print("YES")
+        else:
+            print("NO")
+
+solve()

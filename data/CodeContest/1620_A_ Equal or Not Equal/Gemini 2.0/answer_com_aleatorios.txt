@@ -1,0 +1,17 @@
+def solve():
+    s = input()
+    n = len(s)
+    
+    if 'N' not in s:
+        print("YES")
+        return
+    
+    if s.count('N') == 1:
+        print("NO")
+        return
+    
+    print("YES")
+
+t = int(input())
+for _ in range(t):
+    solve()

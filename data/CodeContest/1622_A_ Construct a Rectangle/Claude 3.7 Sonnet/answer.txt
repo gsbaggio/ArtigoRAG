@@ -1,0 +1,25 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        l1, l2, l3 = map(int, input().split())
+        
+        # Case 1: Two sticks are equal, break the third into two equal parts
+        if l1 == l2 and l3 % 2 == 0:
+            print("YES")
+        elif l1 == l3 and l2 % 2 == 0:
+            print("YES")
+        elif l2 == l3 and l1 % 2 == 0:
+            print("YES")
+        
+        # Case 2: Break a stick so that two pairs of equal sides can be formed
+        elif 2*l1 == l2 + l3:
+            print("YES")
+        elif 2*l2 == l1 + l3:
+            print("YES")
+        elif 2*l3 == l1 + l2:
+            print("YES")
+        
+        else:
+            print("NO")
+
+solve()

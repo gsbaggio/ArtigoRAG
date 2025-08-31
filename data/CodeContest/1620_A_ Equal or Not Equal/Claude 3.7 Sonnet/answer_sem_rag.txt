@@ -1,0 +1,14 @@
+def solve_circular_array(s):
+    n = len(s)
+    count_n = s.count('N')
+    
+    # If all characters are 'E', a valid array exists (all elements equal)
+    if count_n == 0:
+        return "YES"
+    
+    # If there's exactly one 'N', it's impossible
+    if count_n == 1:
+        return "NO"
+    
+    # If there are at least 2 'N's, we can always construct a valid array
+    return "YES"

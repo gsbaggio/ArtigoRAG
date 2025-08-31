@@ -1,0 +1,21 @@
+def solve_permutation_queries(n, q, p, queries):
+    for query in queries:
+        if query[0] == 1:
+            x, y = query[1], query[2]
+            p[x-1], p[y-1] = p[y-1], p[x-1]
+        elif query[0] == 2:
+            i, k = query[1], query[2]
+            for _ in range(k):
+                i = p[i-1]
+            print(i)
+
+# Input parsing
+n, q = map(int, input().split())
+p = list(map(int, input().split()))
+
+queries = []
+for _ in range(q):
+    queries.append(list(map(int, input().split())))
+
+# Solve the permutation queries
+solve_permutation_queries(n, q, p, queries)

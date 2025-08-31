@@ -1,0 +1,36 @@
+def find_bobs_numbers(t, test_cases):
+    for _ in range(t):
+        n = test_cases[_][0]
+        ranges = test_cases[_][1]
+
+        range_map = {}
+        bob_picks = {}
+
+        for i, (l, r) in enumerate(ranges):
+            range_map[(l, r)] = i
+
+        for i in range(n - 1, -1, -1):
+            l, r = ranges[i]
+
+            if l == r:
+                bob_picks[(l, r)] = l
+            else:
+                mid = (l + r) // 2
+                bob_picks[(l, r)] = mid
+                if (l, mid - 1) in range_map:
+                    ranges.append((l, mid - 1))
+                if (mid + 1, r) in range_map:
+                    ranges.append((mid + 1, r))
+
+        for l, r in ranges:
+            print(l, r, bob_picks[(l, r)])
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    ranges = [list(map(int, input().split())) for _ in range(n)]
+    test_cases.append((n, ranges))
+
+find_bobs_numbers(t, test_cases)

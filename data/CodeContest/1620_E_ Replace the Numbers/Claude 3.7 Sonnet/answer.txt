@@ -1,0 +1,26 @@
+def process_queries(q, queries):
+    array = []  # Our array of integers (initially empty)
+    
+    for query in queries:
+        query_parts = list(map(int, query.split()))
+        
+        if query_parts[0] == 1:
+            # Add element to the end of the array
+            array.append(query_parts[1])
+        else:  # query_parts[0] == 2
+            # Replace all occurrences of x with y
+            x, y = query_parts[1], query_parts[2]
+            for i in range(len(array)):
+                if array[i] == x:
+                    array[i] = y
+    
+    return array
+
+if __name__ == "__main__":
+    q = int(input())
+    queries = []
+    for _ in range(q):
+        queries.append(input())
+    
+    result = process_queries(q, queries)
+    print(*result)

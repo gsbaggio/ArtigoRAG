@@ -1,0 +1,55 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        candidate_c = set()
+        for num in a:
+            base = num // 3
+            for offset in range(-2, 3):
+                c_candidate = base + offset
+                if c_candidate >= 0:
+                    candidate_c.add(c_candidate)
+                    
+        M = max(a)
+        ceilM = (M + 2) // 3
+        for add in [0, 1, 2]:
+            candidate_c.add(ceilM + add)
+            
+        ans = float('inf')
+        for c in candidate_c:
+            x_min = 0
+            y_min = 0
+            D = 0
+            for num in a:
+                if num <= 3 * c:
+                    r = num % 3
+                    if r == 1:
+                        x_min = 1
+                    elif r == 2:
+                        y_min = 1
+                else:
+                    d = num - 3 * c
+                    if d > D:
+                        D = d
+            x_min_new = x_min
+            if D > 0 and D % 2 == 1:
+                x_min_new = max(x_min, 1)
+            coins12 = x_min_new + max(y_min, (D - x_min_new + 1) // 2)
+            total_coins = c + coins12
+            if total_coins < ans:
+                ans = total_coins
+                
+        results.append(str(ans))
+        
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

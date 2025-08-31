@@ -1,0 +1,22 @@
+def can_transform(x, y):
+    # Convert x and y to binary strings without leading '0b'
+    bin_x = bin(x)[2:]
+    bin_y = bin(y)[2:]
+    
+    # Count the number of 0s and 1s in the binary representations
+    count_0_x = bin_x.count('0')
+    count_1_x = bin_x.count('1')
+    count_0_y = bin_y.count('0')
+    count_1_y = bin_y.count('1')
+    
+    # Check if y can be formed by appending 0s and 1s to x and reversing
+    if count_1_y <= count_1_x + len(bin_y) - len(bin_x) and count_0_y <= count_0_x + len(bin_y) - len(bin_x):
+        return "YES"
+    else:
+        return "NO"
+
+# Read input
+x, y = map(int, input().split())
+
+# Output the result
+print(can_transform(x, y))

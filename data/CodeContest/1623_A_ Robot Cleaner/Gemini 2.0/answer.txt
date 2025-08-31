@@ -1,0 +1,39 @@
+def solve():
+    n, m, rb, cb, rd, cd = map(int, input().split())
+
+    dr = 1
+    dc = 1
+    r = rb
+    c = cb
+    time = 0
+
+    while True:
+        if r == rd or c == cd:
+            print(time)
+            return
+
+        time += 1
+        
+        next_r = r + dr
+        next_c = c + dc
+
+        if next_r > n:
+            dr = -1
+        elif next_r < 1:
+            dr = 1
+            
+        if next_c > m:
+            dc = -1
+        elif next_c < 1:
+            dc = 1
+
+        r += dr
+        c += dc
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        solve()
+
+if __name__ == "__main__":
+    main()

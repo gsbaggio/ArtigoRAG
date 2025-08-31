@@ -1,0 +1,67 @@
+def solve():
+    n = int(input())
+    p = list(map(int, input().split()))
+
+    def is_bipartite(arr):
+        adj = [[] for _ in range(n)]
+        for i in range(n):
+            for j in range(i + 1, n):
+                if arr[i] > arr[j]:
+                    adj[i].append(j)
+                    adj[j].append(i)
+
+        color = [-1] * n
+        
+        def bfs(start_node):
+            q = [(start_node, 0)]  # Node and its color (0 or 1)
+            color[start_node] = 0
+            
+            while q:
+                node, c = q.pop(0)
+                
+                for neighbor in adj[node]:
+                    if color[neighbor] == -1:
+                        color[neighbor] = 1 - c  # Assign the opposite color
+                        q.append((neighbor, 1 - c))
+                    elif color[neighbor] == c:
+                        return False  # Found an edge between nodes of the same color
+            return True
+
+        for i in range(n):
+            if color[i] == -1:
+                if not bfs(i):
+                    return False
+        return True
+
+    
+    def find_bipartite_array(index, current_array):
+        if index == n:
+            if is_bipartite(current_array):
+                return current_array
+            else:
+                return None
+
+        # Try positive value
+        result_positive = find_bipartite_array(index + 1, current_array + [p[index]])
+        if result_positive:
+            return result_positive
+
+        # Try negative value
+        result_negative = find_bipartite_array(index + 1, current_array + [-p[index]])
+        if result_negative:
+            return result_negative
+
+        return None
+
+    result = find_bipartite_array(0, [])
+
+    if result:
+        print("YES")
+        print(*result)
+    else:
+        print("NO")
+
+
+t = int(input())
+for _ in range(t):
+    solve()

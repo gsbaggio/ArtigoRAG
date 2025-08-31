@@ -1,0 +1,40 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])  # Number of ranges
+        idx += 1
+        ranges = []
+        
+        for __ in range(n):
+            l, r = map(int, data[idx:idx+2])
+            ranges.append((l, r))
+            idx += 2
+        
+        # Sort ranges by their lengths (r - l + 1), descending
+        ranges.sort(key=lambda x: x[1] - x[0], reverse=True)
+        
+        # Reconstruct Bob's numbers
+        result = []
+        active_ranges = set()
+        
+        for l, r in ranges:
+            # Find the number d that splits the range [l, r]
+            d = next((x for x in range(l, r + 1) if (l, x - 1) in active_ranges or (x + 1, r) in active_ranges), l)
+            result.append((l, r, d))
+            active_ranges.add((l, r))
+        
+        results.append(result)
+    
+    # Print results
+    output = []
+    for result in results:
+        for l, r, d in result:
+            output.append(f"{l} {r} {d}")
+    sys.stdout.write("\n".join(output) + "\n")

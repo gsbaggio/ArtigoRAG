@@ -1,0 +1,52 @@
+def convert_to_base(x, base):
+    """Convert a number x to a given base and return the digits as a list."""
+    if x == 0:
+        return [0]
+    digits = []
+    while x:
+        digits.append(x % base)
+        x //= base
+    return digits[::-1]
+
+def find_xth_ba_string(n, k, x, s):
+    """Find the x-th lexicographically smallest BA-string."""
+    num_asterisks = s.count('*')
+    
+    # Convert x-1 to base (k+1)
+    digits = convert_to_base(x - 1, k + 1)
+    
+    # Ensure we have enough digits for all asterisks
+    if len(digits) < num_asterisks:
+        digits = [0] * (num_asterisks - len(digits)) + digits
+    
+    # Replace '*' with 'b's according to the digits
+    result = []
+    digit_index = 0
+    for char in s:
+        if char == '*':
+            result.append('b' * digits[digit_index])
+            digit_index += 1
+        else:
+            result.append(char)
+    
+    return ''.join(result)
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+t = int(data[0])
+index = 1
+results = []
+
+for _ in range(t):
+    n, k, x = map(int, data[index:index+3])
+    s = data[index+3]
+    index += 4
+    
+    results.append(find_xth_ba_string(n, k, x, s))
+
+# Print results
+for result in results:
+    print(result)

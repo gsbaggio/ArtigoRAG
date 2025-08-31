@@ -1,0 +1,25 @@
+def solve():
+    l1, l2, l3 = map(int, input().split())
+    sticks = [l1, l2, l3]
+
+    for i in range(3):
+        for j in range(1, sticks[i]):
+            a = j
+            b = sticks[i] - j
+            remaining_sticks = []
+            for k in range(3):
+                if i != k:
+                    remaining_sticks.append(sticks[k])
+            
+            sides = [a, b] + remaining_sticks
+            sides.sort()
+            
+            if sides[0] == sides[1] and sides[2] == sides[3]:
+                print("YES")
+                return
+    
+    print("NO")
+
+t = int(input())
+for _ in range(t):
+    solve()

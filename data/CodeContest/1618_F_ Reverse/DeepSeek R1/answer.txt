@@ -1,0 +1,56 @@
+from collections import deque
+
+def main():
+    data = input().split()
+    if not data:
+        print("NO")
+        return
+    x = int(data[0])
+    y = int(data[1])
+    
+    if x == y:
+        print("YES")
+        return
+        
+    if y % 2 == 0:
+        print("NO")
+        return
+        
+    visited = set()
+    q = deque()
+    q.append(y)
+    visited.add(y)
+    
+    while q:
+        cur = q.popleft()
+        s = bin(cur)[2:]
+        rev_s = s[::-1]
+        base = int(rev_s, 2)
+        
+        # Check case B: x is base * 2^k for some k?
+        if x >= base:
+            if x % base == 0:
+                q_val = x // base
+                if q_val > 0 and (q_val & (q_val - 1)) == 0:
+                    print("YES")
+                    return
+                    
+        if base not in visited:
+            visited.add(base)
+            q.append(base)
+            
+        if len(s) > 1:
+            s1 = s[1:]
+            rev_s1 = s1[::-1]
+            base2 = int(rev_s1, 2)
+            if base2 == x:
+                print("YES")
+                return
+            if base2 % 2 == 1 and base2 not in visited:
+                visited.add(base2)
+                q.append(base2)
+                
+    print("NO")
+    
+if __name__ == "__main__":
+    main()

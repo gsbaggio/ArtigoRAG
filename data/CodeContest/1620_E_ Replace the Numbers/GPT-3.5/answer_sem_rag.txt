@@ -1,0 +1,24 @@
+from collections import defaultdict
+
+def process_queries(q, queries):
+    result = []
+    elements = []
+    replacements = defaultdict(int)
+
+    for query in queries:
+        if query[0] == 1:
+            elements.append(query[1])
+        else:
+            replacements[query[1]] = query[2]
+
+    for element in elements:
+        result.append(replacements.get(element, element))
+
+    return result
+
+# Input processing
+q = int(input())
+queries = [list(map(int, input().split())) for _ in range(q)]
+
+result = process_queries(q, queries)
+print(*result)

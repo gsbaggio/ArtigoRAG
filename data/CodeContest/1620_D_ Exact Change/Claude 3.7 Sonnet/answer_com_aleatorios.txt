@@ -1,0 +1,32 @@
+def min_coins(price):
+    """Calculate minimum coins needed for a specific price."""
+    # Use as many 3-value coins as possible
+    threes = price // 3
+    remainder = price % 3
+    
+    if remainder == 0:
+        return threes
+    elif remainder == 1:
+        if threes >= 1:
+            # Replace one 3 with two 2s: 3 → 2+2
+            return threes - 1 + 2
+        else:
+            # Price is 1, need one 1-coin
+            return 1
+    else:  # remainder == 2
+        # Use threes and one 2
+        return threes + 1
+
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        prices = list(map(int, input().split()))
+        
+        # Find the minimum coins needed for each price and take the maximum
+        result = max(min_coins(price) for price in prices)
+        print(result)
+
+if __name__ == "__main__":
+    solve()

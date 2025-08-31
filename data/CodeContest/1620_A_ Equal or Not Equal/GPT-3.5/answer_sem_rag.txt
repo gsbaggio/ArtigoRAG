@@ -1,0 +1,17 @@
+def is_valid_array(s):
+    n = len(s)
+    num_E = s.count('E')
+    
+    if num_E == 0 or num_E == n:
+        return "YES"
+    else:
+        return "NO"
+
+# Read the number of test cases
+t = int(input())
+
+# Process each test case
+for _ in range(t):
+    s = input().strip()
+    result = is_valid_array(s)
+    print(result)

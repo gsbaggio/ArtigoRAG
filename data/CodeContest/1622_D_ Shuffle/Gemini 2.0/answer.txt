@@ -1,0 +1,64 @@
+def solve():
+    n, k = map(int, input().split())
+    s = input()
+    
+    count = 0
+    for char in s:
+        if char == '1':
+            count += 1
+    
+    if k == 0:
+        print(1)
+        return
+    
+    if k > count:
+        print(1)
+        return
+    
+    ans = 1
+    
+    def count_ways(sub):
+        ones = sub.count('1')
+        zeros = sub.count('0')
+        
+        if ones == 0 or zeros == 0:
+            return 1
+        
+        fact = [1] * (len(sub) + 1)
+        for i in range(2, len(sub) + 1):
+            fact[i] = (fact[i-1] * i) % 998244353
+        
+        def power(a, b, mod):
+            res = 1
+            a %= mod
+            while b > 0:
+                if b % 2 == 1:
+                    res = (res * a) % mod
+                a = (a * a) % mod
+                b //= 2
+            return res
+        
+        def modInverse(n, mod):
+            return power(n, mod - 2, mod)
+        
+        num = fact[len(sub)]
+        den = (fact[ones] * fact[zeros]) % 998244353
+        
+        return (num * modInverse(den, 998244353)) % 998244353
+    
+    distinct_substrings = set()
+    
+    for i in range(n):
+        for j in range(i, n):
+            sub = s[i:j+1]
+            if sub.count('1') == k:
+                
+                sorted_sub = "".join(sorted(list(sub)))
+                
+                if sorted_sub not in distinct_substrings:
+                    ans = (ans + count_ways(sub)) % 998244353
+                    distinct_substrings.add(sorted_sub)
+    
+    print(ans)
+
+solve()

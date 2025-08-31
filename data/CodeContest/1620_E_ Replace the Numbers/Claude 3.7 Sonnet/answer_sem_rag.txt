@@ -1,0 +1,64 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+
+int main() {
+    int q;
+    std::cin >> q;
+    
+    std::vector<int> array;
+    // For optimization: track replacements to avoid unnecessary array traversal
+    std::unordered_map<int, int> replacements;
+    
+    for (int i = 0; i < q; i++) {
+        int queryType;
+        std::cin >> queryType;
+        
+        if (queryType == 1) {
+            int x;
+            std::cin >> x;
+            
+            // Check if x needs to be replaced before adding
+            int valueToAdd = x;
+            while (replacements.find(valueToAdd) != replacements.end()) {
+                valueToAdd = replacements[valueToAdd];
+            }
+            array.push_back(valueToAdd);
+        } 
+        else if (queryType == 2) {
+            int x, y;
+            std::cin >> x >> y;
+            
+            // Update the replacements map
+            if (x == y) continue; // No need to replace if x equals y
+            
+            // Update all elements that map to x
+            for (auto& pair : replacements) {
+                if (pair.second == x) {
+                    pair.second = y;
+                }
+            }
+            
+            // Add or update the direct mapping
+            replacements[x] = y;
+            
+            // Apply replacements to the array
+            for (int& val : array) {
+                if (val == x) {
+                    val = y;
+                }
+            }
+        }
+    }
+    
+    // Print the final array
+    for (int i = 0; i < array.size(); i++) {
+        std::cout << array[i];
+        if (i < array.size() - 1) {
+            std::cout << " ";
+        }
+    }
+    std::cout << std::endl;
+    
+    return 0;
+}

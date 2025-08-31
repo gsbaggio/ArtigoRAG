@@ -1,0 +1,19 @@
+def solve():
+    n = int(input())
+    
+    squares = 0
+    cubes = 0
+    
+    square_count = int(n**0.5)
+    cube_count = int(n**(1/3))
+    
+    squares = square_count
+    cubes = cube_count
+    
+    both_count = int(n**(1/6))
+    
+    print(squares + cubes - both_count)
+
+t = int(input())
+for _ in range(t):
+    solve()

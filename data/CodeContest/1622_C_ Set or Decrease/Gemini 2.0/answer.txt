@@ -1,0 +1,43 @@
+def solve():
+    n, k = map(int, input().split())
+    a = list(map(int, input().split()))
+
+    a.sort()
+    
+    total_sum = sum(a)
+    
+    if total_sum <= k:
+        print(0)
+        return
+    
+    ans = float('inf')
+    
+    for i in range(n):
+        current_sum = total_sum
+        steps = 0
+        
+        # Make all elements from a[1] to a[i] equal to a[0]
+        temp_sum = a[0] * (i + 1)
+        
+        # Calculate the remaining sum
+        remaining_sum = total_sum - sum(a[:i+1]) + temp_sum
+        
+        # Calculate the steps needed to reduce the sum to k
+        diff = remaining_sum - k
+        
+        if diff > 0:
+            steps = i + max(0, (diff + i + 1 - 1) // (i + 1))
+        else:
+            steps = i
+        
+        ans = min(ans, steps)
+    
+    # Consider decreasing the smallest element
+    diff = total_sum - k
+    ans = min(ans, diff)
+
+    print(int(ans))
+
+t = int(input())
+for _ in range(t):
+    solve()

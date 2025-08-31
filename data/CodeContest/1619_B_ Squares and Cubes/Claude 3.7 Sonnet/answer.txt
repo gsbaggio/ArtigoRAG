@@ -1,0 +1,26 @@
+def count_squares_and_cubes(n):
+    # Count perfect squares: 1, 4, 9, 16, 25, ...
+    # The largest perfect square ≤ n is floor(sqrt(n))²
+    # So there are floor(sqrt(n)) perfect squares from 1 to n
+    squares = int(n ** 0.5)
+    
+    # Count perfect cubes: 1, 8, 27, 64, ...
+    # The largest perfect cube ≤ n is floor(n^(1/3))³
+    # So there are floor(n^(1/3)) perfect cubes from 1 to n
+    cubes = int(n ** (1/3))
+    
+    # Count numbers that are both perfect squares and perfect cubes
+    # These are perfect 6th powers: 1, 64, 729, ...
+    # The largest such number ≤ n is floor(n^(1/6))^6
+    both = int(n ** (1/6))
+    
+    # We need to ensure we don't double-count, so we add squares + cubes - both
+    return squares + cubes - both
+
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        print(count_squares_and_cubes(n))
+
+solve()

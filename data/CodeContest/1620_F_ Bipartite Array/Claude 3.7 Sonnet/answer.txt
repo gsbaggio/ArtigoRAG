@@ -1,0 +1,51 @@
+from collections import deque
+
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        p = list(map(int, input().split()))
+        
+        # Create graph as adjacency list
+        graph = [[] for _ in range(n)]
+        
+        # Build the graph
+        for i in range(n):
+            for j in range(i+1, n):
+                if p[i] > p[j]:
+                    graph[i].append(j)
+                    graph[j].append(i)
+        
+        # Try to 2-color the graph
+        color = [-1] * n
+        is_bipartite = True
+        
+        for start in range(n):
+            if color[start] != -1:
+                continue
+                
+            queue = deque([start])
+            color[start] = 0
+            
+            while queue and is_bipartite:
+                node = queue.popleft()
+                
+                for neighbor in graph[node]:
+                    if color[neighbor] == -1:
+                        color[neighbor] = 1 - color[node]
+                        queue.append(neighbor)
+                    elif color[neighbor] == color[node]:
+                        is_bipartite = False
+                        break
+        
+        if not is_bipartite:
+            print("NO")
+        else:
+            print("YES")
+            result = []
+            for i in range(n):
+                sign = -1 if color[i] == 1 else 1
+                result.append(sign * p[i])
+            print(*result)
+
+solve()

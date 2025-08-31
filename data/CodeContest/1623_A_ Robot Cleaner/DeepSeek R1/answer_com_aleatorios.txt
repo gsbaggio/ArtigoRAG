@@ -1,0 +1,33 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    n, m, r_b, c_b, r_d, c_d = map(int, input().split())
+    if r_b == r_d or c_b == c_d:
+        results.append("0")
+    else:
+        cycle_r = 2 * (n - 1)
+        cycle_c = 2 * (m - 1)
+        a_r = r_b - 1
+        b_r = r_d
+        d1_r = (b_r - 1) - a_r
+        t1_r = d1_r % cycle_r
+        candidate_r = t1_r
+        if 1 < b_r < n:
+            d2_r = (2 * n - b_r - 1) - a_r
+            t2_r = d2_r % cycle_r
+            candidate_r = min(candidate_r, t2_r)
+            
+        a_c = c_b - 1
+        b_c = c_d
+        d1_c = (b_c - 1) - a_c
+        t1_c = d1_c % cycle_c
+        candidate_c = t1_c
+        if 1 < b_c < m:
+            d2_c = (2 * m - b_c - 1) - a_c
+            t2_c = d2_c % cycle_c
+            candidate_c = min(candidate_c, t2_c)
+            
+        results.append(str(min(candidate_r, candidate_c)))
+        
+for res in results:
+    print(res)

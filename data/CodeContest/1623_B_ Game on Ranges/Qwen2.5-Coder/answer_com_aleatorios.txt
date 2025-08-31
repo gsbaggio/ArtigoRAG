@@ -1,0 +1,58 @@
+def find_bob_choices(n, ranges):
+    # Initialize the set with the full range [1, n]
+    current_ranges = [(1, n)]
+    
+    # Sort the ranges to process them in the order they were picked
+    ranges.sort()
+    
+    # Dictionary to store the results
+    results = {}
+    
+    # Process each range
+    for l, r in ranges:
+        # Find the correct d that splits the current range
+        for i in range(len(current_ranges)):
+            cl, cr = current_ranges[i]
+            if cl <= l and r <= cr:
+                # Bob's choice must be the smallest number in the range [l, r]
+                d = l
+                results[(l, r)] = d
+                
+                # Update the set of current ranges
+                if cl < d:
+                    current_ranges.append((cl, d - 1))
+                if d < cr:
+                    current_ranges.append((d + 1, cr))
+                
+                # Remove the processed range
+                current_ranges.pop(i)
+                break
+    
+    # Output the results in the required format
+    for l, r in ranges:
+        d = results[(l, r)]
+        print(l, r, d)
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+
+# Number of test cases
+t = int(input[0])
+index = 1
+
+for _ in range(t):
+    # Read n
+    n = int(input[index])
+    index += 1
+    
+    # Read the ranges
+    ranges = []
+    for _ in range(n):
+        l = int(input[index])
+        r = int(input[index + 1])
+        ranges.append((l, r))
+        index += 2
+    
+    # Find and print Bob's choices
+    find_bob_choices(n, ranges)

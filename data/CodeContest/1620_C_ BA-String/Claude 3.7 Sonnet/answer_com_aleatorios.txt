@@ -1,0 +1,68 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+typedef long long ll;
+
+string solve(int n, int k, ll x, const string& s) {
+    // Find positions of all asterisks
+    vector<int> star_pos;
+    for (int i = 0; i < n; i++) {
+        if (s[i] == '*') {
+            star_pos.push_back(i);
+        }
+    }
+    
+    int num_stars = star_pos.size();
+    
+    // Calculate number of possible strings for each suffix
+    vector<ll> count(num_stars + 1, 1);
+    for (int i = num_stars - 1; i >= 0; i--) {
+        count[i] = min((ll)1e18, count[i + 1] * (k + 1));
+    }
+    
+    // Build the x-th string
+    string result;
+    x--; // Convert to 0-indexed
+    
+    int star_idx = 0;
+    for (int i = 0; i < n; i++) {
+        if (s[i] == 'a') {
+            result += 'a';
+        } else { // s[i] == '*'
+            ll ways_per_option = count[star_idx + 1];
+            int b_count = x / ways_per_option;
+            x %= ways_per_option;
+            
+            // Add b_count 'b's
+            for (int j = 0; j < b_count; j++) {
+                result += 'b';
+            }
+            
+            star_idx++;
+        }
+    }
+    
+    return result;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n, k;
+        ll x;
+        string s;
+        
+        cin >> n >> k >> x;
+        cin >> s;
+        
+        cout << solve(n, k, x, s) << endl;
+    }
+    
+    return 0;
+}

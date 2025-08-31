@@ -1,0 +1,44 @@
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        
+        ranges = []
+        for _ in range(n):
+            l = int(input[index])
+            r = int(input[index + 1])
+            ranges.append((l, r))
+            index += 2
+        
+        # Sort ranges by their starting points
+        ranges.sort()
+        
+        # Dictionary to store the splits
+        splits = {}
+        
+        for l, r in ranges:
+            # Find the smallest possible d in the range [l, r]
+            d = l
+            while d in splits:
+                d += 1
+            
+            # Store the split
+            splits[d] = True
+            
+            # Add the results
+            results.append(f"{l} {r} {d}")
+    
+    # Print all results
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

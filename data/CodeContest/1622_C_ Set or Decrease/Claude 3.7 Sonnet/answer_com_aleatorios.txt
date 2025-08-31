@@ -1,0 +1,41 @@
+def min_steps():
+    t = int(input())
+    
+    for _ in range(t):
+        n, k = map(int, input().split())
+        arr = list(map(int, input().split()))
+        
+        # If we're reducing the sum, we want to reduce the largest elements first
+        arr.sort(reverse=True)
+        
+        total = sum(arr)
+        if total <= k:
+            print(0)
+            continue
+        
+        steps = 0
+        reduce_by = total - k
+        
+        # Strategy: Make all elements equal to the smallest, then reduce if needed
+        for i in range(n-1):
+            # How much can we reduce by setting arr[i] to arr[n-1]
+            reduction = arr[i] - arr[n-1]
+            
+            if reduction <= reduce_by:
+                # We can completely set this element equal to the minimum
+                steps += 1
+                reduce_by -= reduction
+            else:
+                # We need to set this element to some value between arr[i] and arr[n-1]
+                steps += 1
+                reduce_by = 0
+                break
+        
+        # If we still need to reduce more, decrease all elements uniformly
+        if reduce_by > 0:
+            # We'll need to decrease all n elements
+            steps += (reduce_by + n - 1) // n
+        
+        print(steps)
+
+min_steps()

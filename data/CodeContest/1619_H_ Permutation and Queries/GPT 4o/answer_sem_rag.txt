@@ -1,0 +1,46 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n, q = int(data[0]), int(data[1])
+    p = list(map(int, data[2:n+2]))
+    queries = data[n+2:]
+    
+    output = []
+    idx = 0
+    
+    for _ in range(q):
+        t = int(queries[idx])
+        if t == 1:
+            # Type 1 query: Swap
+            x, y = int(queries[idx+1]) - 1, int(queries[idx+2]) - 1
+            p[x], p[y] = p[y], p[x]
+            idx += 3
+        elif t == 2:
+            # Type 2 query: Iterative mapping
+            i, k = int(queries[idx+1]) - 1, int(queries[idx+2])
+            idx += 3
+            
+            # Find the cycle containing i
+            visited = {}
+            cycle = []
+            current = i
+            
+            while current not in visited:
+                visited[current] = len(cycle)
+                cycle.append(current)
+                current = p[current] - 1
+            
+            # Determine the cycle length and position of i in the cycle
+            cycle_start = visited[current]
+            cycle_length = len(cycle) - cycle_start
+            
+            if k <= cycle_start:
+                result = cycle[k]
+            else:
+                result = cycle[cycle_start + (k - cycle_start) % cycle_length]
+            
+            output.append(p[result])
+    
+    sys.stdout.write("\n".join(map(str, output)) + "\n")

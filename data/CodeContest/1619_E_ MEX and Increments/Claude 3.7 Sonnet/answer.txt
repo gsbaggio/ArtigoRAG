@@ -1,0 +1,36 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        
+        # Count frequency of each number
+        freq = [0] * (n+1)
+        for x in a:
+            if x <= n:
+                freq[x] += 1
+        
+        results = []
+        
+        for mex in range(n+1):
+            ops = 0
+            possible = True
+            
+            # Check if we can have all values 0 to mex-1
+            for i in range(mex):
+                if freq[i] == 0:
+                    possible = False
+                    break
+            
+            if not possible:
+                results.append(-1)
+                continue
+            
+            # Count operations to remove all instances of mex
+            ops = freq[mex]
+            results.append(ops)
+        
+        print(*results)
+
+solve()

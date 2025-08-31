@@ -1,0 +1,46 @@
+from itertools import combinations
+
+def solve(n, k, s):
+    MOD = 998244353
+    
+    # Set to track unique strings
+    result = set([s])
+    
+    # For each possible substring position
+    for i in range(n):
+        ones_count = 0
+        for j in range(i, n):
+            # Count ones as we go
+            if s[j] == '1':
+                ones_count += 1
+            
+            # When we find a substring with exactly k ones
+            if ones_count == k:
+                # Get the substring and its length
+                substring = s[i:j+1]
+                length = j - i + 1
+                
+                # Parts of the string
+                prefix = s[:i]
+                suffix = s[j+1:]
+                
+                # Generate all possible rearrangements by placing k ones
+                # in different positions of the substring
+                for ones_positions in combinations(range(length), k):
+                    # Create the new substring
+                    new_substring = ['0'] * length
+                    for pos in ones_positions:
+                        new_substring[pos] = '1'
+                    
+                    new_substring_str = ''.join(new_substring)
+                    
+                    # Only add if this creates a different arrangement
+                    if new_substring_str != substring:
+                        new_s = prefix + new_substring_str + suffix
+                        result.add(new_s)
+            
+            # If we exceed k ones, stop extending this window
+            if ones_count > k:
+                break
+    
+    return len(result) % MOD

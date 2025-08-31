@@ -1,0 +1,68 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+// Union-Find (Disjoint Set Union) structure
+class DSU {
+public:
+    vector<int> parent, rank;
+
+    DSU(int n) {
+        parent.resize(n);
+        rank.resize(n, 0);
+        for (int i = 0; i < n; i++) parent[i] = i;
+    }
+
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]); // Path compression
+        return parent[x];
+    }
+
+    void unite(int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+        if (rootX != rootY) {
+            if (rank[rootX] > rank[rootY]) {
+                parent[rootY] = rootX;
+            } else if (rank[rootX] < rank[rootY]) {
+                parent[rootX] = rootY;
+            } else {
+                parent[rootY] = rootX;
+                rank[rootX]++;
+            }
+        }
+    }
+};
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        string s;
+        cin >> s;
+        int n = s.size();
+        DSU dsu(n);
+
+        // Process equality constraints
+        for (int i = 0; i < n; i++) {
+            if (s[i] == 'E') {
+                dsu.unite(i, (i + 1) % n);
+            }
+        }
+
+        // Check non-equality constraints
+        bool consistent = true;
+        for (int i = 0; i < n; i++) {
+            if (s[i] == 'N') {
+                if (dsu.find(i) == dsu.find((i + 1) % n)) {
+                    consistent = false;
+                    break;
+                }
+            }
+        }
+
+        cout << (consistent ? "YES" : "NO") << endl;
+    }
+    return 0;
+}

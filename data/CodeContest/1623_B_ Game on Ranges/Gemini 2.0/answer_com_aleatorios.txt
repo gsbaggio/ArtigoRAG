@@ -1,0 +1,45 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        ranges = []
+        for _ in range(n):
+            l, r = map(int, input().split())
+            ranges.append((l, r))
+
+        results = {}
+        
+        def find_d(l, r, remaining_ranges):
+            if (l, r) in results:
+                return results[(l, r)]
+
+            for d in range(l, r + 1):
+                possible = True
+                next_ranges = []
+                if l <= d - 1:
+                    next_ranges.append((l, d - 1))
+                if d + 1 <= r:
+                    next_ranges.append((d + 1, r))
+
+                temp_remaining_ranges = remaining_ranges[:]
+                temp_remaining_ranges.remove((l, r))
+
+                
+                valid = True
+                for nr in next_ranges:
+                    if nr not in temp_remaining_ranges:
+                        valid = False
+                        break
+                    else:
+                        temp_remaining_ranges.remove(nr)
+
+                if valid and not temp_remaining_ranges:
+                    results[(l, r)] = d
+                    return d
+            return -1
+
+        for l, r in ranges:
+            d = find_d(l, r, ranges[:])
+            print(l, r, d)
+
+solve()

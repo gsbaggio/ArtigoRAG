@@ -1,0 +1,12 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    s = input().strip()
+    count_n = s.count('N')
+    if count_n == 1:
+        results.append("NO")
+    else:
+        results.append("YES")
+
+for res in results:
+    print(res)

@@ -1,0 +1,23 @@
+# Function to calculate the minimum number of coins needed for each test case
+def min_coins_needed(n, costs):
+    total_coins = sum(costs)
+    max_cost = max(costs)
+
+    # Calculate the minimum coins needed
+    if total_coins % 3 == 0:
+        return total_coins // 3
+    else:
+        return total_coins // 3 + 1 if max_cost == total_coins % 3 else total_coins // 3 + 2
+
+# Main function to read input and process each test case
+def main():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        costs = list(map(int, input().split()))
+        result = min_coins_needed(n, costs)
+        print(result)
+
+# Run the main function
+if __name__ == "__main__":
+    main()

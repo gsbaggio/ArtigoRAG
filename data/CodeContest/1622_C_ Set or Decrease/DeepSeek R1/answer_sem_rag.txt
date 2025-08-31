@@ -1,0 +1,47 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        k = int(data[index]); index += 1
+        a = list(map(int, data[index:index+n]))
+        index += n
+        
+        a.sort()
+        total = sum(a)
+        if total <= k:
+            results.append("0")
+            continue
+            
+        prefix = [0]
+        for num in a:
+            prefix.append(prefix[-1] + num)
+            
+        ans = total - k
+        for i in range(n):
+            count = n - i
+            if count == 0:
+                continue
+            x_max = (k - prefix[i]) // count
+            if i == 0:
+                x_max = min(x_max, a[0] - 1)
+                steps = (a[0] - x_max) + (count - 1)
+            else:
+                if x_max < a[0]:
+                    steps = (a[0] - x_max) + (count - 1)
+                else:
+                    steps = count - 1
+                    
+            if steps < ans:
+                ans = steps
+                
+        results.append(str(ans))
+        
+    sys.stdout.write("\n".join(results))
+    
+if __name__ == "__main__":
+    main()

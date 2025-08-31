@@ -1,0 +1,16 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+
+        max_coins = 0
+        for price in a:
+            coins = price // 3
+            rem = price % 3
+            coins += (rem + 1) // 2
+            max_coins = max(max_coins, coins)
+        
+        print(max_coins)
+
+solve()

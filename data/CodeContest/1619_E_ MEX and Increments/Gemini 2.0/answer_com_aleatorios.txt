@@ -1,0 +1,43 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    def calculate_mex(arr):
+        seen = set(arr)
+        mex = 0
+        while mex in seen:
+            mex += 1
+        return mex
+
+    def min_operations_to_mex(target_mex):
+        min_ops = float('inf')
+        
+        for i in range(1 << n):
+            temp_arr = a[:]
+            ops = 0
+            indices_to_increment = []
+            
+            for j in range(n):
+                if (i >> j) & 1:
+                    indices_to_increment.append(j)
+            
+            for index in indices_to_increment:
+                temp_arr[index] += 1
+                ops += 1
+            
+            if calculate_mex(temp_arr) == target_mex:
+                min_ops = min(min_ops, ops)
+        
+        if min_ops == float('inf'):
+            return -1
+        else:
+            return min_ops
+
+    results = []
+    for i in range(n + 1):
+        results.append(min_operations_to_mex(i))
+    print(*results)
+
+t = int(input())
+for _ in range(t):
+    solve()

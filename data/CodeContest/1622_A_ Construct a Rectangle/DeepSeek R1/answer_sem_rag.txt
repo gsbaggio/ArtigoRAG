@@ -1,0 +1,17 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    a, b, c = map(int, input().split())
+    total = a + b + c
+    if total % 2 != 0:
+        results.append("NO")
+    else:
+        if a == b + c or b == a + c or c == a + b:
+            results.append("YES")
+        elif (a == b and c % 2 == 0) or (a == c and b % 2 == 0) or (b == c and a % 2 == 0):
+            results.append("YES")
+        else:
+            results.append("NO")
+
+for res in results:
+    print(res)

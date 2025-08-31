@@ -1,0 +1,40 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n, m, r_b, c_b, r_d, c_d = map(int, input().split())
+        
+        # If the robot starts in the same row or column as the dirty cell,
+        # it can clean it immediately
+        if r_b == r_d or c_b == c_d:
+            print(0)
+            continue
+        
+        # Initialize robot's position and direction
+        r, c = r_b, c_b
+        dr, dc = 1, 1
+        
+        # Time counter
+        time = 0
+        
+        # Simulate the robot's movement
+        while True:
+            time += 1
+            
+            # Reflect if hitting a wall (before movement)
+            if r + dr < 1 or r + dr > n:
+                dr = -dr
+            if c + dc < 1 or c + dc > m:
+                dc = -dc
+            
+            # Move robot
+            r += dr
+            c += dc
+            
+            # Check if the robot can clean the dirty cell
+            if r == r_d or c == c_d:
+                break
+                
+        print(time)
+
+solve()

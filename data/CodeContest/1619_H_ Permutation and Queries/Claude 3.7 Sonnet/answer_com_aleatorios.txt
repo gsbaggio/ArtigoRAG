@@ -1,0 +1,42 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n, q;
+    cin >> n >> q;
+    
+    vector<int> p(n + 1);
+    for (int i = 1; i <= n; i++) {
+        cin >> p[i];
+    }
+    
+    for (int query = 0; query < q; query++) {
+        int t;
+        cin >> t;
+        
+        if (t == 1) {
+            // Swap operation
+            int x, y;
+            cin >> x >> y;
+            swap(p[x], p[y]);
+        } else if (t == 2) {
+            // Find value after k applications
+            int i, k;
+            cin >> i >> k;
+            
+            int current = i;
+            for (int step = 0; step < k; step++) {
+                current = p[current];
+            }
+            
+            cout << current << endl;
+        }
+    }
+    
+    return 0;
+}

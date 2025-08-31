@@ -1,0 +1,46 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])  # Number of ranges
+        idx += 1
+        ranges = []
+        
+        for __ in range(n):
+            l, r = map(int, data[idx:idx+2])
+            ranges.append((l, r))
+            idx += 2
+        
+        # Sort ranges by reverse order of processing
+        ranges.sort(reverse=True, key=lambda x: (x[0], x[1]))
+        
+        # Set to maintain current ranges
+        current_ranges = set()
+        output = []
+        
+        for l, r in ranges:
+            # Find the number d that splits [l, r]
+            d = -1
+            for i in range(l, r + 1):
+                if (l, i - 1) in current_ranges or i == l:
+                    if (i + 1, r) in current_ranges or i == r:
+                        d = i
+                        break
+            
+            # Add the range back to the set
+            current_ranges.add((l, r))
+            output.append((l, r, d))
+        
+        # Append the result for this test case
+        results.append(output)
+    
+    # Print all results
+    for result in results:
+        for l, r, d in result:
+            print(l, r, d)

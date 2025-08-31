@@ -1,0 +1,54 @@
+class SegmentTree:
+    def __init__(self, arr):
+        n = len(arr)
+        self.tree = [None] * (4 * n)
+        self.build(arr, 0, 0, n - 1)
+
+    def build(self, arr, node, start, end):
+        if start == end:
+            self.tree[node] = [arr[start]]
+        else:
+            mid = (start + end) // 2
+            self.build(arr, 2 * node + 1, start, mid)
+            self.build(arr, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+
+    def query(self, node, start, end, left, right, i, k):
+        if right < start or end < left:
+            return None
+        if left <= start and end <= right:
+            return self.tree[node][i]
+
+        mid = (start + end) // 2
+        left_val = self.query(2 * node + 1, start, mid, left, right, self.tree[node].index(i), k)
+        right_val = self.query(2 * node + 2, mid + 1, end, left, right, self.tree[node].index(i), k)
+
+        if left_val is not None:
+            return self.query(2 * node + 1, start, mid, left, right, left_val, k)
+        else:
+            return self.query(2 * node + 2, mid + 1, end, left, right, right_val, k)
+
+
+def solve(n, q, p, queries):
+    st = SegmentTree(p)
+
+    for query in queries:
+        t, a, b = query
+        if t == 1:
+            # Swap operation
+            p[a - 1], p[b - 1] = p[b - 1], p[a - 1]
+            st = SegmentTree(p)
+        else:
+            # Print query
+            i, k = a, b
+            result = st.query(0, 0, n - 1, 0, n - 1, i - 1, k)
+            print(result)
+
+
+# Input parsing
+n, q = map(int, input().split())
+p = list(map(int, input().split()))
+queries = [list(map(int, input().split())) for _ in range(q)]
+
+# Solve the problem
+solve(n, q, p, queries)

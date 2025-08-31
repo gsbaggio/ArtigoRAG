@@ -1,0 +1,38 @@
+from collections import deque
+
+def can_transform(x, y):
+    # Edge case: if x == y, no operations are needed
+    if x == y:
+        return "YES"
+    
+    # BFS setup
+    queue = deque([x])
+    visited = set([x])
+    
+    while queue:
+        current = queue.popleft()
+        
+        # Generate the binary representation of the current number
+        binary = bin(current)[2:]  # Remove the '0b' prefix
+        
+        # Try appending '0' and '1'
+        for bit in ['0', '1']:
+            new_binary = binary + bit
+            reversed_binary = new_binary[::-1]  # Reverse the binary string
+            new_number = int(reversed_binary, 2)  # Convert back to decimal
+            
+            # If we reach y, return "YES"
+            if new_number == y:
+                return "YES"
+            
+            # If the number is not visited, add it to the queue
+            if new_number not in visited and new_number <= y:
+                visited.add(new_number)
+                queue.append(new_number)
+    
+    # If we exhaust the queue without finding y, return "NO"
+    return "NO"
+
+# Input reading
+x, y = map(int, input().split())
+print(can_transform(x, y))

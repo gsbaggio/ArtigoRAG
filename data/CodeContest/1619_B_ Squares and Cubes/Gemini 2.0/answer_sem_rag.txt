@@ -1,0 +1,14 @@
+import math
+
+def solve():
+    n = int(input())
+    
+    squares = int(math.sqrt(n))
+    cubes = int(n**(1/3))
+    both = int(n**(1/6))
+    
+    print(squares + cubes - both)
+
+t = int(input())
+for _ in range(t):
+    solve()

@@ -1,0 +1,90 @@
+#include <iostream>
+#include <queue>
+#include <set>
+#include <string>
+#include <algorithm>
+#include <cmath>
+
+using namespace std;
+
+typedef long long ll;
+
+string to_bin(ll x) {
+    if (x == 0) return "0";
+    string s;
+    while (x) {
+        s += char('0' + (x & 1));
+        x >>= 1;
+    }
+    reverse(s.begin(), s.end());
+    return s;
+}
+
+ll to_dec(string s) {
+    ll x = 0;
+    for (char c : s) {
+        x = x * 2 + (c - '0');
+    }
+    return x;
+}
+
+string reverse_string(string s) {
+    reverse(s.begin(), s.end());
+    return s;
+}
+
+int main() {
+    ll x, y;
+    cin >> x >> y;
+    if (x == y) {
+        cout << "YES" << endl;
+        return 0;
+    }
+
+    set<ll> seen;
+    queue<ll> q;
+    q.push(y);
+    seen.insert(y);
+    int limit = 10000;
+    int count = 0;
+
+    while (!q.empty() && count < limit) {
+        count++;
+        ll current = q.front(); q.pop();
+        if (current == x) {
+            cout << "YES" << endl;
+            return 0;
+        }
+        string s = to_bin(current);
+        if (s.back() != '1') {
+            continue;
+        }
+
+        string rev_s = reverse_string(s);
+        if (!rev_s.empty()) {
+            string s0 = rev_s.substr(0, rev_s.size() - 1);
+            if (!s0.empty()) {
+                ll candidate0 = to_dec(s0);
+                if (candidate0 >= x && seen.find(candidate0) == seen.end()) {
+                    seen.insert(candidate0);
+                    q.push(candidate0);
+                }
+            }
+        }
+
+        ll base = to_dec(rev_s);
+        for (int k = 1; ; k++) {
+            ll candidate = base * (1LL << (k-1));
+            if (candidate > 1e18) break;
+            if (candidate < x) continue;
+            if (seen.find(candidate) != seen.end()) continue;
+            seen.insert(candidate);
+            q.push(candidate);
+            if (seen.size() > limit) break;
+        }
+        if (seen.size() > limit) break;
+    }
+
+    cout << "NO" << endl;
+    return 0;
+}

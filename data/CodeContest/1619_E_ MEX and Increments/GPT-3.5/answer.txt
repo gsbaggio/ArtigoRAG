@@ -1,0 +1,33 @@
+def mex_operations(t, test_cases):
+    for _ in range(t):
+        n = test_cases[_][0]
+        arr = test_cases[_][1]
+
+        count = [0] * (n + 1)
+        operations = [0] * (n + 1)
+
+        for i in arr:
+            count[min(i, n)] += 1
+
+        current_sum = 0
+
+        for i in range(n + 1):
+            current_sum += count[i]
+
+            if current_sum < i:
+                operations[i] = -1
+            else:
+                operations[i] = max(operations[i], current_sum - i)
+
+        print(" ".join(map(str, operations)))
+
+# Test case
+test_cases = [
+    (3, [0, 1, 3]),
+    (7, [0, 1, 2, 3, 4, 3, 2]),
+    (4, [3, 0, 0, 0]),
+    (7, [4, 6, 2, 3, 5, 0, 5]),
+    (5, [4, 0, 1, 0, 4])
+]
+
+mex_operations(5, test_cases)

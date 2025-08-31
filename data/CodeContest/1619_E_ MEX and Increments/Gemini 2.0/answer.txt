@@ -1,0 +1,58 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    def calculate_mex(arr):
+        seen = set(arr)
+        mex = 0
+        while mex in seen:
+            mex += 1
+        return mex
+
+    def calculate_operations(target_mex):
+        import heapq
+        
+        arr = a[:]
+        operations = 0
+        counts = {}
+        for x in arr:
+            counts[x] = counts.get(x, 0) + 1
+        
+        missing = []
+        for i in range(target_mex):
+            if i not in counts:
+                missing.append(i)
+        
+        heap = []
+        for num, count in counts.items():
+            if num > target_mex - 1:
+                for _ in range(count):
+                    heapq.heappush(heap, num)
+        
+        missing.sort()
+        
+        if len(missing) > len(heap):
+            return float('inf')
+        
+        for miss in missing:
+            if not heap:
+                return float('inf')
+            
+            largest = heapq.heappop(heap)
+            operations += largest - miss
+        
+        return operations
+
+    results = []
+    for i in range(n + 1):
+        ops = calculate_operations(i)
+        if ops == float('inf'):
+            results.append(-1)
+        else:
+            results.append(ops)
+    
+    print(*results)
+
+t = int(input())
+for _ in range(t):
+    solve()

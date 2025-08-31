@@ -1,0 +1,67 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        ll k;
+        cin >> n >> k;
+        
+        vector<ll> a(n);
+        for(int i=0;i<n;i++){
+            cin >> a[i];
+        }
+        
+        // Sort the array
+        sort(a.begin(), a.end());
+        
+        // Calculate prefix sums
+        vector<ll> prefix_sum(n+1, 0);
+        for(int i=1;i<=n;i++){
+            prefix_sum[i] = prefix_sum[i-1] + a[i-1];
+        }
+        
+        // Binary search for the optimal x
+        ll left = 0, right = a[n-1], ans = 0;
+        while(left <= right){
+            ll mid = left + (right - left) / 2;
+            
+            // Find the position where elements become > mid
+            int pos = upper_bound(a.begin(), a.end(), mid) - a.begin();
+            
+            // Calculate the sum of elements already ≤ mid
+            ll current_sum = prefix_sum[pos];
+            
+            // Calculate the remaining sum that needs to be reduced
+            ll remaining_sum = prefix_sum[n] - current_sum;
+            
+            // Calculate the number of decrease operations needed
+            ll decrease_operations = remaining_sum - (ll)(n - pos) * mid;
+            
+            if(decrease_operations <= 0){
+                // If the sum is already ≤ k, try to find a smaller x
+                ans = mid;
+                right = mid - 1;
+            }
+            else{
+                // Otherwise, increase x
+                left = mid + 1;
+            }
+        }
+        
+        // Calculate the final answer
+        int pos = upper_bound(a.begin(), a.end(), ans) - a.begin();
+        ll current_sum = prefix_sum[pos];
+        ll remaining_sum = prefix_sum[n] - current_sum;
+        ll decrease_operations = remaining_sum - (ll)(n - pos) * ans;
+        
+        cout << decrease_operations << "\n";
+    }
+}

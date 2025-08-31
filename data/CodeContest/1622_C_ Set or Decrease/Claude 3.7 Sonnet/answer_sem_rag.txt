@@ -1,0 +1,32 @@
+def min_steps(n, k, arr):
+    total_sum = sum(arr)
+    
+    # If sum is already <= k
+    if total_sum <= k:
+        return 0
+    
+    reduction_needed = total_sum - k
+    
+    if n == 1:
+        return reduction_needed
+    
+    # Option 1: Just decrease elements one by one
+    option1 = reduction_needed
+    
+    # Option 2: Decrease one element and copy to others
+    # If we make one element negative and copy it to (n-1) others,
+    # each copy operation reduces the sum by 2*abs(negative_val)
+    # We need ceil(reduction_needed / (n-1)) decrements + (n-1) copies
+    option2 = (reduction_needed + n - 2) // (n - 1) + (n - 1)
+    
+    return min(option1, option2)
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        n, k = map(int, input().split())
+        arr = list(map(int, input().split()))
+        print(min_steps(n, k, arr))
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,36 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    n, m, r_b, c_b, r_d, c_d = map(int, input().split())
+    
+    if n == 1:
+        candidate_row = 0
+    else:
+        period_r = 2 * (n - 1)
+        offset_r = r_b - 1
+        r_d_prime = r_d - 1
+        t1 = (r_d_prime - offset_r) % period_r
+        if t1 < 0:
+            t1 += period_r
+        t2 = (period_r - r_d_prime - offset_r) % period_r
+        if t2 < 0:
+            t2 += period_r
+        candidate_row = min(t1, t2)
+        
+    if m == 1:
+        candidate_col = 0
+    else:
+        period_c = 2 * (m - 1)
+        offset_c = c_b - 1
+        c_d_prime = c_d - 1
+        t3 = (c_d_prime - offset_c) % period_c
+        if t3 < 0:
+            t3 += period_c
+        t4 = (period_c - c_d_prime - offset_c) % period_c
+        if t4 < 0:
+            t4 += period_c
+        candidate_col = min(t3, t4)
+        
+    results.append(str(min(candidate_row, candidate_col)))
+    
+print("\n".join(results))

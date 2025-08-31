@@ -1,0 +1,18 @@
+def clean_time(n, m, rb, cb, rd, cd):
+    # Calculate the minimum time required for the robot to clean the dirty cell
+    time = abs(rb - rd) + abs(cb - cd)  # Initial time without considering reflections
+
+    # Reflect movements if there are walls in between
+    if (rb - rd) * (cb - cd) > 0:
+        time += 2
+
+    return time
+
+def main():
+    t = int(input())  # Number of test cases
+    for _ in range(t):
+        n, m, rb, cb, rd, cd = map(int, input().split())
+        print(clean_time(n, m, rb, cb, rd, cd))
+
+if __name__ == "__main__":
+    main()

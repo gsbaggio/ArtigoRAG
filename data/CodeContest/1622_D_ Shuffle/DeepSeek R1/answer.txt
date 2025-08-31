@@ -1,0 +1,61 @@
+#include <iostream>
+#include <set>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+const int MOD = 998244353;
+
+void generate_strings(int i, int j, const string& s, int k, set<string>& outcomes) {
+    int L = j - i + 1;
+    string new_s(L, '0');
+    function<void(int, int)> dfs = [&](int pos, int ones_remaining) {
+        if (pos == L) {
+            if (ones_remaining == 0) {
+                string t = s.substr(0, i) + new_s + s.substr(j+1);
+                outcomes.insert(t);
+            }
+            return;
+        }
+        if (ones_remaining > 0) {
+            new_s[pos] = '1';
+            dfs(pos+1, ones_remaining-1);
+        }
+        if (L - pos > ones_remaining) {
+            new_s[pos] = '0';
+            dfs(pos+1, ones_remaining);
+        }
+    };
+    dfs(0, k);
+}
+
+int main() {
+    int n, k;
+    string s;
+    cin >> n >> k;
+    cin >> s;
+    int total_ones = count(s.begin(), s.end(), '1');
+    if (k > total_ones || k == 0) {
+        cout << 1 << endl;
+        return 0;
+    }
+
+    set<string> outcomes;
+    outcomes.insert(s);
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+            int ones_in_substring = 0;
+            for (int x = i; x <= j; x++) {
+                if (s[x] == '1') ones_in_substring++;
+            }
+            if (ones_in_substring != k) continue;
+            int L = j - i + 1;
+            if (L > 20) continue; 
+            generate_strings(i, j, s, k, outcomes);
+        }
+    }
+
+    cout << outcomes.size() % MOD << endl;
+    return 0;
+}

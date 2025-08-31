@@ -1,0 +1,69 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    it = iter(data)
+    n = int(next(it))
+    q = int(next(it))
+    p_list = [int(next(it)) for _ in range(n)]
+    
+    next_arr = [0] * (n + 1)
+    for i in range(1, n + 1):
+        next_arr[i] = p_list[i - 1]
+        
+    inv_arr = [0] * (n + 1)
+    for i in range(1, n + 1):
+        inv_arr[next_arr[i]] = i
+        
+    B = 32
+    jump_arr = [0] * (n + 1)
+    for i in range(1, n + 1):
+        cur = i
+        for _ in range(B):
+            cur = next_arr[cur]
+        jump_arr[i] = cur
+        
+    out_lines = []
+    for _ in range(q):
+        t = int(next(it))
+        if t == 1:
+            x = int(next(it))
+            y = int(next(it))
+            a = next_arr[x]
+            b = next_arr[y]
+            next_arr[x] = b
+            next_arr[y] = a
+            inv_arr[a] = y
+            inv_arr[b] = x
+            
+            nodes_set = set()
+            temp = x
+            for _ in range(B):
+                nodes_set.add(temp)
+                temp = inv_arr[temp]
+            temp = y
+            for _ in range(B):
+                nodes_set.add(temp)
+                temp = inv_arr[temp]
+                
+            for node in nodes_set:
+                cur = node
+                for _ in range(B):
+                    cur = next_arr[cur]
+                jump_arr[node] = cur
+                
+        else:
+            i_val = int(next(it))
+            k_val = int(next(it))
+            cur = i_val
+            while k_val >= B:
+                cur = jump_arr[cur]
+                k_val -= B
+            for _ in range(k_val):
+                cur = next_arr[cur]
+            out_lines.append(str(cur))
+            
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()

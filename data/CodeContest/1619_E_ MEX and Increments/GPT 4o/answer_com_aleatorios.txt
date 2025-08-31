@@ -1,0 +1,46 @@
+def solve_mex_operations():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    index = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[index])  # Length of the array
+        index += 1
+        a = list(map(int, data[index:index + n]))
+        index += n
+        
+        # Frequency array to count occurrences of each number
+        freq = [0] * (n + 1)
+        for num in a:
+            if num <= n:
+                freq[num] += 1
+        
+        # Result array for this test case
+        result = []
+        missing_count = 0  # Count of numbers missing from 0 to i-1
+        extra_count = 0    # Count of numbers greater than or equal to i
+        
+        for i in range(n + 1):
+            # If `i` is missing, increment the missing count
+            if freq[i] == 0:
+                missing_count += 1
+            
+            # If we don't have enough numbers to cover 0 to i-1, it's impossible
+            if missing_count > 0:
+                result.append(-1)
+            else:
+                # Calculate the number of operations needed
+                result.append(extra_count)
+            
+            # Update extra_count for the next iteration
+            if i < n:
+                extra_count += freq[i] - 1  # Keep track of surplus numbers
+        
+        results.append(" ".join(map(str, result)))
+    
+    # Print all results
+    sys.stdout.write("\n".join(results) + "\n")

@@ -1,0 +1,59 @@
+def solve():
+    n = int(input())
+    p = list(map(int, input().split()))
+
+    def is_bipartite(arr):
+        adj = [[] for _ in range(n)]
+        for i in range(n):
+            for j in range(i + 1, n):
+                if arr[i] > arr[j]:
+                    adj[i].append(j)
+                    adj[j].append(i)
+
+        color = [-1] * n
+        
+        def bfs(start_node):
+            q = [(start_node, 0)]  # Node and its color (0 or 1)
+            color[start_node] = 0
+            
+            while q:
+                node, c = q.pop(0)
+                
+                for neighbor in adj[node]:
+                    if color[neighbor] == -1:
+                        color[neighbor] = 1 - c
+                        q.append((neighbor, 1 - c))
+                    elif color[neighbor] == c:
+                        return False  # Not bipartite
+            return True
+
+        for i in range(n):
+            if color[i] == -1:
+                if not bfs(i):
+                    return False
+        return True
+
+    def find_bipartite_array(p):
+        for i in range(1 << n):
+            arr = []
+            for j in range(n):
+                if (i >> j) & 1:
+                    arr.append(p[j])
+                else:
+                    arr.append(-p[j])
+
+            if is_bipartite(arr):
+                return arr
+        return None
+
+    result = find_bipartite_array(p)
+
+    if result:
+        print("YES")
+        print(*result)
+    else:
+        print("NO")
+
+t = int(input())
+for _ in range(t):
+    solve()

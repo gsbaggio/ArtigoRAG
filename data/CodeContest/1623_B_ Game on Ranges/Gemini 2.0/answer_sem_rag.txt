@@ -1,0 +1,67 @@
+def solve():
+    n = int(input())
+    ranges = []
+    for _ in range(n):
+        l, r = map(int, input().split())
+        ranges.append((l, r))
+
+    results = []
+    
+    def find_d(l, r, history):
+        if l == r:
+            return l
+        
+        for d in range(l, r + 1):
+            valid = True
+            next_ranges = []
+            if l <= d - 1:
+                next_ranges.append((l, d - 1))
+            if d + 1 <= r:
+                next_ranges.append((d + 1, r))
+            
+            possible_history = history[:]
+            possible_history.append((l,r))
+            
+            remaining_ranges = []
+            for range_l, range_r in ranges:
+                if (range_l, range_r) not in possible_history:
+                    remaining_ranges.append((range_l, range_r))
+            
+            
+            def can_reach_empty(current_ranges, current_history):
+                if not current_ranges:
+                    return True
+                
+                for i in range(len(current_ranges)):
+                    range_l, range_r = current_ranges[i]
+                    for d_choice in range(range_l, range_r + 1):
+                        next_ranges_local = current_ranges[:i] + current_ranges[i+1:]
+                        
+                        if range_l <= d_choice - 1:
+                            next_ranges_local.append((range_l, d_choice - 1))
+                        if d_choice + 1 <= range_r:
+                            next_ranges_local.append((d_choice + 1, range_r))
+                        
+                        next_history = current_history[:]
+                        next_history.append((range_l, range_r))
+                        
+                        if can_reach_empty(next_ranges_local, next_history):
+                            return True
+                return False
+            
+            temp_ranges = remaining_ranges[:]
+            if can_reach_empty(temp_ranges, possible_history):
+                return d
+        return -1
+
+    for l, r in ranges:
+        d = find_d(l, r, [])
+        results.append((l, r, d))
+
+    for l, r, d in results:
+        print(l, r, d)
+
+
+t = int(input())
+for _ in range(t):
+    solve()

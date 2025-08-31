@@ -1,0 +1,36 @@
+def min_coins_needed(t, test_cases):
+    for _ in range(t):
+        n, prices = test_cases[_]
+        prices.sort(reverse=True)
+
+        coins = [0, 0, 0]  # Counters for 1-burle, 2-burle, and 3-burle coins
+        total_coins = 0
+
+        for i in range(n):
+            remaining = prices[i]
+
+            while remaining > 0:
+                if remaining >= 3 and coins[2] < 2:
+                    remaining -= 3
+                    coins[2] += 1
+                elif remaining >= 2 and coins[1] < 2:
+                    remaining -= 2
+                    coins[1] += 1
+                else:
+                    remaining -= 1
+                    coins[0] += 1
+
+            total_coins += sum(coins)
+            coins = [0, 0, 0]
+
+        print(total_coins)
+
+# Read input
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    prices = list(map(int, input().split()))
+    test_cases.append((n, prices))
+
+min_coins_needed(t, test_cases)

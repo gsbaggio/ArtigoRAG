@@ -1,0 +1,41 @@
+from math import comb
+
+def count_strings(n, k):
+    count = 0
+    for i in range(k+1):
+        count += comb(n+i-1, i)
+    return count
+
+def get_string(n, k, x):
+    result = []
+    for i in range(n):
+        for j in range(k, -1, -1):
+            if j == 0:
+                if count_strings(n-i-1, k) >= x:
+                    result.append('a')
+                    break
+                else:
+                    x -= count_strings(n-i-1, k)
+            else:
+                if count_strings(n-i-1, j-1) >= x:
+                    result.append('a')
+                    break
+                else:
+                    x -= count_strings(n-i-1, j-1)
+                    k = j - 1
+    return ''.join(result)
+
+# Input
+t = int(input())
+for _ in range(t):
+    n, k, x = map(int, input().split())
+    s = input().strip()
+
+    # Count the number of strings that can be formed with the given constraints
+    total_strings = count_strings(n, k)
+
+    # Find the x-th lexicographically smallest BA-string
+    if total_strings < x:
+        print("No solution")
+    else:
+        print(get_string(n, k, x))

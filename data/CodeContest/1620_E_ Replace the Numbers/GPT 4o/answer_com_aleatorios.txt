@@ -1,0 +1,35 @@
+def process_queries(q, queries):
+    replace_map = {}  # Mapping for lazy replacements
+    result = []       # Resulting array after processing all queries
+
+    def find(x):
+        # Resolve the final value of x using path compression
+        if x not in replace_map:
+            return x
+        replace_map[x] = find(replace_map[x])
+        return replace_map[x]
+
+    for query in queries:
+        parts = query.split()
+        if parts[0] == "1":
+            # "1 x" query: Add the current value of x to the result array
+            x = int(parts[1])
+            result.append(find(x))
+        elif parts[0] == "2":
+            # "2 x y" query: Update the mapping for x to point to y
+            x, y = int(parts[1]), int(parts[2])
+            replace_map[find(x)] = find(y)
+
+    return result
+
+# Input reading and output
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    
+    q = int(data[0])
+    queries = data[1:]
+    
+    result = process_queries(q, queries)
+    print(" ".join(map(str, result)))

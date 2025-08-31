@@ -1,0 +1,23 @@
+import math
+
+def count_squares_and_cubes(n):
+    # Count numbers that are perfect squares (k^2 where k is a positive integer)
+    squares = int(math.sqrt(n))
+    
+    # Count numbers that are perfect cubes (k^3 where k is a positive integer)
+    cubes = int(n ** (1/3))
+    
+    # Count numbers that are both perfect squares and perfect cubes (k^6)
+    # These are numbers of the form k^6, which we need to subtract to avoid double counting
+    both = int(n ** (1/6))
+    
+    return squares + cubes - both
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        print(count_squares_and_cubes(n))
+
+if __name__ == "__main__":
+    main()

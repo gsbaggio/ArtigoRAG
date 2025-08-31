@@ -1,0 +1,59 @@
+def solve():
+    n = int(input())
+    ranges = []
+    for _ in range(n):
+        l, r = map(int, input().split())
+        ranges.append((l, r))
+
+    results = {}
+
+    def find_bob_number(current_ranges, initial_range):
+        if initial_range in results:
+            return results[initial_range]
+        
+        l, r = initial_range
+        
+        # Base case: If the range has only one element, Bob has no choice.
+        if l == r:
+            results[initial_range] = l
+            return l
+
+        # Iterate through possible values of d and simulate the game
+        for d in range(l, r + 1):
+            temp_ranges = current_ranges[:]
+            temp_ranges.remove(initial_range)
+            
+            next_ranges = []
+            if l <= d - 1:
+                next_ranges.append((l, d - 1))
+            if d + 1 <= r:
+                next_ranges.append((d + 1, r))
+            
+            valid = True
+            remaining_ranges = temp_ranges + next_ranges
+            
+            # Check if all ranges in remaining_ranges can be satisfied by other ranges in ranges
+            for next_range in next_ranges:
+                if next_range not in ranges:
+                    valid = False
+                    break
+            
+            if valid:
+                
+                all_found = True
+                for temp_range in temp_ranges:
+                    if temp_range not in ranges:
+                        all_found = False
+                        break
+                
+                if all_found:
+                    results[initial_range] = d
+                    return d
+        return -1 # Should not happen if the input is valid
+
+    for l, r in ranges:
+        print(l, r, find_bob_number(ranges, (l, r)))
+
+t = int(input())
+for _ in range(t):
+    solve()

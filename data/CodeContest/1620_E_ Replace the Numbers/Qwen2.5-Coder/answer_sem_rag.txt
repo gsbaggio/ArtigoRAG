@@ -1,0 +1,29 @@
+def process_queries(q, queries):
+    result = []
+    replacements = {}
+    
+    for query in queries:
+        parts = query.split()
+        if parts[0] == '1':
+            x = int(parts[1])
+            # Apply the latest replacement if available
+            while x in replacements:
+                x = replacements[x]
+            result.append(x)
+        elif parts[0] == '2':
+            x = int(parts[1])
+            y = int(parts[2])
+            # Update the replacement rule
+            replacements[x] = y
+    
+    return result
+
+# Read input
+q = int(input())
+queries = [input().strip() for _ in range(q)]
+
+# Process queries and get the result
+result = process_queries(q, queries)
+
+# Print the result
+print(" ".join(map(str, result)))

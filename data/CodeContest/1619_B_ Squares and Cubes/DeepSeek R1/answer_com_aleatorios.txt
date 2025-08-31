@@ -1,0 +1,20 @@
+import math
+
+t = int(input().strip())
+results = []
+for _ in range(t):
+    n = int(input().strip())
+    squares = math.isqrt(n)
+    cubes = 0
+    k = 1
+    while k * k * k <= n:
+        cubes += 1
+        k += 1
+    sixth = 0
+    k = 1
+    while k * k * k * k * k * k <= n:
+        sixth += 1
+        k += 1
+    results.append(str(squares + cubes - sixth))
+
+print("\n".join(results))

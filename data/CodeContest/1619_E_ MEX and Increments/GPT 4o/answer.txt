@@ -1,0 +1,41 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])  # Length of the array
+        idx += 1
+        a = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Frequency array
+        freq = [0] * (n + 1)
+        for num in a:
+            if num <= n:
+                freq[num] += 1
+        
+        # Result for this test case
+        result = []
+        extra = 0  # Tracks the number of elements we can use to fill gaps
+        
+        for mex in range(n + 1):
+            if freq[mex] == 0 and extra == 0:
+                # If we can't form this MEX
+                result.append(-1)
+            else:
+                # Calculate the minimum operations
+                result.append(extra)
+                if freq[mex] == 0:
+                    extra -= 1  # Use one extra to fill the gap
+                else:
+                    extra += freq[mex] - 1  # Add the surplus elements
+        
+        results.append(" ".join(map(str, result)))
+    
+    # Print all results
+    sys.stdout.write("\n".join(results) + "\n")

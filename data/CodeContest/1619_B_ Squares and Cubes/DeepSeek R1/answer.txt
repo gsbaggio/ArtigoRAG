@@ -1,0 +1,24 @@
+import math
+
+def integer_cube_root(x):
+    if x == 0:
+        return 0
+    low, high = 1, x
+    ans = 0
+    while low <= high:
+        mid = (low + high) // 2
+        mid3 = mid * mid * mid
+        if mid3 <= x:
+            ans = mid
+            low = mid + 1
+        else:
+            high = mid - 1
+    return ans
+
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    sqrt_n = math.isqrt(n)
+    cbrt_n = integer_cube_root(n)
+    sixth_n = integer_cube_root(sqrt_n)
+    print(sqrt_n + cbrt_n - sixth_n)

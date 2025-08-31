@@ -1,0 +1,72 @@
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    
+    idx = 0
+    t = int(input[idx])
+    idx += 1
+    
+    results = []
+    
+    for _ in range(t):
+        n = int(input[idx])
+        k = int(input[idx + 1])
+        idx += 2
+        
+        a = list(map(int, input[idx:idx + n]))
+        idx += n
+        
+        total_sum = sum(a)
+        
+        if total_sum <= k:
+            results.append(0)
+            continue
+        
+        freq = {}
+        for num in a:
+            if num in freq:
+                freq[num] += 1
+            else:
+                freq[num] = 1
+        
+        max_reduction = 0
+        optimal_element = None
+        
+        for num, count in freq.items():
+            # Calculate the potential new sum if all elements were set to `num`
+            potential_sum = num * n
+            if potential_sum <= k:
+                # If setting all elements to `num` brings the sum to <= k, no further reduction is needed
+                results.append(total_sum - potential_sum)
+                break
+            else:
+                # Calculate the reduction if we set all elements to `num`
+                reduction = total_sum - (num * count)
+                if reduction > max_reduction:
+                    max_reduction = reduction
+                    optimal_element = num
+        
+        if optimal_element is not None:
+            # Set all elements to the optimal element
+            total_sum -= (optimal_element * freq[optimal_element])
+            steps = max_reduction
+            
+            # Perform individual decrement operations if necessary
+            while total_sum > k:
+                total_sum -= 1
+                steps += 1
+            
+            results.append(steps)
+        else:
+            # If no optimal element was found, perform individual decrement operations
+            steps = 0
+            while total_sum > k:
+                total_sum -= 1
+                steps += 1
+            results.append(steps)
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

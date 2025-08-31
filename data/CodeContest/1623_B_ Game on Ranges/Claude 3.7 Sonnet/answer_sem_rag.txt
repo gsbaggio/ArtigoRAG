@@ -1,0 +1,32 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        
+        # Read all ranges
+        ranges = []
+        for _ in range(n):
+            l, r = map(int, input().split())
+            ranges.append((l, r))
+        
+        # For each position, keep track of which ranges include it
+        position_to_ranges = [[] for _ in range(n + 1)]
+        for i, (l, r) in enumerate(ranges):
+            for pos in range(l, r + 1):
+                position_to_ranges[pos].append(i)
+        
+        # Find the answer for each range
+        answers = []
+        for i, (l, r) in enumerate(ranges):
+            # Find the position that is uniquely covered by this range
+            for pos in range(l, r + 1):
+                if len(position_to_ranges[pos]) == 1:
+                    answers.append((l, r, pos))
+                    break
+        
+        # Print the answers
+        for l, r, d in answers:
+            print(l, r, d)
+
+if __name__ == "__main__":
+    solve()

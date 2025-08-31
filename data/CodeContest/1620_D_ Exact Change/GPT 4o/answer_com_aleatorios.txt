@@ -1,0 +1,29 @@
+def minimum_coins(t, test_cases):
+    results = []
+    for i in range(t):
+        n, costs = test_cases[i]
+        max_cost = max(costs)
+        
+        # Calculate the minimum number of coins for max_cost
+        coins = 0
+        coins += max_cost // 3  # Use as many 3-burle coins as possible
+        max_cost %= 3
+        coins += max_cost // 2  # Use as many 2-burle coins as possible
+        max_cost %= 2
+        coins += max_cost       # Use 1-burle coins for the remainder
+        
+        results.append(coins)
+    return results
+
+# Input reading and output
+if __name__ == "__main__":
+    t = int(input())
+    test_cases = []
+    for _ in range(t):
+        n = int(input())
+        costs = list(map(int, input().split()))
+        test_cases.append((n, costs))
+    
+    results = minimum_coins(t, test_cases)
+    for res in results:
+        print(res)

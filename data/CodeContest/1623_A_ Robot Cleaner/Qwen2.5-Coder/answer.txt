@@ -1,0 +1,58 @@
+#include <iostream>
+using namespace std;
+
+// Function to compute the greatest common divisor (GCD)
+int gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+// Function to compute the least common multiple (LCM)
+int lcm(int a, int b) {
+    return (a / gcd(a, b)) * b;
+}
+
+// Function to solve the system of congruences using the Chinese Remainder Theorem
+int chinese_remainder_theorem(int a1, int n1, int a2, int n2) {
+    int n = lcm(n1, n2);
+    int p1 = n / n1;
+    int p2 = n / n2;
+    
+    // Modular inverses
+    int inv_p1 = 1, inv_p2 = 1;
+    while ((inv_p1 * p1) % n1 != 1) inv_p1++;
+    while ((inv_p2 * p2) % n2 != 1) inv_p2++;
+    
+    // Solution using CRT
+    int x = (a1 * inv_p1 * p1 + a2 * inv_p2 * p2) % n;
+    if (x < 0) x += n;
+    return x;
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m, r_b, c_b, r_d, c_d;
+        cin >> n >> m >> r_b >> c_b >> r_d >> c_d;
+        
+        // If the robot is already in the same row or column as the dirty cell
+        if (r_b == r_d || c_b == c_d) {
+            cout << 0 << "\n";
+            continue;
+        }
+        
+        // Calculate the differences
+        int delta_r = abs(r_b - r_d);
+        int delta_c = abs(c_b - c_d);
+        
+        // Solve the system of congruences using CRT
+        int time = chinese_remainder_theorem(delta_r, n, delta_c, m);
+        cout << time << "\n";
+    }
+    return 0;
+}

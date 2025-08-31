@@ -1,0 +1,46 @@
+def can_form_rectangle(l1, l2, l3):
+    # Function to check if we can form a rectangle with given stick lengths
+    def check_rectangle(sticks):
+        freq = {}
+        for stick in sticks:
+            if stick in freq:
+                freq[stick] += 1
+            else:
+                freq[stick] = 1
+        
+        # Check if there are at least two sticks of one length and two sticks of another length
+        count_pairs = 0
+        for length in freq:
+            if freq[length] >= 2:
+                count_pairs += 1
+            if count_pairs >= 2:
+                return True
+        return False
+    
+    # Try breaking each stick
+    for stick_to_break in [l1, l2, l3]:
+        remaining_sticks = [l1, l2, l3]
+        remaining_sticks.remove(stick_to_break)
+        
+        # Try breaking stick_to_break into two parts a and b
+        for a in range(1, stick_to_break):
+            b = stick_to_break - a
+            if check_rectangle(remaining_sticks + [a, b]):
+                return True
+    
+    return False
+
+# Read input
+t = int(input())
+results = []
+
+for _ in range(t):
+    l1, l2, l3 = map(int, input().split())
+    if can_form_rectangle(l1, l2, l3):
+        results.append("YES")
+    else:
+        results.append("NO")
+
+# Print results
+for result in results:
+    print(result)

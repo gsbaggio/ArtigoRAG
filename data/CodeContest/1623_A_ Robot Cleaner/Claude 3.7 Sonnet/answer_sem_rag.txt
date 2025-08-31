@@ -1,0 +1,38 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n, m, rb, cb, rd, cd = map(int, input().split())
+        
+        # If robot already in same row or column as dirty cell
+        if rb == rd or cb == cd:
+            print(0)
+            continue
+        
+        # Time to reach row rd
+        row_time = calculate_time_to_reach(rb, rd, n)
+        
+        # Time to reach column cd
+        col_time = calculate_time_to_reach(cb, cd, m)
+        
+        # Minimum time needed
+        print(min(row_time, col_time))
+
+def calculate_time_to_reach(start, target, limit):
+    # Calculate time to reach target position with reflections
+    time = 0
+    pos = start
+    direction = 1
+    
+    while pos != target:
+        pos += direction
+        time += 1
+        
+        # Check for reflection
+        if pos < 1 or pos > limit:
+            direction = -direction
+            pos += 2 * direction  # Adjust after reflection
+    
+    return time
+
+solve()

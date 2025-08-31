@@ -1,0 +1,45 @@
+def solve():
+    import sys
+    input = sys.stdin.read().split()
+    
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        
+        ranges = []
+        for _ in range(n):
+            l = int(input[index])
+            r = int(input[index + 1])
+            ranges.append((l, r))
+            index += 2
+        
+        # Sort ranges by starting point, and by ending point if starting points are equal
+        ranges.sort(key=lambda x: (x[0], x[1]))
+        
+        # Initialize a list to keep track of chosen numbers
+        chosen = [False] * (n + 1)
+        
+        # Determine Bob's choices
+        bob_choices = []
+        for l, r in ranges:
+            for d in range(l, r + 1):
+                if not chosen[d]:
+                    chosen[d] = True
+                    bob_choices.append((l, r, d))
+                    break
+        
+        # Add the results for this test case
+        results.extend(bob_choices)
+    
+    # Print all results
+    for l, r, d in results:
+        print(l, r, d)
+
+# Call the solve function to process input and produce output
+solve()

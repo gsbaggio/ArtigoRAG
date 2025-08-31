@@ -1,0 +1,64 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+bool isBipartite(const string& s) {
+    int n = s.size();
+    vector<int> color(n, -1); // -1 means uncolored, 0 and 1 are the two colors
+    
+    // Try to color the graph starting from node 0
+    queue<int> q;
+    q.push(0);
+    color[0] = 0;
+    
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        
+        // Determine the color for the next node
+        int next_color = (color[u] == 0) ? 1 : 0;
+        
+        // Check the next node (u+1) and the previous node (u-1)
+        for (int v : { (u + 1) % n, (u - 1 + n) % n }) {
+            if (s[u] == 'E') {
+                // They should be the same color
+                if (color[v] == -1) {
+                    color[v] = color[u];
+                    q.push(v);
+                } else if (color[v] != color[u]) {
+                    return false;
+                }
+            } else {
+                // They should be different colors
+                if (color[v] == -1) {
+                    color[v] = next_color;
+                    q.push(v);
+                } else if (color[v] == color[u]) {
+                    return false;
+                }
+            }
+        }
+    }
+    
+    return true;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        string s;
+        cin >> s;
+        
+        if (isBipartite(s)) {
+            cout << "YES\n";
+        } else {
+            cout << "NO\n";
+        }
+    }
+    
+    return 0;
+}

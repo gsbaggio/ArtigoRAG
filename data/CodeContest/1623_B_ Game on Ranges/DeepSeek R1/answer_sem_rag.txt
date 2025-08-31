@@ -1,0 +1,29 @@
+t = int(input().strip())
+for _ in range(t):
+    n = int(input().strip())
+    ranges = []
+    for i in range(n):
+        data = input().split()
+        l = int(data[0])
+        r = int(data[1])
+        ranges.append((l, r))
+        
+    for (l, r) in ranges:
+        if l == r:
+            print(f"{l} {r} {l}")
+        else:
+            best_r = -1
+            best_l = 10**9
+            for (a, b) in ranges:
+                if a == l and b < r:
+                    if b > best_r:
+                        best_r = b
+                if b == r and a > l:
+                    if a < best_l:
+                        best_l = a
+            if best_r != -1:
+                d = best_r + 1
+                print(f"{l} {r} {d}")
+            else:
+                d = best_l - 1
+                print(f"{l} {r} {d}")

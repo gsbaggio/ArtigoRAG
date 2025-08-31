@@ -1,0 +1,68 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<int> p(n);
+        for(int i=0;i<n;i++){
+            cin >> p[i];
+            p[i]--; // Convert to 0-based indexing
+        }
+        
+        vector<int> a(n, 0);
+        vector<bool> visited(n, false);
+        bool possible = true;
+        
+        for(int i=0;i<n;i++){
+            if(!visited[i]){
+                int start = i;
+                int len = 0;
+                vector<int> cycle;
+                
+                // Detect cycle starting from i
+                while(!visited[start]){
+                    visited[start] = true;
+                    cycle.push_back(start);
+                    start = p[start];
+                    len++;
+                }
+                
+                // Check if the cycle length is even
+                if(len % 2 == 0){
+                    // Assign positive and negative values alternately
+                    for(int j=0;j<len;j++){
+                        if(j < len/2){
+                            a[cycle[j]] = cycle[j] + 1;
+                        }
+                        else{
+                            a[cycle[j]] = -(cycle[j] + 1);
+                        }
+                    }
+                }
+                else{
+                    // Odd cycle length means it's not possible to create a bipartite array
+                    possible = false;
+                    break;
+                }
+            }
+        }
+        
+        if(!possible){
+            cout << "NO\n";
+        }
+        else{
+            cout << "YES\n";
+            for(int i=0;i<n;i++){
+                cout << a[i] << " ";
+            }
+            cout << "\n";
+        }
+    }
+}

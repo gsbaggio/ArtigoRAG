@@ -1,0 +1,40 @@
+def solve():
+    n = int(input())
+    p = list(map(int, input().split()))
+    
+    # Build graph - nodes are connected if they form an inversion
+    graph = [[] for _ in range(n)]
+    for i in range(n):
+        for j in range(i+1, n):
+            if p[i] > p[j]:
+                graph[i].append(j)
+                graph[j].append(i)
+    
+    # Bipartite coloring
+    color = [-1] * n
+    
+    def dfs(node, c):
+        color[node] = c
+        for neighbor in graph[node]:
+            if color[neighbor] == -1:
+                if not dfs(neighbor, 1-c):
+                    return False
+            elif color[neighbor] == c:
+                return False
+        return True
+    
+    # Try to color the graph
+    for i in range(n):
+        if color[i] == -1:
+            if not dfs(i, 0):
+                print("NO")
+                return
+    
+    # Create answer
+    print("YES")
+    result = [p[i] if color[i] == 0 else -p[i] for i in range(n)]
+    print(*result)
+
+t = int(input())
+for _ in range(t):
+    solve()

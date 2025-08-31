@@ -1,0 +1,29 @@
+def minimum_coins(t, test_cases):
+    results = []
+    for i in range(t):
+        n, a = test_cases[i]
+        max_cost = max(a)
+        
+        # Calculate minimum coins for max_cost
+        count_3 = max_cost // 3
+        remainder = max_cost % 3
+        count_2 = remainder // 2
+        count_1 = remainder % 2
+        
+        total_coins = count_3 + count_2 + count_1
+        results.append(total_coins)
+    
+    return results
+
+# Input reading
+if __name__ == "__main__":
+    t = int(input())
+    test_cases = []
+    for _ in range(t):
+        n = int(input())
+        a = list(map(int, input().split()))
+        test_cases.append((n, a))
+    
+    results = minimum_coins(t, test_cases)
+    for res in results:
+        print(res)

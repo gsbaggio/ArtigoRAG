@@ -1,0 +1,25 @@
+MOD = 998244353
+
+def factorial(n):
+    fact = 1
+    for i in range(1, n + 1):
+        fact = (fact * i) % MOD
+    return fact
+
+def count_strings(n, k, s):
+    count = 0
+
+    for length in range(k, n + 1):
+        for start in range(n - length + 1):
+            substring = s[start:start + length]
+            if substring.count('1') == k:
+                count = (count + factorial(length) // (factorial(substring.count('0')) * factorial(substring.count('1')))) % MOD
+
+    return count
+
+# Input parsing
+n, k = map(int, input().split())
+s = input().strip()
+
+result = count_strings(n, k, s)
+print(result)

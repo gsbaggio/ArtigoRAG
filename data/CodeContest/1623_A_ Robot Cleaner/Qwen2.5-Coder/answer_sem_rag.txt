@@ -1,0 +1,66 @@
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+def lcm(a, b):
+    return abs(a * b) // gcd(a, b)
+
+def find_cleaning_time(n, m, r_b, c_b, r_d, c_d):
+    # If the robot is already in the same row or column as the dirty cell
+    if r_b == r_d or c_b == c_d:
+        return 0
+    
+    # Calculate the effective grid size
+    period_row = 2 * n - 2
+    period_col = 2 * m - 2
+    
+    # Calculate the differences
+    diff_row = (r_d - r_b) % period_row
+    diff_col = (c_d - c_b) % period_col
+    
+    # Find the smallest t such that t ≡ diff_row (mod period_row)
+    # and t ≡ diff_col (mod period_col)
+    # This is the LCM of the solutions to these congruences
+    
+    # Find the smallest t1 such that t1 ≡ diff_row (mod period_row)
+    t1 = diff_row
+    while t1 < period_row:
+        if t1 % period_row == diff_row:
+            break
+        t1 += period_row
+    
+    # Find the smallest t2 such that t2 ≡ diff_col (mod period_col)
+    t2 = diff_col
+    while t2 < period_col:
+        if t2 % period_col == diff_col:
+            break
+        t2 += period_col
+    
+    # Calculate the LCM of t1 and t2
+    cleaning_time = lcm(t1, t2)
+    
+    return cleaning_time
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+t = int(input[0])
+index = 1
+
+results = []
+for _ in range(t):
+    n = int(input[index])
+    m = int(input[index + 1])
+    r_b = int(input[index + 2])
+    c_b = int(input[index + 3])
+    r_d = int(input[index + 4])
+    c_d = int(input[index + 5])
+    index += 6
+    
+    result = find_cleaning_time(n, m, r_b, c_b, r_d, c_d)
+    results.append(result)
+
+# Print results
+for result in results:
+    print(result)

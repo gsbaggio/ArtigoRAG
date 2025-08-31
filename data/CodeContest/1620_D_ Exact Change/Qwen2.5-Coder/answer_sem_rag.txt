@@ -1,0 +1,61 @@
+def min_coins_for_exact_change(test_cases):
+    results = []
+    
+    for _ in range(test_cases):
+        n = int(input())
+        costs = list(map(int, input().split()))
+        
+        # Find the maximum cost among all flavors
+        max_cost = max(costs)
+        
+        # Calculate the number of 3-burle coins
+        num_3_burle_coins = max_cost // 3
+        remaining_amount = max_cost % 3
+        
+        # Calculate the number of 2-burle coins
+        num_2_burle_coins = remaining_amount // 2
+        remaining_amount = remaining_amount % 2
+        
+        # Calculate the number of 1-burle coins
+        num_1_burle_coins = remaining_amount
+        
+        # Total number of coins
+        total_coins = num_3_burle_coins + num_2_burle_coins + num_1_burle_coins
+        results.append(total_coins)
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+# Number of test cases
+t = int(data[0])
+index = 1
+
+# Process each test case
+output = []
+for _ in range(t):
+    n = int(data[index])
+    index += 1
+    costs = list(map(int, data[index:index+n]))
+    index += n
+    
+    # Find the maximum cost
+    max_cost = max(costs)
+    
+    # Calculate the number of coins
+    num_3_burle_coins = max_cost // 3
+    remaining_amount = max_cost % 3
+    num_2_burle_coins = remaining_amount // 2
+    remaining_amount = remaining_amount % 2
+    num_1_burle_coins = remaining_amount
+    
+    # Total number of coins
+    total_coins = num_3_burle_coins + num_2_burle_coins + num_1_burle_coins
+    output.append(total_coins)
+
+# Print results
+for result in output:
+    print(result)

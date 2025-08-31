@@ -1,0 +1,50 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])
+        idx += 1
+        p = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Graph adjacency list
+        graph = [[] for _ in range(n)]
+        
+        # Build the graph
+        for i in range(n):
+            for j in range(i + 1, n):
+                if p[i] > p[j]:
+                    graph[i].append(j)
+                    graph[j].append(i)
+        
+        # Bipartite check using DFS
+        color = [0] * n
+        is_bipartite = True
+        
+        def dfs(node, c):
+            nonlocal is_bipartite
+            color[node] = c
+            for neighbor in graph[node]:
+                if color[neighbor] == 0:
+                    dfs(neighbor, -c)
+                elif color[neighbor] == c:
+                    is_bipartite = False
+        
+        for i in range(n):
+            if color[i] == 0:
+                dfs(i, 1)
+        
+        if not is_bipartite:
+            results.append("NO")
+        else:
+            results.append("YES")
+            a = [p[i] if color[i] == 1 else -p[i] for i in range(n)]
+            results.append(" ".join(map(str, a)))
+    
+    sys.stdout.write("\n".join(results) + "\n")

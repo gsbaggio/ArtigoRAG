@@ -1,0 +1,79 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    for mex_val in range(n + 1):
+        min_ops = -1
+        
+        # Try to achieve the current mex_val
+        temp_a = a[:]
+        ops = 0
+        
+        counts = {}
+        for x in temp_a:
+            counts[x] = counts.get(x, 0) + 1
+        
+        possible = True
+        
+        for i in range(mex_val):
+            if i not in counts:
+                # Need to increment some element to i
+                
+                # Find the smallest element > mex_val and increment it
+                best_j = -1
+                for j in range(n):
+                    if temp_a[j] > mex_val:
+                        if best_j == -1 or temp_a[j] < temp_a[best_j]:
+                            best_j = j
+                
+                if best_j != -1:
+                    ops += temp_a[best_j] - i
+                    temp_a[best_j] = i
+                    counts = {}
+                    for x in temp_a:
+                        counts[x] = counts.get(x, 0) + 1
+                else:
+                    # Find the smallest element >= mex_val and increment it
+                    best_j = -1
+                    for j in range(n):
+                        if temp_a[j] >= mex_val:
+                            if best_j == -1 or temp_a[j] < temp_a[best_j]:
+                                best_j = j
+                    
+                    if best_j != -1:
+                        ops += temp_a[best_j] - i
+                        temp_a[best_j] = i
+                        counts = {}
+                        for x in temp_a:
+                            counts[x] = counts.get(x, 0) + 1
+                    else:
+                        possible = False
+                        break
+        
+        if possible:
+            # Check if mex is correct
+            counts = {}
+            for x in temp_a:
+                counts[x] = counts.get(x, 0) + 1
+            
+            if mex_val not in counts:
+                min_ops = ops
+            else:
+                possible = False
+        
+        if possible:
+            if min_ops == -1:
+                counts = {}
+                for x in temp_a:
+                    counts[x] = counts.get(x, 0) + 1
+                if mex_val not in counts:
+                    min_ops = ops
+                else:
+                    min_ops = -1
+        
+        print(min_ops, end=" ")
+    print()
+
+t = int(input())
+for _ in range(t):
+    solve()

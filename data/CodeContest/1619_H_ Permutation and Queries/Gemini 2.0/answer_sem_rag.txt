@@ -1,0 +1,18 @@
+def solve():
+    n, q = map(int, input().split())
+    p = list(map(int, input().split()))
+
+    for _ in range(q):
+        query = list(map(int, input().split()))
+        
+        if query[0] == 1:
+            x, y = query[1] - 1, query[2] - 1
+            p[x], p[y] = p[y], p[x]
+        else:
+            i, k = query[1], query[2]
+            current = i
+            for _ in range(k):
+                current = p[current - 1]
+            print(current)
+
+solve()

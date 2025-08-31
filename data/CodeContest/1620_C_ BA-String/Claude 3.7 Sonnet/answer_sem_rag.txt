@@ -1,0 +1,37 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n, k, x = map(int, input().split())
+        s = input()
+        
+        # Convert to 0-indexed for easier calculation
+        x -= 1
+        
+        # Build the result string
+        result = []
+        
+        for i in range(n):
+            if s[i] == 'a':
+                result.append('a')
+            else:  # s[i] is '*'
+                # Count remaining asterisks after this position
+                remaining_stars = s[i+1:].count('*')
+                
+                # Calculate how many strings we can make with each number of 'b's
+                total_ways_per_b = (k + 1) ** remaining_stars
+                
+                # Find the right number of 'b's for this position
+                b_count = x // total_ways_per_b
+                if b_count > k:
+                    b_count = k
+                    
+                # Update x for next position
+                x %= total_ways_per_b
+                
+                # Add the 'b's to our result
+                result.extend(['b'] * b_count)
+        
+        print(''.join(result))
+
+if __name__ == "__main__":
+    solve()

@@ -1,0 +1,23 @@
+def solve():
+    n = int(input())
+    a = list(map(int, input().split()))
+
+    def min_coins(amount):
+        """Calculates the minimum number of coins (1, 2, 3) to make up the given amount."""
+        count = 0
+        count += amount // 3
+        amount %= 3
+        count += amount // 2
+        amount %= 2
+        count += amount
+        return count
+
+    max_coins_needed = 0
+    for price in a:
+        max_coins_needed = max(max_coins_needed, min_coins(price))
+
+    print(max_coins_needed)
+
+t = int(input())
+for _ in range(t):
+    solve()

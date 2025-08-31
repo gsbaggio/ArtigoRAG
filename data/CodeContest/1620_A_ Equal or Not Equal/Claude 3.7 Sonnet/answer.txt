@@ -1,0 +1,17 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        s = input()
+        n = len(s)
+        
+        # Count the number of 'N's in the string
+        count_n = s.count('N')
+        
+        # In a circular arrangement, the number of positions where
+        # adjacent elements differ must be even
+        if count_n % 2 == 0:
+            print("YES")
+        else:
+            print("NO")
+
+solve()

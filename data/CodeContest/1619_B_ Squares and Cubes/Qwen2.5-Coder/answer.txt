@@ -1,0 +1,26 @@
+import math
+
+def count_polycarp_likes(n):
+    # Count perfect squares up to n
+    count_squares = int(math.sqrt(n))
+    
+    # Count perfect cubes up to n
+    count_cubes = int(n ** (1/3))
+    
+    # Count perfect sixth powers up to n
+    count_sixth_powers = int(n ** (1/6))
+    
+    # Apply inclusion-exclusion principle
+    return count_squares + count_cubes - count_sixth_powers
+
+# Read input
+t = int(input())
+results = []
+
+for _ in range(t):
+    n = int(input())
+    results.append(count_polycarp_likes(n))
+
+# Print results
+for result in results:
+    print(result)

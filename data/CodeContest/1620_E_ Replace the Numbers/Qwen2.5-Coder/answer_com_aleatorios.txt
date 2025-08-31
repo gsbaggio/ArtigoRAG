@@ -1,0 +1,57 @@
+def process_queries(q, queries):
+    arr = []
+    replacements = {}
+    version = {}
+
+    for query in queries:
+        if query[0] == '1':
+            x = int(query[1])
+            # Check if x has been replaced
+            if x in replacements:
+                # Find the most recent replacement
+                max_ver = -1
+                for ver in version[x]:
+                    if ver <= len(arr):
+                        max_ver = ver
+                if max_ver != -1:
+                    x = replacements[x][max_ver]
+            arr.append(x)
+        elif query[0] == '2':
+            x = int(query[1])
+            y = int(query[2])
+            # Update the replacements dictionary
+            if x not in replacements:
+                replacements[x] = {}
+            replacements[x][len(arr)] = y
+            # Update the version dictionary
+            if x not in version:
+                version[x] = set()
+            version[x].add(len(arr))
+
+    # Construct the final array by applying the most recent replacements
+    final_arr = []
+    for i, x in enumerate(arr):
+        if x in replacements:
+            max_ver = -1
+            for ver in version[x]:
+                if ver <= i:
+                    max_ver = ver
+            if max_ver != -1:
+                x = replacements[x][max_ver]
+        final_arr.append(x)
+
+    return final_arr
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+q = int(data[0])
+queries = [data[i:i+3] for i in range(1, len(data), 2)]
+
+# Process queries and get the final array
+result = process_queries(q, queries)
+
+# Print the result
+print(" ".join(map(str, result)))

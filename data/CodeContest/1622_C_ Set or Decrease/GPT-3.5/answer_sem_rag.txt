@@ -1,0 +1,19 @@
+t = int(input())
+
+for _ in range(t):
+    n, k = map(int, input().split())
+    a = list(map(int, input().split()))
+    
+    a.sort(reverse=True)
+    
+    steps = 0
+    for i in range(n):
+        if a[i] > k:
+            steps += a[i] - k
+            k = a[i]
+    
+    total_sum = sum(a)
+    if total_sum > k:
+        steps += total_sum - k
+    
+    print(steps)

@@ -1,0 +1,56 @@
+import java.io.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        
+        int t = Integer.parseInt(br.readLine());
+        while (t-- > 0) {
+            String[] input = br.readLine().split(" ");
+            int n = Integer.parseInt(input[0]);
+            int k = Integer.parseInt(input[1]);
+            long x = Long.parseLong(input[2]);
+            
+            String s = br.readLine();
+            StringBuilder result = new StringBuilder();
+            
+            // Count the number of asterisks
+            int asteriskCount = 0;
+            for (char c : s.toCharArray()) {
+                if (c == '*') {
+                    asteriskCount++;
+                }
+            }
+            
+            // Convert x-1 to base (k+1)
+            long num = x - 1;
+            int[] replacements = new int[asteriskCount];
+            int index = asteriskCount - 1;
+            while (num > 0 && index >= 0) {
+                replacements[index] = (int) (num % (k + 1));
+                num /= (k + 1);
+                index--;
+            }
+            
+            // Replace asterisks with the corresponding number of 'b's
+            index = 0;
+            for (char c : s.toCharArray()) {
+                if (c == '*') {
+                    int count = replacements[index++];
+                    for (int i = 0; i < count; i++) {
+                        result.append('b');
+                    }
+                } else {
+                    result.append(c);
+                }
+            }
+            
+            bw.write(result.toString());
+            bw.newLine();
+        }
+        
+        bw.close();
+        br.close();
+    }
+}

@@ -1,0 +1,32 @@
+def solve_array_queries():
+    q = int(input())
+    
+    array = []  # Our array that will store the final elements
+    current_values = {}  # Maps original values to their current values
+    
+    for _ in range(q):
+        query = list(map(int, input().split()))
+        
+        if query[0] == 1:  # Add element
+            x = query[1]
+            # Check if there's a replacement for x
+            array.append(current_values.get(x, x))
+        else:  # Replace all occurrences
+            x, y = query[1], query[2]
+            
+            # Update the array
+            for i in range(len(array)):
+                if array[i] == x:
+                    array[i] = y
+            
+            # Update all mappings where the current value is x
+            for key in current_values:
+                if current_values[key] == x:
+                    current_values[key] = y
+            
+            # Set or update the mapping for x
+            current_values[x] = y
+    
+    print(*array)
+
+solve_array_queries()

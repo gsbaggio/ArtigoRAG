@@ -1,0 +1,23 @@
+def is_consistent_array(s):
+    n = len(s)
+    
+    # If the first and last characters are different, there is no consistent array
+    if s[0] != s[n-1]:
+        return "NO"
+    
+    # Check if all characters are the same, meaning all elements are equal or all elements are different
+    if all(char == s[0] for char in s):
+        return "YES"
+    
+    return "YES"
+
+def main():
+    t = int(input())
+    
+    for _ in range(t):
+        s = input().strip()
+        result = is_consistent_array(s)
+        print(result)
+
+if __name__ == "__main__":
+    main()

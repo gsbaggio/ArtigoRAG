@@ -1,0 +1,61 @@
+#include <iostream>
+#include <vector>
+
+void solve() {
+    int n;
+    std::cin >> n;
+    
+    std::vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        std::cin >> arr[i];
+    }
+    
+    // Process each potential MEX value from 0 to n
+    for (int mex = 0; mex <= n; mex++) {
+        // Check if all values from 0 to mex-1 are present
+        std::vector<bool> present(n + 1, false);
+        for (int val : arr) {
+            if (val <= n) {
+                present[val] = true;
+            }
+        }
+        
+        bool possible = true;
+        for (int i = 0; i < mex; i++) {
+            if (!present[i]) {
+                possible = false;
+                break;
+            }
+        }
+        
+        if (!possible) {
+            std::cout << "-1 ";
+            continue;
+        }
+        
+        // Calculate operations needed to remove all occurrences of mex
+        long long operations = 0;
+        for (int val : arr) {
+            if (val == mex) {
+                operations++;
+            }
+        }
+        
+        std::cout << operations << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    
+    int t;
+    std::cin >> t;
+    
+    while (t--) {
+        solve();
+    }
+    
+    return 0;
+}

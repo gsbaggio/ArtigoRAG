@@ -1,0 +1,22 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        
+        squares = 0
+        cubes = 0
+        
+        squares_limit = int(n**0.5)
+        cubes_limit = int(n**(1/3))
+        
+        squares = squares_limit
+        cubes = cubes_limit
+        
+        common = 0
+        
+        common_limit = int(n**(1/6))
+        common = common_limit
+        
+        print(squares + cubes - common)
+
+solve()

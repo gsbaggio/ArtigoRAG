@@ -1,0 +1,13 @@
+t = int(input().strip())
+results = []
+for _ in range(t):
+    n, m, r_b, c_b, r_d, c_d = map(int, input().split())
+    if r_b == r_d or c_b == c_d:
+        results.append(0)
+    else:
+        time_row = r_d - r_b if r_b <= r_d else 2 * n - r_b - r_d
+        time_col = c_d - c_b if c_b <= c_d else 2 * m - c_b - c_d
+        results.append(min(time_row, time_col))
+
+for res in results:
+    print(res)

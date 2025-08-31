@@ -1,0 +1,15 @@
+def solve():
+    q = int(input())
+    arr = []
+    for _ in range(q):
+        query = list(map(int, input().split()))
+        if query[0] == 1:
+            arr.append(query[1])
+        else:
+            x, y = query[1], query[2]
+            for i in range(len(arr)):
+                if arr[i] == x:
+                    arr[i] = y
+    print(*arr)
+
+solve()

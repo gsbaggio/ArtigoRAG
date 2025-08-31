@@ -1,0 +1,56 @@
+MOD = 998244353
+
+def mod_inverse(a, p):
+    return pow(a, p - 2, p)
+
+def binomial_coefficient(n, k, fact, inv_fact):
+    if k > n:
+        return 0
+    return (fact[n] * inv_fact[k] * inv_fact[n - k]) % MOD
+
+def count_distinct_strings(s, n, k):
+    if k == 0:
+        return 1
+    
+    # Precompute factorials and their inverses
+    fact = [1] * (n + 1)
+    inv_fact = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = (fact[i - 1] * i) % MOD
+        inv_fact[i] = mod_inverse(fact[i], MOD)
+    
+    # Sliding window to find all substrings with exactly k ones
+    left = 0
+    count_ones = 0
+    distinct_strings = set()
+    
+    for right in range(n):
+        if s[right] == '1':
+            count_ones += 1
+        
+        # Adjust the window if it has more than k ones
+        while count_ones > k:
+            if s[left] == '1':
+                count_ones -= 1
+            left += 1
+        
+        # If the window has exactly k ones, calculate the number of distinct strings
+        if count_ones == k:
+            count_zeros = right - left + 1 - count_ones
+            num_permutations = binomial_coefficient(count_zeros + count_ones, count_ones, fact, inv_fact)
+            
+            # Form the new string by replacing the window with the maximum possible permutation
+            new_string = s[:left] + '1' * count_ones + '0' * count_zeros + s[right + 1:]
+            distinct_strings.add(new_string)
+    
+    # Add the original string as a possible result
+    distinct_strings.add(s)
+    
+    return len(distinct_strings) % MOD
+
+# Read input
+n, k = map(int, input().split())
+s = input().strip()
+
+# Output the result
+print(count_distinct_strings(s, n, k))

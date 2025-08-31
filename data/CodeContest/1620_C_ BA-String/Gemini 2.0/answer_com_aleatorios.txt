@@ -1,0 +1,44 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n, k, x = map(int, input().split())
+        s = input()
+        
+        groups = []
+        count = 0
+        for char in s:
+            if char == '*':
+                count += 1
+            else:
+                if count > 0:
+                    groups.append(count)
+                groups.append(-1)  # Separator for 'a'
+                count = 0
+        if count > 0:
+            groups.append(count)
+        
+        multipliers = []
+        for group_size in groups:
+            if group_size != -1:
+                multipliers.append(group_size * k + 1)
+        
+        x -= 1
+        result = ""
+        
+        multiplier_index = len(multipliers) - 1
+        group_index = len(groups) - 1
+        
+        while group_index >= 0:
+            if groups[group_index] == -1:
+                result = "a" + result
+                group_index -= 1
+            else:
+                num_b = x % multipliers[multiplier_index]
+                result = "b" * num_b + result
+                x //= multipliers[multiplier_index]
+                group_index -= 1
+                multiplier_index -= 1
+        
+        print(result)
+
+solve()

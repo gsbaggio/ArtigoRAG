@@ -1,0 +1,10 @@
+t = int(input())
+
+for _ in range(t):
+    sticks = list(map(int, input().split()))
+    sticks.sort()
+
+    if sticks[0] == sticks[1] or sticks[1] == sticks[2]:
+        print("YES")
+    else:
+        print("NO")

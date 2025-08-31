@@ -1,0 +1,59 @@
+MOD = 998244353
+
+def binomial_coefficient(n, k):
+    # Initialize a table to store results of subproblems
+    C = [[0] * (k + 1) for _ in range(n + 1)]
+    
+    # Calculate value of Binomial Coefficient in bottom-up manner
+    for i in range(n + 1):
+        for j in range(min(i, k) + 1):
+            # Base cases
+            if j == 0 or j == i:
+                C[i][j] = 1
+            else:
+                C[i][j] = (C[i - 1][j - 1] + C[i - 1][j]) % MOD
+    
+    return C[n][k]
+
+def count_unique_strings(s, n, k):
+    if k == 0:
+        return 1  # No ones to shuffle, so only the original string is possible
+    
+    # Set to store unique strings represented by (count of zeros, count of ones)
+    unique_permutations = set()
+    
+    # Sliding window to find all substrings with exactly k ones
+    count_ones = 0
+    left = 0
+    
+    for right in range(n):
+        if s[right] == '1':
+            count_ones += 1
+        
+        # When we have more than k ones, move the left pointer to reduce the count
+        while count_ones > k:
+            if s[left] == '1':
+                count_ones -= 1
+            left += 1
+        
+        # If we have exactly k ones, calculate the number of unique permutations
+        if count_ones == k:
+            count_zeros = right - left + 1 - count_ones
+            unique_permutations.add((count_zeros, count_ones))
+    
+    # Add the original string as a possible result
+    unique_permutations.add((s.count('0'), s.count('1')))
+    
+    # Calculate the total number of unique strings
+    result = 0
+    for count_zeros, count_ones in unique_permutations:
+        result = (result + binomial_coefficient(count_zeros + count_ones, count_ones)) % MOD
+    
+    return result
+
+# Read input
+n, k = map(int, input().split())
+s = input().strip()
+
+# Output the result
+print(count_unique_strings(s, n, k))

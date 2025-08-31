@@ -1,0 +1,52 @@
+MOD = 998244353
+
+def factorial_mod(n, mod):
+    """Precomputes factorials and modular inverses up to n."""
+    fact = [1] * (n + 1)
+    inv_fact = [1] * (n + 1)
+    for i in range(2, n + 1):
+        fact[i] = fact[i - 1] * i % mod
+    inv_fact[n] = pow(fact[n], mod - 2, mod)
+    for i in range(n - 1, 0, -1):
+        inv_fact[i] = inv_fact[i + 1] * (i + 1) % mod
+    return fact, inv_fact
+
+def count_distinct_strings(n, k, s):
+    if k == 0:
+        # If k = 0, no substring with k ones exists, only the original string is valid.
+        return 1
+
+    # Precompute factorials and modular inverses
+    fact, inv_fact = factorial_mod(n, MOD)
+
+    # Sliding window to find substrings with exactly k ones
+    ones_positions = [i for i, c in enumerate(s) if c == '1']
+    if len(ones_positions) < k:
+        return 1  # Not enough ones to form a substring with k ones
+
+    result = set()
+    for i in range(len(ones_positions) - k + 1):
+        # Start and end indices of the substring
+        start = ones_positions[i]
+        end = ones_positions[i + k - 1]
+
+        # Count zeros and ones in the substring
+        substring = s[start:end + 1]
+        zeros = substring.count('0')
+        ones = k
+
+        # Calculate the number of distinct permutations of the substring
+        permutations = fact[zeros + ones] * inv_fact[zeros] % MOD
+        permutations = permutations * inv_fact[ones] % MOD
+
+        # Add the resulting string to the set
+        result.add(permutations)
+
+    return len(result)
+
+# Input reading
+n, k = map(int, input().split())
+s = input()
+
+# Output the result
+print(count_distinct_strings(n, k, s))

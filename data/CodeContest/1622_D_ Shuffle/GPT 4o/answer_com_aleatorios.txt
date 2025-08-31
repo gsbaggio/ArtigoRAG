@@ -1,0 +1,54 @@
+MOD = 998244353
+
+# Precompute factorials and modular inverses
+def precompute_factorials(n, mod):
+    fact = [1] * (n + 1)
+    inv_fact = [1] * (n + 1)
+    for i in range(2, n + 1):
+        fact[i] = fact[i - 1] * i % mod
+    inv_fact[n] = pow(fact[n], mod - 2, mod)  # Modular inverse using Fermat's Little Theorem
+    for i in range(n - 1, 0, -1):
+        inv_fact[i] = inv_fact[i + 1] * (i + 1) % mod
+    return fact, inv_fact
+
+# Function to calculate nCk % mod
+def nCk(n, k, fact, inv_fact, mod):
+    if k > n or k < 0:
+        return 0
+    return fact[n] * inv_fact[k] % mod * inv_fact[n - k] % mod
+
+# Main function to solve the problem
+def count_distinct_strings(n, k, s):
+    if k == 0:
+        return 1  # Only the original string is possible
+    
+    # Precompute factorials and modular inverses
+    fact, inv_fact = precompute_factorials(n, MOD)
+    
+    # Sliding window to find substrings with exactly k ones
+    ones_positions = [i for i, char in enumerate(s) if char == '1']
+    num_ones = len(ones_positions)
+    if num_ones < k:
+        return 1  # Not enough ones to form a substring with k ones
+    
+    result = 1  # Include the original string
+    for i in range(num_ones - k + 1):
+        # Calculate the range of the substring
+        left = ones_positions[i]
+        right = ones_positions[i + k - 1]
+        # Number of zeros in the substring
+        zeros = right - left + 1 - k
+        # Add the number of permutations of the substring
+        result += nCk(zeros + k, k, fact, inv_fact, MOD)
+        result %= MOD
+    
+    return result
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    n, k = map(int, data[:2])
+    s = data[2]
+    print(count_distinct_strings(n, k, s))

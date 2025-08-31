@@ -1,0 +1,41 @@
+def find_bobs_picks(test_cases):
+    results = []
+    
+    for case in test_cases:
+        n = case[0]
+        ranges = case[1]
+        
+        current_ranges = [set([1, n])]
+        picks = {}
+        
+        for l, r in reversed(ranges):
+            for i, rng in enumerate(current_ranges):
+                if l in rng and r in rng:
+                    d = l
+                    current_ranges.pop(i)
+                    if l < d:
+                        current_ranges.append(set(range(l, d)))
+                    if d < r:
+                        current_ranges.append(set(range(d + 1, r + 1)))
+                    picks[(l, r)] = d
+                    break
+        
+        results.append(picks)
+    
+    return results
+
+# Read input
+test_cases = []
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    ranges = [list(map(int, input().split())) for _ in range(n)]
+    test_cases.append((n, ranges))
+
+# Get results
+results = find_bobs_picks(test_cases)
+
+# Print output
+for result in results:
+    for l, r in result:
+        print(l, r, result[(l, r)])

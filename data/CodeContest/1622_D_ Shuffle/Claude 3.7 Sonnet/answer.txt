@@ -1,0 +1,42 @@
+def solve(n, k, s):
+    MOD = 998244353
+    
+    # Helper function to calculate binomial coefficient
+    def binomial(n, k):
+        if k < 0 or k > n:
+            return 0
+        if k == 0 or k == n:
+            return 1
+        res = 1
+        for i in range(k):
+            res = (res * (n - i)) // (i + 1)
+        return res
+    
+    # Start with the original string
+    result = 1
+    
+    # Set to avoid double counting
+    processed = set()
+    
+    # Try all possible substrings
+    for i in range(n):
+        for j in range(i+1, n+1):
+            substring = s[i:j]
+            ones_count = substring.count('1')
+            
+            if ones_count == k:
+                zeros_count = len(substring) - ones_count
+                
+                # Create a pattern signature: what's before and after the substring
+                pattern = (s[:i], s[j:])
+                
+                if pattern not in processed:
+                    processed.add(pattern)
+                    
+                    # Number of ways to rearrange this substring
+                    arrangements = binomial(zeros_count + ones_count, zeros_count)
+                    
+                    # Subtract 1 to exclude the current arrangement
+                    result = (result + arrangements - 1) % MOD
+    
+    return result

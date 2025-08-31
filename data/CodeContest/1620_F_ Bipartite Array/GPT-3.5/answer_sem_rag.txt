@@ -1,0 +1,30 @@
+def solve_bipartite_array(t, test_cases):
+    for _ in range(t):
+        n, permutation = test_cases[_]
+        result = [0] * n
+
+        largest = 0
+
+        for i in range(n - 1, -1, -1):
+            if permutation[i] > largest:
+                result[i] = permutation[i]
+                largest = permutation[i]
+            else:
+                result[i] = -permutation[i]
+
+        if all(abs(result[i]) >= i + 1 for i in range(n)):
+            print("YES")
+            print(" ".join(map(str, result)))
+        else:
+            print("NO")
+
+# Input parsing
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    permutation = list(map(int, input().split()))
+    test_cases.append((n, permutation))
+
+# Solve and output
+solve_bipartite_array(t, test_cases)

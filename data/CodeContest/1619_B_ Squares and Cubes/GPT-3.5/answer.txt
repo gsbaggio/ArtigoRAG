@@ -1,0 +1,36 @@
+from math import isqrt, isqrt, inf
+
+# Generate unique squares and cubes up to a certain limit
+def generate_squares_and_cubes(limit):
+    squares = [i * i for i in range(1, isqrt(limit) + 1)]
+    cubes = [i * i * i for i in range(1, isqrt(limit) + 1)]
+    return squares, cubes
+
+# Merge and sort two lists
+def merge_and_sort(arr1, arr2):
+    return sorted(arr1 + arr2)
+
+# Count numbers that are squares or cubes up to n
+def count_squares_and_cubes(n, merged_list):
+    count = 0
+    for num in merged_list:
+        if num <= n:
+            count += 1
+        else:
+            break
+    return count
+
+# Main function to process the test cases
+def process_test_cases(t, test_cases):
+    for n in test_cases:
+        squares, cubes = generate_squares_and_cubes(n)
+        merged_list = merge_and_sort(squares, cubes)
+        result = count_squares_and_cubes(n, merged_list)
+        print(result)
+
+# Input processing
+t = int(input())
+test_cases = [int(input()) for _ in range(t)]
+
+# Process test cases
+process_test_cases(t, test_cases)

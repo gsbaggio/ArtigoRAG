@@ -1,0 +1,55 @@
+def solve_mex_operations(t, test_cases):
+    results = []
+    
+    for n, a in test_cases:
+        # Step 1: Initialize count array
+        count = [0] * (n + 1)
+        
+        # Step 2: Populate count array
+        for num in a:
+            if num <= n:
+                count[num] += 1
+        
+        # Step 3: Identify missing values
+        missing = []
+        for i in range(n + 1):
+            if count[i] == 0:
+                missing.append(i)
+        
+        # Step 4: Compute operations for each MEX value
+        operations = [0] * (n + 1)
+        
+        # For MEX 0
+        if count[0] == 0:
+            operations[0] = 1
+        else:
+            operations[0] = 0
+        
+        # For MEX i (i > 0)
+        missing_index = 0
+        for i in range(1, n + 1):
+            while missing_index < len(missing) and missing[missing_index] < i:
+                missing_index += 1
+            operations[i] = missing_index
+        
+        results.append(operations)
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+t = int(input[0])
+index = 1
+test_cases = []
+
+for _ in range(t):
+    n = int(input[index])
+    a = list(map(int, input[index + 1:index + 1 + n]))
+    test_cases.append((n, a))
+    index += 1 + n
+
+# Solve and print results
+results = solve_mex_operations(t, test_cases)
+for result in results:
+    print(" ".join(map(str, result)))

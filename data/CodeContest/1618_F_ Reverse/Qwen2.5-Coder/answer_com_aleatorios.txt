@@ -1,0 +1,44 @@
+def can_transform(x, y):
+    # Convert y to binary and remove the '0b' prefix
+    binary_y = bin(y)[2:]
+    
+    # Function to perform the reverse operation
+    def reverse_operation(binary_str):
+        # Reverse the binary string
+        reversed_binary = binary_str[::-1]
+        # Try removing the last digit and converting back to decimal
+        if len(reversed_binary) > 1:
+            return int(reversed_binary[:-1], 2)
+        else:
+            return None
+    
+    # Set to keep track of visited numbers to avoid infinite loops
+    visited = set()
+    
+    # Start with y and try to reach x
+    current_number = y
+    while current_number >= x and current_number not in visited:
+        if current_number == x:
+            return "YES"
+        visited.add(current_number)
+        
+        # Perform the reverse operation twice (once for adding '0', once for adding '1')
+        binary_current = bin(current_number)[2:]
+        new_number_0 = reverse_operation(binary_current)
+        new_number_1 = reverse_operation(binary_current + '1')
+        
+        # Check if either of the new numbers can lead to x
+        if new_number_0 is not None and new_number_0 not in visited:
+            current_number = new_number_0
+        elif new_number_1 is not None and new_number_1 not in visited:
+            current_number = new_number_1
+        else:
+            break
+    
+    return "NO"
+
+# Read input
+x, y = map(int, input().split())
+
+# Print the result
+print(can_transform(x, y))

@@ -1,0 +1,54 @@
+def find_final_value(value, replacements):
+    # Path compression to find the final value
+    if value not in replacements:
+        return value
+    original_value = value
+    while value in replacements:
+        value = replacements[value]
+    replacements[original_value] = value  # Flatten the path
+    return value
+
+def process_queries(q, queries):
+    elements = []
+    replacements = {}
+    
+    for query in queries:
+        if query[0] == 1:
+            x = query[1]
+            final_x = find_final_value(x, replacements)
+            elements.append(final_x)
+        elif query[0] == 2:
+            x, y = query[1], query[2]
+            final_x = find_final_value(x, replacements)
+            replacements[final_x] = y
+    
+    # Replace all elements in the array according to the final replacements
+    for i in range(len(elements)):
+        elements[i] = find_final_value(elements[i], replacements)
+    
+    return elements
+
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+
+q = int(data[0])
+queries = []
+index = 1
+for _ in range(q):
+    if data[index] == '1':
+        x = int(data[index + 1])
+        queries.append((1, x))
+        index += 2
+    elif data[index] == '2':
+        x = int(data[index + 1])
+        y = int(data[index + 2])
+        queries.append((2, x, y))
+        index += 3
+
+# Process queries and get the resulting array
+result = process_queries(q, queries)
+
+# Print the resulting array
+print(" ".join(map(str, result)))

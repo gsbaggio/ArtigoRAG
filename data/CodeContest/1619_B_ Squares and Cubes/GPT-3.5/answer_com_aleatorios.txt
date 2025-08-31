@@ -1,0 +1,20 @@
+import math
+
+def count_liked_numbers(n):
+    sqrt_n = int(math.sqrt(n))
+    cube_n = int(n ** (1/3))
+
+    squares = set(i ** 2 for i in range(1, sqrt_n + 1))
+    cubes = set(i ** 3 for i in range(1, cube_n + 1))
+
+    liked_numbers = len(squares.union(cubes))
+    
+    return liked_numbers
+
+# Number of test cases
+t = int(input())
+
+for _ in range(t):
+    n = int(input())
+    result = count_liked_numbers(n)
+    print(result)

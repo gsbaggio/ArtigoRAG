@@ -1,0 +1,14 @@
+def is_consistent_array(s):
+    if 'N' in s:
+        return "NO"
+    return "YES"
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        s = input().strip()
+        result = is_consistent_array(s)
+        print(result)
+
+if __name__ == "__main__":
+    main()

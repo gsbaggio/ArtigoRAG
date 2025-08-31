@@ -1,0 +1,45 @@
+def find_min_N(has_odd, has_two, M_s):
+    N = 0
+    while True:
+        for X in range(0, N + 1):
+            Y = N - X
+            if has_odd and X < 1:
+                continue
+            if has_two:
+                if Y < 1 and X < 2:
+                    continue
+            if X + 2 * Y >= M_s:
+                return N
+        N += 1
+
+t = int(input().strip())
+for _ in range(t):
+    n = int(input().strip())
+    a = list(map(int, input().split()))
+    if n == 0:
+        print(0)
+        continue
+    floor_vals = [x // 3 for x in a]
+    Z_max = max(floor_vals)
+    start = max(0, Z_max - 10)
+    end = Z_max + 2
+    candidate_Z = list(range(start, end))
+    best = float('inf')
+    for Z in candidate_Z:
+        T = set()
+        for x in a:
+            k = min(Z, x // 3)
+            s = x - 3 * k
+            if s > 0:
+                T.add(s)
+        if not T:
+            total = Z
+            best = min(best, total)
+        else:
+            M_s = max(T)
+            has_odd = any(s % 2 == 1 for s in T)
+            has_two = (2 in T)
+            N = find_min_N(has_odd, has_two, M_s)
+            total = Z + N
+            best = min(best, total)
+    print(best)

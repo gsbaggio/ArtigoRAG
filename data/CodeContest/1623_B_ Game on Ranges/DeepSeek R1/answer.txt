@@ -1,0 +1,48 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    output_lines = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        ranges_list = []
+        for i in range(n):
+            l = int(data[index]); r = int(data[index+1]); index += 2
+            ranges_list.append((l, r))
+        
+        results = []
+        for (l, r) in ranges_list:
+            if l == r:
+                results.append((l, r, l))
+            else:
+                length = r - l + 1
+                diff = [0] * (length + 2)
+                for (a, b) in ranges_list:
+                    if a == l and b == r:
+                        continue
+                    if a >= l and b <= r:
+                        start_index = a - l
+                        end_index = b - l
+                        diff[start_index] += 1
+                        diff[end_index + 1] -= 1
+                current = 0
+                d = l
+                for i in range(length):
+                    current += diff[i]
+                    if current == 0:
+                        d = l + i
+                        break
+                results.append((l, r, d))
+                
+        for res in results:
+            output_lines.append(f"{res[0]} {res[1]} {res[2]}")
+        output_lines.append("")  # for readability, but note: the problem says not required, but we add for clarity between test cases.
+    
+    # Output all lines without the last empty line if needed? Actually, the problem says not required to print new line after each test case.
+    # But the example output has new lines for readability. So we output as is.
+    print("\n".join(output_lines))
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,38 @@
+def count_ba_strings(n, k):
+    # Count the number of BA-strings of length n with k 'b's
+    dp = [[0] * (n + 1) for _ in range(k + 1)]
+    dp[0][0] = 1
+
+    for i in range(1, k + 1):
+        for j in range(1, n + 1):
+            dp[i][j] = dp[i][j - 1] + dp[i - 1][j - 1]
+
+    return sum(dp[i][-1] for i in range(k + 1))
+
+def find_ba_string(n, k, x, s):
+    result = []
+    for i, c in enumerate(s):
+        if c == 'a':
+            result.append('a')
+        else:
+            curr_count = count_ba_strings(n - i, k)
+            for j in range(k + 1):
+                if x > curr_count:
+                    x -= curr_count
+                else:
+                    result.extend(['b'] * j)
+                    break
+
+    return ''.join(result)
+
+# Main function to read input and process test cases
+def main():
+    t = int(input())
+    for _ in range(t):
+        n, k, x = map(int, input().split())
+        s = input().strip()
+        print(find_ba_string(n, k, x, s))
+
+# Run the main function
+if __name__ == "__main__":
+    main()

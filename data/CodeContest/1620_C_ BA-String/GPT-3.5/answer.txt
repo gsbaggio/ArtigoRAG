@@ -1,0 +1,29 @@
+from math import comb
+
+def count_strings(n, k):
+    return sum(comb(n, i) * pow(k, i) for i in range(n+1))
+
+def find_xth_string(n, k, x):
+    result = ['a'] * n
+    for i in range(n):
+        for j in range(k+1):
+            result[i] = 'b'
+            count = count_strings(n-i-1, k)
+            if x > count:
+                x -= count
+            else:
+                x -= 1
+                break
+            result[i] = 'a'
+
+    return ''.join(result)
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        n, k, x = map(int, input().split())
+        s = input().strip()
+        print(find_xth_string(n, k, x))
+
+if __name__ == "__main__":
+    main()

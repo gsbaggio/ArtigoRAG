@@ -1,0 +1,30 @@
+def robot_cleaner(t, test_cases):
+    results = []
+    for case in test_cases:
+        n, m, r_b, c_b, r_d, c_d = case
+        
+        # Calculate the time to reach the dirty cell
+        if r_b == r_d or c_b == c_d:
+            results.append(0)
+        else:
+            row_time = abs(r_d - r_b)
+            col_time = abs(c_d - c_b)
+            results.append(min(row_time, col_time))
+    
+    return results
+
+
+# Input reading
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    
+    t = int(data[0])  # Number of test cases
+    test_cases = [tuple(map(int, line.split())) for line in data[1:]]
+    
+    # Solve the problem
+    results = robot_cleaner(t, test_cases)
+    
+    # Output results
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

@@ -1,0 +1,44 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        ranges = []
+        
+        for _ in range(n):
+            l, r = map(int, input().split())
+            ranges.append((l, r))
+        
+        # Keep track of which numbers are present in the original range [1,n]
+        present = [True] * (n + 1)  # 1-indexed
+        
+        # Find Bob's pick for each range
+        results = []
+        processed_ranges = set()
+        
+        while len(processed_ranges) < n:
+            for i, (l, r) in enumerate(ranges):
+                if i in processed_ranges:
+                    continue
+                
+                # Count how many numbers are present in this range
+                count_present = 0
+                pick_candidate = -1
+                
+                for num in range(l, r + 1):
+                    if present[num]:
+                        count_present += 1
+                        pick_candidate = num
+                
+                # If only one number is present, it must be Bob's pick
+                if count_present == 1:
+                    results.append((l, r, pick_candidate))
+                    present[pick_candidate] = False  # Mark as used
+                    processed_ranges.add(i)
+                    break
+        
+        # Output results
+        for l, r, d in results:
+            print(l, r, d)
+
+solve()

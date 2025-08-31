@@ -1,0 +1,60 @@
+mod = 998244353
+
+def main():
+    import sys
+    data = sys.stdin.read().splitlines()
+    n, k = map(int, data[0].split())
+    s = data[1].strip()
+    
+    if k == 0:
+        print(1)
+        return
+        
+    # Precompute combination table
+    C = [[0] * (n+1) for _ in range(n+1)]
+    for i in range(n+1):
+        C[i][0] = 1
+        for j in range(1, i+1):
+            C[i][j] = (C[i-1][j] + C[i-1][j-1]) % mod
+            
+    ones = []
+    for i, char in enumerate(s):
+        if char == '1':
+            ones.append(i)
+            
+    m = len(ones)
+    if k > m:
+        print(1)
+        return
+        
+    ans = 0
+    for i in range(0, m - k + 1):
+        j = i + k - 1
+        left = ones[i]
+        right = ones[j]
+        if i == 0:
+            left_bound = 0
+        else:
+            left_bound = ones[i-1] + 1
+        if j == m-1:
+            right_bound = n-1
+        else:
+            right_bound = ones[j+1] - 1
+            
+        total_len = right_bound - left_bound + 1
+        if total_len < k:
+            continue
+        ans = (ans + C[total_len][k]) % mod
+        
+        if i > 0:
+            subtract_len = right_bound - ones[i-1] - 1
+            if subtract_len >= 0 and k-1 >= 0 and subtract_len >= k-1:
+                ans = (ans - C[subtract_len][k-1] + mod) % mod
+            elif k-1 == 0:
+                # C[any][0] is 1, but if subtract_len <0, then skip. But subtract_len is non-negative as explained.
+                pass
+                
+    print(ans % mod)
+    
+if __name__ == "__main__":
+    main()

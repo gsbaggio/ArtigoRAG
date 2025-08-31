@@ -1,0 +1,19 @@
+def can_transform(x, y):
+    # Helper function to reverse and remove leading zeros in binary representation
+    def reverse_binary(num):
+        return int(bin(num)[:1:-1], 2)
+
+    # Check if x is greater than or equal to y and y is reachable from x
+    if x >= y and (x - y) % 2 == 0:
+        diff = (x - y) // 2
+        while diff:
+            diff = diff // 2
+            if diff == 0:
+                return "YES"
+        return "NO"
+    else:
+        return "NO"
+
+# Input parsing
+x, y = map(int, input().split())
+print(can_transform(x, y))

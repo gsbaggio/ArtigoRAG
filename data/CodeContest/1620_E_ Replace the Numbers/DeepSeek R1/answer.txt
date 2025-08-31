@@ -1,0 +1,42 @@
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    
+    q = int(data[0])
+    queries = []
+    index = 1
+    for i in range(q):
+        t = data[index]; index += 1
+        if t == '1':
+            x = int(data[index]); index += 1
+            queries.append(('1', x))
+        else:
+            x = int(data[index]); index += 1
+            y = int(data[index]); index += 1
+            queries.append(('2', x, y))
+            
+    max_val = 500000
+    parent = list(range(max_val + 1))
+    
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+    
+    result = []
+    for i in range(q - 1, -1, -1):
+        if queries[i][0] == '1':
+            x = queries[i][1]
+            result.append(find(x))
+        else:
+            x, y = queries[i][1], queries[i][2]
+            parent[x] = find(y)
+            
+    result.reverse()
+    print(' '.join(map(str, result)))
+    
+if __name__ == '__main__':
+    main()

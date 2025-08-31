@@ -1,0 +1,53 @@
+def can_form_rectangle(l1, l2, l3):
+    # Helper function to check if we can form a rectangle with given stick lengths
+    def check_rectangle(sticks):
+        freq = {}
+        for stick in sticks:
+            if stick in freq:
+                freq[stick] += 1
+            else:
+                freq[stick] = 1
+        
+        # Count how many unique lengths appear exactly twice
+        count_twos = sum(1 for v in freq.values() if v == 2)
+        
+        # We need exactly two unique lengths that each appear twice
+        return count_twos == 2
+    
+    # Check all possibilities of breaking one stick
+    for i in range(1, l1):
+        if check_rectangle([i, l1 - i, l2, l3]):
+            return True
+    
+    for i in range(1, l2):
+        if check_rectangle([l1, i, l2 - i, l3]):
+            return True
+    
+    for i in range(1, l3):
+        if check_rectangle([l1, l2, i, l3 - i]):
+            return True
+    
+    return False
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+t = int(input[0])
+index = 1
+
+# Process each test case
+results = []
+for _ in range(t):
+    l1 = int(input[index])
+    l2 = int(input[index + 1])
+    l3 = int(input[index + 2])
+    index += 3
+    
+    if can_form_rectangle(l1, l2, l3):
+        results.append("YES")
+    else:
+        results.append("NO")
+
+# Print results
+for result in results:
+    print(result)

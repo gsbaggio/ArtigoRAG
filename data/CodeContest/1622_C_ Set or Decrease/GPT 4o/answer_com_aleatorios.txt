@@ -1,0 +1,37 @@
+from sys import stdin, stdout
+
+def solve():
+    input = stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n, k = map(int, data[idx:idx+2])  # Read n and k
+        idx += 2
+        a = list(map(int, data[idx:idx+n]))  # Read the array
+        idx += n
+        
+        # Sort the array in descending order
+        a.sort(reverse=True)
+        
+        # Calculate the initial sum
+        current_sum = sum(a)
+        steps = 0
+        
+        # Merge elements into the smallest element
+        for i in range(n - 1):
+            if current_sum <= k:
+                break
+            steps += 1
+            current_sum -= a[i] - a[-1]
+        
+        # If the sum is still greater than k, decrement the smallest element
+        if current_sum > k:
+            steps += current_sum - k
+        
+        results.append(steps)
+    
+    stdout.write("\n".join(map(str, results)) + "\n")

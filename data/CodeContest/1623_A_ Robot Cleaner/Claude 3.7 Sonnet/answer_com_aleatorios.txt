@@ -1,0 +1,41 @@
+def solve():
+    t = int(input())
+    results = []
+    
+    for _ in range(t):
+        n, m, r_b, c_b, r_d, c_d = map(int, input().split())
+        
+        # If the dirty cell is already in the robot's path at start
+        if r_b == r_d or c_b == c_d:
+            results.append(0)
+            continue
+        
+        r, c = r_b, c_b
+        dr, dc = 1, 1
+        time = 0
+        
+        # Simulate until we clean the dirt
+        while True:
+            time += 1
+            
+            # Check if we'll hit a wall and need to reflect
+            if r + dr < 1 or r + dr > n:
+                dr = -dr
+            if c + dc < 1 or c + dc > m:
+                dc = -dc
+                
+            # Move the robot
+            r += dr
+            c += dc
+            
+            # Check if the dirty cell is cleaned
+            if r == r_d or c == c_d:
+                break
+                
+        results.append(time)
+    
+    return results
+
+if __name__ == "__main__":
+    for result in solve():
+        print(result)

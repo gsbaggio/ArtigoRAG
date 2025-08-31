@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n, q;
+    cin >> n >> q;
+    
+    vector<int> p(n+1);
+    for(int i=1;i<=n;i++){
+        cin >> p[i];
+    }
+    
+    // Cycle detection
+    vector<bool> visited(n+1, false);
+    vector<vector<int>> cycles;
+    vector<pair<int,int>> cycle_map(n+1); // {cycle_index, position_in_cycle}
+    vector<int> cycle_lengths;
+    
+    for(int i=1;i<=n;i++){
+        if(!visited[i]){
+            vector<int> cycle;
+            int current = i;
+            while(!visited[current]){
+                visited[current] = true;
+                cycle.push_back(current);
+                current = p[current];
+            }
+            cycles.push_back(cycle);
+            cycle_lengths.push_back(cycle.size());
+            int cycle_index = cycles.size()-1;
+            for(int j=0;j<cycle.size();j++){
+                cycle_map[cycle[j]] = {cycle_index, j};
+            }
+        }
+    }
+    
+    // Process queries
+    while(q--){
+        int t;
+        cin >> t;
+        if(t==1){
+            int x, y;
+            cin >> x >> y;
+            swap(p[x], p[y]);
+            // Update cycle_map for x and y
+            auto [cycle_x, pos_x] = cycle_map[x];
+            auto [cycle_y, pos_y] = cycle_map[y];
+            swap(cycles[cycle_x][pos_x], cycles[cycle_y][pos_y]);
+            cycle_map[x] = {cycle_y, pos_y};
+            cycle_map[y] = {cycle_x, pos_x};
+        }
+        else{
+            int i, k;
+            cin >> i >> k;
+            auto [cycle_index, pos] = cycle_map[i];
+            int cycle_length = cycle_lengths[cycle_index];
+            int new_pos = (pos + k) % cycle_length;
+            cout << cycles[cycle_index][new_pos] << "\n";
+        }
+    }
+    
+    return 0;
+}

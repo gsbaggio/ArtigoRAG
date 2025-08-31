@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+bool can_form_rectangle(int l1, int l2, int l3) {
+    // Check all possible ways to break one stick
+    for (int i = 1; i < l1; ++i) {
+        int a = i;
+        int b = l1 - i;
+        vector<int> sticks = {a, b, l2, l3};
+        sort(sticks.begin(), sticks.end());
+        if (sticks[0] == sticks[1] && sticks[2] == sticks[3]) {
+            return true;
+        }
+    }
+    for (int i = 1; i < l2; ++i) {
+        int a = i;
+        int b = l2 - i;
+        vector<int> sticks = {a, b, l1, l3};
+        sort(sticks.begin(), sticks.end());
+        if (sticks[0] == sticks[1] && sticks[2] == sticks[3]) {
+            return true;
+        }
+    }
+    for (int i = 1; i < l3; ++i) {
+        int a = i;
+        int b = l3 - i;
+        vector<int> sticks = {a, b, l1, l2};
+        sort(sticks.begin(), sticks.end());
+        if (sticks[0] == sticks[1] && sticks[2] == sticks[3]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        int l1, l2, l3;
+        cin >> l1 >> l2 >> l3;
+        if (can_form_rectangle(l1, l2, l3)) {
+            cout << "YES\n";
+        } else {
+            cout << "NO\n";
+        }
+    }
+    return 0;
+}

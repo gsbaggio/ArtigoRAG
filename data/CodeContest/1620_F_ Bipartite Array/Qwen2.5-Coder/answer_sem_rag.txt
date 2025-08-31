@@ -1,0 +1,51 @@
+def is_bipartite_array(p):
+    n = len(p)
+    # Create a list of tuples (value, index) and sort it by value
+    sorted_p = sorted((p[i], i) for i in range(n))
+    
+    # Dictionary to store the color of each element
+    color = {}
+    
+    # Assign colors starting from the smallest element
+    for value, index in sorted_p:
+        if index not in color:
+            # Assign +1 to the first uncolored element
+            color[index] = 1
+        # Check all previous elements to ensure bipartiteness
+        for prev_value, prev_index in sorted_p:
+            if prev_index >= index:
+                break
+            if prev_value > value:
+                # If the previous element is greater, it should have the opposite color
+                if color[prev_index] == color[index]:
+                    return "NO"
+                else:
+                    continue
+            elif prev_value < value:
+                # If the previous element is smaller, it should have the same color
+                if color[prev_index] != color[index]:
+                    return "NO"
+                else:
+                    continue
+    
+    # Construct the array a based on the assigned colors
+    a = [color[i] * p[i] for i in range(n)]
+    return "YES\n" + " ".join(map(str, a))
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+t = int(input[0])
+index = 1
+results = []
+
+for _ in range(t):
+    n = int(input[index])
+    index += 1
+    p = list(map(int, input[index:index + n]))
+    index += n
+    results.append(is_bipartite_array(p))
+
+# Print results
+for result in results:
+    print(result)

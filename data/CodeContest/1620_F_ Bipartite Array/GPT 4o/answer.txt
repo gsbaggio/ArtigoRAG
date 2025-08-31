@@ -1,0 +1,59 @@
+from collections import defaultdict, deque
+import sys
+input = sys.stdin.read
+
+def solve():
+    data = input().split()
+    t = int(data[0])
+    idx = 1
+    results = []
+    
+    for _ in range(t):
+        n = int(data[idx])
+        idx += 1
+        p = list(map(int, data[idx:idx + n]))
+        idx += n
+        
+        # Graph adjacency list
+        graph = defaultdict(list)
+        for i in range(n):
+            for j in range(i + 1, n):
+                if p[i] > p[j]:
+                    graph[i].append(j)
+                    graph[j].append(i)
+        
+        # Check if the graph is bipartite
+        color = [-1] * n  # -1: unvisited, 0: one color, 1: another color
+        is_bipartite = True
+        
+        def bfs(start):
+            nonlocal is_bipartite
+            queue = deque([start])
+            color[start] = 0  # Start coloring with 0
+            
+            while queue:
+                node = queue.popleft()
+                for neighbor in graph[node]:
+                    if color[neighbor] == -1:  # Not visited
+                        color[neighbor] = 1 - color[node]  # Alternate color
+                        queue.append(neighbor)
+                    elif color[neighbor] == color[node]:  # Same color as parent
+                        is_bipartite = False
+                        return
+        
+        for i in range(n):
+            if color[i] == -1:  # Unvisited
+                bfs(i)
+                if not is_bipartite:
+                    break
+        
+        if not is_bipartite:
+            results.append("NO")
+        else:
+            results.append("YES")
+            a = []
+            for i in range(n):
+                a.append(p[i] if color[i] == 0 else -p[i])
+            results.append(" ".join(map(str, a)))
+    
+    sys.stdout.write("\n".join(results) + "\n")

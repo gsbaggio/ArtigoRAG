@@ -1,0 +1,28 @@
+import math
+
+t = int(input().strip())
+for _ in range(t):
+    n = int(input().strip())
+    squares = math.isqrt(n)
+    
+    low_cube, high_cube = 0, 10000
+    while low_cube <= high_cube:
+        mid = (low_cube + high_cube) // 2
+        cube_val = mid * mid * mid
+        if cube_val <= n:
+            low_cube = mid + 1
+        else:
+            high_cube = mid - 1
+    cubes = high_cube
+    
+    low_sixth, high_sixth = 0, 100
+    while low_sixth <= high_sixth:
+        mid = (low_sixth + high_sixth) // 2
+        sixth_val = mid * mid * mid * mid * mid * mid
+        if sixth_val <= n:
+            low_sixth = mid + 1
+        else:
+            high_sixth = mid - 1
+    sixth = high_sixth
+    
+    print(squares + cubes - sixth)
