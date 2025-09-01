@@ -1,0 +1,52 @@
+def maximize_min_heap(t, test_cases):
+    results = []
+
+    for case in range(t):
+        n, h = test_cases[case]
+        
+        # Binary search for the maximum possible minimum value
+        low, high = 0, min(h)
+        while low <= high:
+            mid = (low + high) // 2
+            # Check if we can achieve at least `mid` as the minimum value
+            feasible = True
+            temp_h = h[:]
+            
+            for i in range(n - 1, 1, -1):
+                if temp_h[i] < mid:
+                    feasible = False
+                    break
+                # Calculate the excess stones that can be moved
+                excess = temp_h[i] - mid
+                d = excess // 3
+                temp_h[i - 1] += d
+                temp_h[i - 2] += 2 * d
+            
+            if feasible and temp_h[0] >= mid and temp_h[1] >= mid:
+                low = mid + 1
+            else:
+                high = mid - 1
+        
+        results.append(high)
+    
+    return results
+
+
+# Input reading and output
+if __name__ == "__main__":
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])
+    test_cases = []
+    index = 1
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        h = list(map(int, data[index:index + n]))
+        index += n
+        test_cases.append((n, h))
+    
+    results = maximize_min_heap(t, test_cases)
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

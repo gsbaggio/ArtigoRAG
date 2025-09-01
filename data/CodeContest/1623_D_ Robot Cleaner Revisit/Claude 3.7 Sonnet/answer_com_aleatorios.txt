@@ -1,0 +1,104 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+    static final long MOD = 1_000_000_007;
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int t = Integer.parseInt(br.readLine());
+        
+        StringBuilder sb = new StringBuilder();
+        while (t-- > 0) {
+            String[] line = br.readLine().split(" ");
+            int n = Integer.parseInt(line[0]);
+            int m = Integer.parseInt(line[1]);
+            int rb = Integer.parseInt(line[2]);
+            int cb = Integer.parseInt(line[3]);
+            int rd = Integer.parseInt(line[4]);
+            int cd = Integer.parseInt(line[5]);
+            int p = Integer.parseInt(line[6]);
+            
+            sb.append(solve(n, m, rb, cb, rd, cd, p)).append('\n');
+        }
+        System.out.print(sb);
+    }
+    
+    static long solve(int n, int m, int rb, int cb, int rd, int cd, int p) {
+        // Track when the robot can clean the dirty cell
+        // We need to simulate the robot's movement until we find a pattern
+        
+        // Generate the period of the cleaning process using LCM
+        int period = lcm(2 * n - 2, 2 * m - 2);
+        boolean[] canCleanAtTime = new boolean[period + 1];
+        
+        // Check initial position
+        canCleanAtTime[0] = (rb == rd || cb == cd);
+        
+        int r = rb, c = cb;
+        int dr = 1, dc = 1;
+        
+        for (int time = 1; time <= period; time++) {
+            // Check for wall bounces
+            if (r + dr < 1 || r + dr > n) dr = -dr;
+            if (c + dc < 1 || c + dc > m) dc = -dc;
+            
+            // Move the robot
+            r += dr;
+            c += dc;
+            
+            // Check if the robot can clean the dirty cell
+            canCleanAtTime[time] = (r == rd || c == cd);
+        }
+        
+        // Count times when cleaning is possible and calculate expected time
+        int cleaningOpportunities = 0;
+        for (int i = 0; i <= period; i++) {
+            if (canCleanAtTime[i]) {
+                cleaningOpportunities++;
+            }
+        }
+        
+        // Expected number of periods = 100 / (p * cleaningOpportunities / period)
+        // = 100 * period / (p * cleaningOpportunities)
+        
+        long numerator = 100L * period;
+        long denominator = (long)p * cleaningOpportunities;
+        
+        // Calculate modular inverse
+        long invDenominator = modInverse(denominator, MOD);
+        
+        // Calculate final result
+        return (numerator * invDenominator) % MOD;
+    }
+    
+    static int gcd(int a, int b) {
+        while (b > 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+    
+    static int lcm(int a, int b) {
+        return a / gcd(a, b) * b;
+    }
+    
+    static long modInverse(long a, long mod) {
+        return modPow(a, mod - 2, mod);
+    }
+    
+    static long modPow(long base, long exp, long mod) {
+        long result = 1;
+        base = base % mod;
+        while (exp > 0) {
+            if ((exp & 1) == 1) {
+                result = (result * base) % mod;
+            }
+            exp >>= 1;
+            base = (base * base) % mod;
+        }
+        return result;
+    }
+}

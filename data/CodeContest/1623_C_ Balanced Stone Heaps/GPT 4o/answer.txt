@@ -1,0 +1,40 @@
+def maximize_min_heap(t, test_cases):
+    results = []
+
+    for n, heaps in test_cases:
+        # Binary search for the maximum possible minimum heap size
+        low, high = 0, min(heaps)
+        while low <= high:
+            mid = (low + high) // 2
+            # Check if we can achieve at least `mid` in all heaps
+            feasible = True
+            extra = 0  # Stones we can redistribute
+            for i in range(n - 1, 1, -1):
+                if heaps[i] < mid:
+                    feasible = False
+                    break
+                # Calculate how many stones we can redistribute
+                surplus = heaps[i] - mid
+                surplus = min(surplus, heaps[i]) // 3
+                extra += surplus
+                heaps[i - 1] += surplus
+                heaps[i - 2] += 2 * surplus
+            if feasible and heaps[0] >= mid and heaps[1] >= mid:
+                low = mid + 1
+            else:
+                high = mid - 1
+        results.append(high)
+    return results
+
+
+# Input reading
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    heaps = list(map(int, input().split()))
+    test_cases.append((n, heaps))
+
+# Solve and output results
+results = maximize_min_heap(t, test_cases)
+print("\n".join(map(str, results)))

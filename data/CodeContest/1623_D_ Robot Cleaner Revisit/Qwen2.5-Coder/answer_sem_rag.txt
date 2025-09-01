@@ -1,0 +1,60 @@
+MOD = 10**9 + 7
+
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+def lcm(a, b):
+    return a * b // gcd(a, b)
+
+def mod_inverse(y, m):
+    # Fermat's Little Theorem: y^(m-2) ≡ y^(-1) (mod m)
+    return pow(y, m - 2, m)
+
+def expected_time(n, m, r_b, c_b, r_d, c_d, p):
+    # Calculate the steps to reach the same row or column
+    steps_to_row = lcm(n, abs(r_d - r_b)) // abs(r_d - r_b)
+    steps_to_col = lcm(m, abs(c_d - c_b)) // abs(c_d - c_b)
+    
+    # Minimum steps to reach the same row or column
+    min_steps = min(steps_to_row, steps_to_col)
+    
+    # Expected time to clean the cell once in the same row or column
+    expected_clean_time = 100 // p
+    
+    # Total expected time
+    total_expected_time = min_steps + expected_clean_time
+    
+    # Convert to fraction and find the modular inverse
+    numerator = total_expected_time
+    denominator = 1
+    
+    # Since we need the result modulo MOD, we find the modular inverse of the denominator
+    result = (numerator * mod_inverse(denominator, MOD)) % MOD
+    
+    return result
+
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    index = 0
+    t = int(input[index])
+    index += 1
+    results = []
+    for _ in range(t):
+        n = int(input[index])
+        m = int(input[index + 1])
+        r_b = int(input[index + 2])
+        c_b = int(input[index + 3])
+        r_d = int(input[index + 4])
+        c_d = int(input[index + 5])
+        p = int(input[index + 6])
+        index += 7
+        results.append(expected_time(n, m, r_b, c_b, r_d, c_d, p))
+    
+    for res in results:
+        print(res)
+
+if __name__ == "__main__":
+    main()

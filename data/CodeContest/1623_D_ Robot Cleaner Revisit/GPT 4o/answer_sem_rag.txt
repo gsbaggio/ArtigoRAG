@@ -1,0 +1,66 @@
+MOD = 10**9 + 7
+
+def mod_inverse(a, mod):
+    """Compute modular inverse of a under mod using Fermat's Little Theorem."""
+    return pow(a, mod - 2, mod)
+
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    t = int(data[0])  # Number of test cases
+    results = []
+    
+    # Precompute modular inverse of 100
+    inv_100 = mod_inverse(100, MOD)
+    
+    index = 1
+    for _ in range(t):
+        # Read input for each test case
+        n, m, r_b, c_b, r_d, c_d, p = map(int, data[index:index+7])
+        index += 7
+        
+        # Probability of cleaning in modular arithmetic
+        prob_clean = (p * inv_100) % MOD
+        
+        # Simulate robot movement
+        dr, dc = 1, 1  # Initial directions
+        r, c = r_b, c_b
+        time = 0
+        prob_not_cleaned = 1  # Probability that the cell is not cleaned yet
+        expected_time = 0
+        
+        visited_states = set()  # To detect cycles
+        
+        while True:
+            # Check if the robot is at the dirty cell
+            if r == r_d or c == c_d:
+                # Update expected time
+                expected_time = (expected_time + prob_not_cleaned * prob_clean % MOD * time % MOD) % MOD
+                # Update probability that the cell is not cleaned
+                prob_not_cleaned = prob_not_cleaned * (1 - prob_clean) % MOD
+            
+            # Move the robot
+            if (r + dr < 1 or r + dr > n):
+                dr = -dr
+            if (c + dc < 1 or c + dc > m):
+                dc = -dc
+            r += dr
+            c += dc
+            time += 1
+            
+            # Check for cycles
+            state = (r, c, dr, dc)
+            if state in visited_states:
+                break
+            visited_states.add(state)
+        
+        # Add the remaining geometric series for the cycle
+        remaining_time = prob_not_cleaned * mod_inverse(1 - (1 - prob_clean), MOD) % MOD
+        expected_time = (expected_time + remaining_time) % MOD
+        
+        results.append(expected_time)
+    
+    # Print all results
+    sys.stdout.write("\n".join(map(str, results)) + "\n")

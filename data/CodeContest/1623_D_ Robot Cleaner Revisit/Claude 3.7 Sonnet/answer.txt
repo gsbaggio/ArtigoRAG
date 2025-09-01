@@ -1,0 +1,68 @@
+#include <iostream>
+using namespace std;
+using ll = long long;
+
+const int MOD = 1e9 + 7;
+
+// Modular exponentiation
+ll pow_mod(ll base, ll exp) {
+    ll res = 1;
+    while (exp > 0) {
+        if (exp & 1) res = (res * base) % MOD;
+        base = (base * base) % MOD;
+        exp >>= 1;
+    }
+    return res;
+}
+
+// Modular inverse
+ll mod_inv(ll x) {
+    return pow_mod(x, MOD - 2);
+}
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        int n, m, r_b, c_b, r_d, c_d, p;
+        cin >> n >> m >> r_b >> c_b >> r_d >> c_d >> p;
+        
+        // For simplicity, calculate when the robot can first clean the cell
+        int time = 0;
+        
+        // Check if robot can clean initially
+        if (r_b == r_d || c_b == c_d) {
+            time = 0;
+        } else {
+            int r = r_b, c = c_b;
+            int dr = 1, dc = 1;
+            
+            for (int i = 1; i <= 4 * n * m; i++) {
+                // Check for reflections
+                if (r + dr < 1 || r + dr > n) dr = -dr;
+                if (c + dc < 1 || c + dc > m) dc = -dc;
+                
+                // Move robot
+                r += dr;
+                c += dc;
+                
+                // Check if robot can clean
+                if (r == r_d || c == c_d) {
+                    time = i;
+                    break;
+                }
+            }
+        }
+        
+        // Calculate expected time using geometric distribution
+        // E[X] = time + 1/p - 1 = time + (100-p)/p
+        ll numerator = (time * p + 100 - p) % MOD;
+        ll denominator = p;
+        
+        ll result = (numerator * mod_inv(denominator)) % MOD;
+        cout << result << endl;
+    }
+    
+    return 0;
+}

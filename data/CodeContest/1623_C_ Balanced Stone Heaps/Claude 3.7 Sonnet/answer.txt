@@ -1,0 +1,21 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        heaps = list(map(int, input().split()))
+        
+        # Work from heap 3 to n
+        for i in range(2, n):
+            # Get the maximum number of stones we can move
+            available = heaps[i] // 3
+            
+            # Distribute stones to previous heaps
+            heaps[i-1] += available
+            heaps[i-2] += 2 * available
+            heaps[i] -= 3 * available
+        
+        print(min(heaps))
+
+if __name__ == "__main__":
+    solve()

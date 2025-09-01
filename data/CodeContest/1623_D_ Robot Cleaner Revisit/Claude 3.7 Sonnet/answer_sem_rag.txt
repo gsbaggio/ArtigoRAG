@@ -1,0 +1,111 @@
+#include <iostream>
+#include <vector>
+#include <numeric>
+
+using namespace std;
+using ll = long long;
+
+const ll MOD = 1000000007;
+
+// Fast modular exponentiation
+ll mod_pow(ll base, ll exp) {
+    ll result = 1;
+    base %= MOD;
+    while (exp > 0) {
+        if (exp & 1) result = (result * base) % MOD;
+        base = (base * base) % MOD;
+        exp >>= 1;
+    }
+    return result;
+}
+
+// Calculate modular inverse
+ll mod_inverse(ll a) {
+    return mod_pow(a, MOD - 2);
+}
+
+void solve() {
+    ll n, m, rb, cb, rd, cd, p;
+    cin >> n >> m >> rb >> cb >> rd >> cd >> p;
+    
+    // Calculate cycle length
+    ll cycle_rows = 2 * (n - 1);
+    ll cycle_cols = 2 * (m - 1);
+    ll full_cycle = lcm(cycle_rows, cycle_cols);
+    
+    // Find all times when the robot can clean
+    vector<ll> clean_times;
+    
+    // Check initial position (time 0)
+    if (rb == rd || cb == cd) {
+        clean_times.push_back(0);
+    }
+    
+    // Simulate one full cycle
+    ll r = rb, c = cb;
+    ll dr = 1, dc = 1;
+    
+    for (ll t = 1; t <= full_cycle; t++) {
+        // Check if we hit walls and reflect
+        if (r + dr < 1 || r + dr > n) dr = -dr;
+        if (c + dc < 1 || c + dc > m) dc = -dc;
+        
+        // Move robot
+        r += dr;
+        c += dc;
+        
+        // Check if robot can clean the dirt
+        if (r == rd || c == cd) {
+            clean_times.push_back(t);
+        }
+    }
+    
+    // Calculate probability values
+    ll q = 100 - p;  // Probability of NOT cleaning
+    
+    // Probability of not cleaning in one full cycle
+    ll not_clean_cycle = 1;
+    for (size_t i = 0; i < clean_times.size(); i++) {
+        not_clean_cycle = (not_clean_cycle * q) % MOD;
+        not_clean_cycle = (not_clean_cycle * mod_inverse(100)) % MOD;
+    }
+    
+    // Expected number of cycles
+    ll cycle_expectation_numerator = 1;
+    ll cycle_expectation_denominator = (1 + MOD - not_clean_cycle) % MOD;
+    
+    // Calculate expected time
+    ll result = 0;
+    ll cumulative_not_clean = 1;
+    
+    for (size_t i = 0; i < clean_times.size(); i++) {
+        // Probability of cleaning at this exact opportunity
+        ll prob_clean_here = (p * cumulative_not_clean) % MOD;
+        prob_clean_here = (prob_clean_here * mod_inverse(100)) % MOD;
+        
+        // Conditional probability this is the first successful cleaning
+        ll conditional_prob = (prob_clean_here * mod_inverse(cycle_expectation_denominator)) % MOD;
+        
+        // Add contribution to expected time
+        result = (result + (clean_times[i] * conditional_prob) % MOD) % MOD;
+        
+        // Update probability for next iteration
+        cumulative_not_clean = (cumulative_not_clean * q) % MOD;
+        cumulative_not_clean = (cumulative_not_clean * mod_inverse(100)) % MOD;
+    }
+    
+    cout << result << endl;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    
+    return 0;
+}

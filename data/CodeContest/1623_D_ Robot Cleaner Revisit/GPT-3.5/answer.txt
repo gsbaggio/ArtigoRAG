@@ -1,0 +1,47 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n, m, rb, cb, rd, cd, p;
+        cin >> n >> m >> rb >> cb >> rd >> cd >> p;
+
+        // Calculate the distances to move in each direction
+        int dr = rd - rb;
+        int dc = cd - cb;
+
+        if (dr < 0) dr = -dr;
+        if (dc < 0) dc = -dc;
+
+        // Expected time calculation using Geometric Distribution
+        long long expected_time = 0;
+        if ((dr == 0 && dc != 0) || (dr != 0 && dc == 0)) {
+            // Robot moves only in one direction
+            expected_time = (100 * (n - 1) * (m - 1)) % MOD;
+        } else if (dr != 0 && dc != 0) {
+            // Robot moves in both directions
+            long long prob = p * 100 % MOD;
+            long long prob_inv = 100 * 100 % MOD;
+            long long prob_fail = (100 - p) * 100 % MOD;
+
+            long long inv = 1;
+            long long inv_sum = 0;
+            for (int i = 0; i < n + m - 2; i++) {
+                expected_time = (expected_time + inv * prob % MOD) % MOD;
+                inv = (inv * prob_fail) % MOD;
+                inv_sum = (inv_sum + inv) % MOD;
+            }
+
+            expected_time = (expected_time * prob_inv) % MOD;
+        }
+        cout << expected_time << endl;
+    }
+
+    return 0;
+}

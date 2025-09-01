@@ -1,0 +1,43 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+typedef long long ll;
+
+bool check(ll x, const vector<ll>& h) {
+    int n = h.size();
+    vector<ll> b = h;
+    for (int i = n-1; i >= 2; i--) {
+        if (b[i] < x) return false;
+        ll d = min(h[i], b[i] - x) / 3;
+        b[i-1] += d;
+        b[i-2] += 2 * d;
+    }
+    return b[0] >= x && b[1] >= x;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<ll> h(n);
+        for (int i = 0; i < n; i++) {
+            cin >> h[i];
+        }
+        ll low = 0, high = *max_element(h.begin(), h.end());
+        while (low < high) {
+            ll mid = (low + high + 1) / 2;
+            if (check(mid, h)) {
+                low = mid;
+            } else {
+                high = mid - 1;
+            }
+        }
+        cout << low << '\n';
+    }
+    return 0;
+}

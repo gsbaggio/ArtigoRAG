@@ -1,0 +1,119 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    FastScanner in;
+    PrintWriter out;
+    final int MOD = 1000000007;
+
+    private void solve() throws IOException {
+        int t = in.nextInt();
+        while (t-- > 0) {
+            int n = in.nextInt();
+            int m = in.nextInt();
+            int rb = in.nextInt();
+            int cb = in.nextInt();
+            int rd = in.nextInt();
+            int cd = in.nextInt();
+            int p = in.nextInt();
+
+            // Adjust positions to be 0-indexed
+            rb--; cb--; rd--; cd--;
+
+            // Calculate the cycle length
+            int cycleLength = 2 * (n + m - 2);
+
+            // Calculate the time to reach the first intersection point
+            int timeToFirstIntersection = Math.abs(rb - rd) + Math.abs(cb - cd);
+
+            // Calculate the time to reach the next intersection point
+            int timeBetweenIntersections = cycleLength;
+
+            // Calculate the expected number of attempts to clean the dirty cell
+            long expectedAttempts = modInverse(p, MOD) * 100 % MOD;
+
+            // Calculate the expected time to clean the dirty cell
+            long expectedTime = 0;
+            for (int time = timeToFirstIntersection; time < Integer.MAX_VALUE; time += timeBetweenIntersections) {
+                expectedTime = (expectedTime + expectedAttempts) % MOD;
+            }
+
+            // Adjust for the initial position
+            expectedTime = (expectedTime + timeToFirstIntersection - 1) % MOD;
+
+            out.println(expectedTime);
+        }
+    }
+
+    // Modular inverse using Fermat's little theorem
+    private long modInverse(int a, int mod) {
+        return power(a, mod - 2, mod);
+    }
+
+    // Power function for modular exponentiation
+    private long power(long x, long y, int mod) {
+        long res = 1;
+        x = x % mod;
+        while (y > 0) {
+            if ((y & 1) == 1) {
+                res = (res * x) % mod;
+            }
+            y = y >> 1;
+            x = (x * x) % mod;
+        }
+        return res;
+    }
+
+    class FastScanner {
+        StringTokenizer st;
+        BufferedReader br;
+
+        FastScanner(InputStream s) {
+            br = new BufferedReader(new InputStreamReader(s));
+        }
+
+        String next() throws IOException {
+            while (st == null || !st.hasMoreTokens())
+                st = new StringTokenizer(br.readLine());
+            return st.nextToken();
+        }
+
+        boolean hasNext() throws IOException {
+            return br.ready() || (st != null && st.hasMoreTokens());
+        }
+
+        int nextInt() throws IOException {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() throws IOException {
+            return Long.parseLong(next());
+        }
+
+        double nextDouble() throws IOException {
+            return Double.parseDouble(next());
+        }
+
+        String nextLine() throws IOException {
+            return br.readLine();
+        }
+
+        boolean hasNextLine() throws IOException {
+            return br.ready();
+        }
+    }
+
+    private void run() throws IOException {
+        in = new FastScanner(System.in);
+        out = new PrintWriter(System.out);
+
+        solve();
+
+        out.flush();
+        out.close();
+    }
+
+    public static void main(String[] args) throws IOException {
+        new Main().run();
+    }
+}

@@ -1,0 +1,40 @@
+import sys
+
+def check(x, n, h):
+    d = [0] * (n + 2)
+    for i in range(n - 1, 1, -1):
+        available = h[i] + d[i + 1] + 2 * d[i + 2]
+        if available < x:
+            return False
+        d[i] = min(h[i] // 3, (available - x) // 3)
+    if h[0] + 2 * d[2] < x:
+        return False
+    if h[1] + d[2] + 2 * d[3] < x:
+        return False
+    return True
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index])
+        index += 1
+        h = list(map(int, data[index:index + n]))
+        index += n
+        
+        low = 0
+        high = h[-1]
+        while low <= high:
+            mid = (low + high) // 2
+            if check(mid, n, h):
+                low = mid + 1
+            else:
+                high = mid - 1
+        results.append(str(high))
+    
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

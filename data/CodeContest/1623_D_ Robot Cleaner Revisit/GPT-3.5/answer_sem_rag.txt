@@ -1,0 +1,47 @@
+MOD = 10**9 + 7
+
+def gcdExtended(a, b):
+    if a == 0:
+        return b, 0, 1
+    gcd, x1, y1 = gcdExtended(b % a, a)
+    x = y1 - (b // a) * x1
+    y = x1
+    return gcd, x, y
+
+def modInverse(a, m):
+    gcd, x, y = gcdExtended(a, m)
+    if gcd != 1:
+        raise ValueError('Inverse does not exist')
+    return (x % m + m) % m
+
+def expected_time(n, m, r_b, c_b, r_d, c_d, p):
+    dr = abs(r_b - r_d)
+    dc = abs(c_b - c_d)
+    
+    if dr == 0:
+        rows = 1
+    else:
+        rows = min(dr, n - dr) + 1
+        
+    if dc == 0:
+        cols = 1
+    else:
+        cols = min(dc, m - dc) + 1
+        
+    total_cells = n + m - 2
+    
+    success_prob = p / 100
+    fail_prob = 1 - success_prob
+    
+    probability_clean = 1 - (fail_prob ** total_cells)
+    
+    expected_time = 1 / probability_clean
+    
+    return int(expected_time) % MOD
+
+t = int(input())
+
+for _ in range(t):
+    n, m, r_b, c_b, r_d, c_d, p = map(int, input().split())
+    result = expected_time(n, m, r_b, c_b, r_d, c_d, p)
+    print(result)

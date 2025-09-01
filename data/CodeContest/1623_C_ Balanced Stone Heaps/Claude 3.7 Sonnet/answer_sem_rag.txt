@@ -1,0 +1,25 @@
+def solve_test_case(n, heaps):
+    # We'll simulate the process moving stones optimally from right to left
+    result = heaps.copy()
+    
+    # Process heaps from the 3rd heap to the n-th heap
+    for i in range(2, n):
+        # Calculate max stones we can move (must be divisible by 3)
+        max_d = result[i] // 3
+        
+        # Move all possible stones
+        result[i] -= 3 * max_d
+        result[i-1] += max_d
+        result[i-2] += 2 * max_d
+    
+    return min(result)
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        heaps = list(map(int, input().split()))
+        print(solve_test_case(n, heaps))
+
+if __name__ == "__main__":
+    main()

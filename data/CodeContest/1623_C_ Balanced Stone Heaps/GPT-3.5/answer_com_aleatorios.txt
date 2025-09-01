@@ -1,0 +1,28 @@
+import math
+
+def max_stones(t, test_cases):
+    results = []
+    
+    for i in range(t):
+        n = test_cases[i][0]
+        heaps = test_cases[i][1]
+        
+        s = sum(heaps)
+        max_move = (s - max(heaps)) // 3
+        
+        results.append(max(max(heaps) - max_move, s // 3))
+
+    return results
+
+# Example usage
+t = 4
+test_cases = [
+    (4, [1, 2, 10, 100]),
+    (4, [100, 100, 100, 1]),
+    (5, [5, 1, 1, 1, 8]),
+    (6, [1, 2, 3, 4, 5, 6])
+]
+
+results = max_stones(t, test_cases)
+for res in results:
+    print(res)

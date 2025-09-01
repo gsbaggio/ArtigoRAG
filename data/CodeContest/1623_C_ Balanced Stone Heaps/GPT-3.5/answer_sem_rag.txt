@@ -1,0 +1,22 @@
+# Function to solve the problem for each test case
+def solve_test_case(n, heaps):
+    max_stones_smallest_heap = 0
+    d1, d2 = 0, 0
+
+    for i in range(n-1, 1, -1):
+        d = min(heaps[i] // 3, d1, d2)
+        d1_new = min(heaps[i] // 3, (heaps[i-1] + d) // 2, d2)
+        d2_new = min((heaps[i] - 3*d) // 2, d1_new)
+        d1, d2 = d1_new, d2_new
+
+    max_stones_smallest_heap = min(heaps[1], d1, d2)
+
+    return max_stones_smallest_heap
+
+# Input parsing
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    heaps = list(map(int, input().split()))
+    result = solve_test_case(n, heaps)
+    print(result)

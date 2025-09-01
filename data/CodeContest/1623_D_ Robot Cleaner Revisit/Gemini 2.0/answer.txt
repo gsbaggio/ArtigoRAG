@@ -1,0 +1,52 @@
+def solve():
+    n, m, rb, cb, rd, cd, p = map(int, input().split())
+    
+    if rb == rd or cb == cd:
+        print(1)
+        return
+
+    p_success = p / 100
+    
+    def mod_inv(a, m):
+        return pow(a, m - 2, m)
+
+    MOD = 10**9 + 7
+
+    def expected_time():
+        time = 0
+        dr = 1
+        dc = 1
+        r = rb
+        c = cb
+        
+        while True:
+            time += 1
+            
+            if r == rd or c == cd:
+                return (time * mod_inv(p, MOD)) % MOD
+            
+            next_r = r + dr
+            next_c = c + dc
+            
+            if next_r > n:
+                dr = -1
+                next_r = r + dr
+            elif next_r < 1:
+                dr = 1
+                next_r = r + dr
+                
+            if next_c > m:
+                dc = -1
+                next_c = c + dc
+            elif next_c < 1:
+                dc = 1
+                next_c = c + dc
+            
+            r = next_r
+            c = next_c
+
+    print(int(expected_time()))
+
+t = int(input())
+for _ in range(t):
+    solve()

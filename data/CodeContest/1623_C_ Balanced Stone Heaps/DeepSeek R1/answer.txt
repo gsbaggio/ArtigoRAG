@@ -1,0 +1,41 @@
+import sys
+
+def check(x, h, n):
+    d_next = 0
+    d_next2 = 0
+    for i in range(n-1, 1, -1):
+        a = h[i]
+        available = a + d_next + 2 * d_next2 - x
+        if available < 0:
+            return False
+        d = min(a // 3, available // 3)
+        d_next2 = d_next
+        d_next = d
+    if h[0] + 2 * d_next < x:
+        return False
+    if h[1] + d_next + 2 * d_next2 < x:
+        return False
+    return True
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); index += 1
+        h = list(map(int, data[index:index+n]))
+        index += n
+        low = 0
+        high = h[-1]
+        while low <= high:
+            mid = (low + high) // 2
+            if check(mid, h, n):
+                low = mid + 1
+            else:
+                high = mid - 1
+        results.append(str(high))
+    sys.stdout.write("\n".join(results))
+
+if __name__ == "__main__":
+    main()

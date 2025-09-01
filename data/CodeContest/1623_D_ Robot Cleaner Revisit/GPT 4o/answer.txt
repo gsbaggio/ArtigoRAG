@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+// Function to calculate modular exponentiation
+long long mod_exp(long long base, long long exp, long long mod) {
+    long long result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return result;
+}
+
+// Function to solve the problem for each test case
+void solve() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m, rb, cb, rd, cd, p;
+        cin >> n >> m >> rb >> cb >> rd >> cd >> p;
+
+        // Probability of cleaning in modular arithmetic
+        long long prob_clean = p * mod_exp(100, MOD - 2, MOD) % MOD;
+
+        // Calculate the time for the robot to reach the dirty cell
+        int dr = 1, dc = 1;
+        int time_to_reach = 0;
+
+        while (true) {
+            if (rb == rd || cb == cd) break;
+
+            // Move the robot
+            if (rb + dr > n || rb + dr < 1) dr = -dr;
+            if (cb + dc > m || cb + dc < 1) dc = -dc;
+            rb += dr;
+            cb += dc;
+            time_to_reach++;
+        }
+
+        // Expected time calculation
+        long long expected_time = (time_to_reach + 1) % MOD;
+        long long prob_not_clean = (1 - prob_clean + MOD) % MOD;
+        long long inv_prob_not_clean = mod_exp(prob_not_clean, MOD - 2, MOD);
+
+        expected_time = (expected_time * inv_prob_not_clean) % MOD;
+        cout << expected_time << endl;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}

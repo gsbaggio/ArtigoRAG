@@ -1,0 +1,20 @@
+def solve():
+    t = int(input())
+    
+    for _ in range(t):
+        n = int(input())
+        heaps = list(map(int, input().split()))
+        
+        # Process from heaps 3 to n (0-indexed)
+        for i in range(2, n):
+            # Max stones we can remove from heap i
+            max_d = heaps[i] // 3
+            
+            # Move all possible stones
+            heaps[i] -= 3 * max_d
+            heaps[i-1] += max_d
+            heaps[i-2] += 2 * max_d
+        
+        print(min(heaps))
+
+solve()

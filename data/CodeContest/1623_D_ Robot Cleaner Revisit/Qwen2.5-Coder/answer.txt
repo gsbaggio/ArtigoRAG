@@ -1,0 +1,81 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+const int MOD = 1e9 + 7;
+
+// Function to compute modular inverse using Fermat's Little Theorem
+ll mod_inverse(ll a, ll m) {
+    ll res = 1;
+    a = a % m;
+    while (res * a % m != 1) res++;
+    return res;
+}
+
+// Function to compute the expected time to reach the dirty cell
+ll expected_time_to_reach(ll n, ll m, ll rb, ll cb, ll rd, ll cd) {
+    // Initialize the expected time array
+    vector<vector<ll>> exp_time(n + 1, vector<ll>(m + 1, 0));
+    
+    // Set the expected time for the dirty cell to 0
+    exp_time[rd][cd] = 0;
+    
+    // Use a queue for BFS
+    queue<pair<int, int>> q;
+    q.push({rd, cd});
+    
+    // Directions for movement (diagonal)
+    int dr[] = {1, -1};
+    int dc[] = {1, -1};
+    
+    // Perform BFS to fill the expected time array
+    while (!q.empty()) {
+        auto [r, c] = q.front();
+        q.pop();
+        
+        for (int d = 0; d < 2; ++d) {
+            int nr = (r + dr[d] + n) % (2 * n);
+            int nc = (c + dc[d] + m) % (2 * m);
+            
+            // Adjust for reflections
+            if (nr >= n) nr = 2 * n - nr - 1;
+            if (nc >= m) nc = 2 * m - nc - 1;
+            
+            // Update the expected time if it hasn't been set yet
+            if (exp_time[nr][nc] == 0 && !(nr == rd && nc == cd)) {
+                exp_time[nr][nc] = (exp_time[r][c] + 1) % MOD;
+                q.push({nr, nc});
+            }
+        }
+    }
+    
+    // Return the expected time to reach the initial position
+    return exp_time[rb][cb];
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    
+    while(t--){
+        ll n, m, rb, cb, rd, cd, p;
+        cin >> n >> m >> rb >> cb >> rd >> cd >> p;
+        
+        // Calculate the expected time to reach the dirty cell
+        ll exp_time_reach = expected_time_to_reach(n, m, rb, cb, rd, cd);
+        
+        // Calculate the expected time to clean the dirty cell once reached
+        ll exp_time_clean = (100 * mod_inverse(p, MOD)) % MOD;
+        
+        // Total expected time
+        ll total_exp_time = (exp_time_reach + exp_time_clean - 1 + MOD) % MOD;
+        
+        cout << total_exp_time << "\n";
+    }
+    
+    return 0;
+}

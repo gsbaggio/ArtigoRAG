@@ -1,0 +1,84 @@
+mod = 10**9 + 7
+
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    output_lines = []
+    for _ in range(t):
+        n = int(data[index]); m = int(data[index+1]); r_b = int(data[index+2]); c_b = int(data[index+3]); r_d = int(data[index+4]); c_d = int(data[index+5]); p_val = int(data[index+6])
+        index += 7
+        
+        inv100 = pow(100, mod-2, mod)
+        p_success = p_val * inv100 % mod
+        p_fail = (100 - p_val) * inv100 % mod
+        
+        r, c, dr, dc = r_b, c_b, 1, 1
+        visited = {}
+        events = []
+        t_val = 0
+        
+        while True:
+            state = (r, c, dr, dc)
+            if state in visited:
+                cycle_start = visited[state]
+                cycle_length = t_val - cycle_start
+                break
+            visited[state] = t_val
+            if r == r_d or c == c_d:
+                events.append(t_val)
+                
+            if r + dr < 1 or r + dr > n:
+                dr = -dr
+            if c + dc < 1 or c + dc > m:
+                dc = -dc
+                
+            r += dr
+            c += dc
+            t_val += 1
+            
+        k = 0
+        for time in events:
+            if time < cycle_start:
+                k += 1
+            else:
+                break
+        pre_events = events[:k]
+        cycle_events = events[k:]
+        M = len(cycle_events)
+        
+        pre_contribution = 0
+        for i, time in enumerate(pre_events):
+            factor = pow(p_fail, i, mod)
+            pre_contribution = (pre_contribution + time * p_success % mod * factor) % mod
+            
+        if M == 0:
+            ans = pre_contribution
+        else:
+            A = 0
+            B = 0
+            for j in range(M):
+                factor = pow(p_fail, j, mod)
+                A = (A + cycle_events[j] * factor) % mod
+                B = (B + factor) % mod
+                
+            R = pow(p_fail, M, mod)
+            L = cycle_length
+            denom = (1 - R) % mod
+            if denom == 0:
+                inv_denom = 0
+            else:
+                inv_denom = pow(denom, mod-2, mod)
+            term1 = A * inv_denom % mod
+            term2 = L * B % mod * R % mod * inv_denom % mod * inv_denom % mod
+            cycle_contribution = p_success * pow(p_fail, k, mod) % mod * (term1 + term2) % mod
+            ans = (pre_contribution + cycle_contribution) % mod
+            
+        output_lines.append(str(ans))
+        
+    sys.stdout.write("\n".join(output_lines))
+    
+if __name__ == "__main__":
+    main()

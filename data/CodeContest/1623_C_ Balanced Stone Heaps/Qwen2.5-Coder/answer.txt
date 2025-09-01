@@ -1,0 +1,42 @@
+def main():
+    import sys
+    input = sys.stdin.read().split()
+    index = 0
+    t = int(input[index])
+    index += 1
+    
+    results = []
+    
+    for _ in range(t):
+        n = int(input[index])
+        index += 1
+        heaps = list(map(int, input[index:index+n]))
+        index += n
+        
+        # Initialize the first two heaps
+        h1 = heaps[0]
+        h2 = heaps[1]
+        
+        # Process each heap from the 3rd to the nth
+        for i in range(2, n):
+            hi = heaps[i]
+            d = min(hi // 3, h1, (h2 - h1) // 2)
+            
+            # Update the heaps
+            h1 += d
+            h2 += 2 * d
+            hi -= 3 * d
+            
+            # Ensure h1 <= h2
+            if h1 > h2:
+                h1, h2 = h2, h1
+        
+        # The result is the minimum of h1 and h2
+        results.append(min(h1, h2))
+    
+    # Print all results
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()

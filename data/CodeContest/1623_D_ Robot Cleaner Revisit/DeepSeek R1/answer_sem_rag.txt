@@ -1,0 +1,90 @@
+MOD = 10**9 + 7
+
+def main():
+    import sys
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); m = int(data[index+1]); r_b = int(data[index+2]); c_b = int(data[index+3])
+        r_d = int(data[index+4]); c_d = int(data[index+5]); p = int(data[index+6])
+        index += 7
+        
+        inv100 = pow(100, MOD-2, MOD)
+        p_val = p * inv100 % MOD
+        q = (100 - p) * inv100 % MOD
+        
+        r, c, dr, dc = r_b, c_b, 1, 1
+        visited = {}
+        opportunities = []
+        time = 0
+        
+        while (r, c, dr, dc) not in visited:
+            visited[(r, c, dr, dc)] = time
+            if r == r_d or c == c_d:
+                opportunities.append(time)
+                
+            # Reflect before moving
+            if r == 1 and dr == -1:
+                dr = 1
+            if r == n and dr == 1:
+                dr = -1
+            if c == 1 and dc == -1:
+                dc = 1
+            if c == m and dc == 1:
+                dc = -1
+                
+            r += dr
+            c += dc
+            time += 1
+            
+        cycle_start = visited[(r, c, dr, dc)]
+        cycle_length = time - cycle_start
+        
+        trans_opps = []
+        cycle_opps = []
+        for t_val in opportunities:
+            if t_val < cycle_start:
+                trans_opps.append(t_val)
+            else:
+                cycle_opps.append(t_val)
+                
+        transient_part = 0
+        for i, t_val in enumerate(trans_opps):
+            transient_part = (transient_part + t_val * p_val % MOD * pow(q, i, MOD)) % MOD
+            
+        if not cycle_opps:
+            results.append(str(transient_part))
+            continue
+            
+        M = len(cycle_opps)
+        A0 = 0
+        for i, t_val in enumerate(cycle_opps):
+            A0 = (A0 + t_val * pow(q, i, MOD)) % MOD
+            
+        B0 = 0
+        for i in range(M):
+            B0 = (B0 + pow(q, i, MOD)) % MOD
+            
+        qM = pow(q, M, MOD)
+        denom = (1 - qM) % MOD
+        if denom == 0:
+            S1 = 0
+            S2 = 0
+        else:
+            inv_denom = pow(denom, MOD-2, MOD)
+            S1 = inv_denom
+            S2 = qM * inv_denom % MOD * inv_denom % MOD
+            
+        cycle_part = (A0 * S1 % MOD + cycle_length * B0 % MOD * S2 % MOD) % MOD
+        cycle_part = cycle_part * p_val % MOD
+        
+        factor = pow(q, len(trans_opps), MOD)
+        total = (transient_part + factor * cycle_part) % MOD
+        results.append(str(total))
+        
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

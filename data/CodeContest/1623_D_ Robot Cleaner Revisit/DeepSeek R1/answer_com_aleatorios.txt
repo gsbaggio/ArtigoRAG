@@ -1,0 +1,85 @@
+MOD = 10**9 + 7
+
+def main():
+    import sys
+    data = sys.stdin.read().split()
+    t = int(data[0])
+    index = 1
+    results = []
+    for _ in range(t):
+        n = int(data[index]); m = int(data[index+1]); r_b = int(data[index+2]); c_b = int(data[index+3])
+        r_d = int(data[index+4]); c_d = int(data[index+5]); p = int(data[index+6])
+        index += 7
+        
+        inv100 = pow(100, MOD-2, MOD)
+        p_val = p * inv100 % MOD
+        q = (100 - p) * inv100 % MOD
+        
+        visited = {}
+        events = []
+        r, c, dr, dc = r_b, c_b, 1, 1
+        time = 0
+        while True:
+            state = (r, c, dr, dc)
+            if state in visited:
+                T0 = visited[state]
+                break
+            visited[state] = time
+            
+            if r == r_d or c == c_d:
+                events.append(time)
+                
+            if not (1 <= r + dr <= n):
+                dr = -dr
+            if not (1 <= c + dc <= m):
+                dc = -dc
+                
+            r += dr
+            c += dc
+            time += 1
+            
+        initial_events = [t for t in events if t < T0]
+        cycle_events = [t for t in events if t >= T0]
+        I = len(initial_events)
+        J = len(cycle_events)
+        L = time - T0
+        
+        if J == 0:
+            total = 0
+            for i, t in enumerate(initial_events):
+                total = (total + t * pow(q, i, MOD)) % MOD
+            total = total * p_val % MOD
+            results.append(str(total))
+        else:
+            U = 0
+            V = 0
+            for j, t in enumerate(cycle_events):
+                U = (U + t * pow(q, j, MOD)) % MOD
+                V = (V + pow(q, j, MOD)) % MOD
+                
+            qI = pow(q, I, MOD)
+            qJ = pow(q, J, MOD)
+            denom = (1 - qJ) % MOD
+            if denom == 0:
+                # Should not occur, but for safety
+                term1 = 0
+                term2 = 0
+            else:
+                inv_denom = pow(denom, MOD-2, MOD)
+                inv_denom2 = pow(denom * denom % MOD, MOD-2, MOD)
+                term1 = U * inv_denom % MOD
+                term2 = L * V % MOD * qJ % MOD * inv_denom2 % MOD
+            S_B = (term1 + term2) % MOD
+            S_B = S_B * qI % MOD
+            
+            S_A = 0
+            for i, t in enumerate(initial_events):
+                S_A = (S_A + t * pow(q, i, MOD)) % MOD
+                
+            total = (S_A + S_B) % MOD * p_val % MOD
+            results.append(str(total))
+            
+    print("\n".join(results))
+
+if __name__ == "__main__":
+    main()

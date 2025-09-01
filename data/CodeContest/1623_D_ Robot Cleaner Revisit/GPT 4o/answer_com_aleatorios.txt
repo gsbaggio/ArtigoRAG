@@ -1,0 +1,68 @@
+import java.io.*;
+import java.util.*;
+
+public class RobotCleaner {
+    static final int MOD = 1_000_000_007;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int t = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
+
+        while (t-- > 0) {
+            String[] input = br.readLine().split(" ");
+            int n = Integer.parseInt(input[0]);
+            int m = Integer.parseInt(input[1]);
+            int rb = Integer.parseInt(input[2]);
+            int cb = Integer.parseInt(input[3]);
+            int rd = Integer.parseInt(input[4]);
+            int cd = Integer.parseInt(input[5]);
+            int p = Integer.parseInt(input[6]);
+
+            sb.append(solve(n, m, rb, cb, rd, cd, p)).append("\n");
+        }
+
+        System.out.print(sb);
+    }
+
+    private static int solve(int n, int m, int rb, int cb, int rd, int cd, int p) {
+        int dr = 1, dc = 1; // Initial directions
+        int time = 0;
+        int prob = modInverse(100, MOD) * p % MOD; // Cleaning probability
+        int notProb = (1 - prob + MOD) % MOD; // Probability of not cleaning
+        int totalProb = 0, totalTime = 0;
+
+        while (true) {
+            time++;
+            // Check if the robot can clean the dirty cell
+            if (rb == rd || cb == cd) {
+                int currentProb = modPow(notProb, totalProb, MOD) * prob % MOD;
+                totalTime = (totalTime + time * currentProb % MOD) % MOD;
+                totalProb = (totalProb + currentProb) % MOD;
+                if (totalProb == 1) break; // All probabilities sum to 1
+            }
+
+            // Move the robot
+            if (rb + dr > n || rb + dr < 1) dr = -dr;
+            if (cb + dc > m || cb + dc < 1) dc = -dc;
+            rb += dr;
+            cb += dc;
+        }
+
+        return totalTime;
+    }
+
+    private static int modPow(int base, int exp, int mod) {
+        int result = 1;
+        while (exp > 0) {
+            if ((exp & 1) == 1) result = (int) ((long) result * base % mod);
+            base = (int) ((long) base * base % mod);
+            exp >>= 1;
+        }
+        return result;
+    }
+
+    private static int modInverse(int a, int mod) {
+        return modPow(a, mod - 2, mod);
+    }
+}

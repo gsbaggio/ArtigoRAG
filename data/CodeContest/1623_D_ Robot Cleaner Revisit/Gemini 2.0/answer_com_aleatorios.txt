@@ -1,0 +1,42 @@
+def solve():
+    t = int(input())
+    for _ in range(t):
+        n, m, rb, cb, rd, cd, p = map(int, input().split())
+        
+        rb -= 1
+        cb -= 1
+        rd -= 1
+        cd -= 1
+        
+        dr = 1
+        dc = 1
+        
+        time = 0
+        
+        while True:
+            if rb == rd or cb == cd:
+                prob = p / 100
+                mod = 10**9 + 7
+                
+                inv_prob = pow(prob, mod - 2, mod)
+                
+                print((time * inv_prob - time) % mod)
+                break
+            
+            time += 1
+            
+            new_rb = rb + dr
+            new_cb = cb + dc
+            
+            if new_rb < 0 or new_rb >= n:
+                dr *= -1
+                new_rb = rb + dr
+                
+            if new_cb < 0 or new_cb >= m:
+                dc *= -1
+                new_cb = cb + dc
+                
+            rb = new_rb
+            cb = new_cb
+
+solve()

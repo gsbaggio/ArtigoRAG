@@ -1,0 +1,54 @@
+def max_stones_in_smallest_heap(t, test_cases):
+    results = []
+    
+    for n, heaps in test_cases:
+        # Initialize the first two heaps
+        h1, h2 = heaps[0], heaps[1]
+        
+        # Track the minimum heap size encountered
+        min_heap_size = min(h1, h2)
+        
+        # Process each heap starting from the third one
+        for i in range(2, n):
+            hi = heaps[i]
+            
+            # Calculate the maximum possible d
+            d = hi // 3
+            
+            # Update the heaps
+            h1 += 2 * d
+            h2 += d
+            hi -= 3 * d
+            
+            # Update the minimum heap size
+            min_heap_size = min(min_heap_size, h1, h2, hi)
+            
+            # Update h1 and h2 for the next iteration
+            h1, h2 = h2, hi
+        
+        # Store the result for the current test case
+        results.append(min_heap_size)
+    
+    return results
+
+# Read input
+import sys
+input = sys.stdin.read().split()
+
+t = int(input[0])
+index = 1
+test_cases = []
+
+for _ in range(t):
+    n = int(input[index])
+    index += 1
+    heaps = list(map(int, input[index:index + n]))
+    index += n
+    test_cases.append((n, heaps))
+
+# Get results
+results = max_stones_in_smallest_heap(t, test_cases)
+
+# Print results
+for result in results:
+    print(result)

@@ -1,0 +1,53 @@
+def solve():
+    n, m, rb, cb, rd, cd, p = map(int, input().split())
+    
+    mod = 10**9 + 7
+    
+    def mod_inverse(a, m):
+        return pow(a, m - 2, m)
+    
+    prob = p / 100
+    
+    if rb == rd or cb == cd:
+        print(1)
+        return
+    
+    dr = 1
+    dc = 1
+    r = rb
+    c = cb
+    
+    time = 0
+    
+    while True:
+        time += 1
+        
+        r += dr
+        c += dc
+        
+        if r > n:
+            dr = -1
+            r = n - 1
+        elif r < 1:
+            dr = 1
+            r = 2
+            
+        if c > m:
+            dc = -1
+            c = m - 1
+        elif c < 1:
+            dc = 1
+            c = 2
+            
+        if r == rd or c == cd:
+            break
+            
+    expected_time = (1 / prob) % mod
+    
+    ans = (time * expected_time) % mod
+    
+    print(int(ans))
+
+t = int(input())
+for _ in range(t):
+    solve()

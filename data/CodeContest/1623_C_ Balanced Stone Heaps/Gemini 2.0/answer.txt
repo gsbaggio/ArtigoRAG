@@ -1,0 +1,29 @@
+def solve():
+    n = int(input())
+    h = list(map(int, input().split()))
+
+    def check(x):
+        temp_h = h[:]
+        for i in range(n - 1, 1, -1):
+            if temp_h[i] < x:
+                return False
+            d = min(h[i], temp_h[i] - x) // 3
+            temp_h[i - 1] += d
+            temp_h[i - 2] += 2 * d
+        
+        return temp_h[0] >= x and temp_h[1] >= x
+
+    left, right = 1, max(h)
+    ans = 0
+    while left <= right:
+        mid = (left + right) // 2
+        if check(mid):
+            ans = mid
+            left = mid + 1
+        else:
+            right = mid - 1
+    print(ans)
+
+t = int(input())
+for _ in range(t):
+    solve()

@@ -1,0 +1,80 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static final int MOD = 1000000007;
+
+    static class FastScanner {
+        BufferedReader br;
+        StringTokenizer st;
+
+        FastScanner() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreTokens()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+    }
+
+    public static void main(String[] args) {
+        FastScanner scanner = new FastScanner();
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+
+        int t = scanner.nextInt();
+        while (t-- > 0) {
+            int n = scanner.nextInt();
+            int m = scanner.nextInt();
+            int rb = scanner.nextInt();
+            int cb = scanner.nextInt();
+            int rd = scanner.nextInt();
+            int cd = scanner.nextInt();
+            int p = scanner.nextInt();
+
+            long rbMoves = Math.abs(rb - rd) + Math.abs(cb - cd); // Initial moves to reach the dirty cell
+            long totalMoves = rbMoves;
+
+            int verticalMoves = n - 1;
+            int horizontalMoves = m - 1;
+            long prob = p * pow(100, MOD - 2, MOD) % MOD; // Probability in modulo
+
+            long verticalTime = (pow(prob, verticalMoves, MOD) + MOD - 1) % MOD;
+            long horizontalTime = (pow(prob, horizontalMoves, MOD) + MOD - 1) % MOD;
+
+            totalMoves += (verticalTime * horizontalMoves) % MOD;
+            totalMoves += (horizontalTime * verticalMoves) % MOD;
+
+            out.println(totalMoves % MOD);
+        }
+
+        out.flush();
+    }
+
+    static long pow(long base, long exp, long mod) {
+        long res = 1;
+        while (exp > 0) {
+            if ((exp & 1) == 1) {
+                res = (res * base) % mod;
+            }
+            base = (base * base) % mod;
+            exp >>= 1;
+        }
+        return res;
+    }
+}
