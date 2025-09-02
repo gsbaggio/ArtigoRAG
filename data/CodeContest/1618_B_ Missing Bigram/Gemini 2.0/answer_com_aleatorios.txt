@@ -7,19 +7,22 @@ def solve():
         if n == 3:
             print(bigrams[0][0] + bigrams[0])
             continue
-
+        
         result = bigrams[0][0]
         for i in range(len(bigrams) - 1):
             if bigrams[i][1] == bigrams[i+1][0]:
                 result += bigrams[i][1]
             else:
                 result += bigrams[i][1]
-                result += bigrams[i+1][0]
-        result += bigrams[-1][1]
-        
+                if len(result) < n:
+                    result += bigrams[-1][1]
+                break
+        else:
+            result += bigrams[-1][1]
+            
         if len(result) < n:
-            result += 'a'
-        
+            result += bigrams[-1][1]
+
         print(result)
 
 solve()

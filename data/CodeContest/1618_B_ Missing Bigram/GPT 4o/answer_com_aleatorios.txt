@@ -1,38 +1,25 @@
 def reconstruct_words(test_cases):
     results = []
     for n, bigrams in test_cases:
-        # Start constructing the word with the first bigram
+        # Start with the first bigram
         word = bigrams[0]
-        
-        # Iterate through the bigrams and append characters to the word
+        # Reconstruct the word by appending the second character of each bigram
         for i in range(1, len(bigrams)):
-            if bigrams[i][0] == word[-1]:
-                # If the first character of the current bigram matches the last character of the word
-                word += bigrams[i][1]
-            else:
-                # If there's a mismatch, insert the first character of the current bigram
-                word += bigrams[i]
-        
-        # Ensure the word has the correct length by appending 'a' or 'b' if needed
+            word += bigrams[i][1]
+        # If the word is shorter than n, append the last character of the last bigram
         if len(word) < n:
-            word += 'a' if word[-1] == 'b' else 'b'
-        
+            word += bigrams[-1][1]
         results.append(word)
     return results
 
-
 # Input reading
-if __name__ == "__main__":
-    t = int(input())  # Number of test cases
-    test_cases = []
-    for _ in range(t):
-        n = int(input())  # Length of the word
-        bigrams = input().split()  # List of bigrams
-        test_cases.append((n, bigrams))
-    
-    # Solve the problem
-    results = reconstruct_words(test_cases)
-    
-    # Output the results
-    for result in results:
-        print(result)
+t = int(input())
+test_cases = []
+for _ in range(t):
+    n = int(input())
+    bigrams = input().split()
+    test_cases.append((n, bigrams))
+
+# Solve and output results
+results = reconstruct_words(test_cases)
+print("\n".join(results))
