@@ -1,25 +1,30 @@
 def solve():
     t = int(input())
+    
     for _ in range(t):
         l1, l2, l3 = map(int, input().split())
+        possible = False
         
-        # Case 1: Two sticks are equal, break the third into two equal parts
-        if l1 == l2 and l3 % 2 == 0:
-            print("YES")
-        elif l1 == l3 and l2 % 2 == 0:
-            print("YES")
-        elif l2 == l3 and l1 % 2 == 0:
-            print("YES")
-        
-        # Case 2: Break a stick so that two pairs of equal sides can be formed
-        elif 2*l1 == l2 + l3:
-            print("YES")
-        elif 2*l2 == l1 + l3:
-            print("YES")
-        elif 2*l3 == l1 + l2:
-            print("YES")
-        
-        else:
-            print("NO")
+        # Case 1: Break one stick to match both other sticks
+        if l1 == l2 + l3 or l2 == l1 + l3 or l3 == l1 + l2:
+            possible = True
+            
+        # Case 2: Break one stick into a + b where a = one of the other sticks
+        elif (l1 > l2 and (l1 - l2) > 0 and l1 - l2 == l3) or \
+             (l1 > l3 and (l1 - l3) > 0 and l1 - l3 == l2) or \
+             (l2 > l1 and (l2 - l1) > 0 and l2 - l1 == l3) or \
+             (l2 > l3 and (l2 - l3) > 0 and l2 - l3 == l1) or \
+             (l3 > l1 and (l3 - l1) > 0 and l3 - l1 == l2) or \
+             (l3 > l2 and (l3 - l2) > 0 and l3 - l2 == l1):
+            possible = True
+            
+        # Case 3: Break one stick into two equal pieces
+        elif (l1 % 2 == 0 and l1 // 2 > 0 and l2 == l3) or \
+             (l2 % 2 == 0 and l2 // 2 > 0 and l1 == l3) or \
+             (l3 % 2 == 0 and l3 // 2 > 0 and l1 == l2):
+            possible = True
+            
+        print("YES" if possible else "NO")
 
-solve()
+if __name__ == "__main__":
+    solve()
