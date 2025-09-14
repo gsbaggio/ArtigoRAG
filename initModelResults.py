@@ -54,10 +54,10 @@ def create_model_structure():
                         with open(file_path, 'w', encoding='utf-8') as f:
                             f.write("")  
                 
-                print(f"  ✓ {model}")
+                print(f"   {model}")
                 
             except Exception as e:
-                print(f"  ✗ ERRO ao criar {model}: {e}")
+                print(f"   ERRO ao criar {model}: {e}")
                 
         processed_dirs += 1
         
@@ -78,16 +78,16 @@ def main():
     try:
         success = create_model_structure()
         if success:
-            print("\n✓ Estrutura criada com sucesso!")
+            print("\n Estrutura criada com sucesso!")
         else:
-            print("\n✗ Falha na criação da estrutura!")
+            print("\n Falha na criação da estrutura!")
             sys.exit(1)
             
     except KeyboardInterrupt:
         print("\n\nProcesso interrompido pelo usuário.")
         sys.exit(1)
     except Exception as e:
-        print(f"\n✗ Erro inesperado: {e}")
+        print(f"\n Erro inesperado: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":

@@ -232,7 +232,6 @@ Provide:
         for i, test_problem in enumerate(self.test_data):
             print(f"Processing test problem {i+1}/{len(self.test_data)}: {test_problem['name']}")
             
-            # Retrieve similar questions
             similar_questions = self.retrieve_similar_questions(
                 test_problem['description'],
                 top_k=3,
@@ -240,39 +239,32 @@ Provide:
                 use_adaptive_threshold=True
             )
             
-            # Skip if no similar questions found
             if not similar_questions:
                 print(f"  No similar questions found, skipping...")
                 skipped_count += 1
                 continue
             
-            # Create safe directory name
             safe_name = self._safe_filename(test_problem['name'])
             problem_dir = os.path.join(output_base_dir, safe_name)
             
             if not os.path.exists(problem_dir):
                 os.makedirs(problem_dir)
             
-            # Create info.txt
             info_content = f"{test_problem['cf_rating']}\n{test_problem['cf_tags']}"
             with open(os.path.join(problem_dir, "info.txt"), 'w', encoding='utf-8') as f:
                 f.write(info_content)
             
-            # Create problem.txt
             with open(os.path.join(problem_dir, "problem.txt"), 'w', encoding='utf-8') as f:
                 f.write(test_problem['description'])
             
-            # Create prompt.txt (with RAG)
             context_with_rag = self._build_context_with_rag(test_problem, similar_questions)
             with open(os.path.join(problem_dir, "prompt.txt"), 'w', encoding='utf-8') as f:
                 f.write(context_with_rag)
             
-            # Create prompt_sem_rag.txt (without RAG)
             context_without_rag = self._build_context_without_rag(test_problem)
             with open(os.path.join(problem_dir, "prompt_sem_rag.txt"), 'w', encoding='utf-8') as f:
                 f.write(context_without_rag)
             
-            # Create prompt_com_aleatorios.txt (with random examples)
             random_questions = self.retrieve_random_questions()
             context_with_random = self._build_context_with_random(test_problem, random_questions)
             with open(os.path.join(problem_dir, "prompt_com_aleatorios.txt"), 'w', encoding='utf-8') as f:
@@ -285,7 +277,7 @@ Provide:
                 'safe_directory_name': safe_name,
                 'similar_questions_count': len(similar_questions),
                 'random_questions_count': len(random_questions),
-                'similarity_scores': [float(q['similarity_score']) for q in similar_questions],  # Convert to Python float
+                'similarity_scores': [float(q['similarity_score']) for q in similar_questions], 
                 'cf_rating': test_problem['cf_rating'],
                 'cf_tags': test_problem['cf_tags']
             })
@@ -316,13 +308,11 @@ Provide:
 
 
 if __name__ == "__main__":
-    train_path = "data/codecontests_train.json"
-    test_path = "data/codecontests_test.json"
+    train_path = "codecontests_train.json"
+    test_path = "codecontests_test.json"
     
-    print("Initializing CodeContests RAG system...")
     rag_system = CodeContestsRAG(train_path, test_path)
     
-    print("\nProcessing test problems...")
     summary = rag_system.process_test_problems()
     
     print(f"\nDone! Processed {summary['processed_problems']} problems.")
