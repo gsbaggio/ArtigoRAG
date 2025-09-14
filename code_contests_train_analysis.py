@@ -1,6 +1,7 @@
 import json
 import matplotlib.pyplot as plt
 import ast
+import os
 from collections import Counter
 
 def process_problem(problem, tag_counter, difficulty_counter):
@@ -9,11 +10,14 @@ def process_problem(problem, tag_counter, difficulty_counter):
     if cf_rating != 0:
         cf_tags = problem.get('cf_tags', [])
         
+        # cf_tags já deve ser uma lista no JSON, mas vamos verificar por segurança
         if isinstance(cf_tags, str):
             try:
                 cf_tags = ast.literal_eval(cf_tags)
             except:
                 cf_tags = [cf_tags] if cf_tags else []
+        elif not isinstance(cf_tags, list):
+            cf_tags = []
         
         for tag in cf_tags:
             tag_counter[tag] += 1
@@ -28,98 +32,86 @@ def process_problem(problem, tag_counter, difficulty_counter):
         return True
     return False
 
-def analyze_codecontests_train():
-    
+def analyze_test_data():
+    """Analisa os dados de teste da pasta data/CodeContest"""
     tag_counter = Counter()
     difficulty_counter = {'Easy': 0, 'Medium': 0, 'Hard': 0}
     total_problems = 0
+    
+    codecontest_path = 'data/CodeContest'
+    
+    if not os.path.exists(codecontest_path):
+        print(f"Pasta {codecontest_path} não encontrada!")
+        return tag_counter, difficulty_counter, total_problems
+    
+    print("Analisando dados de teste...")
+    
+    for folder_name in os.listdir(codecontest_path):
+        folder_path = os.path.join(codecontest_path, folder_name)
+        
+        if os.path.isdir(folder_path):
+            info_file = os.path.join(folder_path, 'info.txt')
+            
+            if os.path.exists(info_file):
+                try:
+                    with open(info_file, 'r', encoding='utf-8') as f:
+                        lines = f.readlines()
+                        
+                    if len(lines) >= 2:
+                        rating = int(lines[0].strip())
+                        tags_str = lines[1].strip()
+                        
+                        # Converter string de lista para lista real
+                        try:
+                            tags = ast.literal_eval(tags_str)
+                        except:
+                            tags = []
+                        
+                        # Contar tags
+                        for tag in tags:
+                            tag_counter[tag] += 1
+                        
+                        # Contar dificuldade
+                        if 0 < rating <= 1000:
+                            difficulty_counter['Easy'] += 1
+                        elif 1000 < rating <= 2000:
+                            difficulty_counter['Medium'] += 1
+                        elif rating > 2000:
+                            difficulty_counter['Hard'] += 1
+                        
+                        total_problems += 1
+                        
+                except Exception as e:
+                    print(f"Erro ao processar {info_file}: {e}")
+    
+    print(f"Dados de teste processados: {total_problems} problemas")
+    return tag_counter, difficulty_counter, total_problems
+
+def analyze_codecontests_train():
+    
+    # Análise dos dados de treino
+    tag_counter_train = Counter()
+    difficulty_counter_train = {'Easy': 0, 'Medium': 0, 'Hard': 0}
+    total_problems_train = 0
     processed_count = 0
     
     try:
+        print("Carregando dados do arquivo JSON...")
         with open('codecontests_train.json', 'r', encoding='utf-8') as file:
-            try:
-                for line_num, line in enumerate(file, 1):
-                    line = line.strip()
-                    if line:
-                        try:
-                            problem = json.loads(line)
-                            if process_problem(problem, tag_counter, difficulty_counter):
-                                total_problems += 1
-                            processed_count += 1
-                            
-                            if processed_count % 1000 == 0:
-                                print(f"Processados {processed_count} problemas...")
-                                
-                        except json.JSONDecodeError:
-                            break
-                            
-            except:
-                file.seek(0)
+            data = json.load(file)
+            
+        print(f"Arquivo carregado com sucesso! Total de registros: {len(data)}")
+        
+        for i, problem in enumerate(data):
+            if process_problem(problem, tag_counter_train, difficulty_counter_train):
+                total_problems_train += 1
+            processed_count += 1
+            
+            if processed_count % 1000 == 0:
+                print(f"Processados {processed_count} problemas...")
                 
-                buffer = ""
-                chunk_size = 1024 * 1024  
-                
-                while True:
-                    chunk = file.read(chunk_size)
-                    if not chunk:
-                        break
-                    
-                    buffer += chunk
-                    
-                    while True:
-                        start = buffer.find('{')
-                        if start == -1:
-                            break
-                            
-                        brace_count = 0
-                        end = start
-                        in_string = False
-                        escape_next = False
-                        
-                        for i in range(start, len(buffer)):
-                            char = buffer[i]
-                            
-                            if escape_next:
-                                escape_next = False
-                                continue
-                                
-                            if char == '\\':
-                                escape_next = True
-                                continue
-                                
-                            if char == '"' and not escape_next:
-                                in_string = not in_string
-                                
-                            if not in_string:
-                                if char == '{':
-                                    brace_count += 1
-                                elif char == '}':
-                                    brace_count -= 1
-                                    if brace_count == 0:
-                                        end = i + 1
-                                        break
-                        
-                        if brace_count == 0 and end > start:
-                            try:
-                                json_str = buffer[start:end]
-                                problem = json.loads(json_str)
-                                if process_problem(problem, tag_counter, difficulty_counter):
-                                    total_problems += 1
-                                processed_count += 1
-                                
-                                if processed_count % 1000 == 0:
-                                    print(f"Processados {processed_count} problemas...")
-                                    
-                            except json.JSONDecodeError:
-                                pass
-                            
-                            buffer = buffer[end:]
-                        else:
-                            break
-                    
-                    if len(buffer) > 10240:
-                        buffer = buffer[-10240:]
-                        
+        print(f"Processamento concluído!")
+        
     except FileNotFoundError:
         print("Arquivo codecontests_train.json não encontrado!")
         return
@@ -127,44 +119,126 @@ def analyze_codecontests_train():
         print(f"Erro ao processar arquivo: {e}")
         return
     
+    # Análise dos dados de teste
+    tag_counter_test, difficulty_counter_test, total_problems_test = analyze_test_data()
+    
     print(f"\nTotal de problemas processados: {processed_count}")
     
-    print(f"\n=== ANÁLISE DE DIFICULDADE ===")
-    print(f"Total de problemas do Codeforces (cf_rating != 0): {total_problems}")
-    print(f"\nDistribuição por dificuldade:")
+    print(f"\n=== ANÁLISE DE DIFICULDADE - DADOS DE TREINO ===")
+    print(f"Total de problemas do Codeforces (cf_rating != 0): {total_problems_train}")
+    print(f"\nDistribuição por dificuldade (TREINO):")
     
-    for difficulty, count in difficulty_counter.items():
-        percentage = (count / total_problems * 100) if total_problems > 0 else 0
+    for difficulty, count in difficulty_counter_train.items():
+        percentage = (count / total_problems_train * 100) if total_problems_train > 0 else 0
         print(f"{difficulty}: {count} questões ({percentage:.2f}%)")
     
-    if tag_counter:
-        sorted_tags = tag_counter.most_common()
+    print(f"\n=== ANÁLISE DE DIFICULDADE - DADOS DE TESTE ===")
+    print(f"Total de problemas de teste: {total_problems_test}")
+    print(f"\nDistribuição por dificuldade (TESTE):")
+    
+    for difficulty, count in difficulty_counter_test.items():
+        percentage = (count / total_problems_test * 100) if total_problems_test > 0 else 0
+        print(f"{difficulty}: {count} questões ({percentage:.2f}%)")
+    
+    # Criar gráficos separados
+    if tag_counter_train:
+        # Gráfico dos dados de treino (como estava antes)
+        sorted_tags_train = tag_counter_train.most_common(20)
         
-        tags = [tag for tag, count in sorted_tags]
-        counts = [count for tag, count in sorted_tags]
+        tags_train = [tag for tag, count in sorted_tags_train]
+        counts_train = [count for tag, count in sorted_tags_train]
         
-        plt.figure(figsize=(15, 8))
-        bars = plt.bar(range(len(tags)), counts)
+        # Criar figura com tamanho específico
+        plt.figure(figsize=(16, 8))
         
-        plt.title('Distribuição de Tags nos Problemas do CodeContests (cf_rating != 0)', fontsize=16, fontweight='bold')
-        plt.xlabel('Tags', fontsize=12)
-        plt.ylabel('Número de Questões', fontsize=12)
+        # Criar barras com cor azul claro e borda
+        bars = plt.bar(range(len(tags_train)), counts_train, 
+                      color='lightblue', 
+                      edgecolor='black', 
+                      linewidth=0.5,
+                      width=0.8)
         
-        plt.xticks(range(len(tags)), tags, rotation=45, ha='right')
+        # Título e labels
+        plt.title('CodeContests Tags Distribution (Train Split)', 
+                 fontsize=16, fontweight='bold', pad=20)
+        plt.xlabel('Tags', fontsize=12, fontweight='bold')
+        plt.ylabel('Number of Problems', fontsize=12, fontweight='bold')
         
+        # Configurar eixo X
+        plt.xticks(range(len(tags_train)), tags_train, rotation=45, ha='right', fontsize=10)
+        
+        # Configurar eixo Y
+        plt.ylim(0, max(counts_train) * 1.1)
+        
+        # Adicionar valores no topo das barras
         for i, bar in enumerate(bars):
             height = bar.get_height()
-            plt.text(bar.get_x() + bar.get_width()/2., height + 0.1,
-                    f'{int(height)}', ha='center', va='bottom', fontsize=8)
+            plt.text(bar.get_x() + bar.get_width()/2., height + max(counts_train)*0.01,
+                    f'{int(height)}', ha='center', va='bottom', 
+                    fontsize=9, fontweight='bold')
         
+        # Adicionar grid
+        plt.grid(True, axis='y', alpha=0.3, linestyle='-', linewidth=0.5)
+        
+        # Ajustar layout
         plt.tight_layout()
         
+        # Mostrar gráfico
+        plt.show()
+    
+    if tag_counter_test:
+        # Gráfico dos dados de teste
+        sorted_tags_test = tag_counter_test.most_common(20)
+        
+        tags_test = [tag for tag, count in sorted_tags_test]
+        counts_test = [count for tag, count in sorted_tags_test]
+        
+        # Criar figura com tamanho específico
+        plt.figure(figsize=(16, 8))
+        
+        # Criar barras com cor laranja e borda
+        bars = plt.bar(range(len(tags_test)), counts_test, 
+                      color='orange', 
+                      edgecolor='black', 
+                      linewidth=0.5,
+                      width=0.8)
+        
+        # Título e labels
+        plt.title('CodeContests Tags Distribution (Test Split)', 
+                 fontsize=16, fontweight='bold', pad=20)
+        plt.xlabel('Tags', fontsize=12, fontweight='bold')
+        plt.ylabel('Number of Problems', fontsize=12, fontweight='bold')
+        
+        # Configurar eixo X
+        plt.xticks(range(len(tags_test)), tags_test, rotation=45, ha='right', fontsize=10)
+        
+        # Configurar eixo Y
+        plt.ylim(0, max(counts_test) * 1.1)
+        
+        # Adicionar valores no topo das barras
+        for i, bar in enumerate(bars):
+            height = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width()/2., height + max(counts_test)*0.01,
+                    f'{int(height)}', ha='center', va='bottom', 
+                    fontsize=9, fontweight='bold')
+        
+        # Adicionar grid
+        plt.grid(True, axis='y', alpha=0.3, linestyle='-', linewidth=0.5)
+        
+        # Ajustar layout
+        plt.tight_layout()
+        
+        # Mostrar gráfico
         plt.show()
         
-        print(f"\n=== TOP 10 TAGS MAIS FREQUENTES ===")
-        for i, (tag, count) in enumerate(sorted_tags[:10], 1):
-            print(f"{i:2d}. {tag}: {count} questões")
+    print(f"\n=== TOP 20 TAGS MAIS FREQUENTES (TREINO) ===")
+    for i, (tag, count) in enumerate(tag_counter_train.most_common(20), 1):
+        print(f"{i:2d}. {tag}: {count} questões")
     
+    print(f"\n=== TOP 20 TAGS MAIS FREQUENTES (TESTE) ===")
+    for i, (tag, count) in enumerate(tag_counter_test.most_common(20), 1):
+        print(f"{i:2d}. {tag}: {count} questões")
+
     else:
         print("Nenhuma tag encontrada nos dados.")
 

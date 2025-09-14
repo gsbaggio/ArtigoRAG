@@ -1,0 +1,59 @@
+=== ANÁLISE DE DIFICULDADE - DADOS DE TREINO ===
+Total de problemas do Codeforces (cf_rating != 0): 7701
+
+Distribuição por dificuldade (TREINO):
+Easy: 901 questões (11.70%)
+Medium: 3759 questões (48.81%)
+Hard: 3041 questões (39.49%)
+
+=== ANÁLISE DE DIFICULDADE - DADOS DE TESTE ===
+Total de problemas de teste: 81
+
+Distribuição por dificuldade (TESTE):
+Easy: 18 questões (22.22%)
+Medium: 31 questões (38.27%)
+Hard: 32 questões (39.51%)
+
+=== TOP 20 TAGS MAIS FREQUENTES (TREINO) ===
+ 1. implementation: 2182 questões
+ 2. math: 2003 questões
+ 3. greedy: 1949 questões
+ 4. dp: 1658 questões
+ 5. data structures: 1269 questões
+ 6. constructive algorithms: 1205 questões
+ 7. brute force: 1167 questões
+ 8. graphs: 882 questões
+ 9. binary search: 783 questões
+10. sortings: 777 questões
+11. dfs and similar: 734 questões
+12. trees: 622 questões
+13. strings: 555 questões
+14. number theory: 548 questões
+15. combinatorics: 471 questões
+16. two pointers: 373 questões
+17. bitmasks: 362 questões
+18. geometry: 341 questões
+19. dsu: 266 questões
+20. *special: 253 questões
+
+=== TOP 20 TAGS MAIS FREQUENTES (TESTE) ===
+ 1. math: 35 questões
+ 2. dp: 25 questões
+ 3. implementation: 23 questões
+ 4. greedy: 23 questões
+ 5. brute force: 20 questões
+ 6. data structures: 15 questões
+ 7. sortings: 14 questões
+ 8. constructive algorithms: 14 questões
+ 9. combinatorics: 11 questões
+10. dfs and similar: 9 questões
+11. binary search: 8 questões
+12. number theory: 7 questões
+13. strings: 6 questões
+14. divide and conquer: 6 questões
+15. two pointers: 6 questões
+16. bitmasks: 5 questões
+17. graphs: 5 questões
+18. trees: 4 questões
+19. fft: 3 questões
+20. dsu: 3 questões

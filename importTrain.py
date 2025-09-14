@@ -10,7 +10,6 @@ def extract_train_data():
     
     extracted_data = []
     
-    print("Extraindo campos cf_tags e cf_rating...")
     
     for i, problem in enumerate(train_data):
         problem_data = {
@@ -23,7 +22,6 @@ def extract_train_data():
         if (i + 1) % 1000 == 0:
             print(f"Processados {i + 1} problemas...")
     
-    print("Salvando dados no arquivo codecontests_train.json...")
     with open('codecontests_train.json', 'w', encoding='utf-8') as f:
         json.dump(extracted_data, f, ensure_ascii=False, indent=2)
     
