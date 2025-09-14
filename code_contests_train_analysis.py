@@ -7,21 +7,22 @@ from collections import Counter
 def process_problem(problem, tag_counter, difficulty_counter):
     cf_rating = problem.get('cf_rating', 0)
     
-    if cf_rating != 0:
-        cf_tags = problem.get('cf_tags', [])
-        
-        # cf_tags já deve ser uma lista no JSON, mas vamos verificar por segurança
-        if isinstance(cf_tags, str):
-            try:
-                cf_tags = ast.literal_eval(cf_tags)
-            except:
-                cf_tags = [cf_tags] if cf_tags else []
-        elif not isinstance(cf_tags, list):
-            cf_tags = []
-        
+    cf_tags = problem.get('cf_tags', [])
+    
+    if isinstance(cf_tags, str):
+        try:
+            cf_tags = ast.literal_eval(cf_tags)
+        except:
+            cf_tags = [cf_tags] if cf_tags else []
+    elif not isinstance(cf_tags, list):
+        cf_tags = []
+    
+    if cf_tags:
         for tag in cf_tags:
-            tag_counter[tag] += 1
-        
+            if tag and tag.strip():  
+                tag_counter[tag.strip()] += 1
+    
+    if cf_rating != 0:
         if 0 < cf_rating <= 1000:
             difficulty_counter['Easy'] += 1
         elif 1000 < cf_rating <= 2000:
@@ -33,7 +34,6 @@ def process_problem(problem, tag_counter, difficulty_counter):
     return False
 
 def analyze_test_data():
-    """Analisa os dados de teste da pasta data/CodeContest"""
     tag_counter = Counter()
     difficulty_counter = {'Easy': 0, 'Medium': 0, 'Hard': 0}
     total_problems = 0
@@ -61,17 +61,16 @@ def analyze_test_data():
                         rating = int(lines[0].strip())
                         tags_str = lines[1].strip()
                         
-                        # Converter string de lista para lista real
                         try:
                             tags = ast.literal_eval(tags_str)
                         except:
                             tags = []
                         
-                        # Contar tags
-                        for tag in tags:
-                            tag_counter[tag] += 1
+                        if tags:  
+                            for tag in tags:
+                                if tag and tag.strip():  
+                                    tag_counter[tag.strip()] += 1
                         
-                        # Contar dificuldade
                         if 0 < rating <= 1000:
                             difficulty_counter['Easy'] += 1
                         elif 1000 < rating <= 2000:
@@ -89,28 +88,25 @@ def analyze_test_data():
 
 def analyze_codecontests_train():
     
-    # Análise dos dados de treino
     tag_counter_train = Counter()
     difficulty_counter_train = {'Easy': 0, 'Medium': 0, 'Hard': 0}
     total_problems_train = 0
     processed_count = 0
     
     try:
-        print("Carregando dados do arquivo JSON...")
         with open('codecontests_train.json', 'r', encoding='utf-8') as file:
             data = json.load(file)
             
-        print(f"Arquivo carregado com sucesso! Total de registros: {len(data)}")
         
         for i, problem in enumerate(data):
-            if process_problem(problem, tag_counter_train, difficulty_counter_train):
+            process_problem(problem, tag_counter_train, difficulty_counter_train)
+            if problem.get('cf_rating', 0) != 0:
                 total_problems_train += 1
             processed_count += 1
             
             if processed_count % 1000 == 0:
                 print(f"Processados {processed_count} problemas...")
                 
-        print(f"Processamento concluído!")
         
     except FileNotFoundError:
         print("Arquivo codecontests_train.json não encontrado!")
@@ -119,7 +115,6 @@ def analyze_codecontests_train():
         print(f"Erro ao processar arquivo: {e}")
         return
     
-    # Análise dos dados de teste
     tag_counter_test, difficulty_counter_test, total_problems_test = analyze_test_data()
     
     print(f"\nTotal de problemas processados: {processed_count}")
@@ -140,95 +135,74 @@ def analyze_codecontests_train():
         percentage = (count / total_problems_test * 100) if total_problems_test > 0 else 0
         print(f"{difficulty}: {count} questões ({percentage:.2f}%)")
     
-    # Criar gráficos separados
     if tag_counter_train:
-        # Gráfico dos dados de treino (como estava antes)
         sorted_tags_train = tag_counter_train.most_common(20)
         
         tags_train = [tag for tag, count in sorted_tags_train]
         counts_train = [count for tag, count in sorted_tags_train]
         
-        # Criar figura com tamanho específico
         plt.figure(figsize=(16, 8))
         
-        # Criar barras com cor azul claro e borda
         bars = plt.bar(range(len(tags_train)), counts_train, 
                       color='lightblue', 
                       edgecolor='black', 
                       linewidth=0.5,
                       width=0.8)
         
-        # Título e labels
-        plt.title('CodeContests Tags Distribution (Train Split)', 
+        plt.title('CodeContests Tags Distribution (Knowledge Dataset)', 
                  fontsize=16, fontweight='bold', pad=20)
-        plt.xlabel('Tags', fontsize=12, fontweight='bold')
-        plt.ylabel('Number of Problems', fontsize=12, fontweight='bold')
+        plt.xlabel('Tags', fontsize=13, fontweight='bold')
+        plt.ylabel('Number of Problems', fontsize=13, fontweight='bold')
         
-        # Configurar eixo X
-        plt.xticks(range(len(tags_train)), tags_train, rotation=45, ha='right', fontsize=10)
+        plt.xticks(range(len(tags_train)), tags_train, rotation=45, ha='right', fontsize=13)
         
-        # Configurar eixo Y
         plt.ylim(0, max(counts_train) * 1.1)
         
-        # Adicionar valores no topo das barras
         for i, bar in enumerate(bars):
             height = bar.get_height()
             plt.text(bar.get_x() + bar.get_width()/2., height + max(counts_train)*0.01,
                     f'{int(height)}', ha='center', va='bottom', 
-                    fontsize=9, fontweight='bold')
+                    fontsize=13, fontweight='bold')
         
-        # Adicionar grid
         plt.grid(True, axis='y', alpha=0.3, linestyle='-', linewidth=0.5)
         
-        # Ajustar layout
         plt.tight_layout()
         
-        # Mostrar gráfico
         plt.show()
     
     if tag_counter_test:
-        # Gráfico dos dados de teste
         sorted_tags_test = tag_counter_test.most_common(20)
         
         tags_test = [tag for tag, count in sorted_tags_test]
         counts_test = [count for tag, count in sorted_tags_test]
         
-        # Criar figura com tamanho específico
         plt.figure(figsize=(16, 8))
         
-        # Criar barras com cor laranja e borda
         bars = plt.bar(range(len(tags_test)), counts_test, 
                       color='orange', 
                       edgecolor='black', 
                       linewidth=0.5,
                       width=0.8)
         
-        # Título e labels
-        plt.title('CodeContests Tags Distribution (Test Split)', 
+        plt.title('CodeContests Tags Distribution (Test Dataset)', 
                  fontsize=16, fontweight='bold', pad=20)
-        plt.xlabel('Tags', fontsize=12, fontweight='bold')
-        plt.ylabel('Number of Problems', fontsize=12, fontweight='bold')
+        plt.xlabel('Tags', fontsize=13, fontweight='bold')
+        plt.ylabel('Number of Problems', fontsize=13, fontweight='bold')
         
-        # Configurar eixo X
-        plt.xticks(range(len(tags_test)), tags_test, rotation=45, ha='right', fontsize=10)
+        plt.xticks(range(len(tags_test)), tags_test, rotation=45, ha='right', fontsize=13)
         
-        # Configurar eixo Y
         plt.ylim(0, max(counts_test) * 1.1)
         
-        # Adicionar valores no topo das barras
         for i, bar in enumerate(bars):
             height = bar.get_height()
             plt.text(bar.get_x() + bar.get_width()/2., height + max(counts_test)*0.01,
                     f'{int(height)}', ha='center', va='bottom', 
-                    fontsize=9, fontweight='bold')
+                    fontsize=13, fontweight='bold')
         
-        # Adicionar grid
         plt.grid(True, axis='y', alpha=0.3, linestyle='-', linewidth=0.5)
         
-        # Ajustar layout
         plt.tight_layout()
         
-        # Mostrar gráfico
         plt.show()
         
     print(f"\n=== TOP 20 TAGS MAIS FREQUENTES (TREINO) ===")
