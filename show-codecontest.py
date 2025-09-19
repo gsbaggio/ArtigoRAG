@@ -162,7 +162,7 @@ for llm in llms:
     print(f"{llm:<20} | {without_rag_correct:^10.1f}% ({len(results[llm]['without_rag']['correct'])}) | {without_rag_speed:^10.1f}% ({len(results[llm]['without_rag']['speed'])}) | {without_rag_memory:^10.1f}% ({len(results[llm]['without_rag']['memory'])}) | {random_rag_correct:^10.1f}% ({len(results[llm]['random_rag']['correct'])}) | {random_rag_speed:^10.1f}% ({len(results[llm]['random_rag']['speed'])}) | {random_rag_memory:^10.1f}% ({len(results[llm]['random_rag']['memory'])}) | {with_rag_correct:^10.1f}% ({len(results[llm]['with_rag']['correct'])}) | {with_rag_speed:^10.1f}% ({len(results[llm]['with_rag']['speed'])}) | {with_rag_memory:^10.1f}% ({len(results[llm]['with_rag']['memory'])})")
 
 def create_grouped_bar_chart(data1, data2, data3, title, ylabel):
-    plt.figure(figsize=(14, 6))
+    plt.figure(figsize=(14, 8))
     
     x = np.arange(len(llms))
     width = 0.25
@@ -170,22 +170,23 @@ def create_grouped_bar_chart(data1, data2, data3, title, ylabel):
     plt.bar(x - width, data1, width, label='Without RAG', color='skyblue')
     plt.bar(x, data2, width, label='Random RAG', color='lightcoral')
     plt.bar(x + width, data3, width, label='With RAG', color='orange')
-    
-    plt.title(title)
-    plt.ylabel(ylabel)
-    plt.xlabel('LLM Model')
-    plt.xticks(x, llms, rotation=45, ha='right')
+
+    plt.title(title, fontsize=16, fontweight='bold', pad=20)
+    plt.ylabel(ylabel, fontsize=14, fontweight='bold')
+    plt.xlabel('LLM Model', fontsize=14, fontweight='bold')
+    plt.xticks(x, llms, rotation=45, ha='right', fontsize=13)
+    plt.yticks(fontsize=13)  # Aumenta o tamanho da fonte dos números do eixo Y
     plt.ylim(0, 100)  
     plt.legend()
     plt.tight_layout()
     
     for i, v in enumerate(data1):
-        plt.text(i - width, v + 2, f'{v:.1f}%', ha='center', va='bottom', fontsize=8)
+        plt.text(i - width, v + 2, f'{v:.1f}%', ha='center', va='bottom', fontsize=11)
     for i, v in enumerate(data2):
-        plt.text(i, v + 2, f'{v:.1f}%', ha='center', va='bottom', fontsize=8)
+        plt.text(i, v + 2, f'{v:.1f}%', ha='center', va='bottom', fontsize=11)
     for i, v in enumerate(data3):
-        plt.text(i + width, v + 2, f'{v:.1f}%', ha='center', va='bottom', fontsize=8)
-    
+        plt.text(i + width, v + 2, f'{v:.1f}%', ha='center', va='bottom', fontsize=11)
+
     plt.savefig(images_dir / f'{title.replace(" ", "_").lower()}.png', dpi=300)
     plt.show()
 
@@ -194,36 +195,11 @@ print("\nDisplaying charts one by one. Close each chart to see the next one.")
 create_grouped_bar_chart(without_rag_correct_data, random_rag_correct_data, with_rag_correct_data, 
                         'Correctness by LLM', 'Correct (%)')
 
-create_grouped_bar_chart(without_rag_speed_data, random_rag_speed_data, with_rag_speed_data, 
-                        'Speed Percentile by LLM', 'Speed Percentile (%)')
+# create_grouped_bar_chart(without_rag_speed_data, random_rag_speed_data, with_rag_speed_data, 
+#                         'Speed Percentile by LLM', 'Speed Percentile (%)')
 
-create_grouped_bar_chart(without_rag_memory_data, random_rag_memory_data, with_rag_memory_data, 
-                        'Memory Percentile by LLM', 'Memory Percentile (%)')
-
-plt.figure(figsize=(18, 10))
-x = np.arange(len(llms))
-width = 0.1
-
-plt.bar(x - width*3, without_rag_correct_data, width, label='Correctness (Without RAG)', color='skyblue')
-plt.bar(x - width*2, without_rag_speed_data, width, label='Speed (Without RAG)', color='lightgreen')
-plt.bar(x - width, without_rag_memory_data, width, label='Memory (Without RAG)', color='lightpink')
-plt.bar(x, random_rag_correct_data, width, label='Correctness (Random RAG)', color='lightcoral')
-plt.bar(x + width, random_rag_speed_data, width, label='Speed (Random RAG)', color='gold')
-plt.bar(x + width*2, random_rag_memory_data, width, label='Memory (Random RAG)', color='mediumpurple')
-plt.bar(x + width*3, with_rag_correct_data, width, label='Correctness (With RAG)', color='blue')
-plt.bar(x + width*4, with_rag_speed_data, width, label='Speed (With RAG)', color='green')
-plt.bar(x + width*5, with_rag_memory_data, width, label='Memory (With RAG)', color='red')
-
-plt.title('LLM Performance Metrics Comparison')
-plt.ylabel('Percentage (%)')
-plt.xlabel('LLM Model')
-plt.xticks(x + width, llms)
-plt.ylim(0, 100)  
-plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=3)
-
-plt.tight_layout()
-plt.savefig(images_dir / 'llm_combined_metrics.png', dpi=300)
-plt.show()
+# create_grouped_bar_chart(without_rag_memory_data, random_rag_memory_data, with_rag_memory_data, 
+#                         'Memory Percentile by LLM', 'Memory Percentile (%)')
 
 correctness_improvements = []
 speed_improvements = []
@@ -279,3 +255,67 @@ for llm in llms:
     print(f"    Correctness improvement: {correctness_improvement:+.1f} percentage points")
     print(f"    Speed improvement: {speed_improvement:+.1f} percentage points")
     print(f"    Memory improvement: {memory_improvement:+.1f} percentage points")
+
+print("\n" + "="*80)
+print("ANÁLISE COMPARATIVA DAS PORCENTAGENS MÉDIAS DE ACERTOS")
+print("="*80)
+
+avg_without_rag = statistics.mean(without_rag_correct_data) if without_rag_correct_data else 0
+avg_random_rag = statistics.mean(random_rag_correct_data) if random_rag_correct_data else 0
+avg_with_rag = statistics.mean(with_rag_correct_data) if with_rag_correct_data else 0
+
+print(f"\nPorcentagens médias de acerto entre todos os modelos:")
+print(f"  Sem RAG: {avg_without_rag:.2f}%")
+print(f"  RAG Aleatório: {avg_random_rag:.2f}%")
+print(f"  RAG Similar: {avg_with_rag:.2f}%")
+
+print(f"\nGanhos comparativos:")
+print(f"  RAG Aleatório vs Sem RAG:")
+random_vs_without = avg_random_rag - avg_without_rag
+print(f"    Ganho absoluto: {random_vs_without:+.2f} pontos percentuais")
+print(f"    Ganho relativo: {(random_vs_without/avg_without_rag)*100:+.1f}%" if avg_without_rag > 0 else "    Ganho relativo: N/A")
+
+print(f"  RAG Similar vs Sem RAG:")
+with_vs_without = avg_with_rag - avg_without_rag
+print(f"    Ganho absoluto: {with_vs_without:+.2f} pontos percentuais")
+print(f"    Ganho relativo: {(with_vs_without/avg_without_rag)*100:+.1f}%" if avg_without_rag > 0 else "    Ganho relativo: N/A")
+
+print(f"  RAG Similar vs RAG Aleatório:")
+with_vs_random = avg_with_rag - avg_random_rag
+print(f"    Ganho absoluto: {with_vs_random:+.2f} pontos percentuais")
+print(f"    Ganho relativo: {(with_vs_random/avg_random_rag)*100:+.1f}%" if avg_random_rag > 0 else "    Ganho relativo: N/A")
+
+print(f"\nConclusões:")
+if with_vs_without > 0:
+    print(f" RAG Similar melhora a precisão em {with_vs_without:.2f} pontos percentuais comparado ao Sem RAG")
+else:
+    print(f" RAG Similar reduz a precisão em {abs(with_vs_without):.2f} pontos percentuais comparado ao Sem RAG")
+
+if random_vs_without > 0:
+    print(f" RAG Aleatório melhora a precisão em {random_vs_without:.2f} pontos percentuais comparado ao Sem RAG")
+else:
+    print(f" RAG Aleatório reduz a precisão em {abs(random_vs_without):.2f} pontos percentuais comparado ao Sem RAG")
+
+if with_vs_random > 0:
+    print(f" RAG Similar é {with_vs_random:.2f} pontos percentuais melhor que RAG Aleatório")
+else:
+    print(f" RAG Similar é {abs(with_vs_random):.2f} pontos percentuais pior que RAG Aleatório")
+
+print(f"\nEfetividade das abordagens RAG:")
+best_approach = max([("Sem RAG", avg_without_rag), ("RAG Aleatório", avg_random_rag), ("RAG Similar", avg_with_rag)], key=lambda x: x[1])
+print(f"  Melhor abordagem: {best_approach[0]} com {best_approach[1]:.2f}% de acerto")
+
+improvement_threshold = 1.0  # 1 ponto percentual
+if with_vs_without > improvement_threshold:
+    print(f"  ✓ RAG Similar apresenta melhoria significativa (>{improvement_threshold}pp)")
+elif with_vs_without > 0:
+    print(f"  ⚠ RAG Similar apresenta melhoria marginal (<{improvement_threshold}pp)")
+else:
+    print(f"  ✗ RAG Similar não apresenta melhoria")
+
+if random_vs_without > improvement_threshold:
+    print(f"  ✓ RAG Aleatório apresenta melhoria significativa (>{improvement_threshold}pp)")
+elif random_vs_without > 0:
+    print(f"  ⚠ RAG Aleatório apresenta melhoria marginal (<{improvement_threshold}pp)")
+else:
+    print(f"  ✗ RAG Aleatório não apresenta melhoria")
